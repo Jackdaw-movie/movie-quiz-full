@@ -44,3 +44,11 @@ Nahrajte **obsah rozbalené složky** do kořene repozitáře `jackdaw-movie/mov
 ## Verze klienta
 
 `v39-history-v2-no-silent-fallback`
+
+
+## v5 – hlášení otázek
+- Přidáno tlačítko „Nahlásit otázku“ ke každé otázce načtené ze Supabase.
+- Hráč vybírá důvod a může připojit poznámku do 1000 znaků.
+- Hlášení se ukládá přes RPC `report_quiz_question`.
+- Již odeslané hlášení lze v téže herní relaci upravit.
+- Funkce vyžaduje předchozí migraci `Movie_Quiz_question_reporting_database_v1.sql`.

@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const CLIENT_VERSION='v39-history-v2-no-silent-fallback';
+  const CLIENT_VERSION='v40-question-reporting';
   const QUESTION_COUNT=18;
   const SUPABASE_URL='https://ymfaskxcgtgflhnjoylz.supabase.co';
   const SERVER_GENRES=new Set(['fantasy','horror','scifi','crime','animation','comedy']);
@@ -157,6 +157,7 @@
   }
 
   function renderLoading(text='Načítám otázku z filmového archivu…'){
+    window.dispatchEvent(new CustomEvent('mq:server-question-cleared'));
     state.locked=true;
     const wrap=questionWrap();wrap?.classList.add('mq-db-loading');
     document.getElementById('qType').textContent='Online databáze';
@@ -179,6 +180,7 @@
   }
 
   function deactivateServerMode(){
+    window.dispatchEvent(new CustomEvent('mq:server-question-cleared'));
     serverMode=false;sessionId='';startingPromise=null;loadingQuestion=false;sessionFinished=false;
     setServerFlag(false);stopActiveMedia();clearLoading();
   }
@@ -277,6 +279,15 @@
     });
     renderMedia(state.current.media);
     questionShownAt=performance.now();
+    window.dispatchEvent(new CustomEvent('mq:server-question-rendered',{detail:{
+      sessionId,
+      questionId:state.current.questionId,
+      prompt:state.current.q,
+      typeLabel:state.current.typeLabel,
+      eraLabel:state.current.eraLabel,
+      genre:state.genre,
+      difficulty:state.difficulty
+    }}));
     animateQuestionIn();sound('tick');
   }
 
@@ -393,6 +404,16 @@
   window.MovieQuizQuestionBank=Object.freeze({
     isServerMode:()=>serverMode,
     getSessionId:()=>sessionId,
+    getCurrentQuestionId:()=>state.current?.server?state.current.questionId:'',
+    getCurrentQuestion:()=>state.current?.server?Object.freeze({
+      sessionId,
+      questionId:state.current.questionId,
+      prompt:state.current.q,
+      typeLabel:state.current.typeLabel,
+      eraLabel:state.current.eraLabel,
+      genre:state.genre,
+      difficulty:state.difficulty
+    }):null,
     getSupportedGenres:()=>[...SERVER_GENRES],
     version:CLIENT_VERSION
   });
