@@ -1,0 +1,189 @@
+/* mq-v30-fantasy-dragon */
+#mq-cinematic-fx[data-fx-genre="fantasy"] .fx-fantasy{opacity:1;overflow:hidden}
+#mq-cinematic-fx[data-fx-genre="fantasy"] .mq-dragon{position:absolute;right:-34%;top:7%;width:min(40vw,34%);max-width:none;height:auto;opacity:0;filter:drop-shadow(0 20px 22px rgba(0,0,0,.45)) drop-shadow(0 0 22px rgba(255,92,44,.18));transform-origin:50% 50%;animation:mqFantasyDragonFlight 24s cubic-bezier(.42,.03,.38,.98) infinite;pointer-events:none;z-index:3}
+#mq-cinematic-fx[data-fx-genre="fantasy"] .mq-dragon.d2{top:18%;width:min(31vw,27%);animation-duration:31s;animation-delay:-12s;filter:drop-shadow(0 16px 18px rgba(0,0,0,.36)) drop-shadow(0 0 18px rgba(255,92,44,.14));opacity:0}
+@keyframes mqFantasyDragonFlight{0%,10%{transform:translate3d(0,3%,0) scale(.7) rotate(-8deg);opacity:0}14%{opacity:.84}35%{transform:translate3d(-48vw,-4%,0) scale(.86) rotate(2deg);opacity:.92}56%{transform:translate3d(-86vw,8%,0) scale(1) rotate(-3deg);opacity:.95}72%{transform:translate3d(-118vw,-2%,0) scale(1.04) rotate(4deg);opacity:.9}82%{opacity:.6}100%{transform:translate3d(-150vw,6%,0) scale(.86) rotate(-2deg);opacity:0}}
+@media(max-width:900px){#mq-cinematic-fx[data-fx-genre="fantasy"] .mq-dragon{width:42%!important;top:12%!important} #mq-cinematic-fx[data-fx-genre="fantasy"] .mq-dragon.d2{width:34%!important;top:22%!important}}
+
+/* mq-v31-fantasy-dragon-timing-fix */
+#mq-cinematic-fx[data-fx-genre="fantasy"] .mq-dragon{
+  width:min(20vw,17%)!important;
+  top:12%!important;
+  right:-22%!important;
+  opacity:0!important;
+  animation:mqFantasyDragonSinglePassV31 24s cubic-bezier(.45,.02,.34,1) infinite!important;
+}
+#mq-cinematic-fx[data-fx-genre="fantasy"] .mq-dragon.d2{
+  display:none!important;
+}
+@keyframes mqFantasyDragonSinglePassV31{
+  0%,66%{transform:translate3d(0,2%,0) scale(.55) rotate(-6deg);opacity:0}
+  70%{opacity:.82}
+  78%{transform:translate3d(-42vw,-3%,0) scale(.68) rotate(2deg);opacity:.9}
+  86%{transform:translate3d(-88vw,4%,0) scale(.8) rotate(-2deg);opacity:.92}
+  91%{transform:translate3d(-116vw,0,0) scale(.76) rotate(1deg);opacity:.42}
+  100%{transform:translate3d(-132vw,2%,0) scale(.7) rotate(-2deg);opacity:0}
+}
+@media(max-width:900px){
+  #mq-cinematic-fx[data-fx-genre="fantasy"] .mq-dragon{
+    width:21%!important;
+    top:16%!important;
+    right:-24%!important;
+  }
+}
+
+/* mq-v33-fantasy-dragon-runtime-fix */
+#mq-cinematic-fx[data-fx-genre="fantasy"] .mq-dragon{
+  position:absolute!important;
+  top:10%!important;
+  right:-18%!important;
+  width:min(20vw,17%)!important;
+  height:auto!important;
+  display:block!important;
+  opacity:0!important;
+  z-index:3!important;
+  pointer-events:none!important;
+  transform:translate3d(0,0,0) scale(.56) rotate(-6deg)!important;
+  transform-origin:50% 50%!important;
+  animation:none!important;
+  filter:drop-shadow(0 16px 18px rgba(0,0,0,.42)) drop-shadow(0 0 16px rgba(255,92,44,.14))!important;
+}
+#mq-cinematic-fx[data-fx-genre="fantasy"] .mq-dragon.d2{display:none!important}
+#mq-cinematic-fx[data-fx-genre="fantasy"] .mq-dragon.is-flying{
+  animation:mqFantasyDragonPassV33 7.2s linear 1!important;
+}
+@keyframes mqFantasyDragonPassV33{
+  0%{transform:translate3d(0,0,0) scale(.56) rotate(-7deg);opacity:0}
+  5%{opacity:.86}
+  28%{transform:translate3d(-26vw,-1.5vh,0) scale(.62) rotate(-3deg);opacity:.93}
+  56%{transform:translate3d(-55vw,1.2vh,0) scale(.7) rotate(2deg);opacity:.94}
+  82%{transform:translate3d(-84vw,-.8vh,0) scale(.78) rotate(-2deg);opacity:.9}
+  96%{opacity:.35}
+  100%{transform:translate3d(-96vw,0,0) scale(.8) rotate(-3deg);opacity:0}
+}
+@media(max-width:900px){
+  #mq-cinematic-fx[data-fx-genre="fantasy"] .mq-dragon{
+    width:22%!important;
+    top:14%!important;
+    right:-22%!important;
+  }
+}
+
+/* mq-v34-fantasy-rebuild */
+/* Rebuilt fantasy background with integrated flying dragon */
+#mq-cinematic-fx[data-fx-genre="fantasy"]{
+  --fx-accent:rgba(98,82,214,.28);
+  --fx-accent-2:rgba(57,173,134,.18);
+  background:
+    radial-gradient(circle at 78% 16%, rgba(222,232,255,.26) 0%, rgba(177,198,255,.12) 10%, transparent 26%),
+    radial-gradient(circle at 26% 18%, rgba(132,101,240,.20), transparent 30%),
+    linear-gradient(180deg, rgba(8,14,34,.18) 0%, rgba(8,14,34,.48) 50%, rgba(4,11,21,.70) 100%),
+    linear-gradient(180deg, #16244b 0%, #241a52 34%, #10273f 68%, #09141f 100%)!important;
+}
+#mq-cinematic-fx[data-fx-genre="fantasy"] .fx-fantasy{
+  opacity:1!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(circle at 77% 18%, rgba(239,245,255,.18) 0 3%, transparent 6%),
+    linear-gradient(180deg, rgba(255,255,255,.03), transparent 26%),
+    linear-gradient(180deg, transparent 0%, transparent 58%, rgba(11,15,22,.08) 100%);
+}
+#mq-cinematic-fx[data-fx-genre="fantasy"] .fx-fantasy > .mq-moon,
+#mq-cinematic-fx[data-fx-genre="fantasy"] .fx-fantasy > .mq-fireflies,
+#mq-cinematic-fx[data-fx-genre="fantasy"] .fx-fantasy > .mq-magic-wave,
+#mq-cinematic-fx[data-fx-genre="fantasy"] .fx-fantasy > .mq-dragon,
+#mq-cinematic-fx[data-fx-genre="fantasy"] .fx-fantasy > .mq-dragon.d2{
+  display:none!important;
+}
+#mq-cinematic-fx[data-fx-genre="fantasy"] .fx-fantasy::before{
+  content:"";
+  position:absolute;
+  left:-4%;right:-4%;bottom:0;height:52%;
+  background:
+    radial-gradient(circle at 78% 34%, rgba(255,232,177,.24) 0%, transparent 10%),
+    linear-gradient(180deg, transparent 0%, rgba(0,0,0,.06) 100%),
+    linear-gradient(180deg, rgba(7,10,18,0) 0%, rgba(7,10,18,.08) 100%);
+  clip-path:polygon(0 100%,0 72%,7% 64%,12% 72%,19% 49%,24% 61%,30% 57%,35% 67%,42% 42%,47% 55%,51% 34%,55% 56%,62% 46%,68% 65%,75% 49%,81% 67%,88% 57%,94% 70%,100% 63%,100% 100%);
+  background-color:#071018;
+  opacity:.92;
+  filter:drop-shadow(0 -10px 22px rgba(48,140,115,.16));
+}
+#mq-cinematic-fx[data-fx-genre="fantasy"] .fx-fantasy::after{
+  content:"";
+  position:absolute;
+  right:11%;bottom:17%;width:15%;height:29%;
+  background:
+    linear-gradient(180deg, rgba(255,234,178,.08), rgba(255,234,178,0) 18%),
+    #050811;
+  clip-path:polygon(0 100%,0 54%,12% 54%,12% 28%,26% 28%,26% 8%,42% 25%,42% 0,58% 22%,58% 44%,72% 44%,72% 22%,88% 22%,88% 52%,100% 52%,100% 100%);
+  opacity:.88;
+  box-shadow:0 0 0 1px rgba(255,255,255,.02), 0 0 28px rgba(255,216,153,.09);
+}
+#mq-cinematic-fx[data-fx-genre="fantasy"] .mq-fantasy-stars-v34,
+#mq-cinematic-fx[data-fx-genre="fantasy"] .mq-fantasy-mist-v34,
+#mq-cinematic-fx[data-fx-genre="fantasy"] .mq-fantasy-dragon-v34{
+  position:absolute;
+  pointer-events:none;
+}
+#mq-cinematic-fx[data-fx-genre="fantasy"] .mq-fantasy-stars-v34{
+  inset:0;
+  opacity:.65;
+  background-image:
+    radial-gradient(circle, rgba(255,248,212,.95) 0 1px, transparent 1.7px),
+    radial-gradient(circle, rgba(193,219,255,.85) 0 1px, transparent 1.8px),
+    radial-gradient(circle, rgba(180,255,215,.7) 0 1px, transparent 1.8px);
+  background-size:150px 120px, 220px 170px, 280px 220px;
+  background-position:0 0, 40px 30px, 90px 70px;
+  animation:mqFantasyStarDriftV34 18s ease-in-out infinite alternate;
+}
+@keyframes mqFantasyStarDriftV34{
+  from{transform:translate3d(0,0,0);opacity:.62}
+  to{transform:translate3d(-10px,8px,0);opacity:.42}
+}
+#mq-cinematic-fx[data-fx-genre="fantasy"] .mq-fantasy-mist-v34{
+  left:-10%;right:-10%;bottom:-6%;height:34%;
+  background:
+    radial-gradient(ellipse at 20% 60%, rgba(117,220,184,.12), transparent 34%),
+    radial-gradient(ellipse at 65% 58%, rgba(178,164,255,.14), transparent 36%),
+    radial-gradient(ellipse at 50% 100%, rgba(230,243,255,.09), transparent 56%);
+  filter:blur(10px);
+  opacity:.9;
+  animation:mqFantasyMistV34 12s ease-in-out infinite alternate;
+}
+@keyframes mqFantasyMistV34{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(0,-8px,0)}
+}
+#mq-cinematic-fx[data-fx-genre="fantasy"] .mq-fantasy-dragon-v34{
+  top:10%;
+  right:-18%;
+  width:min(22vw,18%);
+  height:auto;
+  z-index:4;
+  opacity:0;
+  filter:drop-shadow(0 14px 16px rgba(0,0,0,.42)) drop-shadow(0 0 16px rgba(255,124,72,.12));
+  transform-origin:50% 50%;
+  animation:mqFantasyDragonFlyV34 24s linear infinite;
+}
+@keyframes mqFantasyDragonFlyV34{
+  0%,68%{transform:translate3d(0,0,0) scale(.54) rotate(-8deg);opacity:0}
+  71%{opacity:.84}
+  79%{transform:translate3d(-30vw,-1.5vh,0) scale(.60) rotate(-3deg);opacity:.92}
+  87%{transform:translate3d(-58vw,1vh,0) scale(.68) rotate(1deg);opacity:.94}
+  94%{transform:translate3d(-88vw,-.6vh,0) scale(.76) rotate(-2deg);opacity:.88}
+  100%{transform:translate3d(-100vw,0,0) scale(.80) rotate(-3deg);opacity:0}
+}
+@media(max-width:900px){
+  #mq-cinematic-fx[data-fx-genre="fantasy"] .fx-fantasy::after{right:8%;width:20%;height:27%}
+  #mq-cinematic-fx[data-fx-genre="fantasy"] .mq-fantasy-dragon-v34{width:24%!important;top:13%!important;right:-22%!important}
+}
+
+/* mq-v35-fantasy-dragon-lower */
+#mq-cinematic-fx[data-fx-genre="fantasy"] .mq-fantasy-dragon-v34{
+  top:30% !important;
+}
+@media(max-width:900px){
+  #mq-cinematic-fx[data-fx-genre="fantasy"] .mq-fantasy-dragon-v34{
+    top:32% !important;
+  }
+}

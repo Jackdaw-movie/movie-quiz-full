@@ -1,0 +1,25 @@
+{
+  "source_bytes": 951872,
+  "index_bytes": 15131,
+  "dragon_asset_bytes": 62926,
+  "css_files": [
+    "core.css",
+    "cinematic.css",
+    "refinements.css",
+    "fantasy.css",
+    "online.css"
+  ],
+  "js_files": [
+    "00-core.js",
+    "10-cinematic-upgrade.js",
+    "11-cinematic-refinement.js",
+    "12-refinements-v4.js",
+    "13-reference-assets.js",
+    "20-online-supabase.js",
+    "30-difficulty-tools.js",
+    "31-genre-tools.js",
+    "40-fantasy-dragon.js",
+    "41-fantasy-runtime.js",
+    "42-fantasy-rebuild.js"
+  ]
+}
