@@ -1,28 +1,38 @@
-# Movie Quiz Full – modular base v1
+# Movie Quiz Full – modular v3, všech 6 žánrů ze Supabase
 
-This is the first modular build of the working Movie Quiz v36.
+Tato verze vychází z otestované modulární verze v2 a zachovává její vzhled, animace, zvuky, online hráčské účty i společný žebříček.
 
-## What changed
+## Co je nové
 
-- The visible design and gameplay remain based on the working v36 build.
-- CSS is split into five ordered stylesheets.
-- JavaScript is split into focused files while preserving execution order.
-- The fantasy dragon is now a standalone WebP asset instead of embedded Base64.
-- The working single-file version is preserved in `legacy/`.
-- Empty folders are prepared for future music, sound, animation and question assets.
+Všechny žánry nyní načítají otázky z privátní databáze Supabase a odpovědi se ověřují serverově:
 
-## GitHub Pages deployment
+- `fantasy`
+- `horror`
+- `scifi`
+- `crime`
+- `animation`
+- `comedy`
 
-Upload the **contents** of this folder to the root of the `movie-quiz-full` repository. Keep `index.html` in the repository root.
+Každý žánr má v databázi 600 textových otázek, celkem tedy 3 600 otázek. Hra požádá server o 18 otázek přesně ve zvolené obtížnosti. K výhře je stále potřeba 15 správných odpovědí a hráč má 3 životy.
 
-The existing Supabase connection remains included in `js/20-online-supabase.js`.
+Pokud Supabase není dostupná, hra automaticky přepne danou partii na původní lokální záložní otázky.
 
-## v2 – Supabase question bank pilot
+## Nahrání na GitHub Pages
 
-- Fantasy now loads 18 questions per game from the private Supabase question bank.
-- Easy, medium and hard each use their exact approved difficulty.
-- Answers are checked server-side through RPC functions.
-- The visible type and era labels come from the database.
-- Other genres continue to use the existing local question generator as a safe fallback.
-- Audio, image and video question rendering is prepared for future media packages.
-- A server-verified Fantasy game creates only one `game_runs` record.
+Nahrajte **obsah této složky** do kořene repozitáře `jackdaw-movie/movie-quiz-full`. Soubor `index.html` musí zůstat přímo v kořeni repozitáře.
+
+Nejjednodušší postup:
+
+1. Rozbalit ZIP.
+2. V GitHub repozitáři otevřít **Add file → Upload files**.
+3. Přetáhnout veškerý obsah rozbalené složky, včetně složek `css`, `js`, `assets` a `legacy`.
+4. Potvrdit přepsání existujících souborů a vytvořit commit.
+5. Po dokončení GitHub Pages provést tvrdé obnovení stránky pomocí `Ctrl + F5`.
+
+## Databázové předpoklady
+
+V Supabase musí být importované banky `fantasy`, `horror`, `scifi`, `crime`, `animation` a `comedy`. Krimi banka musí používat klíč `crime`, nikoli `thriller`.
+
+## Verze klienta
+
+`v38-all-genres-question-bank`

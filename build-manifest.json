@@ -1,13 +1,29 @@
 {
-  "source_bytes": 951872,
-  "index_bytes": 15131,
-  "dragon_asset_bytes": 62926,
+  "version": "v3-all-genres-supabase",
+  "client_version": "v38-all-genres-question-bank",
+  "database_question_genres": [
+    "fantasy",
+    "horror",
+    "scifi",
+    "crime",
+    "animation",
+    "comedy"
+  ],
+  "database_total_questions": 3600,
+  "database_questions_per_genre": 600,
+  "session_question_count": 18,
+  "correct_answers_to_win": 15,
+  "lives": 3,
+  "server_side_answer_validation": true,
+  "local_fallback": true,
+  "index_bytes": 15278,
   "css_files": [
-    "core.css",
     "cinematic.css",
-    "refinements.css",
+    "core.css",
+    "database-questions.css",
     "fantasy.css",
-    "online.css"
+    "online.css",
+    "refinements.css"
   ],
   "js_files": [
     "00-core.js",
@@ -16,19 +32,16 @@
     "12-refinements-v4.js",
     "13-reference-assets.js",
     "20-online-supabase.js",
+    "21-database-questions.js",
     "30-difficulty-tools.js",
     "31-genre-tools.js",
     "40-fantasy-dragon.js",
     "41-fantasy-runtime.js",
     "42-fantasy-rebuild.js"
   ],
-  "version": "v2-supabase-questions",
-  "database_question_genre": "fantasy",
-  "database_questions_per_difficulty": 18,
-  "new_css": [
-    "database-questions.css"
-  ],
-  "new_js": [
-    "21-database-questions.js"
+  "key_changes": [
+    "Supabase question mode enabled for all six visible genres",
+    "Dynamic database loading label uses the selected genre",
+    "Abandoned server session keeps its original session ID during async cleanup"
   ]
 }

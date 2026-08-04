@@ -1,9 +1,18 @@
 (()=>{
   'use strict';
 
-  const CLIENT_VERSION='v37-question-bank-pilot';
+  const CLIENT_VERSION='v38-all-genres-question-bank';
   const QUESTION_COUNT=18;
   const SUPABASE_URL='https://ymfaskxcgtgflhnjoylz.supabase.co';
+  const SERVER_GENRES=new Set(['fantasy','horror','scifi','crime','animation','comedy']);
+  const SERVER_GENRE_LABELS={
+    fantasy:'Fantasy',
+    horror:'Horor',
+    scifi:'Sci-fi',
+    crime:'Krimi a thriller',
+    animation:'Animace',
+    comedy:'Komedie'
+  };
 
   const localStartGame=startGame;
   const localNextQuestion=nextQuestion;
@@ -19,6 +28,9 @@
 
   function questionWrap(){return document.querySelector('.question-wrap')}
   function onlineApi(){return window.MovieQuizOnline}
+  function currentGenreLabel(){
+    return SERVER_GENRE_LABELS[state?.genre]||genreLabels?.[state?.genre]||'Filmový žánr';
+  }
 
   function normalizeRows(data){
     if(Array.isArray(data))return data;
@@ -148,7 +160,7 @@
     state.locked=true;
     const wrap=questionWrap();wrap?.classList.add('mq-db-loading');
     document.getElementById('qType').textContent='Online databáze';
-    document.getElementById('qEra').textContent='Fantasy';
+    document.getElementById('qEra').textContent=currentGenreLabel();
     document.getElementById('question').textContent=text;
     answersEl.innerHTML='<div class="mq-db-loading-card"><i class="mq-db-spinner" aria-hidden="true"></i><span>Chystá se další filmová otázka</span></div>';
     stopActiveMedia();
@@ -158,10 +170,11 @@
 
   async function abandonSession(){
     if(!serverMode||!sessionId||sessionFinished)return;
+    const abandonedSessionId=sessionId;
     try{
       const api=onlineApi();
       const {client:db}=await api.ensureBackend();
-      await db.rpc('abandon_quiz_session',{p_session_id:sessionId});
+      await db.rpc('abandon_quiz_session',{p_session_id:abandonedSessionId});
     }catch(error){console.warn('Movie Quiz: rozehranou online relaci se nepodařilo označit jako opuštěnou.',error)}
   }
 
@@ -261,11 +274,12 @@
   }
 
   startGame=function(genre){
-    if(genre!=='fantasy'){
+    if(!SERVER_GENRES.has(genre)){
       if(serverMode&&!sessionFinished)abandonSession();
       deactivateServerMode();
       return localStartGame(genre);
     }
+    if(serverMode&&!sessionFinished)abandonSession();
     serverMode=true;sessionId='';sessionFinished=false;startingPromise=null;loadingQuestion=false;
     setServerFlag(true);
     return localStartGame(genre);
@@ -355,6 +369,7 @@
   window.MovieQuizQuestionBank=Object.freeze({
     isServerMode:()=>serverMode,
     getSessionId:()=>sessionId,
+    getSupportedGenres:()=>[...SERVER_GENRES],
     version:CLIENT_VERSION
   });
 })();
