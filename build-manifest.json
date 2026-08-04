@@ -1,6 +1,6 @@
 {
-  "version": "v3-all-genres-supabase",
-  "client_version": "v38-all-genres-question-bank",
+  "version": "v4-history-v2-no-fallback",
+  "client_version": "v39-history-v2-no-silent-fallback",
   "database_question_genres": [
     "fantasy",
     "horror",
@@ -15,7 +15,7 @@
   "correct_answers_to_win": 15,
   "lives": 3,
   "server_side_answer_validation": true,
-  "local_fallback": true,
+  "local_fallback": false,
   "index_bytes": 15278,
   "css_files": [
     "cinematic.css",
@@ -40,8 +40,15 @@
     "42-fantasy-rebuild.js"
   ],
   "key_changes": [
-    "Supabase question mode enabled for all six visible genres",
-    "Dynamic database loading label uses the selected genre",
-    "Abandoned server session keeps its original session ID during async cleanup"
-  ]
+    "Supabase question mode remains enabled for all six visible genres",
+    "Silent fallback to the legacy local question bank was removed",
+    "Database failures now show explicit Retry and Back to menu actions",
+    "Client identifies itself as v39-history-v2-no-silent-fallback",
+    "Database migration v2 rotates exact questions and canonical movie keys"
+  ],
+  "question_history_enabled": true,
+  "recent_question_window": 150,
+  "movie_history_enabled": true,
+  "recent_movie_window": 50,
+  "max_same_movie_per_session": 1
 }

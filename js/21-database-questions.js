@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const CLIENT_VERSION='v38-all-genres-question-bank';
+  const CLIENT_VERSION='v39-history-v2-no-silent-fallback';
   const QUESTION_COUNT=18;
   const SUPABASE_URL='https://ymfaskxcgtgflhnjoylz.supabase.co';
   const SERVER_GENRES=new Set(['fantasy','horror','scifi','crime','animation','comedy']);
@@ -183,15 +183,39 @@
     setServerFlag(false);stopActiveMedia();clearLoading();
   }
 
-  async function fallbackToLocal(error){
-    console.warn('Movie Quiz: online banka otázek není dostupná, používám lokální zálohu.',error);
-    await abandonSession();
-    deactivateServerMode();
-    document.getElementById('qType').textContent='Záložní režim';
-    document.getElementById('qEra').textContent='Lokální otázky';
-    document.getElementById('question').textContent='Online databáze není dostupná. Pokračujeme se záložními otázkami.';
-    answersEl.innerHTML='<div class="mq-db-loading-card"><span class="mq-db-error-note">Hra bude pokračovat automaticky.</span></div>';
-    setTimeout(()=>localNextQuestion(),900);
+  function databaseErrorMessage(error){
+    const message=String(error?.message||error?.error_description||error||'').trim();
+    if(!message)return 'Spojení s filmovou databází se nezdařilo.';
+    if(/failed to fetch|network|load failed|connection/i.test(message))return 'Nepodařilo se spojit s filmovou databází. Zkontrolujte připojení k internetu.';
+    if(/only .* non-repeating questions could be selected/i.test(message))return 'Databáze nedokázala sestavit dostatečně různorodou sadu otázek. Zkuste načtení zopakovat.';
+    return 'Filmová databáze vrátila chybu. Hra nebude použita s lokálními náhradními otázkami.';
+  }
+
+  function renderDatabaseError(error){
+    console.error('Movie Quiz: online otázku se nepodařilo načíst. Lokální banka nebyla spuštěna.',error);
+    state.locked=true;
+    stopActiveMedia();
+    clearLoading();
+    questionWrap()?.classList.add('mq-db-error');
+    document.getElementById('qType').textContent='Online databáze';
+    document.getElementById('qEra').textContent=currentGenreLabel();
+    document.getElementById('question').textContent='Otázku se nepodařilo načíst';
+    answersEl.innerHTML=`<div class="mq-db-error-card">
+      <strong>Databázový režim zůstal aktivní</strong>
+      <span>${databaseErrorMessage(error)}</span>
+      <small>Nedochází k tichému přepnutí na starou lokální banku.</small>
+      <div class="mq-db-error-actions">
+        <button type="button" class="mq-db-retry" id="mqDbRetry">Zkusit znovu</button>
+        <button type="button" class="mq-db-menu" id="mqDbMenu">Zpět do nabídky</button>
+      </div>
+    </div>`;
+    document.getElementById('mqDbRetry')?.addEventListener('click',()=>{
+      questionWrap()?.classList.remove('mq-db-error');
+      loadNextServerQuestion();
+    });
+    document.getElementById('mqDbMenu')?.addEventListener('click',()=>{
+      document.getElementById('homeBtn')?.click();
+    });
   }
 
   async function beginSession(){
@@ -269,7 +293,7 @@
       if(!row)throw new Error('Databáze nevrátila další otázku.');
       renderQuestion(row);
     }catch(error){
-      await fallbackToLocal(error);
+      renderDatabaseError(error);
     }finally{loadingQuestion=false}
   }
 

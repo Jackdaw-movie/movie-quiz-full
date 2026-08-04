@@ -1,4 +1,4 @@
-/* Movie Quiz Full – databázové otázky v37 */
+/* Movie Quiz Full – databázové otázky v39, historie filmů bez tichého fallbacku */
 .question-wrap.mq-db-loading .question{opacity:.72}
 .question-wrap.mq-db-loading .answers{pointer-events:none;opacity:.58}
 .mq-db-loading-card{
@@ -63,4 +63,47 @@
   .mq-audio-card{padding:9px 10px;border-radius:12px}
   .mq-audio-play{width:40px;height:40px;flex-basis:40px}
   .mq-media-image,.mq-media-video{max-height:190px}
+}
+
+
+/* Chyba online databáze: hra se nesmí tiše přepnout na lokální otázky. */
+.question-wrap.mq-db-error .answers{pointer-events:auto;opacity:1}
+.mq-db-error-card{
+  grid-column:1/-1;
+  width:min(620px,100%);
+  margin:0 auto;
+  padding:18px 20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  text-align:center;
+  border:1px solid rgba(255,184,104,.38);
+  border-radius:16px;
+  background:linear-gradient(180deg,rgba(49,23,13,.94),rgba(16,10,8,.94));
+  box-shadow:0 18px 48px rgba(0,0,0,.38),inset 0 1px rgba(255,255,255,.04);
+  color:#fff0cf;
+  font-family:system-ui,sans-serif;
+}
+.mq-db-error-card strong{font-size:15px;line-height:1.25;color:#ffe19b}
+.mq-db-error-card span{font-size:13px;line-height:1.45;color:rgba(255,244,218,.84)}
+.mq-db-error-card small{font-size:11px;line-height:1.4;color:rgba(255,228,183,.62)}
+.mq-db-error-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:8px}
+.mq-db-error-actions button{
+  min-height:40px;
+  padding:9px 16px;
+  border-radius:999px;
+  border:1px solid rgba(255,218,126,.42);
+  font:800 12px/1 system-ui,sans-serif;
+  letter-spacing:.035em;
+  cursor:pointer;
+}
+.mq-db-retry{background:linear-gradient(180deg,#d89a2d,#9b5d0d);color:#160d04;box-shadow:0 8px 22px rgba(0,0,0,.24)}
+.mq-db-menu{background:rgba(255,255,255,.055);color:#ffe6ad}
+.mq-db-error-actions button:hover{filter:brightness(1.08)}
+.mq-db-error-actions button:focus-visible{outline:2px solid #ffe195;outline-offset:3px}
+@media (max-width:640px){
+  .mq-db-error-card{padding:15px 13px;border-radius:13px}
+  .mq-db-error-actions{width:100%}
+  .mq-db-error-actions button{flex:1 1 150px}
 }

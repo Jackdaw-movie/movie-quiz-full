@@ -1,10 +1,8 @@
-# Movie Quiz Full – modular v3, všech 6 žánrů ze Supabase
+# Movie Quiz Full – modular v4, historie otázek a filmů
 
-Tato verze vychází z otestované modulární verze v2 a zachovává její vzhled, animace, zvuky, online hráčské účty i společný žebříček.
+Tato verze navazuje na modulární v3 se všemi šesti žánry v Supabase.
 
-## Co je nové
-
-Všechny žánry nyní načítají otázky z privátní databáze Supabase a odpovědi se ověřují serverově:
+## Databázové žánry
 
 - `fantasy`
 - `horror`
@@ -13,26 +11,36 @@ Všechny žánry nyní načítají otázky z privátní databáze Supabase a odp
 - `animation`
 - `comedy`
 
-Každý žánr má v databázi 600 textových otázek, celkem tedy 3 600 otázek. Hra požádá server o 18 otázek přesně ve zvolené obtížnosti. K výhře je stále potřeba 15 správných odpovědí a hráč má 3 životy.
+Celkem je připraveno 3 600 textových otázek. Odpovědi se ověřují serverově.
 
-Pokud Supabase není dostupná, hra automaticky přepne danou partii na původní lokální záložní otázky.
+## Hlavní změna v4
+
+Hra již při chybě Supabase **nepřepne potichu na starou lokální banku**. Místo toho zobrazí jasnou chybovou kartu s tlačítky:
+
+- **Zkusit znovu**
+- **Zpět do nabídky**
+
+Díky tomu je při testování vždy zřejmé, zda hra skutečně používá databázové otázky.
+
+## Historie a rotace
+
+Tato webová verze je určená pro databázovou migraci `Movie_Quiz_question_and_movie_history_v2_fixed.sql`, která:
+
+- blokuje posledních 150 přesných otázek,
+- blokuje posledních 50 filmů v daném žánru a obtížnosti,
+- vybírá maximálně jednu otázku ke stejnému filmu v jedné hře,
+- upřednostňuje dosud neviděné filmy a otázky.
 
 ## Nahrání na GitHub Pages
 
-Nahrajte **obsah této složky** do kořene repozitáře `jackdaw-movie/movie-quiz-full`. Soubor `index.html` musí zůstat přímo v kořeni repozitáře.
-
-Nejjednodušší postup:
+Nahrajte **obsah rozbalené složky** do kořene repozitáře `jackdaw-movie/movie-quiz-full`.
 
 1. Rozbalit ZIP.
-2. V GitHub repozitáři otevřít **Add file → Upload files**.
-3. Přetáhnout veškerý obsah rozbalené složky, včetně složek `css`, `js`, `assets` a `legacy`.
-4. Potvrdit přepsání existujících souborů a vytvořit commit.
-5. Po dokončení GitHub Pages provést tvrdé obnovení stránky pomocí `Ctrl + F5`.
-
-## Databázové předpoklady
-
-V Supabase musí být importované banky `fantasy`, `horror`, `scifi`, `crime`, `animation` a `comedy`. Krimi banka musí používat klíč `crime`, nikoli `thriller`.
+2. Otevřít v GitHubu **Add file → Upload files**.
+3. Přetáhnout celý obsah rozbalené složky včetně `index.html`, `css`, `js`, `assets` a `legacy`.
+4. Potvrdit přepsání souborů a vytvořit commit.
+5. Po nasazení provést tvrdé obnovení pomocí `Ctrl + F5`.
 
 ## Verze klienta
 
-`v38-all-genres-question-bank`
+`v39-history-v2-no-silent-fallback`
