@@ -3,7 +3,7 @@
   const SUPABASE_PUBLISHABLE_KEY='sb_publishable_NpNQJqorFyNgiTQ4GahgtQ__UmulD3Y';
   const LAST_NAME_KEY='movieQuizOnlineNicknameV1';
   const PENDING_RUNS_KEY='movieQuizPendingRunsV1';
-  const CLIENT_VERSION='v36-supabase';
+  const CLIENT_VERSION='v37-supabase-question-bank';
 
   let client=null;
   let backendPromise=null;
@@ -163,6 +163,14 @@
   }
 
   function saveGameRun(){
+    /* Nová databázová banka ukládá dokončený výsledek serverově přímo
+       ve funkci submit_quiz_answer. Starý klientský zápis proto přeskočíme,
+       aby nevznikly dva záznamy stejné hry. */
+    if(window.__mqServerVerifiedSessionActive){
+      roundSaved=true;
+      savePromise=Promise.resolve();
+      return savePromise;
+    }
     if(roundSaved)return savePromise;
     roundSaved=true;
     const payload=createRunPayload();
@@ -379,4 +387,14 @@
     saveGameRun();
     return oldWin();
   };
+
+  /* Sdílený přístup pro samostatný modul databázových otázek. Publikujeme
+     pouze klienta s veřejným publishable klíčem a bezpečnou autentizaci. */
+  window.MovieQuizOnline=Object.freeze({
+    ensureBackend,
+    getClient:()=>client,
+    getUserId:()=>currentUserId,
+    getPlayerName:()=>currentPlayerName,
+    isReady:()=>Boolean(client&&currentUserId)
+  });
 })();

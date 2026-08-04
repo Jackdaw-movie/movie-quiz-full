@@ -1,0 +1,66 @@
+/* Movie Quiz Full – databázové otázky v37 */
+.question-wrap.mq-db-loading .question{opacity:.72}
+.question-wrap.mq-db-loading .answers{pointer-events:none;opacity:.58}
+.mq-db-loading-card{
+  grid-column:1/-1;
+  min-height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  border:1px solid rgba(255,215,119,.24);
+  border-radius:14px;
+  background:rgba(13,10,8,.54);
+  color:rgba(255,244,211,.82);
+  font:700 13px/1.35 system-ui,sans-serif;
+  letter-spacing:.04em;
+}
+.mq-db-spinner{
+  width:18px;height:18px;border-radius:50%;
+  border:2px solid rgba(255,218,126,.2);
+  border-top-color:#ffd56d;
+  animation:mqDbSpin .75s linear infinite;
+}
+@keyframes mqDbSpin{to{transform:rotate(360deg)}}
+.answer.mq-checking{position:relative;overflow:hidden}
+.answer.mq-checking::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(100deg,transparent 15%,rgba(255,235,177,.18) 48%,transparent 82%);
+  transform:translateX(-110%);animation:mqAnswerCheck 1s linear infinite;
+}
+@keyframes mqAnswerCheck{to{transform:translateX(110%)}}
+#mqMediaStage:empty{display:none}
+#mqMediaStage{
+  width:min(700px,100%);
+  margin:0 auto 14px;
+  display:flex;
+  justify-content:center;
+}
+.mq-audio-card{
+  width:min(540px,100%);
+  padding:12px 14px;
+  border:1px solid rgba(255,216,122,.28);
+  border-radius:16px;
+  background:linear-gradient(180deg,rgba(33,24,17,.9),rgba(8,7,7,.88));
+  box-shadow:0 12px 34px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.04);
+}
+.mq-audio-head{display:flex;align-items:center;gap:12px}
+.mq-audio-play{
+  flex:0 0 44px;width:44px;height:44px;border-radius:50%;
+  border:1px solid rgba(255,222,139,.55);background:rgba(111,70,12,.35);
+  color:#ffe3a0;font-size:18px;cursor:pointer;
+}
+.mq-audio-copy{min-width:0;flex:1;text-align:left}
+.mq-audio-title{font:800 12px/1.2 system-ui,sans-serif;color:#ffe5a5;text-transform:uppercase;letter-spacing:.12em}
+.mq-audio-time{margin-top:4px;font:600 12px/1.2 system-ui,sans-serif;color:rgba(255,244,218,.68)}
+.mq-audio-progress{height:4px;margin-top:10px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden}
+.mq-audio-progress i{display:block;width:0;height:100%;background:linear-gradient(90deg,#b87514,#ffe39a);transition:width .08s linear}
+.mq-media-image{display:block;max-width:min(620px,100%);max-height:260px;border-radius:16px;object-fit:contain;box-shadow:0 16px 42px rgba(0,0,0,.42)}
+.mq-media-video{display:block;max-width:min(620px,100%);max-height:270px;border-radius:16px;background:#000}
+.mq-db-error-note{font-size:12px;color:rgba(255,225,174,.72)}
+@media (max-width:640px){
+  #mqMediaStage{margin-bottom:9px}
+  .mq-audio-card{padding:9px 10px;border-radius:12px}
+  .mq-audio-play{width:40px;height:40px;flex-basis:40px}
+  .mq-media-image,.mq-media-video{max-height:190px}
+}

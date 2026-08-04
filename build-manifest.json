@@ -21,5 +21,14 @@
     "40-fantasy-dragon.js",
     "41-fantasy-runtime.js",
     "42-fantasy-rebuild.js"
+  ],
+  "version": "v2-supabase-questions",
+  "database_question_genre": "fantasy",
+  "database_questions_per_difficulty": 18,
+  "new_css": [
+    "database-questions.css"
+  ],
+  "new_js": [
+    "21-database-questions.js"
   ]
 }
