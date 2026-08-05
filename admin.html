@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0a0c10">
+  <title>Movie Quiz · Administrace hlášení</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <div class="admin-app" id="adminApp">
+    <div class="admin-backdrop" aria-hidden="true"></div>
+
+    <header class="admin-topbar">
+      <a class="admin-brand" href="index.html" aria-label="Zpět do Movie Quiz">
+        <span class="admin-brand-mark" aria-hidden="true">MQ</span>
+        <span>
+          <strong>Movie Quiz</strong>
+          <small>Administrace hlášení</small>
+        </span>
+      </a>
+      <div class="admin-session" id="adminSession" hidden>
+        <span class="admin-session-copy">
+          <small>Přihlášený administrátor</small>
+          <strong id="adminSessionName">–</strong>
+        </span>
+        <button class="admin-button admin-button-ghost" id="adminLogout" type="button">Odhlásit</button>
+      </div>
+    </header>
+
+    <main class="admin-main">
+      <section class="admin-login" id="adminLogin">
+        <div class="admin-login-card">
+          <div class="admin-kicker">Zabezpečený vstup</div>
+          <h1>Správa nahlášených otázek</h1>
+          <p>Po přihlášení můžete kontrolovat hlášení hráčů, měnit jejich stav a dočasně vyřadit chybnou otázku ze hry.</p>
+
+          <div id="adminLoginMode">
+            <form class="admin-login-form" id="adminLoginForm">
+              <label>
+                <span>E-mail</span>
+                <input id="adminEmail" type="email" autocomplete="username" value="kafkatomas13@gmail.com" required>
+              </label>
+              <label>
+                <span>Heslo</span>
+                <input id="adminPassword" type="password" autocomplete="current-password" required>
+              </label>
+              <button class="admin-button admin-button-primary" type="submit" id="adminLoginButton">Přihlásit se</button>
+            </form>
+            <button class="admin-link-button admin-first-access" id="adminOpenSignup" type="button">První přístup: vytvořit administrátorský účet</button>
+          </div>
+
+          <div id="adminSignupMode" hidden>
+            <form class="admin-login-form" id="adminSignupForm">
+              <label>
+                <span>Povolený administrátorský e-mail</span>
+                <input id="adminSignupEmail" type="email" value="kafkatomas13@gmail.com" readonly>
+              </label>
+              <label>
+                <span>Nové heslo</span>
+                <input id="adminSignupPassword" type="password" autocomplete="new-password" minlength="8" required>
+              </label>
+              <label>
+                <span>Zopakujte heslo</span>
+                <input id="adminSignupPasswordConfirm" type="password" autocomplete="new-password" minlength="8" required>
+              </label>
+              <button class="admin-button admin-button-primary" type="submit" id="adminSignupButton">Vytvořit účet</button>
+            </form>
+            <button class="admin-link-button admin-first-access" id="adminBackToLogin" type="button">Zpět na přihlášení</button>
+          </div>
+
+          <div class="admin-alert" id="adminLoginError" role="alert" hidden></div>
+          <div class="admin-alert admin-alert-success" id="adminSignupMessage" role="status" hidden></div>
+          <p class="admin-login-note">Přístup získá pouze účet, jehož e-mail je povolený v databázi Movie Quiz.</p>
+        </div>
+      </section>
+
+      <section class="admin-dashboard" id="adminDashboard" hidden>
+        <div class="admin-heading-row">
+          <div>
+            <div class="admin-kicker">Kontrola kvality databáze</div>
+            <h1>Nahlášené otázky</h1>
+            <p>Více hlášení stejné otázky je seskupeno do jedné položky.</p>
+          </div>
+          <div class="admin-heading-actions">
+            <a class="admin-button admin-button-ghost" href="index.html">Otevřít hru</a>
+            <button class="admin-button admin-button-secondary" id="adminRefresh" type="button">Obnovit data</button>
+          </div>
+        </div>
+
+        <section class="admin-summary-grid" id="adminSummary" aria-label="Souhrn hlášení">
+          <article class="admin-summary-card"><span>Načítání</span><strong>–</strong><small>Čekám na databázi</small></article>
+        </section>
+
+        <section class="admin-panel admin-filter-panel">
+          <div class="admin-panel-head">
+            <div>
+              <h2>Filtry</h2>
+              <p>Vyhledejte otázku podle textu, filmu, žánru nebo stavu hlášení.</p>
+            </div>
+            <button class="admin-link-button" id="adminClearFilters" type="button">Vymazat filtry</button>
+          </div>
+          <form class="admin-filters" id="adminFilterForm">
+            <label class="admin-filter-search">
+              <span>Hledat</span>
+              <input id="filterSearch" type="search" placeholder="Text otázky, film, ID nebo poznámka">
+            </label>
+            <label>
+              <span>Stav</span>
+              <select id="filterStatus">
+                <option value="all">Všechny stavy</option>
+                <option value="new">Nové</option>
+                <option value="reviewing">Kontroluji</option>
+                <option value="resolved">Vyřešené</option>
+                <option value="dismissed">Zamítnuté</option>
+              </select>
+            </label>
+            <label>
+              <span>Důvod</span>
+              <select id="filterReason">
+                <option value="all">Všechny důvody</option>
+                <option value="fact_error">Faktická chyba</option>
+                <option value="multiple_answers">Více správných odpovědí</option>
+                <option value="typo">Překlep nebo formulace</option>
+                <option value="wrong_genre">Špatný žánr</option>
+                <option value="wrong_difficulty">Špatná obtížnost</option>
+                <option value="other">Jiný důvod</option>
+              </select>
+            </label>
+            <label>
+              <span>Žánr</span>
+              <select id="filterGenre">
+                <option value="all">Všechny žánry</option>
+                <option value="comedy">Komedie</option>
+                <option value="fantasy">Fantasy</option>
+                <option value="scifi">Sci-fi</option>
+                <option value="horror">Horor</option>
+                <option value="crime">Krimi a thriller</option>
+                <option value="animation">Animace</option>
+              </select>
+            </label>
+            <label>
+              <span>Obtížnost</span>
+              <select id="filterDifficulty">
+                <option value="">Všechny obtížnosti</option>
+                <option value="1">Lehká</option>
+                <option value="2">Střední</option>
+                <option value="3">Těžká</option>
+              </select>
+            </label>
+            <button class="admin-button admin-button-primary admin-filter-submit" type="submit">Použít filtry</button>
+          </form>
+        </section>
+
+        <div class="admin-content-grid">
+          <section class="admin-panel admin-report-panel">
+            <div class="admin-panel-head">
+              <div>
+                <h2>Otázky s hlášením</h2>
+                <p id="adminReportCount">Načítám položky…</p>
+              </div>
+            </div>
+            <div class="admin-report-list" id="adminReportList" aria-live="polite">
+              <div class="admin-loading"><span></span><strong>Načítám hlášení</strong></div>
+            </div>
+          </section>
+
+          <aside class="admin-panel admin-audit-panel">
+            <div class="admin-panel-head">
+              <div>
+                <h2>Poslední změny</h2>
+                <p>Audit administrátorských zásahů</p>
+              </div>
+            </div>
+            <div class="admin-audit-list" id="adminAuditList">
+              <div class="admin-loading admin-loading-small"><span></span><strong>Načítám audit</strong></div>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="admin-modal" id="adminDetailModal" aria-hidden="true">
+    <div class="admin-modal-backdrop" data-close-detail></div>
+    <section class="admin-detail" role="dialog" aria-modal="true" aria-labelledby="adminDetailTitle">
+      <header class="admin-detail-head">
+        <div>
+          <div class="admin-kicker">Detail kontroly</div>
+          <h2 id="adminDetailTitle">Nahlášená otázka</h2>
+        </div>
+        <button class="admin-icon-button" type="button" data-close-detail aria-label="Zavřít detail">×</button>
+      </header>
+      <div class="admin-detail-body" id="adminDetailBody">
+        <div class="admin-loading"><span></span><strong>Načítám detail otázky</strong></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="admin-toast" id="adminToast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

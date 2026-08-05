@@ -1,5 +1,5 @@
 {
-  "version": "v7.1-ui-variety",
+  "version": "v7.2-report-admin",
   "client_version": "v43-ui-variety",
   "database_question_genres": [
     "fantasy",
@@ -82,5 +82,22 @@
     "character_film": 40,
     "plot_match": 20,
     "character_pair": 20
-  }
+  },
+  "adminVersion": "v1-report-administration",
+  "adminPage": "admin.html",
+  "adminCss": "css/admin.css",
+  "adminJs": "js/admin.js",
+  "adminAuthentication": "Supabase email/password with separate browser storage key",
+  "adminAllowedEmail": "kafkatomas13@gmail.com",
+  "adminFeatures": [
+    "Secure administrator session verification through admin_get_session",
+    "Dashboard summary of new, reviewing, resolved and dismissed reports",
+    "Filters by status, reason, genre, difficulty and text search",
+    "Grouped list of all reports for the same question",
+    "Question detail with all answer options and correct answer",
+    "Status updates with internal resolution note",
+    "Question deactivation and reactivation",
+    "Recent administrator audit log"
+  ],
+  "requiredAdminMigration": "database/Movie_Quiz_question_reports_admin_database_v1.sql"
 }
