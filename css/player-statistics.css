@@ -67,3 +67,8 @@
 .mq-end-statistics:hover{background:rgba(38,31,22,.72);border-color:rgba(238,208,142,.58)}
 @media(max-width:900px){.mq-stats-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.mq-stats-highlights{grid-template-columns:1fr}.mq-recent-game{grid-template-columns:65px minmax(130px,1fr) 65px}.mq-recent-meta{grid-column:2/4;justify-content:flex-start;text-align:left}.mq-difficulty-stats{grid-template-columns:1fr}.mq-genre-stats{grid-template-columns:1fr}}
 @media(max-width:620px){#statisticsView{padding:13px 9px}.mq-stats-toolbar{padding-top:2px}.mq-stats-header{margin-bottom:13px}.mq-stats-summary{grid-template-columns:1fr 1fr;gap:8px}.mq-stat-card{padding:14px 12px}.mq-stat-card>strong{font-size:26px}.mq-stats-section{padding:13px}.mq-stats-section-title{display:block}.mq-stats-section-title>small{display:block;margin-top:6px;text-align:left}.mq-recent-game{grid-template-columns:62px 1fr 58px;gap:8px}.mq-recent-meta{grid-column:1/4;justify-content:space-between;padding-top:2px}.mq-intro-tools{top:calc(50% + 72px);flex-direction:column;align-items:stretch}.mq-intro-tool{padding:9px 13px;font-size:9px}.mq-stats-back span,.mq-stats-refresh span{display:none}.mq-stats-back,.mq-stats-refresh{width:37px;height:37px;padding:0;justify-content:center}.mq-stats-footer{justify-content:flex-start}}
+/* mq-v43-statistics-ui-fix */
+#statisticsView.active{z-index:44;padding-top:clamp(66px,8vh,92px)}
+.mq-stats-toolbar{z-index:60;top:0;padding-top:6px}
+.mq-genre-stat-explain{margin-top:7px;color:rgba(255,255,255,.58);font-size:10px;line-height:1.35}
+@media(max-width:620px){#statisticsView.active{padding-top:62px}.mq-stats-toolbar{top:0}}

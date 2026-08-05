@@ -51,3 +51,10 @@ Nahrajte **obsah rozbalené složky** do kořene repozitáře `jackdaw-movie/mov
 ## Poznámka k hráčskému účtu
 
 Movie Quiz používá anonymní Supabase účet uložený v konkrétním prohlížeči. Statistiky proto patří hráčskému účtu v daném prohlížeči. Vymazání dat webu nebo použití jiného počítače vytvoří nový anonymní účet.
+
+
+## Movie Quiz v7.1
+
+Tato verze přidává stálé jméno hráče v levém horním rohu, opravuje překrytí tlačítek Zpět a Obnovit na obrazovce statistik a vysvětluje úspěšnost jako počet správných odpovědí ze všech skutečně zodpovězených otázek.
+
+Pro pestřejší lehké komedie je před nahráním webu nutné spustit soubor `database/Movie_Quiz_7_1_easy_comedy_variety.sql` v Supabase SQL Editoru. Migrace zachová 200 aktivních lehkých komediálních otázek a rozšíří výběr na pět formátů.

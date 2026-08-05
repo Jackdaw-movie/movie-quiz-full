@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='v41-player-statistics';
+  const VERSION='v43-ui-variety';
   const GENRE_ORDER=['fantasy','horror','scifi','crime','animation','comedy'];
   const DIFFICULTY_ORDER=['easy','medium','hard'];
   const DIFFICULTY_ICONS={easy:'🍿',medium:'🎬',hard:'🎥'};
@@ -226,6 +226,8 @@
     const accuracy=Math.max(0,Math.min(100,number(item?.accuracy_percent)));
     const games=integer(item?.games);
     const wins=integer(item?.wins);
+    const correct=integer(item?.correct_answers);
+    const answered=integer(item?.questions_answered);
     return `<article class="mq-genre-stat" data-genre="${escapeHtml(item?.genre||'')}">
       <div class="mq-genre-stat-head">
         <strong>${escapeHtml(item?.label||item?.genre||'Žánr')}</strong>
@@ -235,9 +237,10 @@
         <i style="width:${accuracy}%"></i>
       </div>
       <div class="mq-genre-stat-foot">
-        <span>Úspěšnost <strong>${percent(accuracy)}</strong></span>
+        <span>Úspěšnost odpovědí <strong>${percent(accuracy)}</strong></span>
         <span>Výhry <strong>${wins}</strong></span>
       </div>
+      <div class="mq-genre-stat-explain">${correct} správně z ${answered} odpovězených</div>
     </article>`;
   }
 

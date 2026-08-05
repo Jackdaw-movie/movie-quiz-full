@@ -3,7 +3,7 @@
   const SUPABASE_PUBLISHABLE_KEY='sb_publishable_NpNQJqorFyNgiTQ4GahgtQ__UmulD3Y';
   const LAST_NAME_KEY='movieQuizOnlineNicknameV2';
   const PENDING_RUNS_KEY='movieQuizPendingRunsV1';
-  const CLIENT_VERSION='v42-persistent-profiles';
+  const CLIENT_VERSION='v43-ui-variety';
 
   let client=null;
   let backendPromise=null;
@@ -76,6 +76,7 @@
     currentProfileId=currentProfile?.profileId||currentUserId||'';
     currentPlayerName=cleanName(currentProfile?.nickname||'');
     if(currentPlayerName)safeSet(LAST_NAME_KEY,currentPlayerName);
+    updatePlayerBadge();
   }
   async function loadCurrentProfile(){
     const {data,error}=await client.rpc('get_current_player_profile');
@@ -202,6 +203,7 @@
     currentProfileId='';
     currentPlayerName='';
     currentProfile=null;
+    updatePlayerBadge();
     client=null;
     pendingNickname='';
     revealedRecoveryCode='';
@@ -277,6 +279,25 @@
     medium:`<span class="mq-score-icon" title="Oscar za střední obtížnost" role="img" aria-label="Oscar s filmovou klapkou"><svg viewBox="0 0 48 32" aria-hidden="true">${award}<g transform="translate(21 4)"><path class="white-line" d="M3 9h22v16H3zM3 3h22v7H3zM6 3l5 7m2-7 5 7m2-7 5 7M8 16h12m-12 5h8"/></g></svg></span>`,
     hard:`<span class="mq-score-icon" title="Oscar za těžkou obtížnost" role="img" aria-label="Oscar s filmovou kamerou"><svg viewBox="0 0 48 32" aria-hidden="true">${award}<g transform="translate(21 4)"><circle class="white-line" cx="9" cy="7" r="5"/><circle class="white-line" cx="20" cy="8" r="4"/><circle class="gold-fill" cx="9" cy="7" r="1.4"/><circle class="gold-fill" cx="20" cy="8" r="1.2"/><path class="white-line" d="M4 14h20v12H4zM24 17l6-3v12l-6-3z"/></g></svg></span>`
   };
+
+  function installPlayerBadge(){
+    if(document.getElementById('mqPlayerBadge'))return;
+    const badge=document.createElement('div');
+    badge.id='mqPlayerBadge';
+    badge.className='mq-player-badge';
+    badge.setAttribute('aria-live','polite');
+    badge.innerHTML='<span>Hráč</span><strong id="mqPlayerBadgeName"></strong>';
+    document.getElementById('screen')?.appendChild(badge);
+    updatePlayerBadge();
+  }
+  function updatePlayerBadge(){
+    const badge=document.getElementById('mqPlayerBadge');
+    const name=document.getElementById('mqPlayerBadgeName');
+    if(!badge||!name)return;
+    const nickname=cleanName(currentPlayerName);
+    name.textContent=nickname;
+    badge.classList.toggle('visible',Boolean(nickname));
+  }
 
   function profileShellMarkup(){
     return `<div id="mqProfileShell" class="mq-profile-shell"></div><div class="mq-name-error" id="mqNameError"></div>`;
@@ -612,6 +633,7 @@
   function goPlayer(){showView('playerView');sound?.('soft')}
 
   installViews();
+  installPlayerBadge();
   ensureBackend().catch(()=>{});
 
   const start=document.getElementById('startBtn');
