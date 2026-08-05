@@ -1,6 +1,6 @@
 {
-  "version": "v6-player-statistics",
-  "client_version": "v41-player-statistics",
+  "version": "v7-persistent-profiles",
+  "client_version": "v42-persistent-profiles",
   "database_question_genres": [
     "fantasy",
     "horror",
@@ -49,7 +49,10 @@
     "Question reporting remains available for every server question",
     "Personal player statistics are available directly inside the Movie Quiz interface",
     "Statistics are loaded through secure RPC get_my_player_statistics for the current anonymous player only",
-    "Statistics include summary, Oscars, leaderboard rank, genres, difficulties and recent games"
+    "Statistics include summary, Oscars, leaderboard rank, genres, difficulties and recent games",
+    "Persistent player profiles added: nickname + 6-digit PIN + recovery code",
+    "The same player can log in on another device and keep shared Oscars, statistics, question history and reports",
+    "This device remembers the linked player profile automatically until the player chooses Změnit hráče"
   ],
   "question_history_enabled": true,
   "recent_question_window": 150,
@@ -57,13 +60,14 @@
   "recent_movie_window": 50,
   "max_same_movie_per_session": 1,
   "name": "Movie Quiz",
-  "clientVersion": "v41-player-statistics",
+  "clientVersion": "v42-persistent-profiles",
   "databaseQuestions": true,
   "questionHistory": true,
   "movieHistory": true,
   "questionReporting": true,
   "silentLocalFallback": false,
-  "requiredMigration": "Movie_Quiz_player_statistics_database_v1.sql",
+  "requiredMigration": "Movie_Quiz_persistent_player_profiles_foundation_v1.sql + Movie_Quiz_persistent_player_profiles_integration_v2_1_fixed.sql",
   "playerStatistics": true,
-  "statisticsRpc": "get_my_player_statistics"
+  "statisticsRpc": "get_my_player_statistics",
+  "persistentProfiles": true
 }
