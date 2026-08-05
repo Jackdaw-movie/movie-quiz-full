@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const CLIENT_VERSION='v40-question-reporting';
+  const CLIENT_VERSION='v41-player-statistics';
   const QUESTION_COUNT=18;
   const SUPABASE_URL='https://ymfaskxcgtgflhnjoylz.supabase.co';
   const SERVER_GENRES=new Set(['fantasy','horror','scifi','crime','animation','comedy']);

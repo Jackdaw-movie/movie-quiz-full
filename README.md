@@ -1,8 +1,8 @@
-# Movie Quiz Full – modular v4, historie otázek a filmů
+# Movie Quiz – modular v6, hráčské statistiky
 
-Tato verze navazuje na modulární v3 se všemi šesti žánry v Supabase.
+Tato verze navazuje na v5 s databázovými otázkami, dlouhodobou historií a funkčním hlášením problémových otázek.
 
-## Databázové žánry
+## Aktivní žánry
 
 - `fantasy`
 - `horror`
@@ -11,44 +11,43 @@ Tato verze navazuje na modulární v3 se všemi šesti žánry v Supabase.
 - `animation`
 - `comedy`
 
-Celkem je připraveno 3 600 textových otázek. Odpovědi se ověřují serverově.
+V Supabase je celkem 3 600 textových otázek. Odpovědi se ověřují serverově a hra se při chybě databáze nepřepíná na starou lokální banku.
 
-## Hlavní změna v4
+## Novinka v6 – Moje statistiky
 
-Hra již při chybě Supabase **nepřepne potichu na starou lokální banku**. Místo toho zobrazí jasnou chybovou kartu s tlačítky:
+Rozhraní obsahuje nové tlačítko **Moje statistiky**. Hráč zde uvidí:
 
-- **Zkusit znovu**
-- **Zpět do nabídky**
+- počet her, výher a proher,
+- úspěšnost odpovědí,
+- Oscary podle obtížnosti,
+- pořadí a body ve společném žebříčku,
+- nejlepší a nejhranější žánr,
+- výsledky podle všech žánrů,
+- počet unikátních otázek a filmů,
+- posledních deset dokončených her.
 
-Díky tomu je při testování vždy zřejmé, zda hra skutečně používá databázové otázky.
+Statistiky jsou načítané bezpečně přes RPC `public.get_my_player_statistics()` a každý anonymní hráč dostane pouze vlastní výsledky.
 
-## Historie a rotace
+## Potřebná databázová migrace
 
-Tato webová verze je určená pro databázovou migraci `Movie_Quiz_question_and_movie_history_v2_fixed.sql`, která:
+Před nasazením této webové verze musí být v Supabase úspěšně spuštěn soubor:
 
-- blokuje posledních 150 přesných otázek,
-- blokuje posledních 50 filmů v daném žánru a obtížnosti,
-- vybírá maximálně jednu otázku ke stejnému filmu v jedné hře,
-- upřednostňuje dosud neviděné filmy a otázky.
+`Movie_Quiz_player_statistics_database_v1.sql`
 
 ## Nahrání na GitHub Pages
 
 Nahrajte **obsah rozbalené složky** do kořene repozitáře `jackdaw-movie/movie-quiz-full`.
 
 1. Rozbalit ZIP.
-2. Otevřít v GitHubu **Add file → Upload files**.
-3. Přetáhnout celý obsah rozbalené složky včetně `index.html`, `css`, `js`, `assets` a `legacy`.
-4. Potvrdit přepsání souborů a vytvořit commit.
-5. Po nasazení provést tvrdé obnovení pomocí `Ctrl + F5`.
+2. Otevřít **Add file → Upload files**.
+3. Nahrát `index.html` a všechny složky `css`, `js`, `assets`, `data`, `legacy`.
+4. Potvrdit přepsání souborů přes **Commit changes**.
+5. Po nasazení provést tvrdé obnovení pomocí `Ctrl + F5` nebo použít anonymní okno.
 
 ## Verze klienta
 
-`v39-history-v2-no-silent-fallback`
+`v41-player-statistics`
 
+## Poznámka k hráčskému účtu
 
-## v5 – hlášení otázek
-- Přidáno tlačítko „Nahlásit otázku“ ke každé otázce načtené ze Supabase.
-- Hráč vybírá důvod a může připojit poznámku do 1000 znaků.
-- Hlášení se ukládá přes RPC `report_quiz_question`.
-- Již odeslané hlášení lze v téže herní relaci upravit.
-- Funkce vyžaduje předchozí migraci `Movie_Quiz_question_reporting_database_v1.sql`.
+Movie Quiz používá anonymní Supabase účet uložený v konkrétním prohlížeči. Statistiky proto patří hráčskému účtu v daném prohlížeči. Vymazání dat webu nebo použití jiného počítače vytvoří nový anonymní účet.

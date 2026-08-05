@@ -3,7 +3,7 @@
   const SUPABASE_PUBLISHABLE_KEY='sb_publishable_NpNQJqorFyNgiTQ4GahgtQ__UmulD3Y';
   const LAST_NAME_KEY='movieQuizOnlineNicknameV1';
   const PENDING_RUNS_KEY='movieQuizPendingRunsV1';
-  const CLIENT_VERSION='v38-all-genres-question-bank';
+  const CLIENT_VERSION='v41-player-statistics';
 
   let client=null;
   let backendPromise=null;

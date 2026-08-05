@@ -1,0 +1,69 @@
+/* Movie Quiz v6 – osobní hráčské statistiky */
+#statisticsView{padding:clamp(16px,2.8vh,34px) clamp(12px,3vw,44px);overflow:auto;scrollbar-width:thin;scrollbar-color:rgba(225,190,111,.46) rgba(0,0,0,.18)}
+#statisticsView::-webkit-scrollbar{width:9px}#statisticsView::-webkit-scrollbar-track{background:rgba(0,0,0,.16)}#statisticsView::-webkit-scrollbar-thumb{border-radius:999px;background:rgba(225,190,111,.42)}
+.mq-stats-shell{width:min(1240px,100%);margin:auto;padding-bottom:18px;color:#fff}
+.mq-stats-toolbar{position:sticky;top:0;z-index:8;display:flex;justify-content:space-between;gap:10px;margin:0 0 10px;padding:4px 0 8px;background:linear-gradient(180deg,rgba(21,27,37,.96),rgba(21,27,37,.78) 70%,transparent);backdrop-filter:blur(10px)}
+.mq-stats-back,.mq-stats-refresh{display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(4,6,10,.48);color:#fff;font:750 10px/1 "Aptos","Segoe UI",sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:.2s}
+.mq-stats-back:hover,.mq-stats-refresh:hover{transform:translateY(-1px);border-color:rgba(239,205,126,.55);background:rgba(38,42,51,.88)}
+.mq-stats-back svg,.mq-stats-refresh svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mq-stats-refresh:disabled{opacity:.5;cursor:wait;transform:none}
+.mq-stats-header{text-align:center;margin:0 auto 19px;max-width:850px}
+.mq-stats-header h1{margin:7px 0 8px;font-family:"Aptos Display","Segoe UI Variable Display","Segoe UI",sans-serif;font-size:clamp(30px,4.5vw,58px);line-height:1;letter-spacing:-.04em;color:#fff}
+.mq-stats-header p{margin:0;color:rgba(255,255,255,.68);font-size:12px;line-height:1.5}
+.mq-stats-content{display:grid;gap:16px}
+.mq-stats-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}
+.mq-stat-card{min-width:0;padding:17px 17px 15px;border:1px solid rgba(255,255,255,.14);border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.045));box-shadow:0 18px 42px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.09)}
+.mq-stat-card>span{display:block;color:rgba(255,255,255,.58);font-size:9px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+.mq-stat-card>strong{display:block;margin:7px 0 5px;color:#fff;font-family:"Aptos Display","Segoe UI",sans-serif;font-size:clamp(25px,3vw,40px);font-weight:760;line-height:1;font-variant-numeric:tabular-nums}
+.mq-stat-card>small{display:block;color:rgba(255,255,255,.65);font-size:10px;line-height:1.4}
+.mq-stat-card.is-rank{background:linear-gradient(145deg,rgba(222,181,91,.22),rgba(255,255,255,.05));border-color:rgba(239,205,126,.27)}
+.mq-stat-card.is-oscar>strong{color:#f7d783;text-shadow:0 0 22px rgba(239,197,91,.22)}
+.mq-stats-section{padding:18px;border:1px solid rgba(255,255,255,.13);border-radius:20px;background:rgba(5,8,13,.31);box-shadow:0 20px 55px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.06)}
+.mq-stats-section-title{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:13px}
+.mq-stats-section-title span{display:block;margin-bottom:4px;color:#e5c57c;font-size:9px;font-weight:800;letter-spacing:.17em;text-transform:uppercase}
+.mq-stats-section-title h2{margin:0;font-size:clamp(18px,2.2vw,28px);line-height:1.05;color:#fff}
+.mq-stats-section-title>small{max-width:400px;color:rgba(255,255,255,.52);font-size:10px;line-height:1.45;text-align:right}
+.mq-difficulty-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.mq-difficulty-stat{display:grid;grid-template-columns:50px minmax(0,1fr);gap:12px;align-items:center;padding:14px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.055)}
+.mq-difficulty-icon{display:grid;place-items:center;width:50px;height:50px;border-radius:15px;background:rgba(226,185,95,.13);border:1px solid rgba(233,199,123,.24);font-size:25px;filter:saturate(.85)}
+.mq-difficulty-stat span{display:block;color:rgba(255,255,255,.62);font-size:9px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
+.mq-difficulty-stat strong{display:block;margin:3px 0 4px;color:#f6d77f;font-size:18px;line-height:1.1}
+.mq-difficulty-stat small{display:block;color:rgba(255,255,255,.56);font-size:9px;line-height:1.4}
+.mq-stats-highlights{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.mq-stats-highlights article{padding:16px 17px;border:1px solid rgba(255,255,255,.12);border-radius:17px;background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.035))}
+.mq-stats-highlights span{display:block;color:rgba(255,255,255,.55);font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.mq-stats-highlights strong{display:block;margin:6px 0 5px;color:#fff;font-size:20px;line-height:1.15}
+.mq-stats-highlights small{display:block;color:rgba(255,255,255,.58);font-size:10px;line-height:1.45}
+.mq-genre-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.mq-genre-stat{padding:12px 13px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(255,255,255,.045)}
+.mq-genre-stat-head,.mq-genre-stat-foot{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.mq-genre-stat-head strong{color:#fff;font-size:12px}.mq-genre-stat-head>span{color:rgba(255,255,255,.5);font-size:9px}
+.mq-stat-bar{height:6px;margin:10px 0 8px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.09)}
+.mq-stat-bar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#9b7130,#f0cf7b);box-shadow:0 0 14px rgba(228,188,93,.25)}
+.mq-genre-stat-foot span{color:rgba(255,255,255,.52);font-size:9px}.mq-genre-stat-foot strong{color:rgba(255,255,255,.87);font-weight:800}
+.mq-recent-games{display:grid;gap:7px}
+.mq-recent-game{display:grid;grid-template-columns:72px minmax(150px,1fr) 78px minmax(170px,.9fr);gap:12px;align-items:center;padding:10px 12px;border:1px solid rgba(255,255,255,.1);border-radius:13px;background:rgba(255,255,255,.04)}
+.mq-recent-result{padding:6px 7px;border-radius:999px;text-align:center;font-size:8px;font-weight:900;letter-spacing:.13em}
+.mq-recent-game.is-win .mq-recent-result{background:rgba(72,190,122,.13);border:1px solid rgba(92,218,141,.25);color:#a8efc4}
+.mq-recent-game.is-loss .mq-recent-result{background:rgba(219,83,87,.12);border:1px solid rgba(244,112,116,.23);color:#ffc0c1}
+.mq-recent-main strong{display:block;color:#fff;font-size:12px}.mq-recent-main span{display:block;margin-top:2px;color:rgba(255,255,255,.52);font-size:9px}
+.mq-recent-score{text-align:center;font-variant-numeric:tabular-nums}.mq-recent-score strong{color:#f3d181;font-size:20px}.mq-recent-score span{color:rgba(255,255,255,.45);font-size:10px}
+.mq-recent-meta{display:flex;justify-content:flex-end;gap:11px;color:rgba(255,255,255,.51);font-size:9px;text-align:right}
+.mq-stats-footer{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;padding:3px}
+.mq-stats-footer span{padding:8px 11px;border:1px solid rgba(255,255,255,.1);border-radius:999px;background:rgba(0,0,0,.18);color:rgba(255,255,255,.52);font-size:9px}
+.mq-stats-footer strong{color:#fff}
+.mq-stats-loading,.mq-stats-error,.mq-stats-empty{min-height:330px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;border:1px solid rgba(255,255,255,.13);border-radius:22px;background:rgba(5,8,13,.32)}
+.mq-stats-loading strong,.mq-stats-error h2,.mq-stats-empty h2{margin:15px 0 7px;color:#fff;font-size:24px}
+.mq-stats-loading small,.mq-stats-error p,.mq-stats-empty p{max-width:650px;margin:0;color:rgba(255,255,255,.62);font-size:11px;line-height:1.55}
+.mq-stats-spinner{width:38px;height:38px;border:3px solid rgba(255,255,255,.13);border-top-color:#e5c16f;border-radius:50%;animation:mqStatsSpin .75s linear infinite}
+@keyframes mqStatsSpin{to{transform:rotate(360deg)}}
+.mq-stats-error-icon{display:grid;place-items:center;width:48px;height:48px;border:1px solid rgba(255,118,118,.28);border-radius:50%;background:rgba(210,64,68,.13);color:#ffb5b6;font-size:25px;font-weight:900}
+.mq-stats-error .mq-primary,.mq-stats-empty .mq-primary{margin-top:18px}
+.mq-stats-empty-icon{font-size:45px}.mq-stats-inline-empty{padding:22px;text-align:center;color:rgba(255,255,255,.56);font-size:11px}
+.mq-intro-tools{position:absolute;left:50%;top:calc(50% + clamp(61px,9vh,92px));z-index:42;display:flex;gap:8px;transform:translateX(-50%)}
+.mq-intro-tool{white-space:nowrap;padding:10px 16px;border:1px solid rgba(238,213,157,.38);border-radius:999px;background:rgba(8,7,7,.72);color:#f3e6c6;font:750 11px/1 "Aptos","Segoe UI",sans-serif;letter-spacing:.13em;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 26px rgba(0,0,0,.42)}
+.mq-intro-tool:hover{background:rgba(42,31,22,.88);border-color:rgba(240,205,126,.66)}
+.mq-end-statistics{display:block;margin:10px auto 0;padding:9px 15px;border:1px solid rgba(238,208,142,.32);border-radius:999px;background:rgba(5,7,10,.42);color:#fff;font:750 10px/1 "Aptos","Segoe UI",sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+.mq-end-statistics:hover{background:rgba(38,31,22,.72);border-color:rgba(238,208,142,.58)}
+@media(max-width:900px){.mq-stats-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.mq-stats-highlights{grid-template-columns:1fr}.mq-recent-game{grid-template-columns:65px minmax(130px,1fr) 65px}.mq-recent-meta{grid-column:2/4;justify-content:flex-start;text-align:left}.mq-difficulty-stats{grid-template-columns:1fr}.mq-genre-stats{grid-template-columns:1fr}}
+@media(max-width:620px){#statisticsView{padding:13px 9px}.mq-stats-toolbar{padding-top:2px}.mq-stats-header{margin-bottom:13px}.mq-stats-summary{grid-template-columns:1fr 1fr;gap:8px}.mq-stat-card{padding:14px 12px}.mq-stat-card>strong{font-size:26px}.mq-stats-section{padding:13px}.mq-stats-section-title{display:block}.mq-stats-section-title>small{display:block;margin-top:6px;text-align:left}.mq-recent-game{grid-template-columns:62px 1fr 58px;gap:8px}.mq-recent-meta{grid-column:1/4;justify-content:space-between;padding-top:2px}.mq-intro-tools{top:calc(50% + 72px);flex-direction:column;align-items:stretch}.mq-intro-tool{padding:9px 13px;font-size:9px}.mq-stats-back span,.mq-stats-refresh span{display:none}.mq-stats-back,.mq-stats-refresh{width:37px;height:37px;padding:0;justify-content:center}.mq-stats-footer{justify-content:flex-start}}

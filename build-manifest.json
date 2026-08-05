@@ -1,6 +1,6 @@
 {
-  "version": "v5-question-reporting",
-  "client_version": "v39-history-v2-no-silent-fallback",
+  "version": "v6-player-statistics",
+  "client_version": "v41-player-statistics",
   "database_question_genres": [
     "fantasy",
     "horror",
@@ -16,14 +16,16 @@
   "lives": 3,
   "server_side_answer_validation": true,
   "local_fallback": false,
-  "index_bytes": 15278,
+  "index_bytes": 15569,
   "css_files": [
     "cinematic.css",
     "core.css",
     "database-questions.css",
     "fantasy.css",
     "online.css",
-    "refinements.css"
+    "refinements.css",
+    "question-reporting.css",
+    "player-statistics.css"
   ],
   "js_files": [
     "00-core.js",
@@ -37,14 +39,17 @@
     "31-genre-tools.js",
     "40-fantasy-dragon.js",
     "41-fantasy-runtime.js",
-    "42-fantasy-rebuild.js"
+    "42-fantasy-rebuild.js",
+    "22-question-reporting.js",
+    "23-player-statistics.js"
   ],
   "key_changes": [
     "Supabase question mode remains enabled for all six visible genres",
-    "Silent fallback to the legacy local question bank was removed",
-    "Database failures now show explicit Retry and Back to menu actions",
-    "Client identifies itself as v39-history-v2-no-silent-fallback",
-    "Database migration v2 rotates exact questions and canonical movie keys"
+    "Silent fallback to the legacy local question bank remains disabled",
+    "Question reporting remains available for every server question",
+    "Personal player statistics are available directly inside the Movie Quiz interface",
+    "Statistics are loaded through secure RPC get_my_player_statistics for the current anonymous player only",
+    "Statistics include summary, Oscars, leaderboard rank, genres, difficulties and recent games"
   ],
   "question_history_enabled": true,
   "recent_question_window": 150,
@@ -52,11 +57,13 @@
   "recent_movie_window": 50,
   "max_same_movie_per_session": 1,
   "name": "Movie Quiz",
-  "clientVersion": "v40-question-reporting",
+  "clientVersion": "v41-player-statistics",
   "databaseQuestions": true,
   "questionHistory": true,
   "movieHistory": true,
   "questionReporting": true,
   "silentLocalFallback": false,
-  "requiredMigration": "Movie_Quiz_question_reporting_database_v1.sql"
+  "requiredMigration": "Movie_Quiz_player_statistics_database_v1.sql",
+  "playerStatistics": true,
+  "statisticsRpc": "get_my_player_statistics"
 }
