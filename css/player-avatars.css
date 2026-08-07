@@ -1,0 +1,246 @@
+/* Movie Quiz avatar system v1 */
+.mq-avatar-img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+  user-select:none;
+  pointer-events:none;
+}
+.mq-avatar-frame{
+  position:relative;
+  overflow:hidden;
+  flex:0 0 auto;
+  border:1px solid rgba(239,205,126,.48);
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 35% 25%,rgba(255,230,167,.16),transparent 42%),
+    rgba(4,5,8,.74);
+  box-shadow:0 8px 22px rgba(0,0,0,.32),inset 0 1px rgba(255,255,255,.08);
+}
+.mq-avatar-frame.is-guest{
+  border-color:rgba(216,198,157,.36);
+  filter:saturate(.78);
+}
+
+/* avatar vedle jména */
+#mqPlayerBadge{
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+}
+#mqPlayerBadge .mq-avatar-badge{
+  width:31px;
+  height:31px;
+  margin-right:1px;
+}
+
+/* propojený profil */
+.mq-avatar-profile-row{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  margin:12px 0 2px;
+  padding:10px 11px;
+  border:1px solid rgba(255,255,255,.11);
+  border-radius:14px;
+  background:rgba(255,255,255,.045);
+}
+.mq-avatar-profile-row .mq-avatar-frame{width:58px;height:58px}
+.mq-avatar-profile-copy{min-width:0}
+.mq-avatar-profile-copy span{
+  display:block;
+  color:rgba(255,255,255,.52);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+.mq-avatar-profile-copy strong{
+  display:block;
+  margin-top:3px;
+  color:#fff;
+  font-size:13px;
+}
+
+/* žebříček */
+.mq-score-row:not(.mq-score-header) .mq-score-cell:first-child.mq-avatar-score-cell{
+  display:grid!important;
+  grid-template-columns:38px minmax(0,1fr)!important;
+  grid-template-rows:auto!important;
+  align-items:center!important;
+  column-gap:9px!important;
+}
+.mq-score-row .mq-avatar-scoreboard{width:38px;height:38px;grid-column:1}
+.mq-avatar-score-copy{grid-column:2;min-width:0}
+.mq-avatar-score-copy .mq-player-rank,
+.mq-avatar-score-copy .mq-score-name,
+.mq-avatar-score-copy .mq-score-total{display:block}
+
+/* statistiky */
+.mq-stats-profile-avatar{
+  display:flex;
+  justify-content:center;
+  margin:0 auto 8px;
+}
+.mq-stats-profile-avatar .mq-avatar-frame{
+  width:82px;
+  height:82px;
+  border-width:2px;
+  box-shadow:0 12px 34px rgba(0,0,0,.38),0 0 0 4px rgba(232,196,111,.08);
+}
+.mq-stats-avatar-action{
+  margin-top:9px;
+  border:0;
+  background:none;
+  color:#e5c57c;
+  cursor:pointer;
+  font:800 9px/1 "Aptos","Segoe UI",sans-serif;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+.mq-stats-avatar-action:hover{text-decoration:underline}
+
+/* galerie */
+.mq-avatar-modal[hidden]{display:none!important}
+.mq-avatar-modal{
+  position:absolute;
+  inset:0;
+  z-index:150;
+  display:grid;
+  place-items:center;
+  padding:clamp(14px,3vw,34px);
+}
+.mq-avatar-modal-backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.78);
+  backdrop-filter:blur(8px);
+}
+.mq-avatar-dialog{
+  position:relative;
+  z-index:1;
+  width:min(760px,100%);
+  max-height:min(78vh,720px);
+  overflow:auto;
+  padding:22px;
+  border:1px solid rgba(239,205,126,.28);
+  border-radius:22px;
+  background:
+    radial-gradient(circle at 50% 0,rgba(176,128,51,.15),transparent 36%),
+    linear-gradient(180deg,rgba(24,22,21,.98),rgba(7,8,11,.99));
+  color:#fff;
+  box-shadow:0 30px 90px rgba(0,0,0,.62),inset 0 1px rgba(255,255,255,.07);
+}
+.mq-avatar-dialog-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:16px;
+}
+.mq-avatar-dialog-head h2{
+  margin:5px 0 5px;
+  font-size:clamp(24px,4vw,38px);
+  line-height:1;
+}
+.mq-avatar-dialog-head p{
+  margin:0;
+  color:rgba(255,255,255,.6);
+  font-size:11px;
+  line-height:1.5;
+}
+.mq-avatar-close{
+  width:38px;
+  height:38px;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:50%;
+  background:rgba(0,0,0,.32);
+  color:#fff;
+  cursor:pointer;
+  font-size:23px;
+}
+.mq-avatar-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+}
+.mq-avatar-choice{
+  position:relative;
+  min-width:0;
+  padding:12px 9px 10px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:16px;
+  background:rgba(255,255,255,.045);
+  color:#fff;
+  cursor:pointer;
+  text-align:center;
+  transition:.16s ease;
+}
+.mq-avatar-choice:hover:not(:disabled){
+  transform:translateY(-2px);
+  border-color:rgba(239,205,126,.52);
+  background:rgba(239,205,126,.09);
+}
+.mq-avatar-choice.is-selected{
+  border-color:#e3bf6b;
+  box-shadow:0 0 0 2px rgba(227,191,107,.13),0 14px 30px rgba(0,0,0,.25);
+}
+.mq-avatar-choice:disabled{cursor:not-allowed;opacity:.42}
+.mq-avatar-choice .mq-avatar-frame{
+  width:min(112px,100%);
+  aspect-ratio:1;
+  margin:0 auto 9px;
+}
+.mq-avatar-choice strong{
+  display:block;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:11px;
+}
+.mq-avatar-choice small{
+  display:block;
+  margin-top:4px;
+  color:rgba(255,255,255,.52);
+  font-size:9px;
+}
+.mq-avatar-selected-mark{
+  position:absolute;
+  top:8px;
+  right:8px;
+  display:grid;
+  place-items:center;
+  width:23px;
+  height:23px;
+  border-radius:50%;
+  background:#d6b45f;
+  color:#16130d;
+  font-weight:900;
+}
+.mq-avatar-modal-status{
+  min-height:18px;
+  margin-top:13px;
+  color:#e9cf91;
+  font-size:10px;
+  line-height:1.45;
+}
+.mq-avatar-modal-note{
+  margin:14px 0 0;
+  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.52);
+  font-size:9px;
+  line-height:1.55;
+}
+
+@media(max-width:700px){
+  .mq-avatar-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .mq-avatar-dialog{padding:16px}
+  .mq-avatar-choice{padding:9px 6px}
+  #mqPlayerBadge .mq-avatar-badge{width:27px;height:27px}
+}
+@media(max-width:460px){
+  .mq-avatar-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}

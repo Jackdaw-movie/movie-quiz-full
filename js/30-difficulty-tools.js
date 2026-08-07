@@ -691,3 +691,25 @@
     init();
   }
 })();
+
+
+/* Movie Quiz avatar system loader v1 */
+(()=>{
+  if(window.__mqAvatarSystemLoader)return;
+  window.__mqAvatarSystemLoader=true;
+
+  if(!document.querySelector('link[data-mq-avatar-style]')){
+    const link=document.createElement('link');
+    link.rel='stylesheet';
+    link.href='css/player-avatars.css?v=1';
+    link.dataset.mqAvatarStyle='1';
+    document.head.appendChild(link);
+  }
+
+  if(!document.querySelector('script[data-mq-avatar-script]')){
+    const script=document.createElement('script');
+    script.src='js/24-player-avatars.js?v=1';
+    script.dataset.mqAvatarScript='1';
+    document.body.appendChild(script);
+  }
+})();
