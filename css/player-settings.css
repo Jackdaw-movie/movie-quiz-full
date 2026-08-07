@@ -1,0 +1,292 @@
+/* Movie Quiz Settings v1 */
+
+/* Větší profilovka u jména */
+#mqPlayerBadge{
+  min-height:58px!important;
+  gap:9px!important;
+  padding:5px 7px 5px 6px!important;
+  overflow:visible!important;
+}
+#mqPlayerBadge .mq-avatar-badge{
+  width:48px!important;
+  height:48px!important;
+  margin-right:2px!important;
+  border-width:2px!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.42),0 0 0 3px rgba(220,186,104,.08)!important;
+}
+#mqPlayerBadge > span:not(.mq-avatar-frame){
+  margin-left:1px;
+}
+
+.mq-settings-gear{
+  position:relative;
+  z-index:1004;
+  display:grid;
+  place-items:center;
+  width:34px;
+  height:34px;
+  margin-left:3px;
+  padding:0;
+  border:1px solid rgba(230,203,139,.34);
+  border-radius:50%;
+  background:rgba(7,8,11,.48);
+  color:#e5c77e;
+  cursor:pointer;
+  transition:transform .16s ease,background .16s ease,border-color .16s ease;
+}
+.mq-settings-gear:hover,
+.mq-settings-gear:focus-visible{
+  transform:rotate(18deg);
+  background:rgba(218,180,89,.12);
+  border-color:rgba(239,207,131,.7);
+  outline:none;
+}
+.mq-settings-gear svg{
+  width:19px;
+  height:19px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  pointer-events:none;
+}
+
+/* Staré samostatné vstupy pro změnu avatara schováme. Primární cesta je Settings. */
+.mq-profile-linked .mq-profile-button-row [data-open-avatar-gallery],
+#statisticsView .mq-stats-avatar-action{
+  display:none!important;
+}
+
+.mq-settings-modal[hidden]{display:none!important}
+.mq-settings-modal{
+  position:absolute;
+  inset:0;
+  z-index:170;
+  display:grid;
+  place-items:center;
+  padding:clamp(14px,3vw,34px);
+}
+.mq-settings-backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.78);
+  backdrop-filter:blur(8px);
+}
+.mq-settings-dialog{
+  position:relative;
+  z-index:1;
+  width:min(640px,100%);
+  max-height:min(82vh,760px);
+  overflow:auto;
+  padding:22px;
+  border:1px solid rgba(230,198,121,.3);
+  border-radius:22px;
+  background:
+    radial-gradient(circle at 50% -10%,rgba(151,101,36,.2),transparent 38%),
+    linear-gradient(180deg,rgba(28,25,23,.99),rgba(7,8,11,.995));
+  color:#fff;
+  box-shadow:0 30px 90px rgba(0,0,0,.64),inset 0 1px rgba(255,255,255,.07);
+}
+.mq-settings-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:17px;
+}
+.mq-settings-head h2{
+  margin:4px 0 0;
+  font-size:clamp(28px,4vw,40px);
+  line-height:1;
+}
+.mq-settings-close{
+  width:39px;
+  height:39px;
+  padding:0;
+  border:1px solid rgba(255,255,255,.17);
+  border-radius:50%;
+  background:rgba(0,0,0,.28);
+  color:#fff;
+  cursor:pointer;
+  font-size:24px;
+  line-height:1;
+}
+.mq-settings-close:hover{background:rgba(255,255,255,.08)}
+
+.mq-settings-profile{
+  display:grid;
+  grid-template-columns:76px minmax(0,1fr) auto;
+  align-items:center;
+  gap:14px;
+  padding:14px;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:17px;
+  background:rgba(255,255,255,.045);
+}
+.mq-settings-avatar{
+  width:76px;
+  height:76px;
+  border-width:2px;
+}
+.mq-settings-profile-copy{min-width:0}
+.mq-settings-profile-copy > span{
+  display:block;
+  color:rgba(255,255,255,.48);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+.mq-settings-profile-copy strong{
+  display:block;
+  margin-top:3px;
+  overflow:hidden;
+  color:#fff;
+  font-size:17px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.mq-settings-profile-copy small{
+  display:block;
+  margin-top:5px;
+  color:rgba(255,255,255,.55);
+  font-size:9px;
+  line-height:1.45;
+}
+.mq-settings-avatar-button{
+  min-height:38px;
+  padding:0 13px;
+  border:1px solid rgba(230,199,124,.42);
+  border-radius:11px;
+  background:rgba(211,169,71,.08);
+  color:#e8ca83;
+  cursor:pointer;
+  font:800 10px/1 inherit;
+  letter-spacing:.03em;
+}
+.mq-settings-avatar-button:hover{
+  background:rgba(211,169,71,.15);
+  border-color:rgba(235,203,126,.72);
+}
+
+.mq-settings-section{
+  margin-top:14px;
+  padding:16px 14px 12px;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:17px;
+  background:rgba(255,255,255,.035);
+}
+.mq-settings-section-title{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:12px;
+  padding:0 2px 11px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.mq-settings-section-title span{
+  font-size:14px;
+  font-weight:900;
+  letter-spacing:.02em;
+}
+.mq-settings-section-title small{
+  color:rgba(255,255,255,.47);
+  font-size:9px;
+}
+.mq-volume-row{
+  display:grid;
+  grid-template-columns:minmax(150px,.8fr) minmax(220px,1.2fr);
+  align-items:center;
+  gap:18px;
+  padding:15px 2px;
+}
+.mq-volume-row + .mq-volume-row{border-top:1px solid rgba(255,255,255,.07)}
+.mq-volume-copy strong{
+  display:block;
+  font-size:12px;
+}
+.mq-volume-copy small{
+  display:block;
+  margin-top:4px;
+  color:rgba(255,255,255,.49);
+  font-size:9px;
+  line-height:1.4;
+}
+.mq-volume-control{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 48px;
+  align-items:center;
+  gap:12px;
+}
+.mq-volume-control output{
+  color:#e6c879;
+  font-size:10px;
+  font-weight:900;
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+}
+.mq-volume-control input[type="range"]{
+  --mq-range:50%;
+  width:100%;
+  height:22px;
+  margin:0;
+  appearance:none;
+  -webkit-appearance:none;
+  background:transparent;
+  cursor:pointer;
+}
+.mq-volume-control input[type="range"]::-webkit-slider-runnable-track{
+  height:5px;
+  border-radius:999px;
+  background:linear-gradient(90deg,#d6b35b 0 var(--mq-range),rgba(255,255,255,.16) var(--mq-range) 100%);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.45);
+}
+.mq-volume-control input[type="range"]::-webkit-slider-thumb{
+  width:18px;
+  height:18px;
+  margin-top:-6.5px;
+  appearance:none;
+  -webkit-appearance:none;
+  border:2px solid #282016;
+  border-radius:50%;
+  background:#efd889;
+  box-shadow:0 2px 8px rgba(0,0,0,.45),0 0 0 2px rgba(239,216,137,.12);
+}
+.mq-volume-control input[type="range"]::-moz-range-track{
+  height:5px;
+  border:0;
+  border-radius:999px;
+  background:rgba(255,255,255,.16);
+}
+.mq-volume-control input[type="range"]::-moz-range-progress{
+  height:5px;
+  border-radius:999px;
+  background:#d6b35b;
+}
+.mq-volume-control input[type="range"]::-moz-range-thumb{
+  width:16px;
+  height:16px;
+  border:2px solid #282016;
+  border-radius:50%;
+  background:#efd889;
+  box-shadow:0 2px 8px rgba(0,0,0,.45);
+}
+.mq-settings-foot{
+  margin-top:12px;
+  color:rgba(255,255,255,.42);
+  font-size:9px;
+  line-height:1.5;
+  text-align:center;
+}
+
+@media(max-width:700px){
+  #mqPlayerBadge{min-height:52px!important}
+  #mqPlayerBadge .mq-avatar-badge{width:43px!important;height:43px!important}
+  .mq-settings-gear{width:31px;height:31px}
+  .mq-settings-dialog{padding:16px}
+  .mq-settings-profile{grid-template-columns:62px minmax(0,1fr)}
+  .mq-settings-avatar{width:62px;height:62px}
+  .mq-settings-avatar-button{grid-column:1/-1;width:100%}
+  .mq-volume-row{grid-template-columns:1fr;gap:10px}
+}

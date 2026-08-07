@@ -282,7 +282,7 @@
     const name=document.getElementById('mqPlayerBadgeName');
     if(!badge||!name)return;
 
-    const label=badge.querySelector('span');
+    const label=badge.querySelector(':scope > span:not(.mq-avatar-frame)')||badge.querySelector('span');
 
     if(guestMode){
       setTextIfChanged(label,'Režim');
@@ -710,6 +710,28 @@
     const script=document.createElement('script');
     script.src='js/24-player-avatars.js?v=1';
     script.dataset.mqAvatarScript='1';
+    document.body.appendChild(script);
+  }
+})();
+
+
+/* Movie Quiz settings system loader v1 */
+(()=>{
+  if(window.__mqSettingsSystemLoader)return;
+  window.__mqSettingsSystemLoader=true;
+
+  if(!document.querySelector('link[data-mq-settings-style]')){
+    const link=document.createElement('link');
+    link.rel='stylesheet';
+    link.href='css/player-settings.css?v=1';
+    link.dataset.mqSettingsStyle='1';
+    document.head.appendChild(link);
+  }
+
+  if(!document.querySelector('script[data-mq-settings-script]')){
+    const script=document.createElement('script');
+    script.src='js/25-player-settings.js?v=1';
+    script.dataset.mqSettingsScript='1';
     document.body.appendChild(script);
   }
 })();
