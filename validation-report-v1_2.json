@@ -1,0 +1,22 @@
+{
+  "version": "Movie_Quiz_noir_patch_v1_2",
+  "js_syntax": {
+    "24-player-avatars.js": true,
+    "25-player-settings.js": true,
+    "26-exterior-scene.js": true,
+    "30-difficulty-tools.js": true
+  },
+  "static_checks": {
+    "index_exterior_scene": true,
+    "index_ticket_layer": true,
+    "index_ticket_mount": true,
+    "index_exterior_css": true,
+    "index_exterior_js": true,
+    "help_tooltip": true,
+    "settings_sfx_preview": true,
+    "settings_music_restore": true,
+    "settings_body_dock": true,
+    "settings_body_home": true
+  },
+  "css_braces": "OK"
+}

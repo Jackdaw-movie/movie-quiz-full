@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='player-settings-v1.3-noir-shell';
+  const VERSION='player-settings-v1.4-noir-exterior';
   const MUSIC_KEY='movieQuizMusicVolumeV1';
   const SFX_KEY='movieQuizSfxVolumeV1';
   const MUSIC_BEFORE_MUTE_KEY='movieQuizMusicBeforeMuteV1';
@@ -15,6 +15,7 @@
   let menuOpen=false;
   let audioPatched=false;
   let avatarObserver=null;
+  let sfxPreviewTimer=null;
 
   function clamp(value){
     const number=Number(value);
@@ -75,24 +76,23 @@
 
   function movePlayerDockOutsideScreen(){
     const badge=document.getElementById('mqPlayerBadge');
-    const cinema=document.getElementById('cinema');
-    if(!badge||!cinema)return;
+    if(!badge)return;
 
-    if(badge.parentElement!==cinema){
-      cinema.appendChild(badge);
+    if(badge.parentElement!==document.body){
+      document.body.appendChild(badge);
     }
     badge.classList.add('mq-player-dock');
   }
 
   function moveHomeOutsideScreen(){
     const home=document.getElementById('homeBtn');
-    const cinema=document.getElementById('cinema');
-    if(!home||!cinema)return;
+    if(!home)return;
 
-    if(home.parentElement!==cinema)cinema.appendChild(home);
+    if(home.parentElement!==document.body)document.body.appendChild(home);
     home.classList.add('mq-home-dock');
-    home.setAttribute('aria-label','Domů');
-    home.setAttribute('title','Domů');
+    home.setAttribute('aria-label','Vrátit do menu');
+    home.setAttribute('title','Vrátit do menu');
+    home.dataset.mqTip='Vrátit do menu';
   }
 
   function ensureGear(){
@@ -109,6 +109,7 @@
       button.className='mq-settings-gear';
       button.setAttribute('aria-label','Otevřít nastavení');
       button.setAttribute('title','Nastavení');
+      button.dataset.mqTip='Nastavení';
       button.setAttribute('aria-expanded','false');
       button.innerHTML=gearSvg();
       badge.appendChild(button);
@@ -363,6 +364,47 @@
     audioPatched=true;
   }
 
+  function contextualMusicTheme(){
+    try{
+      if(document.getElementById('winView')?.classList.contains('active'))return 'win';
+      if(document.getElementById('creditsView')?.classList.contains('active'))return 'credits';
+      if(document.getElementById('game')?.classList.contains('active')){
+        return (typeof state!=='undefined'&&state?.genre)||'menu';
+      }
+    }catch(_){}
+    return 'menu';
+  }
+
+  function resumeContextualMusic(){
+    if(musicVolume()===0)return;
+    try{
+      ensureAudioFromUserGesture();
+      if(typeof switchMusic==='function'){
+        switchMusic(contextualMusicTheme());
+      }
+      applyVolumes(false);
+    }catch(_){}
+  }
+
+  function previewSfx(){
+    if(sfxVolume()===0)return;
+    ensureAudioFromUserGesture();
+
+    if(sfxPreviewTimer)clearTimeout(sfxPreviewTimer);
+    sfxPreviewTimer=setTimeout(()=>{
+      try{
+        // Krátký mechanický klik / dopad filmové sošky.
+        if(typeof tone==='function'){
+          tone(170,.055,'triangle',.055);
+          tone(310,.030,'square',.017,.045);
+          tone(115,.075,'triangle',.030,.080);
+        }else if(typeof sound==='function'){
+          sound('tick');
+        }
+      }catch(_){}
+    },85);
+  }
+
   function setVolume(kind,value,fromUser=false){
     const v=clamp(value);
 
@@ -377,6 +419,9 @@
     if(fromUser)ensureAudioFromUserGesture();
     syncVolumeUi();
     applyVolumes(true);
+
+    if(fromUser&&kind==='sfx')previewSfx();
+    if(fromUser&&kind==='music'&&v>0)resumeContextualMusic();
 
     window.dispatchEvent(new CustomEvent('mq:volume-changed',{
       detail:{kind,value:v,version:VERSION}
@@ -494,6 +539,7 @@
     menu.classList.remove('is-open');
     setTimeout(()=>{
       if(!menuOpen)menu.hidden=true;
+      resumeContextualMusic();
     },130);
   }
 

@@ -1,0 +1,762 @@
+/* ===============================================================
+   MOVIE QUIZ — JACKDAW'S CINEMA EXTERIOR v1
+   1930s New York street / interactive ticket booth.
+   =============================================================== */
+
+body.mq-exterior-active{
+  overflow:hidden!important;
+}
+
+body.mq-exterior-active #page{
+  opacity:0!important;
+  pointer-events:none!important;
+  transform:scale(1.015)!important;
+}
+
+body.mq-auditorium-entered #page{
+  opacity:1!important;
+  pointer-events:auto!important;
+  transform:none!important;
+  transition:opacity .9s ease,transform 1s ease!important;
+}
+
+.mq-exterior-scene{
+  position:fixed;
+  inset:0;
+  z-index:2147481000;
+  overflow:hidden;
+  background:
+    linear-gradient(180deg,#080a0d 0%,#121014 47%,#060608 100%);
+  color:#f3e7c9;
+  perspective:1200px;
+  transform-origin:61% 61%;
+  transition:opacity .75s ease,transform 1.05s cubic-bezier(.18,.75,.18,1),filter .8s ease;
+}
+
+.mq-exterior-scene.is-approaching{
+  transform:scale(1.10) translate(-2.5%,-2.5%);
+  filter:brightness(.88);
+}
+
+.mq-exterior-scene.is-leaving{
+  opacity:0;
+  transform:scale(1.15);
+  pointer-events:none;
+}
+
+.mq-exterior-sky{
+  position:absolute;
+  inset:0 0 38%;
+  background:
+    radial-gradient(ellipse at 50% 0,rgba(55,61,68,.26),transparent 48%),
+    linear-gradient(180deg,#07090c,#16151a 70%,#24161a);
+}
+
+.mq-city-block{
+  position:absolute;
+  bottom:27%;
+  width:27%;
+  height:61%;
+  background:
+    linear-gradient(90deg,rgba(0,0,0,.42),transparent 14% 86%,rgba(0,0,0,.48)),
+    linear-gradient(180deg,#19191b,#090a0c);
+  border-top:3px solid #272527;
+  box-shadow:inset 0 0 45px #000,0 18px 28px rgba(0,0,0,.5);
+}
+
+.mq-city-block-left{left:-2%;transform:skewY(-1deg)}
+.mq-city-block-right{right:-2%;transform:skewY(1deg)}
+
+.mq-city-block i{
+  position:absolute;
+  width:12%;
+  height:8%;
+  border:2px solid #070708;
+  background:#b8833a;
+  box-shadow:0 0 14px rgba(232,170,78,.24),inset 0 0 12px rgba(255,225,154,.15);
+  animation:mqWindowLife 7s ease-in-out infinite alternate;
+}
+.mq-city-block i:nth-child(1){left:16%;top:19%}
+.mq-city-block i:nth-child(2){left:54%;top:18%;animation-delay:-3s}
+.mq-city-block i:nth-child(3){left:23%;top:39%;background:#33271d;animation-delay:-5s}
+.mq-city-block i:nth-child(4){left:63%;top:42%;animation-delay:-1.5s}
+.mq-city-block i:nth-child(5){left:16%;top:64%;animation-delay:-4s}
+.mq-city-block i:nth-child(6){left:57%;top:67%;background:#413121;animation-delay:-2s}
+@keyframes mqWindowLife{from{filter:brightness(.68)}to{filter:brightness(1.18)}}
+
+/* Main theater facade */
+.mq-cinema-exterior{
+  position:absolute;
+  left:23%;
+  right:20%;
+  bottom:26%;
+  height:66%;
+  min-width:520px;
+  background:
+    linear-gradient(90deg,rgba(0,0,0,.34),transparent 12% 88%,rgba(0,0,0,.38)),
+    repeating-linear-gradient(0deg,#342c28 0 24px,#2b2522 25px 27px);
+  border-left:5px solid #181515;
+  border-right:5px solid #181515;
+  box-shadow:
+    0 28px 52px rgba(0,0,0,.58),
+    inset 0 0 52px rgba(0,0,0,.45);
+}
+
+.mq-exterior-roofline{
+  position:absolute;
+  left:-4%;
+  right:-4%;
+  top:-4%;
+  height:10%;
+  background:
+    linear-gradient(180deg,#09090a,#2d231d 35%,#121011 43%,#080809);
+  border-top:1px solid rgba(211,176,104,.18);
+  border-bottom:2px solid #050506;
+  clip-path:polygon(0 38%,8% 38%,8% 12%,18% 12%,18% 38%,82% 38%,82% 12%,92% 12%,92% 38%,100% 38%,100% 100%,0 100%);
+}
+
+.mq-exterior-sign{
+  position:absolute;
+  left:12%;
+  right:12%;
+  top:4%;
+  height:23%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  border:3px solid #8c6b32;
+  background:
+    radial-gradient(ellipse at 50% 50%,rgba(118,41,24,.28),transparent 65%),
+    linear-gradient(180deg,#151214,#09090a);
+  box-shadow:
+    0 12px 24px rgba(0,0,0,.46),
+    inset 0 0 0 3px #080809,
+    inset 0 0 0 5px rgba(207,166,79,.20),
+    0 0 28px rgba(202,144,48,.10);
+}
+
+.mq-exterior-sign span{
+  color:#ba9150;
+  font:500 clamp(11px,1.1vw,17px)/1 "Oswald",sans-serif;
+  letter-spacing:.42em;
+  text-indent:.42em;
+}
+
+.mq-exterior-sign strong{
+  margin-top:.06em;
+  color:#f4daa1;
+  font:400 clamp(34px,4.9vw,82px)/.95 "Limelight",serif;
+  letter-spacing:.06em;
+  text-shadow:
+    0 3px 0 #3b210e,
+    0 0 14px rgba(250,208,113,.24);
+}
+
+.mq-exterior-bulbs{
+  position:absolute;
+  inset:6px;
+  pointer-events:none;
+}
+.mq-exterior-bulbs i{
+  position:absolute;
+  width:5px;height:5px;border-radius:50%;
+  background:#ffdfa0;
+  box-shadow:0 0 7px rgba(255,206,104,.75);
+  animation:mqBulbPulse 2.6s ease-in-out infinite alternate;
+}
+.mq-exterior-bulbs i:nth-child(1){left:5%;top:5%}
+.mq-exterior-bulbs i:nth-child(2){left:24%;top:5%;animation-delay:-.6s}
+.mq-exterior-bulbs i:nth-child(3){left:43%;top:5%;animation-delay:-1.2s}
+.mq-exterior-bulbs i:nth-child(4){left:62%;top:5%;animation-delay:-1.8s}
+.mq-exterior-bulbs i:nth-child(5){left:81%;top:5%;animation-delay:-2.2s}
+.mq-exterior-bulbs i:nth-child(6){left:5%;bottom:5%;animation-delay:-1.4s}
+.mq-exterior-bulbs i:nth-child(7){left:24%;bottom:5%;animation-delay:-2s}
+.mq-exterior-bulbs i:nth-child(8){left:43%;bottom:5%;animation-delay:-.4s}
+.mq-exterior-bulbs i:nth-child(9){left:62%;bottom:5%;animation-delay:-1s}
+.mq-exterior-bulbs i:nth-child(10){left:81%;bottom:5%;animation-delay:-1.7s}
+@keyframes mqBulbPulse{from{opacity:.62}to{opacity:1;filter:brightness(1.2)}}
+
+.mq-exterior-marquee{
+  position:absolute;
+  left:6%;
+  right:6%;
+  top:27%;
+  height:14%;
+  display:grid;
+  grid-template-columns:1fr 1.5fr 1fr;
+  align-items:center;
+  text-align:center;
+  color:#27160e;
+  background:
+    linear-gradient(180deg,#e3c78c,#a88449);
+  border:5px solid #171313;
+  outline:2px solid #8c6a32;
+  box-shadow:
+    0 18px 24px rgba(0,0,0,.45),
+    0 6px 18px rgba(229,179,80,.18);
+  transform:perspective(500px) rotateX(-6deg);
+  transform-origin:top;
+}
+.mq-exterior-marquee span{
+  font:500 clamp(10px,1vw,15px)/1 "Oswald",sans-serif;
+  letter-spacing:.12em;
+}
+.mq-exterior-marquee b{
+  font:400 clamp(20px,2.4vw,39px)/1 "Limelight",serif;
+  letter-spacing:.04em;
+}
+
+.mq-exterior-entry{
+  position:absolute;
+  left:28%;
+  width:44%;
+  bottom:0;
+  height:45%;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:5px;
+  background:#0a090a;
+  border:8px solid #171313;
+  border-bottom:0;
+  box-shadow:0 0 28px rgba(244,182,78,.09);
+}
+.mq-exterior-door{
+  position:relative;
+  background:
+    linear-gradient(90deg,rgba(0,0,0,.24),transparent 48%,rgba(0,0,0,.28)),
+    linear-gradient(180deg,#5d3b27,#1b1211);
+  border:2px solid #7b5b35;
+}
+.mq-exterior-door::before{
+  content:"";
+  position:absolute;
+  inset:8% 13% 48%;
+  border:3px solid #1c1818;
+  background:
+    linear-gradient(180deg,rgba(221,170,83,.34),rgba(79,45,27,.18)),
+    #17191b;
+  box-shadow:inset 0 0 20px rgba(229,174,82,.12);
+}
+.mq-exterior-door i{
+  position:absolute;
+  top:60%;
+  width:11px;height:4px;
+  background:#bb9150;
+  box-shadow:0 0 6px rgba(227,181,84,.22);
+}
+.mq-door-left i{right:11%}
+.mq-door-right i{left:11%}
+
+/* Ticket booth */
+.mq-booth-frame{
+  position:absolute;
+  right:5%;
+  bottom:0;
+  width:20%;
+  height:43%;
+  border:7px solid #171313;
+  border-bottom:0;
+  background:linear-gradient(180deg,#4a3023,#160e0e);
+  box-shadow:
+    0 0 34px rgba(240,183,79,.15),
+    inset 0 0 30px rgba(0,0,0,.45);
+}
+.mq-booth-top{
+  position:absolute;
+  left:-4%;
+  right:-4%;
+  top:-13%;
+  height:16%;
+  display:grid;
+  place-items:center;
+  border:2px solid #8a6732;
+  background:#111013;
+  color:#e8c982;
+  font:500 clamp(9px,.9vw,14px)/1 "Oswald",sans-serif;
+  letter-spacing:.28em;
+  text-indent:.28em;
+}
+.mq-booth-window{
+  position:absolute;
+  inset:7% 8% 24%;
+  border:4px solid #8c6b3a;
+  background:
+    radial-gradient(circle at 50% 48%,rgba(255,219,138,.42),transparent 48%),
+    linear-gradient(180deg,#463522,#1c1814);
+  box-shadow:
+    inset 0 0 28px rgba(255,213,126,.28),
+    0 0 28px rgba(243,188,80,.26);
+  animation:mqBoothGlow 3.8s ease-in-out infinite alternate;
+}
+@keyframes mqBoothGlow{
+  from{filter:brightness(.86);box-shadow:inset 0 0 24px rgba(255,213,126,.22),0 0 20px rgba(243,188,80,.18)}
+  to{filter:brightness(1.08);box-shadow:inset 0 0 34px rgba(255,226,151,.34),0 0 38px rgba(243,188,80,.34)}
+}
+.mq-booth-glass{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(110deg,transparent 0 35%,rgba(255,255,255,.08) 37% 39%,transparent 41% 100%);
+}
+.mq-booth-counter{
+  position:absolute;left:-4%;right:-4%;bottom:-8%;height:13%;
+  background:linear-gradient(180deg,#a57b3f,#382311);
+  border-top:2px solid #d2ad67;
+}
+
+.mq-ticket-hotspot{
+  position:absolute;
+  z-index:30;
+  right:22%;
+  bottom:26%;
+  width:12%;
+  height:29%;
+  min-width:90px;
+  border:0;
+  background:transparent;
+  cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='%23f1d797' stroke='%23130b08' stroke-width='2'%3E%3Cpath d='M7 27c6 1 10-1 14-7l6 5c-4 7-10 11-18 10z'/%3E%3Cpath d='M24 33c6 0 10-2 13-8l6 4c-3 7-9 11-17 12z'/%3E%3C/g%3E%3C/svg%3E") 12 36, pointer;
+}
+.mq-ticket-hotspot::after{
+  content:"";
+  position:absolute;
+  inset:4%;
+  border:1px solid rgba(244,202,113,0);
+  box-shadow:0 0 0 rgba(240,190,83,0);
+  transition:border-color .2s ease,box-shadow .2s ease,background .2s ease;
+}
+.mq-ticket-hotspot:hover::after,
+.mq-ticket-hotspot:focus-visible::after{
+  border-color:rgba(244,202,113,.55);
+  background:rgba(244,202,113,.025);
+  box-shadow:0 0 35px rgba(240,190,83,.22);
+}
+.mq-ticket-hotspot:focus-visible{outline:none}
+
+/* Street */
+.mq-sidewalk{
+  position:absolute;
+  left:0;right:0;bottom:13%;height:17%;
+  background:
+    repeating-linear-gradient(90deg,transparent 0 12%,rgba(0,0,0,.24) 12.2% 12.5%,transparent 12.7% 24%),
+    repeating-linear-gradient(0deg,#393435 0 33%,#2e2a2b 34% 36%,#3d3737 37% 67%,#292627 68% 70%);
+  transform:perspective(550px) rotateX(58deg);
+  transform-origin:bottom;
+  filter:brightness(.58);
+}
+.mq-curb{
+  position:absolute;left:0;right:0;bottom:12%;height:2.4%;
+  background:linear-gradient(180deg,#5e5553,#161516);
+  box-shadow:0 4px 8px rgba(0,0,0,.5);
+}
+.mq-road{
+  position:absolute;left:0;right:0;bottom:0;height:13%;
+  overflow:hidden;
+  background:
+    linear-gradient(180deg,#151416,#08090a);
+}
+.mq-road::after{
+  content:"";
+  position:absolute;left:7%;right:7%;top:47%;height:2px;
+  background:repeating-linear-gradient(90deg,rgba(209,185,130,.22) 0 7%,transparent 7% 13%);
+  filter:blur(.3px);
+}
+
+.mq-old-car{
+  position:absolute;
+  bottom:18%;
+  width:110px;height:36px;
+  border-radius:55% 60% 18% 18%;
+  background:#0d0d0f;
+  box-shadow:0 6px 8px rgba(0,0,0,.65);
+}
+.mq-old-car::before{
+  content:"";
+  position:absolute;left:22%;right:18%;top:-16px;height:22px;
+  border-radius:55% 55% 10% 10%;
+  background:#111114;
+  clip-path:polygon(18% 100%,30% 10%,72% 0,90% 100%);
+}
+.mq-old-car i,.mq-old-car b{
+  position:absolute;bottom:-8px;width:20px;height:20px;border-radius:50%;
+  background:#030304;border:3px solid #1c1b1c;
+}
+.mq-old-car i{left:17%}.mq-old-car b{right:15%}
+.mq-car-one{left:-130px;animation:mqCarPass 13s linear infinite}
+.mq-car-two{right:-150px;transform:scale(.82) scaleX(-1);opacity:.65;animation:mqCarPassReverse 18s linear infinite 5s}
+@keyframes mqCarPass{to{left:110%}}
+@keyframes mqCarPassReverse{to{right:110%}}
+
+.mq-streetlamp{
+  position:absolute;
+  left:12%;
+  bottom:26%;
+  z-index:12;
+  width:15px;height:43%;
+  background:linear-gradient(90deg,#060607,#292529,#080809);
+  border-radius:10px 10px 0 0;
+}
+.mq-streetlamp::before{
+  content:"";
+  position:absolute;left:-32px;top:-25px;width:78px;height:28px;
+  border:7px solid #161417;border-bottom:0;
+  border-radius:50% 50% 0 0;
+}
+.mq-streetlamp i{
+  position:absolute;left:-19px;top:-12px;width:52px;height:54px;
+  clip-path:polygon(19% 0,81% 0,100% 80%,78% 100%,22% 100%,0 80%);
+  background:
+    radial-gradient(circle at 50% 52%,#ffe6a0 0 13%,#c08435 28%,#332418 63%,#09090a 73%);
+  filter:drop-shadow(0 0 12px rgba(246,193,85,.55));
+  animation:mqLampFlicker 6.5s steps(1,end) infinite;
+}
+.mq-streetlamp b{
+  position:absolute;left:-120px;top:35px;width:255px;height:215px;
+  background:conic-gradient(from 165deg at 50% 0,transparent 0 39%,rgba(232,177,74,.08) 42% 58%,transparent 61%);
+  filter:blur(5px);
+}
+@keyframes mqLampFlicker{
+  0%,13%,16%,38%,40%,72%,100%{filter:drop-shadow(0 0 14px rgba(246,193,85,.60));opacity:1}
+  14%,39%,73%{filter:drop-shadow(0 0 4px rgba(246,193,85,.18));opacity:.54}
+}
+
+.mq-pedestrians{
+  position:absolute;left:18%;right:12%;bottom:23%;height:17%;z-index:10;
+  pointer-events:none;
+}
+.mq-pedestrians i{
+  position:absolute;bottom:0;width:20px;height:72px;
+  border-radius:48% 48% 15% 15%;
+  background:#09090b;
+  box-shadow:0 5px 10px rgba(0,0,0,.5);
+  opacity:.75;
+}
+.mq-pedestrians i::before{
+  content:"";position:absolute;left:4px;top:-16px;width:13px;height:17px;border-radius:50%;background:#09090b;
+}
+.mq-pedestrians i:nth-child(1){left:6%;transform:scale(.72)}
+.mq-pedestrians i:nth-child(2){left:18%;transform:scale(.86)}
+.mq-pedestrians i:nth-child(3){right:23%;transform:scale(.66)}
+.mq-pedestrians i:nth-child(4){right:11%;transform:scale(.78)}
+.mq-pedestrians i:nth-child(5){right:35%;transform:scale(.56);opacity:.48}
+
+.mq-exterior-grain{
+  position:absolute;inset:0;pointer-events:none;opacity:.12;
+  background-image:
+    repeating-radial-gradient(circle at 17% 23%,rgba(255,255,255,.22) 0 1px,transparent 1px 4px);
+  background-size:11px 13px;
+  mix-blend-mode:soft-light;
+  animation:mqExteriorGrain .25s steps(2) infinite;
+}
+@keyframes mqExteriorGrain{
+  0%{transform:translate(0,0)}
+  25%{transform:translate(-1px,1px)}
+  50%{transform:translate(1px,0)}
+  75%{transform:translate(0,-1px)}
+}
+
+.mq-exterior-vignette{
+  position:absolute;inset:0;pointer-events:none;
+  box-shadow:
+    inset 0 0 110px rgba(0,0,0,.82),
+    inset 0 -90px 110px rgba(0,0,0,.48);
+}
+
+/* ===============================================================
+   TICKET / LOGIN
+   =============================================================== */
+.mq-ticket-layer[hidden]{display:none!important}
+.mq-ticket-layer{
+  position:fixed;
+  inset:0;
+  z-index:2147482400;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  overflow:auto;
+}
+.mq-ticket-backdrop{
+  position:absolute;inset:0;
+  background:rgba(2,2,3,.57);
+  backdrop-filter:blur(5px);
+  opacity:0;
+  animation:mqTicketBackdropIn .35s ease forwards;
+}
+@keyframes mqTicketBackdropIn{to{opacity:1}}
+
+.mq-admit-ticket{
+  position:relative;
+  z-index:2;
+  width:min(1050px,94vw);
+  min-height:460px;
+  display:grid;
+  grid-template-columns:105px minmax(0,1fr) 105px;
+  color:#252222;
+  background:#cdb483;
+  border:2px solid #332f2b;
+  box-shadow:
+    0 32px 95px rgba(0,0,0,.68),
+    0 0 0 6px rgba(205,180,131,.10);
+  transform:rotate(-1.8deg) translateY(55px) scale(.88);
+  opacity:0;
+  animation:mqTicketArrive .72s cubic-bezier(.18,.85,.24,1) forwards;
+  filter:sepia(.08);
+}
+@keyframes mqTicketArrive{
+  to{transform:rotate(-1.2deg) translateY(0) scale(1);opacity:1}
+}
+.mq-admit-ticket::before,
+.mq-admit-ticket::after{
+  content:"";
+  position:absolute;
+  top:-8px;bottom:-8px;
+  width:18px;
+  background:
+    radial-gradient(circle at 50% 10px,transparent 0 7px,#cdb483 7.5px 12px,transparent 12.5px) 50% 0/18px 30px repeat-y;
+  z-index:4;
+}
+.mq-admit-ticket::before{left:-10px}
+.mq-admit-ticket::after{right:-10px}
+
+.mq-ticket-stub{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:16px 8px;
+  color:#8b2d36;
+  font-family:"Oswald",sans-serif;
+  letter-spacing:.09em;
+  writing-mode:vertical-rl;
+}
+.mq-ticket-stub-left{border-right:2px solid #3d3935}
+.mq-ticket-stub-right{border-left:2px solid #3d3935}
+.mq-ticket-stub span{font-size:12px}
+.mq-ticket-stub strong{font-size:24px;font-weight:500}
+.mq-ticket-stub b{font-size:15px;font-weight:400}
+
+.mq-ticket-main{
+  position:relative;
+  padding:24px 34px 22px;
+  background:
+    radial-gradient(circle at 20% 18%,rgba(255,255,255,.20),transparent 30%),
+    linear-gradient(95deg,rgba(255,255,255,.07),transparent 28% 70%,rgba(74,55,31,.08)),
+    #cdb483;
+}
+.mq-ticket-main::after{
+  content:"";
+  position:absolute;inset:9px;
+  border:2px solid #373432;
+  pointer-events:none;
+}
+.mq-ticket-brand{
+  position:relative;
+  z-index:2;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:end;
+  gap:20px;
+  padding:2px 20px 18px;
+  color:#29292a;
+}
+.mq-ticket-brand span{
+  font:400 19px/1 "Cormorant Garamond",serif;
+  letter-spacing:.10em;
+}
+.mq-ticket-brand strong{
+  text-align:center;
+  font:600 clamp(46px,7vw,92px)/.82 "Oswald",sans-serif;
+  letter-spacing:.14em;
+  text-indent:.14em;
+}
+.mq-ticket-brand em{
+  color:#983540;
+  font:600 17px/1 "Cormorant Garamond",serif;
+  font-style:normal;
+  letter-spacing:.06em;
+  white-space:nowrap;
+}
+.mq-ticket-divider{
+  position:relative;z-index:2;
+  height:2px;
+  margin:0 20px 14px;
+  background:#3d3936;
+}
+.mq-ticket-divider::before,
+.mq-ticket-divider::after{
+  content:"★ ★ ★ ★ ★";
+  position:absolute;
+  top:-17px;
+  color:#9c3640;
+  font-size:15px;
+  letter-spacing:10px;
+}
+.mq-ticket-divider::before{left:3%}
+.mq-ticket-divider::after{right:2%}
+
+.mq-ticket-profile-mount{
+  position:relative;
+  z-index:3;
+  width:min(680px,100%);
+  margin:0 auto;
+}
+
+/* Existing profile logic, visually integrated into the ticket. */
+.mq-ticket-profile-mount .mq-player-panel{
+  width:100%!important;
+  max-width:none!important;
+  padding:5px 18px 10px!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  clip-path:none!important;
+  color:#282421!important;
+}
+.mq-ticket-profile-mount .mq-player-panel > .eyebrow,
+.mq-ticket-profile-mount .mq-player-panel > .mq-player-title,
+.mq-ticket-profile-mount .mq-player-note,
+.mq-ticket-profile-mount .mq-storage-note,
+.mq-ticket-profile-mount .mq-online-status{
+  display:none!important;
+}
+.mq-ticket-profile-mount .mq-profile-card{
+  margin:0!important;
+  padding:15px 18px!important;
+  border:1px solid rgba(52,45,38,.40)!important;
+  border-radius:0!important;
+  background:rgba(250,239,209,.15)!important;
+  box-shadow:none!important;
+  color:#282421!important;
+}
+.mq-ticket-profile-mount .mq-profile-title{
+  color:#292522!important;
+  font:700 29px/1.08 "Cormorant Garamond",serif!important;
+}
+.mq-ticket-profile-mount .mq-profile-subtitle,
+.mq-ticket-profile-mount .mq-profile-hint,
+.mq-ticket-profile-mount .mq-guest-note{
+  color:#514a43!important;
+}
+.mq-ticket-profile-mount .mq-profile-chip{
+  border-color:#635747!important;
+  background:rgba(255,255,255,.12)!important;
+  color:#78303a!important;
+}
+.mq-ticket-profile-mount .mq-name-input,
+.mq-ticket-profile-mount .mq-pin-input{
+  border-color:#62584a!important;
+  background:rgba(247,235,204,.48)!important;
+  color:#211f1d!important;
+}
+.mq-ticket-profile-mount .mq-primary{
+  border-color:#322e2a!important;
+  background:#292728!important;
+  color:#ead7aa!important;
+}
+.mq-ticket-profile-mount .mq-secondary{
+  border-color:#5a4d3e!important;
+  background:transparent!important;
+  color:#71313a!important;
+}
+.mq-ticket-profile-mount .mq-player-actions{
+  margin-top:9px!important;
+}
+.mq-ticket-profile-mount .mq-guest-entry{
+  border-top-color:rgba(57,49,42,.28)!important;
+}
+.mq-ticket-profile-mount .mq-guest-separator{
+  color:#706353!important;
+}
+.mq-ticket-profile-mount .mq-guest-button{
+  border-color:#684d34!important;
+  background:rgba(114,63,48,.07)!important;
+  color:#6f2e38!important;
+}
+
+.mq-ticket-footer{
+  position:relative;
+  z-index:2;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:14px;
+  margin:12px 20px 0;
+  padding-top:10px;
+  border-top:1px solid rgba(53,48,43,.52);
+  color:#8e343d;
+  font:500 11px/1 "Oswald",sans-serif;
+  letter-spacing:.16em;
+}
+.mq-ticket-footer i{font-style:normal;color:#3a3733}
+
+/* Transition into auditorium */
+body.mq-entering-auditorium .mq-admit-ticket{
+  animation:mqTicketExit .72s cubic-bezier(.55,.02,.65,.98) forwards!important;
+}
+@keyframes mqTicketExit{
+  to{transform:translateY(-40px) scale(1.12) rotate(.6deg);opacity:0;filter:blur(3px)}
+}
+body.mq-entering-auditorium .mq-ticket-backdrop{opacity:0;transition:opacity .55s ease}
+body.mq-ticket-open > #mqPlayerBadge,
+body.mq-ticket-open > #homeBtn,
+body.mq-exterior-active > #mqPlayerBadge,
+body.mq-exterior-active > #homeBtn{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+
+/* Utility */
+.sr-only{
+  position:absolute!important;
+  width:1px!important;height:1px!important;
+  padding:0!important;margin:-1px!important;
+  overflow:hidden!important;clip:rect(0,0,0,0)!important;
+  white-space:nowrap!important;border:0!important;
+}
+
+@media(max-width:850px){
+  .mq-cinema-exterior{left:13%;right:10%;min-width:0}
+  .mq-city-block{width:24%}
+  .mq-ticket-hotspot{right:12%;width:18%}
+  .mq-streetlamp{left:5%}
+  .mq-admit-ticket{grid-template-columns:62px minmax(0,1fr) 62px}
+  .mq-ticket-main{padding-inline:18px}
+  .mq-ticket-brand{grid-template-columns:1fr;text-align:center;gap:4px}
+  .mq-ticket-brand span,.mq-ticket-brand em{text-align:center}
+  .mq-ticket-brand strong{font-size:clamp(40px,10vw,70px)}
+  .mq-ticket-divider::before,.mq-ticket-divider::after{display:none}
+}
+
+@media(max-width:560px){
+  .mq-exterior-sign{left:5%;right:5%}
+  .mq-cinema-exterior{left:4%;right:3%;height:62%}
+  .mq-exterior-entry{left:19%;width:51%}
+  .mq-booth-frame{right:2%;width:27%}
+  .mq-ticket-hotspot{right:3%;width:27%;bottom:26%}
+  .mq-city-block{display:none}
+  .mq-pedestrians{opacity:.55}
+  .mq-admit-ticket{
+    width:96vw;
+    grid-template-columns:34px minmax(0,1fr) 34px;
+    transform:rotate(0);
+  }
+  .mq-ticket-stub{font-size:9px;padding-inline:2px}
+  .mq-ticket-stub strong{font-size:15px}
+  .mq-ticket-main{padding:18px 8px}
+  .mq-ticket-brand{padding-inline:8px}
+  .mq-ticket-profile-mount .mq-player-panel{padding-inline:5px!important}
+  .mq-ticket-footer{font-size:9px;gap:7px;letter-spacing:.08em}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .mq-exterior-scene,
+  .mq-exterior-scene *,
+  .mq-ticket-layer,
+  .mq-ticket-layer *{
+    animation-duration:.001ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.001ms!important;
+  }
+}

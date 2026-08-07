@@ -441,3 +441,253 @@ body.mq-noir-master textarea:focus-visible{outline:1px solid #efcc77!important;o
     animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important
   }
 }
+
+
+
+/* ===============================================================
+   NOIR MASTER v1.2 — UI FIXES
+   =============================================================== */
+
+/* The player dock belongs to the PAGE, not the cinema frame. */
+body.mq-noir-master > #mqPlayerBadge.mq-player-dock{
+  position:fixed!important;
+  left:8px!important;
+  top:8px!important;
+  z-index:2147482200!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:11px!important;
+  min-height:78px!important;
+  max-width:min(430px,calc(100vw - 80px))!important;
+  padding:6px 8px 6px 6px!important;
+  border:1px solid rgba(229,190,99,.48)!important;
+  border-radius:5px!important;
+  background:
+    radial-gradient(circle at 8% 18%,rgba(120,60,27,.13),transparent 48%),
+    linear-gradient(180deg,rgba(30,22,20,.985),rgba(7,8,10,.97))!important;
+  box-shadow:
+    0 15px 38px rgba(0,0,0,.58),
+    inset 0 1px rgba(255,245,211,.06)!important;
+  pointer-events:auto!important;
+}
+body.mq-noir-master > #mqPlayerBadge.mq-player-dock > span:not(.mq-avatar-frame){
+  display:none!important;
+}
+body.mq-noir-master > #mqPlayerBadge .mq-avatar-badge{
+  width:68px!important;
+  height:68px!important;
+  flex:0 0 68px!important;
+  border-radius:4px!important;
+  border:1px solid rgba(236,201,116,.68)!important;
+}
+body.mq-noir-master > #mqPlayerBadge strong{
+  max-width:210px!important;
+  color:#f7e8c8!important;
+  font-size:17px!important;
+  font-weight:500!important;
+  letter-spacing:.035em!important;
+}
+body.mq-noir-master > #mqPlayerBadge .mq-settings-gear{
+  width:44px!important;
+  height:44px!important;
+  flex:0 0 44px!important;
+  margin:0 0 0 2px!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  align-self:center!important;
+  border-radius:4px!important;
+}
+body.mq-noir-master > #mqPlayerBadge .mq-settings-gear svg{
+  display:block!important;
+  width:23px!important;
+  height:23px!important;
+  margin:0!important;
+  transform:none!important;
+}
+
+/* Home sits in the extreme top-right corner, and only exists after
+   the player actually enters the auditorium. */
+body.mq-noir-master > #homeBtn.mq-home-dock{
+  position:fixed!important;
+  top:8px!important;
+  right:8px!important;
+  left:auto!important;
+  z-index:2147482200!important;
+  width:45px!important;
+  height:45px!important;
+  display:grid!important;
+  place-items:center!important;
+  margin:0!important;
+  padding:0!important;
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
+body.mq-noir-master:not(.mq-auditorium-entered) > #homeBtn.mq-home-dock,
+body.mq-noir-master.mq-ticket-open > #homeBtn.mq-home-dock{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+
+/* Shared visible hover descriptions for Settings / Home / Help. */
+body.mq-noir-master [data-mq-tip]{
+  position:relative!important;
+}
+body.mq-noir-master [data-mq-tip]::after{
+  content:attr(data-mq-tip)!important;
+  position:absolute!important;
+  left:50%!important;
+  top:calc(100% + 9px)!important;
+  z-index:2147483000!important;
+  width:max-content!important;
+  max-width:190px!important;
+  padding:7px 9px!important;
+  transform:translate(-50%,-4px)!important;
+  border:1px solid rgba(224,184,94,.34)!important;
+  border-radius:3px!important;
+  background:rgba(7,7,9,.97)!important;
+  color:#ead9b5!important;
+  box-shadow:0 10px 26px rgba(0,0,0,.48)!important;
+  font:400 11px/1.2 var(--mq-ui)!important;
+  letter-spacing:.02em!important;
+  white-space:nowrap!important;
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  transition:opacity .14s ease,transform .14s ease,visibility .14s ease!important;
+}
+body.mq-noir-master [data-mq-tip]:hover::after,
+body.mq-noir-master [data-mq-tip]:focus-visible::after{
+  opacity:1!important;
+  visibility:visible!important;
+  transform:translate(-50%,0)!important;
+}
+
+/* Help sits inside the screen; its tooltip should not be confused with
+   the large gameplay help panel. */
+body.mq-noir-master #helpBtn[data-mq-tip]::after{
+  left:auto!important;
+  right:0!important;
+  transform:translateY(-4px)!important;
+}
+body.mq-noir-master #helpBtn[data-mq-tip]:hover::after,
+body.mq-noir-master #helpBtn[data-mq-tip]:focus-visible::after{
+  transform:none!important;
+}
+
+/* Settings: only a slight type-size increase. */
+body.mq-noir-master .mq-settings-menu-head span{font-size:10px!important}
+body.mq-noir-master .mq-settings-menu-head strong{font-size:18px!important}
+body.mq-noir-master .mq-settings-profile-main strong{font-size:16px!important}
+body.mq-noir-master .mq-settings-section-title strong{font-size:13px!important}
+body.mq-noir-master .mq-volume-label strong{font-size:13px!important}
+body.mq-noir-master .mq-volume-controls output{font-size:11px!important}
+body.mq-noir-master .mq-settings-avatar-button{font-size:10px!important}
+
+/* Fully rebuilt top curtain. No transparent cut-outs / mismatched arches. */
+body.mq-noir-master .valance{
+  height:clamp(64px,10vh,94px)!important;
+  overflow:hidden!important;
+  background:
+    linear-gradient(90deg,
+      #22050b 0%,#6c1224 8%,#2a0610 17%,#82162b 27%,
+      #300711 38%,#8c1930 50%,#300711 62%,#82162b 73%,
+      #2a0610 83%,#6c1224 92%,#22050b 100%)!important;
+  clip-path:polygon(
+    0 0,100% 0,100% 58%,
+    94% 69%,88% 59%,82% 74%,76% 60%,70% 76%,
+    64% 61%,58% 78%,52% 62%,50% 80%,48% 62%,
+    42% 78%,36% 61%,30% 76%,24% 60%,18% 74%,
+    12% 59%,6% 69%,0 58%
+  )!important;
+  filter:drop-shadow(0 11px 12px rgba(0,0,0,.52))!important;
+}
+body.mq-noir-master .valance::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  height:auto!important;
+  background:
+    repeating-linear-gradient(90deg,
+      transparent 0 7%,rgba(255,218,176,.045) 8% 9%,
+      rgba(0,0,0,.18) 10% 15%,transparent 16% 20%),
+    linear-gradient(180deg,rgba(255,224,185,.08),transparent 34%)!important;
+}
+body.mq-noir-master .valance::after{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;right:0!important;bottom:12px!important;
+  height:7px!important;
+  background:
+    radial-gradient(circle at 6px 3px,#d7ad59 0 2px,transparent 2.8px) 0 0/16px 7px repeat-x,
+    linear-gradient(90deg,transparent,#d6aa57 8%,#745322 50%,#d6aa57 92%,transparent)!important;
+  box-shadow:0 2px 4px rgba(0,0,0,.32)!important;
+}
+body.mq-noir-master .curtain{
+  top:0!important;
+  bottom:0!important;
+  height:auto!important;
+  background:
+    radial-gradient(ellipse at 50% 0,rgba(255,210,176,.085),transparent 28%),
+    repeating-linear-gradient(90deg,
+      #1a0208 0 5%,
+      #661122 7% 11%,
+      #26050c 13% 17%,
+      #8b1a30 19% 23%,
+      #300711 25% 30%,
+      #7a162b 32% 37%,
+      #24050b 39% 44%,
+      #84182e 46% 51%)!important;
+  background-size:auto,51% 100%!important;
+  box-shadow:
+    inset 0 0 64px rgba(0,0,0,.66),
+    inset 0 0 12px rgba(255,199,165,.045)!important;
+}
+body.mq-noir-master .curtain::before{
+  background:
+    linear-gradient(180deg,rgba(255,229,196,.05),transparent 26%,transparent 75%,rgba(0,0,0,.18)),
+    repeating-linear-gradient(90deg,
+      rgba(255,231,201,.025) 0 4%,
+      transparent 5% 8%,
+      rgba(0,0,0,.17) 9% 14%,
+      transparent 15% 21%)!important;
+}
+body.mq-noir-master .curtain::after{
+  height:23px!important;
+  border-top:1px solid rgba(233,191,100,.44)!important;
+  background:
+    radial-gradient(circle at 8px 5px,#c79a49 0 2px,transparent 3px) 0 0/18px 23px repeat-x,
+    linear-gradient(180deg,#705126,#c49a4c 38%,#59401b 54%,#0c0805 100%)!important;
+}
+
+/* Ensure centered cinema title even when older layout CSS is present. */
+body.mq-noir-master .marquee{
+  width:100%!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  text-align:center!important;
+}
+
+/* Mobile page-corner controls */
+@media(max-width:700px){
+  body.mq-noir-master > #mqPlayerBadge.mq-player-dock{
+    left:5px!important;
+    top:5px!important;
+    min-height:67px!important;
+  }
+  body.mq-noir-master > #mqPlayerBadge .mq-avatar-badge{
+    width:58px!important;height:58px!important;flex-basis:58px!important;
+  }
+  body.mq-noir-master > #mqPlayerBadge strong{
+    max-width:128px!important;
+    font-size:14px!important;
+  }
+  body.mq-noir-master > #mqPlayerBadge .mq-settings-gear{
+    width:39px!important;height:39px!important;flex-basis:39px!important;
+  }
+  body.mq-noir-master > #homeBtn.mq-home-dock{
+    top:5px!important;right:5px!important;
+  }
+}
