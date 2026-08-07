@@ -1,47 +1,27 @@
-MOVIE QUIZ – SETTINGS v1.2
-==========================
+MOVIE QUIZ – CINEMA SHELL v1
+===============================
 
 Nahraďte na GitHubu pouze:
 - js/25-player-settings.js
 - css/player-settings.css
 
 SQL se nemění.
-Ostatní soubory neměňte.
 
-ZMĚNY
------
-1. Ozubené kolečko otevírá skutečné rozbalovací Settings menu vložené do <body>.
-   Není tedy blokované vrstvami plátna, oponou ani herním HUD.
-
-2. Profilový dock (avatar + jméno + ozubené kolečko) se přesouvá z #screen
-   přímo do #cinema, tedy mimo projekční/herní plochu.
-
-3. Avatar u jména je 52 px.
-
-4. Staré společné tlačítko mute vedle domečku je skryté.
-
-5. Hudba a herní zvuky mají:
-   - vlastní slider 0–100 %,
-   - vlastní tlačítko vypnout/zapnout,
-   - vlastní uloženou hodnotu.
-   50 % = přesně původní hlasitost hry.
-
-6. Názvy avatarů jsou interní:
-   - nejsou vidět v galerii,
-   - není vidět název v profilové kartě,
-   - avatarové obrázky nepoužívají interní název jako přístupný popisek.
-
-7. Nastavení zvuku se ukládá v localStorage.
-
-PO NAHRÁNÍ
+CO SE MĚNÍ
 ----------
-Proveďte Command + Shift + R.
+1. Bod 1 redesignu: globální cinema shell a horní UI.
+2. Profilový dock a Home mají sjednocený noir / art-deco vzhled mimo projekční plochu.
+3. Přidán centrální masthead Movie Quiz.
+4. Projekční plátno má výraznější rám a čistší prezentaci.
+5. Výběrové obrazovky dostávají stručnější, hráčsky orientovaný text.
+6. Metodické / nehráčské texty v obtížnosti a žánrech jsou skryté.
+7. Přidány krátké tipy k ovládání místo interních vysvětlení.
 
-TEST
-----
-A) klik na ozubené kolečko -> menu se musí rozbalit,
-B) Hudba: slider + vypnout/zapnout,
-C) Herní zvuky: slider + vypnout/zapnout,
-D) tlačítko starého mute u domečku není vidět,
-E) avatar/jméno/settings neleží uvnitř projekčního plátna,
-F) v galerii nejsou názvy avatarů.
+Po nahrání:
+Command + Shift + R
+
+První test:
+- horní lišta mimo plátno,
+- Home + profil + Settings vypadají jako součást kina,
+- obtížnost a žánry mají stručnější UX texty,
+- nic funkčního se nerozbilo.

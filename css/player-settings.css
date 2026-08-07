@@ -507,3 +507,355 @@
     grid-template-columns:minmax(0,1fr) 42px 34px!important;
   }
 }
+
+
+
+/* =========================================================
+   CINEMA SHELL REDESIGN v1
+   ========================================================= */
+
+body.mq-noir-shell{
+  background:
+    radial-gradient(circle at 50% -18%,rgba(114,58,35,.24),transparent 34%),
+    radial-gradient(circle at 50% 118%,rgba(59,16,19,.26),transparent 35%),
+    linear-gradient(180deg,#050608 0%,#0b0a0d 48%,#060507 100%)!important;
+}
+
+#cinema.mq-noir-shell{
+  position:relative!important;
+  padding:92px 22px 22px!important;
+  isolation:isolate!important;
+}
+
+#cinema.mq-noir-shell::before{
+  content:""!important;
+  position:absolute!important;
+  left:22px!important;
+  right:22px!important;
+  top:22px!important;
+  height:64px!important;
+  border:1px solid rgba(224,191,103,.18)!important;
+  border-radius:22px!important;
+  background:
+    linear-gradient(180deg,rgba(31,24,20,.86),rgba(9,9,11,.72))!important;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.05),
+    0 18px 44px rgba(0,0,0,.42)!important;
+  pointer-events:none!important;
+  z-index:0!important;
+}
+
+#cinema.mq-noir-shell::after{
+  content:""!important;
+  position:absolute!important;
+  inset:82px 40px auto!important;
+  height:120px!important;
+  background:radial-gradient(circle at 50% 0,rgba(255,214,121,.08),transparent 72%)!important;
+  pointer-events:none!important;
+  z-index:0!important;
+}
+
+#mqCinemaMasthead{
+  position:absolute!important;
+  top:28px!important;
+  left:50%!important;
+  z-index:1!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  gap:2px!important;
+  transform:translateX(-50%)!important;
+  text-align:center!important;
+  pointer-events:none!important;
+}
+
+#mqCinemaMasthead span{
+  color:rgba(230,198,122,.58)!important;
+  font-size:8px!important;
+  font-weight:900!important;
+  letter-spacing:.28em!important;
+  text-transform:uppercase!important;
+}
+
+#mqCinemaMasthead strong{
+  color:#f3ddb0!important;
+  font-size:18px!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+  text-shadow:0 0 24px rgba(243,221,176,.08)!important;
+}
+
+#cinema > #homeBtn.mq-home-dock{
+  position:absolute!important;
+  top:28px!important;
+  right:30px!important;
+  z-index:2!important;
+  width:42px!important;
+  height:42px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:0!important;
+  border:1px solid rgba(232,203,129,.34)!important;
+  border-radius:14px!important;
+  background:
+    linear-gradient(180deg,rgba(28,25,24,.88),rgba(10,10,12,.84))!important;
+  box-shadow:
+    0 10px 24px rgba(0,0,0,.35),
+    inset 0 1px rgba(255,255,255,.05)!important;
+  color:#e7cb89!important;
+}
+
+#cinema > #homeBtn.mq-home-dock:hover{
+  border-color:rgba(241,215,144,.76)!important;
+  background:
+    linear-gradient(180deg,rgba(42,35,28,.94),rgba(14,13,16,.92))!important;
+}
+
+#cinema > #mqPlayerBadge.mq-player-dock{
+  top:28px!important;
+  left:30px!important;
+  z-index:2!important;
+  min-height:58px!important;
+  max-width:min(48vw,430px)!important;
+  padding:4px 9px 4px 5px!important;
+  border-radius:18px!important;
+  border-color:rgba(233,203,128,.34)!important;
+  background:
+    linear-gradient(180deg,rgba(29,26,24,.90),rgba(10,10,12,.82))!important;
+}
+
+#mqPlayerBadge .mq-avatar-badge{
+  width:54px!important;
+  height:54px!important;
+  flex-basis:54px!important;
+}
+
+#mqPlayerBadge > span:not(.mq-avatar-frame){
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  gap:2px!important;
+  min-width:0!important;
+  padding-inline:2px 1px!important;
+}
+
+#mqPlayerBadge > span:not(.mq-avatar-frame) span{
+  color:rgba(228,195,120,.62)!important;
+  font-size:8px!important;
+  font-weight:900!important;
+  letter-spacing:.18em!important;
+  text-transform:uppercase!important;
+}
+
+#mqPlayerBadge strong{
+  max-width:170px!important;
+  color:#fff1cf!important;
+  font-size:15px!important;
+  font-weight:900!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+}
+
+#screen.mq-noir-screen,
+.mq-noir-shell #screen{
+  position:relative!important;
+  overflow:hidden!important;
+  border:1px solid rgba(238,213,141,.14)!important;
+  border-radius:24px!important;
+  background:
+    radial-gradient(circle at 50% 0,rgba(255,243,205,.05),transparent 30%),
+    linear-gradient(180deg,rgba(14,15,18,.94),rgba(6,7,9,.98))!important;
+  box-shadow:
+    0 30px 90px rgba(0,0,0,.44),
+    0 0 0 1px rgba(255,255,255,.02),
+    inset 0 0 0 2px rgba(203,165,79,.06)!important;
+}
+
+.mq-noir-shell #screen::before{
+  content:""!important;
+  position:absolute!important;
+  inset:10px!important;
+  border:1px solid rgba(232,203,128,.09)!important;
+  border-radius:18px!important;
+  pointer-events:none!important;
+}
+
+.mq-noir-shell #screen::after{
+  content:""!important;
+  position:absolute!important;
+  left:8%!important;
+  right:8%!important;
+  top:0!important;
+  height:96px!important;
+  background:radial-gradient(circle at 50% 0,rgba(245,237,208,.10),transparent 70%)!important;
+  pointer-events:none!important;
+}
+
+/* Cleaner player-facing cards and actions */
+.mq-noir-shell .mq-profile-card{
+  border:1px solid rgba(229,199,125,.18)!important;
+  border-radius:22px!important;
+  background:
+    linear-gradient(180deg,rgba(22,21,23,.96),rgba(8,9,11,.98))!important;
+  box-shadow:
+    0 18px 60px rgba(0,0,0,.34),
+    inset 0 1px rgba(255,255,255,.04)!important;
+}
+
+.mq-noir-shell .mq-profile-step,
+.mq-noir-shell .mq-selection-header{
+  position:relative!important;
+  padding-bottom:8px!important;
+}
+
+.mq-noir-shell .mq-profile-title,
+.mq-noir-shell h1,
+.mq-noir-shell h2{
+  color:#fff0c4!important;
+  letter-spacing:.01em!important;
+}
+
+.mq-noir-shell .mq-profile-subtitle,
+.mq-noir-shell .mq-selection-subtitle,
+.mq-noir-shell p{
+  color:rgba(255,245,224,.76)!important;
+}
+
+.mq-selection-ux-hints{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:8px!important;
+  margin:10px 0 16px!important;
+}
+
+.mq-selection-ux-hint{
+  display:flex!important;
+  align-items:flex-start!important;
+  gap:10px!important;
+  padding:10px 12px!important;
+  border:1px solid rgba(229,199,125,.18)!important;
+  border-radius:14px!important;
+  background:rgba(255,255,255,.035)!important;
+  color:#f1e0b4!important;
+  font-size:10px!important;
+  line-height:1.45!important;
+}
+
+.mq-selection-ux-hint::before{
+  content:"Tip"!important;
+  flex:0 0 auto!important;
+  color:#d9b564!important;
+  font-size:8px!important;
+  font-weight:900!important;
+  letter-spacing:.18em!important;
+  text-transform:uppercase!important;
+}
+
+.mq-noir-shell .mq-primary,
+.mq-noir-shell .mq-secondary,
+.mq-noir-shell button.mq-primary,
+.mq-noir-shell button.mq-secondary{
+  min-height:48px!important;
+  border-radius:14px!important;
+  font-weight:900!important;
+  letter-spacing:.01em!important;
+  box-shadow:0 8px 18px rgba(0,0,0,.20)!important;
+}
+
+.mq-noir-shell .mq-primary{
+  border:1px solid rgba(228,192,101,.58)!important;
+  background:
+    linear-gradient(180deg,rgba(197,149,60,.95),rgba(143,103,35,.96))!important;
+  color:#1b1207!important;
+}
+
+.mq-noir-shell .mq-primary:hover{
+  filter:brightness(1.04)!important;
+  transform:translateY(-1px)!important;
+}
+
+.mq-noir-shell .mq-secondary{
+  border:1px solid rgba(234,207,140,.22)!important;
+  background:
+    linear-gradient(180deg,rgba(33,31,30,.95),rgba(14,14,16,.95))!important;
+  color:#f0ddb0!important;
+}
+
+.mq-noir-shell .mq-secondary:hover{
+  border-color:rgba(239,209,139,.48)!important;
+  background:
+    linear-gradient(180deg,rgba(44,39,35,.98),rgba(18,18,20,.98))!important;
+}
+
+.mq-noir-shell .mq-profile-chip,
+.mq-noir-shell .mq-profile-chip-soft{
+  border-radius:999px!important;
+  border-color:rgba(230,199,125,.22)!important;
+  background:rgba(255,255,255,.045)!important;
+  color:#e7c97c!important;
+}
+
+/* Avatar gallery remains clean and text-light */
+#mqAvatarGrid .mq-avatar-choice small{
+  color:rgba(255,255,255,.72)!important;
+}
+
+/* Responsive top rail */
+@media(max-width:900px){
+  #cinema.mq-noir-shell{
+    padding-top:86px!important;
+  }
+
+  #mqCinemaMasthead strong{
+    font-size:16px!important;
+  }
+}
+
+@media(max-width:720px){
+  #cinema.mq-noir-shell::before{
+    left:10px!important;
+    right:10px!important;
+    top:10px!important;
+    height:58px!important;
+    border-radius:18px!important;
+  }
+
+  #mqCinemaMasthead{
+    top:16px!important;
+  }
+
+  #mqCinemaMasthead span{
+    display:none!important;
+  }
+
+  #cinema > #homeBtn.mq-home-dock{
+    top:18px!important;
+    right:16px!important;
+    width:38px!important;
+    height:38px!important;
+  }
+
+  #cinema > #mqPlayerBadge.mq-player-dock{
+    top:14px!important;
+    left:12px!important;
+    min-height:54px!important;
+    max-width:calc(100vw - 74px)!important;
+  }
+
+  #mqPlayerBadge .mq-avatar-badge{
+    width:48px!important;
+    height:48px!important;
+    flex-basis:48px!important;
+  }
+
+  #mqPlayerBadge strong{
+    max-width:120px!important;
+    font-size:13px!important;
+  }
+
+  .mq-selection-ux-hint{
+    font-size:9.5px!important;
+  }
+}
