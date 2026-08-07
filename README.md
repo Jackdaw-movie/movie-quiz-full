@@ -23,3 +23,4 @@ Pro potvrzovací e-mail musí být v Supabase Auth mezi povolenými Redirect URL
 `https://jackdaw-movie.github.io/movie-quiz-full/admin.html`
 
 Administrátorská relace používá samostatný klíč úložiště v prohlížeči a neovlivní anonymní hráčskou relaci Movie Quiz.
+Admin UI update
