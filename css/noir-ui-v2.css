@@ -896,3 +896,58 @@ body.mq-noir-v2 #mqProfileShell .mq-avatar-frame{
     animation:none!important;
   }
 }
+
+
+/* ===============================================================
+   v2.1 LAYER RECOVERY
+   Core hierarchy:
+   .view = 8, curtain = 38, valance = 42, intro = 45.
+   Persistent playerView also uses .view, so it must never sit
+   behind a forced-closed curtain.
+   =============================================================== */
+
+body.mq-noir-v2 #screen{
+  isolation:isolate!important;
+}
+
+/* all views are real foreground UI */
+body.mq-noir-v2 #screen > .view{
+  position:absolute!important;
+  inset:0!important;
+  z-index:20!important;
+}
+
+/* active non-intro views are always above curtain layers */
+body.mq-noir-v2 #screen > .view.active:not(#intro){
+  z-index:46!important;
+}
+
+/* intro CTA stays above the closed curtain */
+body.mq-noir-v2 #screen > #intro{
+  z-index:50!important;
+}
+
+/* curtain remains visual scenery, never an invisible UI blocker */
+body.mq-noir-v2 #screen > .curtain{
+  z-index:30!important;
+  pointer-events:none!important;
+}
+
+body.mq-noir-v2 #screen > .valance{
+  z-index:34!important;
+  pointer-events:none!important;
+}
+
+/* grain / dust / canvas effects cannot cover clickable application UI */
+body.mq-noir-v2 #screen > .projection-grain,
+body.mq-noir-v2 #screen > .dust,
+body.mq-noir-v2 #screen > #fx,
+body.mq-noir-v2 #screen > .feedback{
+  pointer-events:none!important;
+}
+
+/* safety: visible active views must keep their original flex rendering */
+body.mq-noir-v2 #screen > .view.active{
+  visibility:visible!important;
+  opacity:1!important;
+}

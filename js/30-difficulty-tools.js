@@ -745,14 +745,14 @@
   if(!document.querySelector('link[data-mq-noir-v2-style]')){
     const link=document.createElement('link');
     link.rel='stylesheet';
-    link.href='css/noir-ui-v2.css?v=2.0';
+    link.href='css/noir-ui-v2.css?v=2.1';
     link.dataset.mqNoirV2Style='1';
     document.head.appendChild(link);
   }
 
   if(!document.querySelector('script[data-mq-noir-v2-script]')){
     const script=document.createElement('script');
-    script.src='js/26-noir-ui.js?v=2.0';
+    script.src='js/26-noir-ui.js?v=2.1';
     script.dataset.mqNoirV2Script='1';
     document.body.appendChild(script);
   }

@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='noir-ui-v2';
+  const VERSION='noir-ui-v2.1-layer-recovery';
 
   function installFonts(){
     if(document.getElementById('mqNoirV2Fonts'))return;
@@ -61,17 +61,34 @@
     }
   }
 
+  function syncCurtainToActiveView(){
+    const cinema=document.getElementById('cinema');
+    const screen=document.getElementById('screen');
+    if(!cinema||!screen)return;
+
+    const active=screen.querySelector('.view.active');
+    if(!active)return;
+
+    // Úvod zůstává při prvním načtení za zataženou oponou.
+    // Jakmile online profil nebo hra aktivuje jinou obrazovku,
+    // opona musí být otevřená, jinak by aktivní view zůstalo pod ní.
+    if(active.id!=='intro'){
+      cinema.classList.add('running','open');
+    }
+  }
+
   function prepareInitialCurtain(){
     const cinema=document.getElementById('cinema');
     const intro=document.getElementById('intro');
     if(!cinema||!intro)return;
 
-    if(intro.classList.contains('active')){
-      cinema.classList.remove('open','running');
-      cinema.classList.add('mq-intro-curtain-closed');
-    }
+    // Nikdy násilně neodebíráme "open" / "running".
+    // To byl zdroj chyby u uloženého profilu.
+    syncCurtainToActiveView();
 
     document.getElementById('startBtn')?.addEventListener('click',()=>{
+      // Původní 00-core.js zavolá openCurtain().
+      // Tady jen necháme jeho mechanismus beze změny.
       cinema.classList.remove('mq-intro-curtain-closed');
     },{once:true});
   }
@@ -84,6 +101,7 @@
     cleanPlayerFacingCopy();
     moveReportingToGameCorner();
     restoreSeats();
+    syncCurtainToActiveView();
   }
 
   function observe(){
@@ -98,13 +116,19 @@
           markUi();
         });
       });
-      observer.observe(screen,{childList:true,subtree:true});
+      observer.observe(screen,{
+        childList:true,
+        subtree:true,
+        attributes:true,
+        attributeFilter:['class']
+      });
     }
 
     window.addEventListener('mq:server-question-rendered',()=>{
       requestAnimationFrame(()=>{
         moveReportingToGameCorner();
         cleanPlayerFacingCopy();
+        syncCurtainToActiveView();
       });
     });
   }
