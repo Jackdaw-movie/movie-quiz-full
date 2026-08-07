@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='avatar-system-v1.2-noir-ui';
+  const VERSION='avatar-system-v1.3-clean-ui';
   const DEFAULT_ID='popcorn_noir_01';
   const DEFAULT_PATH='assets/avatars/popcorn_noir_01.png';
   const GUEST_ID='guest_unknown';
@@ -95,9 +95,7 @@
     const shell=document.getElementById('mqProfileShell');
     if(!shell)return;
 
-    // Změna avatara je pouze v Settings.
-    // Na přihlašovací obrazovce nevytváříme další profilový blok
-    // ani interní název avatara.
+    // Profilová karta zůstává čistá. Avatar se mění pouze přes Settings.
     shell.querySelectorAll('.mq-avatar-profile-row').forEach(node=>node.remove());
     shell.querySelectorAll('[data-open-avatar-gallery]').forEach(button=>{
       if(!button.closest?.('#mqAvatarModal'))button.remove();
@@ -208,7 +206,7 @@
           <div>
             <div class="eyebrow">Hráčský profil</div>
             <h2 id="mqAvatarTitle">Vyberte avatar</h2>
-            <p>Vyberte si podobu svého hráčského profilu.</p>
+            <p>Vyberte avatar pro svůj hráčský profil.</p>
           </div>
           <button type="button" class="mq-avatar-close" data-close-avatar-gallery aria-label="Zavřít">×</button>
         </div>
@@ -234,7 +232,7 @@
       const unlocked=Boolean(row.unlocked);
       const selectable=Boolean(row.selectable);
       const disabled=!unlocked||!selectable;
-      const actionText=selected?'Vybráno':disabled?'Zamčeno':'Vybrat';
+      const stateText=selected?'Vybráno':disabled?'Zamčeno':'Vybrat';
 
       return `
         <button type="button"
@@ -245,7 +243,7 @@
           <span class="mq-avatar-frame">
             <img class="mq-avatar-img" src="${escapeHtml(safePath(row.asset_path,DEFAULT_PATH))}" alt="Avatar">
           </span>
-          <small>${actionText}</small>
+          <small>${stateText}</small>
           ${selected?'<span class="mq-avatar-selected-mark" aria-hidden="true">✓</span>':''}
         </button>`;
     }).join('');

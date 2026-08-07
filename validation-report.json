@@ -1,0 +1,13 @@
+{
+  "version": "Movie_Quiz_noir_rebuild_v1",
+  "js_syntax": {
+    "24-player-avatars.js": true,
+    "25-player-settings.js": true,
+    "30-difficulty-tools.js": true
+  },
+  "required_html_ids": "OK",
+  "noir_css_braces": "OK",
+  "dynamic_loader_cleanup": "OK",
+  "old_noir_runtime_removed_from_index": "OK",
+  "popcorn_avatar_bytes": 285566
+}

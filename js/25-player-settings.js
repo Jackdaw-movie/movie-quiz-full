@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='player-settings-v1.2';
+  const VERSION='player-settings-v1.3-noir-shell';
   const MUSIC_KEY='movieQuizMusicVolumeV1';
   const SFX_KEY='movieQuizSfxVolumeV1';
   const MUSIC_BEFORE_MUTE_KEY='movieQuizMusicBeforeMuteV1';
@@ -84,8 +84,20 @@
     badge.classList.add('mq-player-dock');
   }
 
+  function moveHomeOutsideScreen(){
+    const home=document.getElementById('homeBtn');
+    const cinema=document.getElementById('cinema');
+    if(!home||!cinema)return;
+
+    if(home.parentElement!==cinema)cinema.appendChild(home);
+    home.classList.add('mq-home-dock');
+    home.setAttribute('aria-label','Domů');
+    home.setAttribute('title','Domů');
+  }
+
   function ensureGear(){
     movePlayerDockOutsideScreen();
+    moveHomeOutsideScreen();
 
     const badge=document.getElementById('mqPlayerBadge');
     if(!badge)return null;
@@ -150,13 +162,11 @@
       <div class="mq-settings-section">
         <div class="mq-settings-section-title">
           <strong>Zvuk</strong>
-          <small>50 % = dosavadní hlasitost</small>
         </div>
 
         <div class="mq-volume-row" data-volume-kind="music">
           <div class="mq-volume-label">
             <strong>Hudba</strong>
-            <small>Hudební doprovod projekce</small>
           </div>
           <div class="mq-volume-controls">
             <input id="mqMusicVolume" type="range" min="0" max="100" step="1" value="50" aria-label="Hlasitost hudby">
@@ -168,7 +178,6 @@
         <div class="mq-volume-row" data-volume-kind="sfx">
           <div class="mq-volume-label">
             <strong>Herní zvuky</strong>
-            <small>Odpovědi, buzzer, Oscar, opona a další efekty</small>
           </div>
           <div class="mq-volume-controls">
             <input id="mqSfxVolume" type="range" min="0" max="100" step="1" value="50" aria-label="Hlasitost herních zvuků">
@@ -258,9 +267,7 @@
     if(identityName)identityName.textContent=identity.name||'Hráč';
 
     if(hint){
-      hint.textContent=identity.guest
-        ? 'Host používá automatický anonymní avatar.'
-        : 'Avatar je uložený k vašemu profilu.';
+      hint.textContent=identity.guest?'Host':'Hráčský profil';
     }
 
     if(button){
