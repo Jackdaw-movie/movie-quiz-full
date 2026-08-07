@@ -11,7 +11,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='guest-mode-v1.2-stability';
+  const VERSION='guest-mode-v1.3-tooltip';
   const patchedClients=new WeakSet();
   const originalRpcByClient=new WeakMap();
 
@@ -121,23 +121,56 @@
       .mq-guest-card .mq-profile-chip-row{
         margin-top:12px;
       }
-      .mq-guest-status-strip{
-        display:none;
-        width:min(680px,calc(100% - 28px));
-        margin:7px auto 0;
-        padding:8px 12px;
-        border:1px solid rgba(255,217,92,.34);
-        border-radius:999px;
-        background:rgba(12,12,12,.44);
+      body.mq-guest-mode #mqPlayerBadge{
+        position:relative;
+        overflow:visible;
+      }
+      .mq-guest-info{
+        position:relative;
+        display:inline-grid;
+        place-items:center;
+        width:18px;
+        height:18px;
+        margin-left:6px;
+        padding:0;
+        border:1px solid rgba(255,224,138,.60);
+        border-radius:50%;
+        background:rgba(255,205,72,.12);
+        color:#ffe08a;
+        cursor:help;
+        font:800 11px/1 inherit;
+        vertical-align:middle;
+      }
+      .mq-guest-info-tooltip{
+        position:absolute;
+        top:calc(100% + 9px);
+        left:50%;
+        z-index:120;
+        width:max-content;
+        max-width:min(300px,calc(100vw - 32px));
+        padding:9px 11px;
+        border:1px solid rgba(255,224,138,.42);
+        border-radius:9px;
+        background:rgba(12,12,12,.96);
         color:#f6e5ae;
+        box-shadow:0 10px 28px rgba(0,0,0,.30);
         font-size:10px;
         font-weight:700;
-        line-height:1.35;
-        text-align:center;
-        backdrop-filter:blur(5px);
+        line-height:1.45;
+        text-align:left;
+        white-space:normal;
+        opacity:0;
+        visibility:hidden;
+        transform:translate(-50%,-3px);
+        pointer-events:none;
+        transition:opacity .14s ease,transform .14s ease,visibility .14s ease;
       }
-      body.mq-guest-mode .mq-guest-status-strip{
-        display:block;
+      .mq-guest-info:hover .mq-guest-info-tooltip,
+      .mq-guest-info:focus .mq-guest-info-tooltip,
+      .mq-guest-info:focus-visible .mq-guest-info-tooltip{
+        opacity:1;
+        visibility:visible;
+        transform:translate(-50%,0);
       }
       body.mq-guest-mode [data-open-statistics],
       body.mq-guest-mode [data-open-scoreboard],
@@ -161,32 +194,19 @@
         display:block;
       }
       @media(max-width:640px){
-        .mq-guest-status-strip{
-          border-radius:12px;
+        .mq-guest-info-tooltip{
+          left:auto;
+          right:-10px;
+          transform:translateY(-3px);
+        }
+        .mq-guest-info:hover .mq-guest-info-tooltip,
+        .mq-guest-info:focus .mq-guest-info-tooltip,
+        .mq-guest-info:focus-visible .mq-guest-info-tooltip{
+          transform:translateY(0);
         }
       }
     `;
     document.head.appendChild(style);
-  }
-
-  function ensureGuestStatusStrip(){
-    if(document.getElementById('mqGuestStatusStrip'))return;
-
-    const strip=document.createElement('div');
-    strip.id='mqGuestStatusStrip';
-    strip.className='mq-guest-status-strip';
-    strip.textContent='Hrajete jako Host · Výsledek se neuloží do statistik ani společného žebříčku.';
-
-    const difficulty=document.getElementById('difficulty');
-    const genres=document.getElementById('genres');
-
-    if(difficulty) difficulty.prepend(strip);
-
-    if(genres){
-      const clone=strip.cloneNode(true);
-      clone.id='mqGuestStatusStripGenres';
-      genres.prepend(clone);
-    }
   }
 
   function ensureResultNotes(){
@@ -220,9 +240,19 @@
       setTextIfChanged(label,'Režim');
       setTextIfChanged(name,'Host');
       badge.classList.add('visible');
+
+      if(!badge.querySelector('.mq-guest-info')){
+        const info=document.createElement('button');
+        info.type='button';
+        info.className='mq-guest-info';
+        info.setAttribute('aria-label','Informace o režimu hosta');
+        info.innerHTML=`i<span class="mq-guest-info-tooltip" role="tooltip">Hrajete jako Host · Výsledek se neuloží do statistik ani společného žebříčku.</span>`;
+        badge.appendChild(info);
+      }
       return;
     }
 
+    badge.querySelector('.mq-guest-info')?.remove();
     setTextIfChanged(label,'Hráč');
     const playerName=onlineApi()?.getPlayerName?.()||'';
     setTextIfChanged(name,playerName);
@@ -304,7 +334,6 @@
   function syncGuestUi(){
     document.body.classList.toggle('mq-guest-mode',guestMode);
     installStyles();
-    ensureGuestStatusStrip();
     ensureResultNotes();
     injectGuestEntry();
     syncPlayerBadge();
@@ -579,7 +608,6 @@
 
   async function init(){
     installStyles();
-    ensureGuestStatusStrip();
     ensureResultNotes();
     bindEvents();
     syncGuestUi();
