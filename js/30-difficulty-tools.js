@@ -11,7 +11,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='guest-mode-v1';
+  const VERSION='guest-mode-v1.2-stability';
   const patchedClients=new WeakSet();
   const originalRpcByClient=new WeakMap();
 
@@ -203,23 +203,29 @@
     });
   }
 
+  function setTextIfChanged(element,value){
+    if(!element)return;
+    const next=String(value??'');
+    if(element.textContent!==next)element.textContent=next;
+  }
+
   function syncPlayerBadge(){
     const badge=document.getElementById('mqPlayerBadge');
     const name=document.getElementById('mqPlayerBadgeName');
     if(!badge||!name)return;
 
-    let label=badge.querySelector('span');
+    const label=badge.querySelector('span');
 
     if(guestMode){
-      if(label)label.textContent='Režim';
-      name.textContent='Host';
+      setTextIfChanged(label,'Režim');
+      setTextIfChanged(name,'Host');
       badge.classList.add('visible');
       return;
     }
 
-    if(label)label.textContent='Hráč';
+    setTextIfChanged(label,'Hráč');
     const playerName=onlineApi()?.getPlayerName?.()||'';
-    name.textContent=playerName;
+    setTextIfChanged(name,playerName);
     badge.classList.toggle('visible',Boolean(playerName));
   }
 
@@ -282,14 +288,17 @@
       if(!button.dataset.mqNormalLabel){
         button.dataset.mqNormalLabel=button.textContent||'Změnit hráče';
       }
-      button.textContent=guestMode?'Přihlásit se':button.dataset.mqNormalLabel;
+      setTextIfChanged(
+        button,
+        guestMode?'Přihlásit se':button.dataset.mqNormalLabel
+      );
     });
   }
 
   function syncCredits(){
     if(!guestMode)return;
     const name=document.querySelector('#creditsRoll .credit-name');
-    if(name)name.textContent='Host';
+    setTextIfChanged(name,'Host');
   }
 
   function syncGuestUi(){
@@ -530,8 +539,39 @@
   }
 
   function observeUi(){
-    const observer=new MutationObserver(queueUiSync);
-    observer.observe(document.body,{
+    const shell=document.getElementById('mqProfileShell');
+    if(!shell)return;
+
+    let observerBusy=false;
+
+    const observer=new MutationObserver(mutations=>{
+      if(observerBusy)return;
+
+      const relevant=mutations.some(mutation=>{
+        if(mutation.type!=='childList')return false;
+
+        return Array.from(mutation.addedNodes).some(node=>{
+          if(!(node instanceof Element))return false;
+          return (
+            node.matches?.('.mq-profile-card,[data-mq-guest-current]')
+            || node.querySelector?.('.mq-profile-card,[data-mq-guest-current]')
+          );
+        });
+      });
+
+      if(!relevant)return;
+
+      observerBusy=true;
+      queueMicrotask(()=>{
+        try{
+          injectGuestEntry();
+        }finally{
+          observerBusy=false;
+        }
+      });
+    });
+
+    observer.observe(shell,{
       childList:true,
       subtree:true
     });
@@ -542,6 +582,7 @@
     ensureGuestStatusStrip();
     ensureResultNotes();
     bindEvents();
+    syncGuestUi();
     observeUi();
 
     try{
