@@ -11,7 +11,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='guest-mode-v1.3-tooltip';
+  const VERSION='guest-mode-v1.4-tooltip-fix';
   const patchedClients=new WeakSet();
   const originalRpcByClient=new WeakMap();
 
@@ -127,6 +127,7 @@
       }
       .mq-guest-info{
         position:relative;
+        z-index:1002;
         display:inline-grid;
         place-items:center;
         width:18px;
@@ -140,20 +141,25 @@
         cursor:help;
         font:800 11px/1 inherit;
         vertical-align:middle;
+        pointer-events:auto!important;
       }
-      .mq-guest-info-tooltip{
-        position:absolute;
-        top:calc(100% + 9px);
-        left:50%;
-        z-index:120;
+      .mq-guest-info:hover,
+      .mq-guest-info:focus-visible{
+        background:rgba(255,205,72,.22);
+        border-color:rgba(255,224,138,.90);
+        outline:none;
+      }
+      .mq-guest-tooltip-portal{
+        position:fixed;
+        z-index:2147483000;
         width:max-content;
-        max-width:min(300px,calc(100vw - 32px));
+        max-width:min(300px,calc(100vw - 24px));
         padding:9px 11px;
         border:1px solid rgba(255,224,138,.42);
         border-radius:9px;
-        background:rgba(12,12,12,.96);
+        background:rgba(12,12,12,.97);
         color:#f6e5ae;
-        box-shadow:0 10px 28px rgba(0,0,0,.30);
+        box-shadow:0 12px 32px rgba(0,0,0,.40);
         font-size:10px;
         font-weight:700;
         line-height:1.45;
@@ -161,16 +167,14 @@
         white-space:normal;
         opacity:0;
         visibility:hidden;
-        transform:translate(-50%,-3px);
         pointer-events:none;
-        transition:opacity .14s ease,transform .14s ease,visibility .14s ease;
+        transform:translateY(-3px);
+        transition:opacity .12s ease,transform .12s ease,visibility .12s ease;
       }
-      .mq-guest-info:hover .mq-guest-info-tooltip,
-      .mq-guest-info:focus .mq-guest-info-tooltip,
-      .mq-guest-info:focus-visible .mq-guest-info-tooltip{
+      .mq-guest-tooltip-portal.visible{
         opacity:1;
         visibility:visible;
-        transform:translate(-50%,0);
+        transform:translateY(0);
       }
       body.mq-guest-mode [data-open-statistics],
       body.mq-guest-mode [data-open-scoreboard],
@@ -192,18 +196,6 @@
       }
       body.mq-guest-mode .mq-guest-result-note{
         display:block;
-      }
-      @media(max-width:640px){
-        .mq-guest-info-tooltip{
-          left:auto;
-          right:-10px;
-          transform:translateY(-3px);
-        }
-        .mq-guest-info:hover .mq-guest-info-tooltip,
-        .mq-guest-info:focus .mq-guest-info-tooltip,
-        .mq-guest-info:focus-visible .mq-guest-info-tooltip{
-          transform:translateY(0);
-        }
       }
     `;
     document.head.appendChild(style);
@@ -229,6 +221,62 @@
     if(element.textContent!==next)element.textContent=next;
   }
 
+  function ensureGuestTooltipPortal(){
+    let tooltip=document.getElementById('mqGuestTooltipPortal');
+    if(tooltip)return tooltip;
+
+    tooltip=document.createElement('div');
+    tooltip.id='mqGuestTooltipPortal';
+    tooltip.className='mq-guest-tooltip-portal';
+    tooltip.setAttribute('role','tooltip');
+    tooltip.textContent='Hrajete jako Host · Výsledek se neuloží do statistik ani společného žebříčku.';
+    document.body.appendChild(tooltip);
+    return tooltip;
+  }
+
+  function positionGuestTooltip(button){
+    const tooltip=ensureGuestTooltipPortal();
+    const rect=button.getBoundingClientRect();
+    const margin=12;
+
+    tooltip.classList.add('visible');
+
+    const tooltipRect=tooltip.getBoundingClientRect();
+
+    let left=rect.left+(rect.width/2)-(tooltipRect.width/2);
+    left=Math.max(margin,Math.min(left,window.innerWidth-tooltipRect.width-margin));
+
+    let top=rect.bottom+9;
+    if(top+tooltipRect.height>window.innerHeight-margin){
+      top=rect.top-tooltipRect.height-9;
+    }
+    top=Math.max(margin,top);
+
+    tooltip.style.left=`${Math.round(left)}px`;
+    tooltip.style.top=`${Math.round(top)}px`;
+  }
+
+  function hideGuestTooltip(){
+    document.getElementById('mqGuestTooltipPortal')?.classList.remove('visible');
+  }
+
+  function bindGuestTooltip(button){
+    if(button.dataset.mqTooltipBound==='1')return;
+    button.dataset.mqTooltipBound='1';
+
+    button.addEventListener('mouseenter',()=>positionGuestTooltip(button));
+    button.addEventListener('mouseleave',hideGuestTooltip);
+    button.addEventListener('focus',()=>positionGuestTooltip(button));
+    button.addEventListener('blur',hideGuestTooltip);
+    button.addEventListener('click',event=>{
+      event.preventDefault();
+      event.stopPropagation();
+      const tooltip=ensureGuestTooltipPortal();
+      if(tooltip.classList.contains('visible'))hideGuestTooltip();
+      else positionGuestTooltip(button);
+    });
+  }
+
   function syncPlayerBadge(){
     const badge=document.getElementById('mqPlayerBadge');
     const name=document.getElementById('mqPlayerBadgeName');
@@ -241,18 +289,21 @@
       setTextIfChanged(name,'Host');
       badge.classList.add('visible');
 
-      if(!badge.querySelector('.mq-guest-info')){
-        const info=document.createElement('button');
+      let info=badge.querySelector('.mq-guest-info');
+      if(!info){
+        info=document.createElement('button');
         info.type='button';
         info.className='mq-guest-info';
         info.setAttribute('aria-label','Informace o režimu hosta');
-        info.innerHTML=`i<span class="mq-guest-info-tooltip" role="tooltip">Hrajete jako Host · Výsledek se neuloží do statistik ani společného žebříčku.</span>`;
+        info.textContent='i';
         badge.appendChild(info);
       }
+      bindGuestTooltip(info);
       return;
     }
 
     badge.querySelector('.mq-guest-info')?.remove();
+    hideGuestTooltip();
     setTextIfChanged(label,'Hráč');
     const playerName=onlineApi()?.getPlayerName?.()||'';
     setTextIfChanged(name,playerName);
@@ -561,6 +612,8 @@
 
     window.addEventListener('mq:guest-mode-changed',queueUiSync);
     window.addEventListener('mq:server-question-rendered',queueUiSync);
+    window.addEventListener('resize',hideGuestTooltip,{passive:true});
+    window.addEventListener('scroll',hideGuestTooltip,{passive:true,capture:true});
 
     document.getElementById('homeBtn')?.addEventListener('click',queueUiSync);
     document.getElementById('replayEnd')?.addEventListener('click',queueUiSync);
