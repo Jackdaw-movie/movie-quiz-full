@@ -1,0 +1,20 @@
+{
+  "version": "Movie_Quiz_noir_patch_v1_3",
+  "js_syntax": {
+    "24-player-avatars.js": true,
+    "25-player-settings.js": true,
+    "26-exterior-scene.js": true,
+    "30-difficulty-tools.js": true
+  },
+  "checks": {
+    "walking_cursor_markup": true,
+    "walking_cursor_runtime": true,
+    "ticket_stats_cleanup": true,
+    "parallax_runtime": true,
+    "crowd_murmur": true,
+    "long_footsteps": true,
+    "music_plus_30": true,
+    "sfx_plus_30": true
+  },
+  "css_braces": "OK"
+}

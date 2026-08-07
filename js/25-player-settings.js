@@ -1,15 +1,15 @@
 (()=>{
   'use strict';
 
-  const VERSION='player-settings-v1.4-noir-exterior';
+  const VERSION='player-settings-v1.5-volume-polish';
   const MUSIC_KEY='movieQuizMusicVolumeV1';
   const SFX_KEY='movieQuizSfxVolumeV1';
   const MUSIC_BEFORE_MUTE_KEY='movieQuizMusicBeforeMuteV1';
   const SFX_BEFORE_MUTE_KEY='movieQuizSfxBeforeMuteV1';
 
   const DEFAULT_VOLUME=50;
-  const BASE_MUSIC_GAIN=1.6848;
-  const BASE_SFX_GAIN=.82;
+  const BASE_MUSIC_GAIN=2.19024;
+  const BASE_SFX_GAIN=1.066;
   const MASTER_GAIN=.96;
 
   let menuOpen=false;
