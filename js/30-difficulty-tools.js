@@ -708,7 +708,7 @@
 
   if(!document.querySelector('script[data-mq-avatar-script]')){
     const script=document.createElement('script');
-    script.src='js/24-player-avatars.js?v=1.1';
+    script.src='js/24-player-avatars.js?v=1.2';
     script.dataset.mqAvatarScript='1';
     document.body.appendChild(script);
   }
@@ -723,15 +723,37 @@
   if(!document.querySelector('link[data-mq-settings-style]')){
     const link=document.createElement('link');
     link.rel='stylesheet';
-    link.href='css/player-settings.css?v=1.1';
+    link.href='css/player-settings.css?v=1.2';
     link.dataset.mqSettingsStyle='1';
     document.head.appendChild(link);
   }
 
   if(!document.querySelector('script[data-mq-settings-script]')){
     const script=document.createElement('script');
-    script.src='js/25-player-settings.js?v=1.1';
+    script.src='js/25-player-settings.js?v=1.2';
     script.dataset.mqSettingsScript='1';
+    document.body.appendChild(script);
+  }
+})();
+
+
+/* Movie Quiz noir UI loader v2 */
+(()=>{
+  if(window.__mqNoirUiV2Loader)return;
+  window.__mqNoirUiV2Loader=true;
+
+  if(!document.querySelector('link[data-mq-noir-v2-style]')){
+    const link=document.createElement('link');
+    link.rel='stylesheet';
+    link.href='css/noir-ui-v2.css?v=2.0';
+    link.dataset.mqNoirV2Style='1';
+    document.head.appendChild(link);
+  }
+
+  if(!document.querySelector('script[data-mq-noir-v2-script]')){
+    const script=document.createElement('script');
+    script.src='js/26-noir-ui.js?v=2.0';
+    script.dataset.mqNoirV2Script='1';
     document.body.appendChild(script);
   }
 })();

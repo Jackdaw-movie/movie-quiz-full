@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='player-settings-v3-noir-redesign';
+  const VERSION='player-settings-v1.2';
   const MUSIC_KEY='movieQuizMusicVolumeV1';
   const SFX_KEY='movieQuizSfxVolumeV1';
   const MUSIC_BEFORE_MUTE_KEY='movieQuizMusicBeforeMuteV1';
@@ -15,7 +15,6 @@
   let menuOpen=false;
   let audioPatched=false;
   let avatarObserver=null;
-  let profileObserver=null;
 
   function clamp(value){
     const number=Number(value);
@@ -74,16 +73,6 @@
     </svg>`;
   }
 
-  function installNoirFonts(){
-    if(document.getElementById('mqNoirFonts'))return;
-
-    const link=document.createElement('link');
-    link.id='mqNoirFonts';
-    link.rel='stylesheet';
-    link.href='https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Josefin+Sans:wght@400;500;600;700&display=swap';
-    document.head.appendChild(link);
-  }
-
   function movePlayerDockOutsideScreen(){
     const badge=document.getElementById('mqPlayerBadge');
     const cinema=document.getElementById('cinema');
@@ -95,97 +84,8 @@
     badge.classList.add('mq-player-dock');
   }
 
-  function moveHomeDockOutsideScreen(){
-    const home=document.getElementById('homeBtn');
-    const cinema=document.getElementById('cinema');
-    if(!home||!cinema)return;
-
-    if(home.parentElement!==cinema){
-      cinema.appendChild(home);
-    }
-    home.classList.add('mq-home-dock');
-    home.setAttribute('title','Domů');
-    home.setAttribute('aria-label','Domů');
-  }
-
-  function stripLegacyRedesignArtifacts(){
-    document.getElementById('mqCinemaMasthead')?.remove();
-    document.querySelectorAll('.mq-selection-ux-hints').forEach(node=>node.remove());
-  }
-
-  function cleanSelectionCopy(){
-    const difficulty=document.getElementById('difficulty');
-    const genres=document.getElementById('genres');
-
-    // Žádná metodika ani vysvětlování skladby otázek.
-    difficulty?.querySelector('.selection-note')?.setAttribute('hidden','');
-    genres?.querySelector('.selection-note')?.setAttribute('hidden','');
-
-    difficulty?.querySelectorAll('.difficulty-card .card-copy small').forEach(node=>{
-      node.hidden=true;
-      node.setAttribute('aria-hidden','true');
-    });
-
-    // Žánry necháváme jako čisté herní volby: ikona + název.
-    genres?.querySelectorAll('.genre-card .card-copy small').forEach(node=>{
-      node.hidden=true;
-      node.setAttribute('aria-hidden','true');
-    });
-
-    difficulty?.querySelectorAll('.difficulty-card').forEach(card=>{
-      const name=card.querySelector('.card-copy strong')?.textContent?.trim();
-      if(name)card.setAttribute('aria-label',`Obtížnost ${name}`);
-    });
-
-    genres?.querySelectorAll('.genre-card').forEach(card=>{
-      const name=card.querySelector('.card-copy strong')?.textContent?.trim();
-      if(name)card.setAttribute('aria-label',`Žánr ${name}`);
-    });
-  }
-
-  function cleanProfileCopy(){
-    document.querySelector('#playerView .mq-player-note')?.setAttribute('hidden','');
-    document.querySelector('#playerView .mq-storage-note')?.setAttribute('hidden','');
-    document.querySelector('#scoreboardView .mq-scoreboard-note')?.setAttribute('hidden','');
-
-    // U přihlášeného hráče stačí vítání a akce; technické vysvětlení není potřeba.
-    const linked=document.querySelector('#mqProfileShell .mq-profile-linked .mq-profile-subtitle');
-    if(linked)linked.hidden=true;
-  }
-
-  function installNoirShell(){
-    document.body.classList.add('mq-noir-v1');
-    document.getElementById('page')?.classList.add('mq-noir-v1-page');
-    document.getElementById('cinema')?.classList.add('mq-noir-v1-cinema');
-    document.getElementById('screen')?.classList.add('mq-noir-v1-screen');
-
-    movePlayerDockOutsideScreen();
-    moveHomeDockOutsideScreen();
-    stripLegacyRedesignArtifacts();
-    cleanSelectionCopy();
-    cleanProfileCopy();
-  }
-
-  function observeProfileShell(){
-    const shell=document.getElementById('mqProfileShell');
-    if(!shell)return;
-
-    if(profileObserver)profileObserver.disconnect();
-
-    let queued=false;
-    profileObserver=new MutationObserver(()=>{
-      if(queued)return;
-      queued=true;
-      queueMicrotask(()=>{
-        queued=false;
-        cleanProfileCopy();
-      });
-    });
-    profileObserver.observe(shell,{childList:true});
-  }
-
   function ensureGear(){
-    installNoirShell();
+    movePlayerDockOutsideScreen();
 
     const badge=document.getElementById('mqPlayerBadge');
     if(!badge)return null;
@@ -250,11 +150,13 @@
       <div class="mq-settings-section">
         <div class="mq-settings-section-title">
           <strong>Zvuk</strong>
+          <small>50 % = dosavadní hlasitost</small>
         </div>
 
         <div class="mq-volume-row" data-volume-kind="music">
           <div class="mq-volume-label">
             <strong>Hudba</strong>
+            <small>Hudební doprovod projekce</small>
           </div>
           <div class="mq-volume-controls">
             <input id="mqMusicVolume" type="range" min="0" max="100" step="1" value="50" aria-label="Hlasitost hudby">
@@ -266,6 +168,7 @@
         <div class="mq-volume-row" data-volume-kind="sfx">
           <div class="mq-volume-label">
             <strong>Herní zvuky</strong>
+            <small>Odpovědi, buzzer, Oscar, opona a další efekty</small>
           </div>
           <div class="mq-volume-controls">
             <input id="mqSfxVolume" type="range" min="0" max="100" step="1" value="50" aria-label="Hlasitost herních zvuků">
@@ -356,8 +259,8 @@
 
     if(hint){
       hint.textContent=identity.guest
-        ? 'Host'
-        : 'Hráčský profil';
+        ? 'Host používá automatický anonymní avatar.'
+        : 'Avatar je uložený k vašemu profilu.';
     }
 
     if(button){
@@ -593,15 +496,11 @@
   }
 
   function sync(){
-    installNoirFonts();
-    installNoirShell();
     ensureGear();
     ensureMenu();
     syncProfileUi();
     syncVolumeUi();
     unmuteLegacyMaster();
-    cleanSelectionCopy();
-    cleanProfileCopy();
 
     const oldMute=document.getElementById('muteBtn');
     if(oldMute){
@@ -611,7 +510,6 @@
     }
 
     observeAvatarGallery();
-    observeProfileShell();
     sanitizeAvatarUi();
   }
 
@@ -654,10 +552,10 @@
     bindGlobalEvents();
     sync();
 
-    // Online profil a avatar se mohou doplnit o chvíli později.
-    setTimeout(sync,300);
-    setTimeout(sync,900);
-    setTimeout(sync,1600);
+    // Badge a avatarový modul už normálně existují, ale tyto dva lehké
+    // opakované průchody pokrývají pomalejší načtení Supabase na prvním vstupu.
+    setTimeout(sync,350);
+    setTimeout(sync,1200);
   }
 
   window.MovieQuizSettings=Object.freeze({

@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='avatar-system-v1.1-stability-fix';
+  const VERSION='avatar-system-v1.2-noir-ui';
   const DEFAULT_ID='popcorn_noir_01';
   const DEFAULT_PATH='assets/avatars/popcorn_noir_01.png';
   const GUEST_ID='guest_unknown';
@@ -52,7 +52,7 @@
 
     const img=document.createElement('img');
     img.className='mq-avatar-img';
-    img.alt=label;
+    img.alt='Avatar';
     img.decoding='async';
     img.loading='eager';
     img.src=safePath(path,guest?GUEST_PATH:DEFAULT_PATH);
@@ -76,7 +76,7 @@
       img.dataset.fallback='';
       img.src=path;
     }
-    img.alt=avatar.label||'Avatar';
+    img.alt='Avatar';
   }
 
   function syncBadge(){
@@ -93,38 +93,15 @@
 
   function syncProfileCard(){
     const shell=document.getElementById('mqProfileShell');
-    const card=shell?.querySelector('.mq-profile-linked');
-    if(!card||!currentProfile()?.profileId||isGuest())return;
+    if(!shell)return;
 
-    let row=card.querySelector('.mq-avatar-profile-row');
-    if(!row){
-      row=document.createElement('div');
-      row.className='mq-avatar-profile-row';
-      row.innerHTML=`
-        <span class="mq-avatar-frame"><img class="mq-avatar-img" alt="Avatar hráče"></span>
-        <div class="mq-avatar-profile-copy">
-          <span>Profilový avatar</span>
-          <strong data-avatar-profile-label>Načítám…</strong>
-        </div>`;
-      const buttonRow=card.querySelector('.mq-profile-button-row');
-      if(buttonRow)card.insertBefore(row,buttonRow);
-      else card.appendChild(row);
-    }
-
-    const avatar=currentAvatar();
-    updateFrame(row.querySelector('.mq-avatar-frame'),avatar);
-    const label=row.querySelector('[data-avatar-profile-label]');
-    setTextIfChanged(label,avatar.label||'Avatar');
-
-    const buttonRow=card.querySelector('.mq-profile-button-row');
-    if(buttonRow&&!buttonRow.querySelector('[data-open-avatar-gallery]')){
-      const button=document.createElement('button');
-      button.type='button';
-      button.className='mq-secondary';
-      button.dataset.openAvatarGallery='';
-      button.textContent='Změnit avatar';
-      buttonRow.appendChild(button);
-    }
+    // Změna avatara je pouze v Settings.
+    // Na přihlašovací obrazovce nevytváříme další profilový blok
+    // ani interní název avatara.
+    shell.querySelectorAll('.mq-avatar-profile-row').forEach(node=>node.remove());
+    shell.querySelectorAll('[data-open-avatar-gallery]').forEach(button=>{
+      if(!button.closest?.('#mqAvatarModal'))button.remove();
+    });
   }
 
   function syncStatisticsHeader(){
@@ -146,16 +123,7 @@
     }
     updateFrame(frame,currentAvatar());
 
-    if(!header.querySelector('.mq-stats-avatar-action')){
-      const button=document.createElement('button');
-      button.type='button';
-      button.className='mq-stats-avatar-action';
-      button.dataset.openAvatarGallery='';
-      button.textContent='Změnit avatar';
-      const subtitle=header.querySelector('#mqStatsSubtitle');
-      if(subtitle)subtitle.insertAdjacentElement('afterend',button);
-      else header.appendChild(button);
-    }
+    header.querySelectorAll('.mq-stats-avatar-action').forEach(button=>button.remove());
   }
 
   async function getPublicAvatars(names){
@@ -240,16 +208,16 @@
           <div>
             <div class="eyebrow">Hráčský profil</div>
             <h2 id="mqAvatarTitle">Vyberte avatar</h2>
-            <p>Vybraný avatar se uloží k profilu a zobrazí se u jména, ve statistikách i společném žebříčku.</p>
+            <p>Vyberte si podobu svého hráčského profilu.</p>
           </div>
           <button type="button" class="mq-avatar-close" data-close-avatar-gallery aria-label="Zavřít">×</button>
         </div>
         <div class="mq-avatar-grid" id="mqAvatarGrid"></div>
         <div class="mq-avatar-modal-status" id="mqAvatarStatus" aria-live="polite"></div>
-        <p class="mq-avatar-modal-note">Další postavičky budeme do galerie postupně přidávat. Systém je připravený i na budoucí zamčené avatary odemykané Oscary a achievementy.</p>
+        <p class="mq-avatar-modal-note">Výběr se uloží k vašemu profilu.</p>
       </section>`;
 
-    (document.getElementById('screen')||document.body).appendChild(modal);
+    document.body.appendChild(modal);
   }
 
   function renderGallery(){
@@ -266,16 +234,18 @@
       const unlocked=Boolean(row.unlocked);
       const selectable=Boolean(row.selectable);
       const disabled=!unlocked||!selectable;
+      const actionText=selected?'Vybráno':disabled?'Zamčeno':'Vybrat';
+
       return `
         <button type="button"
           class="mq-avatar-choice${selected?' is-selected':''}"
           data-avatar-id="${escapeHtml(row.avatar_id)}"
+          aria-label="${selected?'Aktuálně vybraný avatar':disabled?'Zamčený avatar':'Vybrat avatar'}"
           ${disabled?'disabled':''}>
           <span class="mq-avatar-frame">
-            <img class="mq-avatar-img" src="${escapeHtml(safePath(row.asset_path,DEFAULT_PATH))}" alt="${escapeHtml(row.label||'Avatar')}">
+            <img class="mq-avatar-img" src="${escapeHtml(safePath(row.asset_path,DEFAULT_PATH))}" alt="Avatar">
           </span>
-          <strong>${escapeHtml(row.label||row.avatar_id)}</strong>
-          <small>${selected?'Aktuálně vybráno':disabled?'Zamčeno':'Vybrat'}</small>
+          <small>${actionText}</small>
           ${selected?'<span class="mq-avatar-selected-mark" aria-hidden="true">✓</span>':''}
         </button>`;
     }).join('');
