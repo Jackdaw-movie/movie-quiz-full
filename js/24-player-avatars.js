@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='avatar-system-v1';
+  const VERSION='avatar-system-v1.1-stability-fix';
   const DEFAULT_ID='popcorn_noir_01';
   const DEFAULT_PATH='assets/avatars/popcorn_noir_01.png';
   const GUEST_ID='guest_unknown';
@@ -20,6 +20,12 @@
     return String(value??'').replace(/[&<>'"]/g,char=>({
       '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'
     })[char]);
+  }
+
+  function setTextIfChanged(element,value){
+    if(!element)return;
+    const next=String(value??'');
+    if(element.textContent!==next)element.textContent=next;
   }
 
   function safePath(value,fallback=DEFAULT_PATH){
@@ -108,7 +114,7 @@
     const avatar=currentAvatar();
     updateFrame(row.querySelector('.mq-avatar-frame'),avatar);
     const label=row.querySelector('[data-avatar-profile-label]');
-    if(label)label.textContent=avatar.label||'Avatar';
+    setTextIfChanged(label,avatar.label||'Avatar');
 
     const buttonRow=card.querySelector('.mq-profile-button-row');
     if(buttonRow&&!buttonRow.querySelector('[data-open-avatar-gallery]')){
@@ -354,7 +360,28 @@
   function observe(){
     const shell=document.getElementById('mqProfileShell');
     if(shell){
-      new MutationObserver(()=>syncProfileCard()).observe(shell,{childList:true,subtree:true});
+      let profileSyncQueued=false;
+      const queueProfileSync=()=>{
+        if(profileSyncQueued)return;
+        profileSyncQueued=true;
+        queueMicrotask(()=>{
+          profileSyncQueued=false;
+          syncProfileCard();
+        });
+      };
+      new MutationObserver(mutations=>{
+        const relevant=mutations.some(mutation=>{
+          if(mutation.type!=='childList')return false;
+          return Array.from(mutation.addedNodes).some(node=>{
+            if(!(node instanceof Element))return false;
+            return (
+              node.matches?.('.mq-profile-linked,.mq-avatar-profile-row,[data-open-avatar-gallery]')
+              || node.querySelector?.('.mq-profile-linked,.mq-avatar-profile-row,[data-open-avatar-gallery]')
+            );
+          });
+        });
+        if(relevant)queueProfileSync();
+      }).observe(shell,{childList:true,subtree:true});
     }
 
     const table=document.getElementById('mqScoreTable');

@@ -11,7 +11,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='guest-mode-v1.4-tooltip-fix';
+  const VERSION='guest-mode-v1.4-tooltip-fix-settings-v1.1';
   const patchedClients=new WeakSet();
   const originalRpcByClient=new WeakMap();
 
@@ -708,7 +708,7 @@
 
   if(!document.querySelector('script[data-mq-avatar-script]')){
     const script=document.createElement('script');
-    script.src='js/24-player-avatars.js?v=1';
+    script.src='js/24-player-avatars.js?v=1.1';
     script.dataset.mqAvatarScript='1';
     document.body.appendChild(script);
   }
@@ -723,14 +723,14 @@
   if(!document.querySelector('link[data-mq-settings-style]')){
     const link=document.createElement('link');
     link.rel='stylesheet';
-    link.href='css/player-settings.css?v=1';
+    link.href='css/player-settings.css?v=1.1';
     link.dataset.mqSettingsStyle='1';
     document.head.appendChild(link);
   }
 
   if(!document.querySelector('script[data-mq-settings-script]')){
     const script=document.createElement('script');
-    script.src='js/25-player-settings.js?v=1';
+    script.src='js/25-player-settings.js?v=1.1';
     script.dataset.mqSettingsScript='1';
     document.body.appendChild(script);
   }

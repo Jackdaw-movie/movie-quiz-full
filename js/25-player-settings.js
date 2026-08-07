@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='player-settings-v1';
+  const VERSION='player-settings-v1.1-stability-fix';
   const MUSIC_KEY='movieQuizMusicVolumeV1';
   const SFX_KEY='movieQuizSfxVolumeV1';
   const DEFAULT_VOLUME=50;
@@ -34,18 +34,10 @@
   function sfxVolume(){return read(SFX_KEY)}
   function scale(percent){return clamp(percent)/50}
 
-  function ensureAudioGraph(){
-    try{
-      if(typeof initAudio==='function')initAudio();
-    }catch(error){
-      console.warn('Movie Quiz Settings: audio graf se zatím nepodařilo připravit.',error);
-    }
-  }
-
   function applyVolumes(smooth=true){
-    ensureAudioGraph();
     try{
-      if(typeof audioCtx==='undefined'||!audioCtx)return;
+      // AudioContext vytváří až původní hra po uživatelské interakci.
+      if(typeof audioCtx==='undefined'||!audioCtx)return false;
       const now=audioCtx.currentTime||0;
       const musicTarget=BASE_MUSIC_GAIN*scale(musicVolume());
       const sfxTarget=BASE_SFX_GAIN*scale(sfxVolume());
@@ -58,8 +50,10 @@
         if(smooth&&sfxGain.gain?.setTargetAtTime)sfxGain.gain.setTargetAtTime(sfxTarget,now,.035);
         else sfxGain.gain.value=sfxTarget;
       }
+      return true;
     }catch(error){
       console.warn('Movie Quiz Settings: hlasitost se nepodařilo aplikovat.',error);
+      return false;
     }
   }
 
@@ -266,20 +260,14 @@
 
     window.addEventListener('mq:guest-mode-changed',queueSync);
     window.addEventListener('mq:avatar-changed',queueSync);
-  }
-
-  function observe(){
-    observer=new MutationObserver(queueSync);
-    observer.observe(document.getElementById('screen')||document.body,{childList:true,subtree:false});
+    document.addEventListener('click',()=>{
+      setTimeout(()=>applyVolumes(false),0);
+    },true);
   }
 
   function init(){
     bind();
     sync();
-    observe();
-
-    // AudioContext může zůstat do prvního kliknutí suspended; gainy ale budou mít
-    // už před startem hry správné hodnoty z localStorage.
     applyVolumes(false);
   }
 
