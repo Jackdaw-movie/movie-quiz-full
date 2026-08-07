@@ -47,6 +47,8 @@
   let latestDetail=null;
   let toastTimer=null;
   let currentTab='reports';
+  let deactivatedPage=0;
+  let deactivatedTotal=0;
 
   const $=selector=>document.querySelector(selector);
   const $$=selector=>Array.from(document.querySelectorAll(selector));
@@ -184,7 +186,7 @@
       p_difficulty:difficulty?Number(difficulty):null,
       p_search:$('#deactivatedSearch').value.trim()||null,
       p_limit:PAGE_LIMIT,
-      p_offset:0
+      p_offset:deactivatedPage*PAGE_LIMIT
     };
   }
 
@@ -331,6 +333,12 @@
       const {data,error}=await db.rpc('admin_list_deactivated_questions',deactivatedFilters());
       if(error)throw error;
       const rows=Array.isArray(data)?data:[];
+
+      if(!rows.length && deactivatedPage>0){
+        deactivatedPage-=1;
+        return loadDeactivatedOnly();
+      }
+
       const total=rows.length?number(rows[0].total_count):0;
       renderDeactivated(rows,total);
       updateDeactivatedSummary(total);
@@ -408,8 +416,16 @@
   }
 
   function renderDeactivated(rows,total){
-    $('#deactivatedTabCount').textContent=number(total).toLocaleString('cs-CZ');
-    $('#deactivatedQuestionCount').textContent=`Zobrazeno ${countLabel(rows.length)} z celkem ${number(total).toLocaleString('cs-CZ')}`;
+    deactivatedTotal=number(total);
+    $('#deactivatedTabCount').textContent=deactivatedTotal.toLocaleString('cs-CZ');
+
+    const startIndex=rows.length ? deactivatedPage*PAGE_LIMIT+1 : 0;
+    const endIndex=rows.length ? startIndex+rows.length-1 : 0;
+    $('#deactivatedQuestionCount').textContent=rows.length
+      ? `Zobrazeno ${startIndex}–${endIndex} z celkem ${deactivatedTotal.toLocaleString('cs-CZ')}`
+      : `Zobrazeno 0 z celkem ${deactivatedTotal.toLocaleString('cs-CZ')}`;
+
+    renderDeactivatedPagination(deactivatedTotal);
 
     if(!rows.length){
       $('#deactivatedQuestionList').innerHTML='<div class="admin-empty"><strong>Žádná odpovídající deaktivovaná otázka</strong>Změňte filtry nebo obnovte všechna kritéria.</div>';
@@ -448,6 +464,30 @@
     }).join('');
   }
 
+
+  function renderDeactivatedPagination(total){
+    const pagination=$('#deactivatedPagination');
+    const prev=$('#deactivatedPrevPage');
+    const next=$('#deactivatedNextPage');
+    const info=$('#deactivatedPageInfo');
+    if(!pagination||!prev||!next||!info)return;
+
+    const pageCount=Math.max(1,Math.ceil(number(total)/PAGE_LIMIT));
+    const currentPage=Math.min(deactivatedPage+1,pageCount);
+    pagination.hidden=number(total)<=PAGE_LIMIT;
+    info.textContent=`Stránka ${currentPage} z ${pageCount}`;
+    prev.disabled=deactivatedPage<=0;
+    next.disabled=deactivatedPage>=pageCount-1;
+  }
+
+  async function changeDeactivatedPage(direction){
+    const pageCount=Math.max(1,Math.ceil(deactivatedTotal/PAGE_LIMIT));
+    const nextPage=Math.min(Math.max(deactivatedPage+direction,0),pageCount-1);
+    if(nextPage===deactivatedPage)return;
+    deactivatedPage=nextPage;
+    await loadDeactivatedOnly();
+    $('#adminTabDeactivated')?.scrollIntoView({behavior:'smooth',block:'start'});
+  }
   function renderAudit(rows){
     if(!rows.length){
       $('#adminAuditList').innerHTML='<div class="admin-empty"><strong>Zatím bez změn</strong>První administrátorský zásah se zobrazí zde.</div>';
@@ -706,6 +746,7 @@
     $('#deactivatedSource').value='all';
     $('#deactivatedGenre').value='all';
     $('#deactivatedDifficulty').value='';
+    deactivatedPage=0;
     loadDeactivatedOnly();
   }
 
@@ -747,11 +788,14 @@
 
     $('#deactivatedFilterForm').addEventListener('submit',event=>{
       event.preventDefault();
+      deactivatedPage=0;
       loadDeactivatedOnly();
     });
 
     $('#adminClearFilters').addEventListener('click',clearReportFilters);
     $('#deactivatedClearFilters').addEventListener('click',clearDeactivatedFilters);
+    $('#deactivatedPrevPage').addEventListener('click',()=>changeDeactivatedPage(-1));
+    $('#deactivatedNextPage').addEventListener('click',()=>changeDeactivatedPage(1));
 
     $$('.admin-tab').forEach(button=>{
       button.addEventListener('click',()=>switchTab(button.dataset.adminTab));
