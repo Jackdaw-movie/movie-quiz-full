@@ -273,3 +273,109 @@ body.mq-exterior-active>#homeBtn,body.mq-ticket-open>#homeBtn{opacity:0!importan
   .mq-v63-bulb-halo{opacity:.16}.mq-v63-bulb-group{opacity:.24}.mq-v63-sign-letters{opacity:.20}
   .mq-v63-steam-wisp.steam-front{opacity:.34}.mq-v63-steam-wisp.steam-upper{opacity:.20}.mq-v63-steam-wisp.steam-full{opacity:.14}
 }
+
+/* ================================================================
+   EXTERIOR v6.4 — remove legacy rectangular flashes, illuminate
+   JACKDAW'S + HOTEL text, stronger lamp flicker and unmistakable
+   master-derived steam motion. No newly generated artwork.
+   ================================================================ */
+
+/* The old marquee depth crop is almost a full opaque rectangle. It was the
+   remaining "blinking square" when its brightness animation fired. The exact
+   v6.3 bulb overlays stay active, so hide only this obsolete rectangular crop. */
+.mq-v6-marquee{display:none!important;animation:none!important}
+
+/* Keep the sign's depth static. Only the isolated letter pixels are allowed
+   to change brightness, preventing another rectangular pulse. */
+.mq-v6-sign{animation:none!important;filter:brightness(1.035) drop-shadow(6px 11px 5px rgba(0,0,0,.62))!important}
+
+/* JACKDAW'S: exact warm letter pixels from the approved master, no frame. */
+.mq-v63-sign-letters{
+  left:535px!important;top:10px!important;width:111px!important;height:380px!important;
+  opacity:.48!important;mix-blend-mode:screen!important;
+  filter:brightness(1.42) saturate(1.12) drop-shadow(0 0 2px rgba(255,201,93,.70)) drop-shadow(0 0 7px rgba(255,144,32,.24))!important;
+  animation:v64JackdawsGlow 3.8s ease-in-out infinite!important;
+}
+@keyframes v64JackdawsGlow{
+  0%,100%{opacity:.42;filter:brightness(1.34) saturate(1.10) drop-shadow(0 0 2px rgba(255,201,93,.58)) drop-shadow(0 0 5px rgba(255,144,32,.18))}
+  48%{opacity:.78;filter:brightness(1.72) saturate(1.16) drop-shadow(0 0 3px rgba(255,218,125,.88)) drop-shadow(0 0 10px rgba(255,145,31,.34))}
+  56%{opacity:.68}
+}
+
+/* HOTEL: independent exact-text overlay cut from the approved master. */
+.mq-v64-hotel-letters{
+  position:absolute;left:285px;top:300px;width:75px;height:210px;z-index:9;
+  display:block;pointer-events:none;object-fit:fill;mix-blend-mode:screen;
+  opacity:.42;filter:brightness(1.45) saturate(1.10) drop-shadow(0 0 2px rgba(255,196,78,.64)) drop-shadow(0 0 6px rgba(255,139,29,.20));
+  animation:v64HotelGlow 4.35s ease-in-out -1.2s infinite;
+}
+@keyframes v64HotelGlow{
+  0%,100%{opacity:.38;filter:brightness(1.34) saturate(1.08) drop-shadow(0 0 2px rgba(255,196,78,.52)) drop-shadow(0 0 4px rgba(255,139,29,.15))}
+  50%{opacity:.76;filter:brightness(1.74) saturate(1.14) drop-shadow(0 0 3px rgba(255,219,127,.86)) drop-shadow(0 0 9px rgba(255,143,31,.30))}
+}
+
+/* More obvious but still period-appropriate street-lamp flicker.
+   The lamp asset itself has real transparency, so no rectangle can flash. */
+.mq-v6-lamp{
+  animation:v64LampFlicker 5.8s steps(1,end) infinite!important;
+  transform:translate(-2px,-2px)!important;
+}
+@keyframes v64LampFlicker{
+  0%,31%,36%,58%,64%,88%,100%{filter:brightness(1.08) saturate(1.03) drop-shadow(7px 10px 6px rgba(0,0,0,.60)) drop-shadow(0 0 4px rgba(255,190,88,.18))}
+  32%{filter:brightness(.72) saturate(.94) drop-shadow(7px 10px 6px rgba(0,0,0,.60))}
+  33%{filter:brightness(1.42) saturate(1.08) drop-shadow(7px 10px 6px rgba(0,0,0,.60)) drop-shadow(0 0 11px rgba(255,191,78,.54))}
+  34%{filter:brightness(.88) drop-shadow(7px 10px 6px rgba(0,0,0,.60))}
+  35%{filter:brightness(1.25) saturate(1.06) drop-shadow(7px 10px 6px rgba(0,0,0,.60)) drop-shadow(0 0 8px rgba(255,191,78,.40))}
+  59%{filter:brightness(.82) drop-shadow(7px 10px 6px rgba(0,0,0,.60))}
+  60%{filter:brightness(1.36) saturate(1.07) drop-shadow(7px 10px 6px rgba(0,0,0,.60)) drop-shadow(0 0 10px rgba(255,193,84,.48))}
+  61%,63%{filter:brightness(1.02) drop-shadow(7px 10px 6px rgba(0,0,0,.60))}
+  62%{filter:brightness(1.30) saturate(1.06) drop-shadow(7px 10px 6px rgba(0,0,0,.60)) drop-shadow(0 0 9px rgba(255,193,84,.42))}
+}
+
+/* v6.3 smoke was too faint to read against its own master pixels. These three
+   layers are cropped from that same isolated smoke, with stronger alpha and
+   normal blending. Their geometry begins exactly on the existing plume. */
+.mq-v63-steam-live{display:none!important}
+.mq-v64-steam-live{position:absolute;inset:0;z-index:13;pointer-events:none;overflow:visible}
+.mq-v64-steam-wisp{
+  position:absolute;display:block;pointer-events:none;will-change:transform,opacity,filter;
+  mix-blend-mode:normal;transform-origin:35% 88%;
+  filter:brightness(1.12) saturate(.88) contrast(1.02) blur(.12px);
+}
+.mq-v64-steam-wisp.steam-full{
+  left:1168px;top:779px;width:200px;height:152px;opacity:.48;
+  animation:v64SteamFull 5.9s ease-in-out -2.1s infinite;
+}
+.mq-v64-steam-wisp.steam-front{
+  left:1168px;top:802px;width:141px;height:129px;opacity:.62;
+  animation:v64SteamFront 4.2s ease-out infinite;
+}
+.mq-v64-steam-wisp.steam-upper{
+  left:1226px;top:779px;width:142px;height:88px;opacity:.34;
+  animation:v64SteamUpper 5.1s ease-out -2.65s infinite;
+}
+@keyframes v64SteamFront{
+  0%{transform:translate(0,3px) scale(.99,.98);opacity:.26;filter:brightness(1.05) saturate(.90) blur(.08px)}
+  16%{opacity:.76}
+  46%{transform:translate(-4px,-12px) scale(1.05,1.10);opacity:.68;filter:brightness(1.16) saturate(.86) blur(.25px)}
+  76%{transform:translate(5px,-27px) scale(1.11,1.20);opacity:.43;filter:brightness(1.20) saturate(.82) blur(.65px)}
+  100%{transform:translate(10px,-43px) scale(1.18,1.31);opacity:0;filter:brightness(1.22) saturate(.80) blur(1.15px)}
+}
+@keyframes v64SteamUpper{
+  0%{transform:translate(1px,4px) scale(.98,.98);opacity:.12}
+  22%{opacity:.50}
+  54%{transform:translate(7px,-15px) scale(1.07,1.15);opacity:.42;filter:brightness(1.18) saturate(.84) blur(.42px)}
+  82%{transform:translate(-5px,-32px) scale(1.15,1.28);opacity:.25;filter:brightness(1.20) saturate(.80) blur(.88px)}
+  100%{transform:translate(-10px,-48px) scale(1.23,1.39);opacity:0;filter:brightness(1.22) saturate(.78) blur(1.25px)}
+}
+@keyframes v64SteamFull{
+  0%,100%{transform:translate(0,0) scale(1);opacity:.34;filter:brightness(1.08) saturate(.88) blur(.12px)}
+  38%{transform:translate(-3px,-6px) scale(1.025,1.055);opacity:.64;filter:brightness(1.15) saturate(.84) blur(.30px)}
+  72%{transform:translate(4px,-13px) scale(1.06,1.12);opacity:.46;filter:brightness(1.18) saturate(.82) blur(.52px)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .mq-v63-sign-letters,.mq-v64-hotel-letters,.mq-v6-lamp,.mq-v64-steam-wisp{animation:none!important}
+  .mq-v63-sign-letters{opacity:.62!important}.mq-v64-hotel-letters{opacity:.60!important}
+  .mq-v64-steam-wisp.steam-full{opacity:.50!important}.mq-v64-steam-wisp.steam-front{opacity:.58!important}.mq-v64-steam-wisp.steam-upper{opacity:.34!important}
+}
