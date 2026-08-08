@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='exterior-integration-v6.5';
+  const VERSION='exterior-integration-v6.6';
   const exterior=document.getElementById('mqExteriorScene');
   const stage=document.getElementById('mqExteriorStage');
   const booth=document.getElementById('mqTicketBoothHotspot');
@@ -25,6 +25,17 @@
   const footsteps=new Audio('assets/audio/footsteps.ogg');
   footsteps.preload='auto';
   footsteps.playsInline=true;
+
+  /* Real exterior city ambience. We attempt audible autoplay immediately.
+     Browsers may block unmuted autoplay on a fresh visit; if that happens,
+     the same track starts on the very first pointer/keyboard interaction. */
+  const cityAmbience=new Audio('assets/audio/city_ambience.ogg');
+  cityAmbience.preload='auto';
+  cityAmbience.loop=true;
+  cityAmbience.playsInline=true;
+  cityAmbience.crossOrigin='anonymous';
+  let cityAmbienceStarted=false;
+  let cityAmbienceBlocked=false;
 
   const MUSIC_KEY='movieQuizMusicVolumeV1';
   const SFX_KEY='movieQuizSfxVolumeV1';
@@ -60,8 +71,14 @@
     syncStoredLevelsToGame();
     if(kind==='music'&&v>0){
       try{if(typeof switchMusic==='function')switchMusic('menu')}catch(_){}
-    }else if(kind==='sfx'&&v>0){
-      previewExteriorSfx();
+    }else if(kind==='sfx'){
+      syncCityAmbienceVolume();
+      if(v>0){
+        startCityAmbience();
+        previewExteriorSfx();
+      }else{
+        try{cityAmbience.pause()}catch(_){}
+      }
     }
     window.dispatchEvent(new CustomEvent('mq:volume-changed',{detail:{kind,value:v,source:VERSION}}));
   }
@@ -74,10 +91,63 @@
     try{return clampVolume(window.MovieQuizSettings?.musicVolume?.()??storedVolume(MUSIC_KEY))}catch(_){return storedVolume(MUSIC_KEY)}
   }
 
+  function cityAmbienceTargetVolume(){
+    /* Keep the city present but below UI/music. 28% of the SFX slider at max. */
+    return Math.max(0,Math.min(1,(sfxLevel()/100)*.28));
+  }
+
+  function syncCityAmbienceVolume(){
+    try{cityAmbience.volume=cityAmbienceTargetVolume()}catch(_){}
+  }
+
+  function startCityAmbience(){
+    if(auditoriumEntered||document.body.classList.contains('mq-auditorium-entered'))return Promise.resolve(false);
+    syncCityAmbienceVolume();
+    if(cityAmbienceTargetVolume()<=0)return Promise.resolve(false);
+    try{
+      const playPromise=cityAmbience.play();
+      if(playPromise&&typeof playPromise.then==='function'){
+        return playPromise.then(()=>{
+          cityAmbienceStarted=true;
+          cityAmbienceBlocked=false;
+          return true;
+        }).catch(()=>{
+          cityAmbienceBlocked=true;
+          return false;
+        });
+      }
+      cityAmbienceStarted=true;
+      cityAmbienceBlocked=false;
+      return Promise.resolve(true);
+    }catch(_){
+      cityAmbienceBlocked=true;
+      return Promise.resolve(false);
+    }
+  }
+
+  function stopCityAmbience(fadeMs=450){
+    try{
+      if(cityAmbience.paused)return;
+      const start=cityAmbience.volume;
+      const started=performance.now();
+      const step=now=>{
+        const t=Math.min(1,(now-started)/fadeMs);
+        cityAmbience.volume=start*(1-t);
+        if(t<1){requestAnimationFrame(step);return}
+        cityAmbience.pause();
+        cityAmbience.currentTime=0;
+        cityAmbienceStarted=false;
+        syncCityAmbienceVolume();
+      };
+      requestAnimationFrame(step);
+    }catch(_){}
+  }
+
   /* Use the game's real musical engine. The previous exterior noise loop is
      deliberately not used. Audio is unlocked by a real player gesture and
      then remains continuous when the player enters the auditorium. */
   function startExteriorAudio(){
+    startCityAmbience();
     try{
       if(typeof initAudio==='function')initAudio();
       window.MovieQuizSettings?.apply?.();
@@ -185,6 +255,7 @@
   function enterAuditorium(){
     if(entering)return;
     entering=true;
+    stopCityAmbience(520);
     document.body.classList.add('mq-entering-auditorium');
     ticketLayer.classList.add('is-leaving');
     exterior.classList.add('is-leaving');
@@ -252,6 +323,7 @@
   function syncSliders(){
     if(music&&!music.matches(':active'))music.value=String(storedVolume(MUSIC_KEY));
     if(sfx&&!sfx.matches(':active'))sfx.value=String(storedVolume(SFX_KEY));
+    syncCityAmbienceVolume();
   }
 
   function setAudioOpen(open){
@@ -295,12 +367,29 @@
      exterior. This also unlocks the audio context for footsteps and previews. */
   const unlockExteriorSound=()=>{
     if(!document.body.classList.contains('mq-exterior-active')||auditoriumEntered)return;
+    startCityAmbience();
     startExteriorAudio();
     document.removeEventListener('pointerdown',unlockExteriorSound,true);
     document.removeEventListener('keydown',unlockExteriorSound,true);
   };
   document.addEventListener('pointerdown',unlockExteriorSound,true);
   document.addEventListener('keydown',unlockExteriorSound,true);
+
+  /* Try to start the city immediately on page entry. This succeeds where
+     the browser/site autoplay policy permits it. On a fresh browser profile
+     an audible autoplay may be blocked; the unlock handler above is the
+     mandatory fallback and starts it on the first interaction anywhere. */
+  syncCityAmbienceVolume();
+  requestAnimationFrame(()=>startCityAmbience());
+  setTimeout(()=>{if(!cityAmbienceStarted)startCityAmbience()},180);
+
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden){
+      try{cityAmbience.pause()}catch(_){}
+    }else if(!auditoriumEntered&&document.body.classList.contains('mq-exterior-active')){
+      startCityAmbience();
+    }
+  });
 
   waitForGameSystems();
   syncSliders();
