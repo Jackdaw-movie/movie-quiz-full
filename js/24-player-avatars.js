@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='avatar-system-v3.0-static-carousel-onboarding';
+  const VERSION='avatar-system-v3.1-onboarding-hotfix';
   const DEFAULT_ID='avatar_01';
   const DEFAULT_PATH='assets/avatars/Avatar_01.png';
   const GUEST_ID='guest_unknown';
@@ -415,6 +415,7 @@
         window.dispatchEvent(new CustomEvent('mq:avatar-onboarding-complete',{detail:{avatarId}}));
         if(doneButton){
           doneButton.dataset.mqAvatarOnboardingComplete='1';
+          delete doneButton.dataset.mqAvatarOnboardingPending;
           setTimeout(()=>doneButton.click(),40);
         }
       }
@@ -441,22 +442,27 @@
   }
 
   function openGallery(options={}){
-    if(isGuest())return;
-    if(!currentProfile()?.profileId)return;
+    if(isGuest())return false;
+
+    // Nezastavujeme otevření galerie podle profileId. Po čerstvé registraci může být
+    // lokální snapshot profilu o jeden render pozadu, přestože profil už v DB existuje.
+    // Samotné ověření profilu a oprávnění proběhne v loadGallery()/chooseAvatar().
     onboardingMode=Boolean(options.onboarding);
     onboardingDoneButton=options.doneButton||null;
 
     ensureModal();
     applyModalMode();
     const modal=document.getElementById('mqAvatarModal');
+    if(!modal)return false;
     modal.hidden=false;
     galleryOpen=true;
     loadGallery();
     requestAnimationFrame(()=>document.getElementById('mqAvatarCarouselViewport')?.focus({preventScroll:true}));
+    return true;
   }
 
   function openOnboarding(doneButton=null){
-    openGallery({onboarding:true,doneButton});
+    return openGallery({onboarding:true,doneButton});
   }
 
   function closeGallery(force=false){
@@ -521,9 +527,18 @@
       if(!done||done.dataset.mqAvatarOnboardingComplete==='1')return;
       const title=document.querySelector('#mqProfileShell .mq-profile-title')?.textContent||'';
       if(!/Profil byl vytvořen/i.test(title))return;
+
+      // Nový profil nesmí projít rovnou do hry. Tento capture handler zastaví původní
+      // proceedToGame() a otevře povinný výběr avatara.
       event.preventDefault();
       event.stopImmediatePropagation();
-      openOnboarding(done);
+      done.dataset.mqAvatarOnboardingPending='1';
+      const opened=openOnboarding(done);
+      if(!opened){
+        delete done.dataset.mqAvatarOnboardingPending;
+        const error=document.getElementById('mqNameError');
+        if(error)error.textContent='Výběr avatara se nepodařilo otevřít. Obnovte stránku a zkuste to znovu.';
+      }
     },true);
 
     document.addEventListener('click',event=>{
