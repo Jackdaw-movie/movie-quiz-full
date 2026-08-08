@@ -20,6 +20,8 @@
 <link rel="stylesheet" href="css/player-settings.css?v=1.4">
 <link rel="stylesheet" href="css/noir-master.css?v=1.2">
 <link rel="stylesheet" href="css/exterior-scene.css?v=6.5">
+<link rel="preconnect" href="https://assets.mixkit.co" crossorigin>
+<link rel="dns-prefetch" href="//assets.mixkit.co">
 </head>
 <body class="mq-noir-master mq-exterior-active">
 
@@ -70,8 +72,8 @@
     </button>
     <div class="mq-exterior-audio-panel" id="mqExteriorAudioPanel" hidden>
       <strong>Zvuk</strong>
-      <label><span>Hudba</span><input id="mqExteriorMusic" type="range" min="0" max="100" step="1"></label>
-      <label><span>Zvuky</span><input id="mqExteriorSfx" type="range" min="0" max="100" step="1"></label>
+      <label><span>Hudba</span><input id="mqExteriorMusic" type="range" min="0" max="100" step="1" value="50"></label>
+      <label><span>Herní zvuky</span><input id="mqExteriorSfx" type="range" min="0" max="100" step="1" value="50"></label>
     </div>
   </aside>
 </section>
@@ -214,6 +216,6 @@ Máte tři životy. Patnáct správných odpovědí znamená vítězství.
 <script id="mq-v30-fantasy-dragon-script" src="js/40-fantasy-dragon.js"></script>
 <script id="mq-v33-fantasy-dragon-runtime-fix-script" src="js/41-fantasy-runtime.js"></script>
 <script id="mq-v34-fantasy-rebuild-script" src="js/42-fantasy-rebuild.js"></script>
-<script id="mq-exterior-scene-script" src="js/26-exterior-scene.js?v=6.7"></script>
+<script id="mq-exterior-scene-script" src="js/26-exterior-scene.js?v=6.8"></script>
 </body>
 </html>

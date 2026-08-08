@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='exterior-integration-v6.7-city-audio-stable';
+  const VERSION='exterior-integration-v6.8-city-people-audio';
   const exterior=document.getElementById('mqExteriorScene');
   const stage=document.getElementById('mqExteriorStage');
   const booth=document.getElementById('mqTicketBoothHotspot');
@@ -26,14 +26,26 @@
   footsteps.preload='auto';
   footsteps.playsInline=true;
 
-  /* Real exterior city ambience. We attempt audible autoplay immediately.
-     Browsers may block unmuted autoplay on a fresh visit; if that happens,
-     the same track starts on the very first pointer/keyboard interaction. */
-  const cityAmbience=new Audio('assets/audio/city_ambience.ogg');
-  cityAmbience.preload='auto';
-  cityAmbience.loop=true;
-  cityAmbience.playsInline=true;
-  cityAmbience.crossOrigin='anonymous';
+  /* v6.8: The old local synthetic/noisy ambience is no longer used.
+     Exterior ambience is built from two real street recordings from Mixkit:
+     - people / footsteps / street chatter (primary)
+     - traffic ambience (quiet supporting bed)
+     Both are controlled by the same Herní zvuky slider. */
+  const STREET_PEOPLE_URL='https://assets.mixkit.co/active_storage/sfx/375/375-preview.mp3';
+  const STREET_TRAFFIC_URL='https://assets.mixkit.co/active_storage/sfx/2930/2930-preview.mp3';
+
+  const cityPeople=new Audio(STREET_PEOPLE_URL);
+  const cityTraffic=new Audio(STREET_TRAFFIC_URL);
+  for(const track of [cityPeople,cityTraffic]){
+    track.preload='auto';
+    track.loop=true;
+    track.playsInline=true;
+  }
+  /* Desynchronise the two loops so the repeated ambience is much less obvious. */
+  cityTraffic.addEventListener('loadedmetadata',()=>{
+    try{if(Number.isFinite(cityTraffic.duration)&&cityTraffic.duration>17)cityTraffic.currentTime=11.7}catch(_){}
+  },{once:true});
+
   let cityAmbienceStarted=false;
   let cityAmbienceBlocked=false;
   let cityWanted=true;
@@ -42,6 +54,28 @@
 
   const MUSIC_KEY='movieQuizMusicVolumeV1';
   const SFX_KEY='movieQuizSfxVolumeV1';
+  const MUSIC_BEFORE_MUTE_KEY='movieQuizMusicBeforeMuteV1';
+  const SFX_BEFORE_MUTE_KEY='movieQuizSfxBeforeMuteV1';
+  const AUDIO_DEFAULTS_MIGRATION_KEY='movieQuizExteriorAudioDefaultsV68';
+
+  /* Make 50 / 50 the real standard for this release, including users who
+     still have extreme values left over from the earlier exterior tests.
+     This runs once only; later user changes remain persistent. */
+  function ensureDefaultAudioLevels(){
+    try{
+      if(localStorage.getItem(AUDIO_DEFAULTS_MIGRATION_KEY)==='1')return;
+      localStorage.setItem(MUSIC_KEY,'50');
+      localStorage.setItem(SFX_KEY,'50');
+      localStorage.setItem(MUSIC_BEFORE_MUTE_KEY,'50');
+      localStorage.setItem(SFX_BEFORE_MUTE_KEY,'50');
+      localStorage.setItem(AUDIO_DEFAULTS_MIGRATION_KEY,'1');
+    }catch(_){}
+  }
+  ensureDefaultAudioLevels();
+  setTimeout(()=>{
+    try{window.MovieQuizSettings?.apply?.()}catch(_){}
+    window.dispatchEvent(new CustomEvent('mq:volume-changed',{detail:{kind:'all',value:50,source:VERSION}}));
+  },0);
 
   function clampVolume(value){
     const number=Number(value);
@@ -70,17 +104,20 @@
     const v=clampVolume(value);
     const key=kind==='music'?MUSIC_KEY:SFX_KEY;
     try{localStorage.setItem(key,String(v))}catch(_){}
-    if(v>0)startExteriorAudio();
     syncStoredLevelsToGame();
-    if(kind==='music'&&v>0){
-      try{if(typeof switchMusic==='function')switchMusic('menu')}catch(_){}
+
+    if(kind==='music'){
+      if(v>0){
+        startExteriorAudio();
+        try{if(typeof switchMusic==='function')switchMusic('menu')}catch(_){}
+      }
     }else if(kind==='sfx'){
       syncCityAmbienceVolume();
       if(v>0){
         startCityAmbience();
         previewExteriorSfx();
       }else{
-        try{cityAmbience.pause()}catch(_){}
+        for(const track of [cityPeople,cityTraffic]){try{track.pause()}catch(_){}}
       }
     }
     window.dispatchEvent(new CustomEvent('mq:volume-changed',{detail:{kind,value:v,source:VERSION}}));
@@ -94,42 +131,56 @@
     try{return clampVolume(window.MovieQuizSettings?.musicVolume?.()??storedVolume(MUSIC_KEY))}catch(_){return storedVolume(MUSIC_KEY)}
   }
 
+  function cityPeopleTargetVolume(){
+    /* At the standard 50% SFX setting the human street layer is clearly
+       audible (~0.31) without sitting on top of the menu music. */
+    return Math.max(0,Math.min(1,(sfxLevel()/100)*.62));
+  }
+
+  function cityTrafficTargetVolume(){
+    /* Traffic remains a quieter supporting layer behind the people. */
+    return Math.max(0,Math.min(1,(sfxLevel()/100)*.30));
+  }
+
   function cityAmbienceTargetVolume(){
-    /* Keep the city present but below UI/music. 28% of the SFX slider at max. */
-    return Math.max(0,Math.min(1,(sfxLevel()/100)*.28));
+    return Math.max(cityPeopleTargetVolume(),cityTrafficTargetVolume());
   }
 
   function syncCityAmbienceVolume(){
-    try{cityAmbience.volume=cityAmbienceTargetVolume()}catch(_){}
+    try{cityPeople.volume=cityPeopleTargetVolume()}catch(_){}
+    try{cityTraffic.volume=cityTrafficTargetVolume()}catch(_){}
   }
 
   function startCityAmbience(){
     if(!cityWanted||auditoriumEntered||document.body.classList.contains('mq-auditorium-entered'))return Promise.resolve(false);
     syncCityAmbienceVolume();
     if(cityAmbienceTargetVolume()<=0)return Promise.resolve(false);
-    if(!cityAmbience.paused&&!cityAmbience.ended){
+
+    const bothPlaying=!cityPeople.paused&&!cityPeople.ended&&!cityTraffic.paused&&!cityTraffic.ended;
+    if(bothPlaying){
       cityAmbienceStarted=true;
       cityAmbienceBlocked=false;
       return Promise.resolve(true);
     }
     if(cityPlayInFlight)return cityPlayInFlight;
-    try{
-      cityPlayInFlight=Promise.resolve(cityAmbience.play()).then(()=>{
-        cityAmbienceStarted=true;
-        cityAmbienceBlocked=false;
-        return true;
-      }).catch(()=>{
-        cityAmbienceStarted=false;
-        cityAmbienceBlocked=true;
-        return false;
-      }).finally(()=>{cityPlayInFlight=null});
-      return cityPlayInFlight;
-    }catch(_){
-      cityPlayInFlight=null;
-      cityAmbienceStarted=false;
-      cityAmbienceBlocked=true;
-      return Promise.resolve(false);
-    }
+
+    const playTrack=track=>{
+      try{
+        if(!track.paused&&!track.ended)return Promise.resolve(true);
+        return Promise.resolve(track.play()).then(()=>true).catch(()=>false);
+      }catch(_){return Promise.resolve(false)}
+    };
+
+    cityPlayInFlight=Promise.all([playTrack(cityPeople),playTrack(cityTraffic)])
+      .then(results=>{
+        /* The people layer is the important one. The traffic bed may fail
+           independently without killing the whole exterior soundscape. */
+        cityAmbienceStarted=Boolean(results[0]||results[1]);
+        cityAmbienceBlocked=!cityAmbienceStarted;
+        return cityAmbienceStarted;
+      })
+      .finally(()=>{cityPlayInFlight=null});
+    return cityPlayInFlight;
   }
 
   function scheduleCityRestart(delay=90){
@@ -144,21 +195,22 @@
   function stopCityAmbience(fadeMs=450){
     cityWanted=false;
     if(cityRestartTimer){clearTimeout(cityRestartTimer);cityRestartTimer=0}
-    try{
-      if(cityAmbience.paused)return;
-      const start=cityAmbience.volume;
-      const started=performance.now();
-      const step=now=>{
-        const t=Math.min(1,(now-started)/fadeMs);
-        cityAmbience.volume=start*(1-t);
-        if(t<1){requestAnimationFrame(step);return}
-        cityAmbience.pause();
-        cityAmbience.currentTime=0;
-        cityAmbienceStarted=false;
-        syncCityAmbienceVolume();
-      };
-      requestAnimationFrame(step);
-    }catch(_){}
+    const tracks=[cityPeople,cityTraffic];
+    const starts=tracks.map(track=>track.volume||0);
+    const started=performance.now();
+    const step=now=>{
+      const t=Math.min(1,(now-started)/fadeMs);
+      tracks.forEach((track,index)=>{
+        try{track.volume=starts[index]*(1-t)}catch(_){}
+      });
+      if(t<1){requestAnimationFrame(step);return}
+      tracks.forEach(track=>{
+        try{track.pause();track.currentTime=0}catch(_){}
+      });
+      cityAmbienceStarted=false;
+      syncCityAmbienceVolume();
+    };
+    requestAnimationFrame(step);
   }
 
   /* Use the game's real musical engine. The previous exterior noise loop is
@@ -398,6 +450,13 @@
       if(typeof initAudio==='function')initAudio();
       if(typeof audioCtx!=='undefined'&&audioCtx?.state==='suspended')audioCtx.resume?.().catch?.(()=>{});
       window.MovieQuizSettings?.apply?.();
+      /* Start the normal menu score after the browser gesture has unlocked
+         WebAudio. A small delay keeps it independent from HTMLAudio ambience. */
+      if(musicLevel()>0&&typeof switchMusic==='function'){
+        setTimeout(()=>{
+          try{if(!auditoriumEntered&&musicLevel()>0)switchMusic('menu')}catch(_){}
+        },140);
+      }
     }catch(_){}
     document.removeEventListener('pointerdown',unlockExteriorSound,true);
     document.removeEventListener('keydown',unlockExteriorSound,true);
@@ -412,30 +471,29 @@
   syncCityAmbienceVolume();
   cityWanted=true;
   /* Best-effort audible autoplay. If the browser blocks it, the first real
-     user gesture above starts the already-preloaded 24 s loop immediately. */
+     user gesture above starts the preloaded street layers immediately. */
   requestAnimationFrame(()=>startCityAmbience());
   setTimeout(()=>{if(cityWanted&&!cityAmbienceStarted)startCityAmbience()},220);
 
-  cityAmbience.addEventListener('playing',()=>{
-    cityAmbienceStarted=true;
-    cityAmbienceBlocked=false;
-  });
-  cityAmbience.addEventListener('pause',()=>{
-    cityAmbienceStarted=false;
-    if(cityWanted&&!auditoriumEntered&&!document.hidden)scheduleCityRestart(80);
-  });
-  cityAmbience.addEventListener('ended',()=>{
-    cityAmbienceStarted=false;
-    if(cityWanted&&!auditoriumEntered){
-      try{cityAmbience.currentTime=0}catch(_){}
-      scheduleCityRestart(0);
-    }
-  });
-  cityAmbience.addEventListener('stalled',()=>scheduleCityRestart(140));
+  for(const track of [cityPeople,cityTraffic]){
+    track.addEventListener('playing',()=>{
+      cityAmbienceStarted=true;
+      cityAmbienceBlocked=false;
+    });
+    track.addEventListener('pause',()=>{
+      if(cityPeople.paused&&cityTraffic.paused)cityAmbienceStarted=false;
+      if(cityWanted&&!auditoriumEntered&&!document.hidden)scheduleCityRestart(120);
+    });
+    track.addEventListener('ended',()=>{
+      if(cityWanted&&!auditoriumEntered)scheduleCityRestart(0);
+    });
+    track.addEventListener('stalled',()=>scheduleCityRestart(180));
+    track.addEventListener('error',()=>scheduleCityRestart(600));
+  }
 
   document.addEventListener('visibilitychange',()=>{
     if(document.hidden){
-      try{cityAmbience.pause()}catch(_){}
+      for(const track of [cityPeople,cityTraffic]){try{track.pause()}catch(_){}}
     }else if(!auditoriumEntered&&document.body.classList.contains('mq-exterior-active')){
       cityWanted=true;
       startCityAmbience();
