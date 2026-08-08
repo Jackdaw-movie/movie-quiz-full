@@ -185,3 +185,91 @@ body.mq-exterior-active>#homeBtn,body.mq-ticket-open>#homeBtn{opacity:0!importan
   .mq-v62-marquee-lights,.mq-v62-marquee-lights i,.mq-v62-sign-lights,.mq-v6-steam-wisp{animation:none!important}
   .mq-v62-marquee-lights{opacity:.48}.mq-v62-sign-lights{opacity:.48}.mq-v6-steam-wisp.w1{opacity:.32}
 }
+
+/* ================================================================
+   EXTERIOR v6.3 — precise bulb overlays + truly isolated live steam
+   No rectangular light masks. All animated pixels come from the approved master.
+   ================================================================ */
+
+.mq-v62-marquee-lights,.mq-v62-sign-lights{display:none!important}
+
+.mq-v63-marquee-lights{
+  position:absolute;left:510px;top:275px;width:960px;height:260px;z-index:9;
+  pointer-events:none;overflow:visible;
+}
+.mq-v63-marquee-lights img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:fill;display:block;
+  pointer-events:none;transform:none;
+}
+.mq-v63-bulb-halo{
+  opacity:.18;mix-blend-mode:screen;
+  animation:v63BulbHalo 3.2s ease-in-out infinite;
+}
+.mq-v63-bulb-group{
+  opacity:.08;mix-blend-mode:screen;
+  filter:brightness(1.30) saturate(1.05) drop-shadow(0 0 2px rgba(255,198,92,.58));
+  animation:v63BulbChase 1.35s ease-in-out infinite;
+}
+.mq-v63-bulb-group.g1{animation-delay:0s}
+.mq-v63-bulb-group.g2{animation-delay:-.45s}
+.mq-v63-bulb-group.g3{animation-delay:-.90s}
+@keyframes v63BulbChase{
+  0%,28%,100%{opacity:.08;filter:brightness(1.10) saturate(1.02) drop-shadow(0 0 1px rgba(255,198,92,.28))}
+  42%,68%{opacity:.82;filter:brightness(1.62) saturate(1.08) drop-shadow(0 0 3px rgba(255,205,105,.78)) drop-shadow(0 0 7px rgba(255,156,42,.30))}
+}
+@keyframes v63BulbHalo{
+  0%,100%{opacity:.12;filter:blur(.15px)}
+  50%{opacity:.27;filter:blur(.55px)}
+}
+
+.mq-v63-sign-letters{
+  position:absolute;left:535px;top:10px;width:111px;height:380px;z-index:9;
+  pointer-events:none;object-fit:fill;mix-blend-mode:screen;opacity:.16;
+  filter:brightness(1.18) drop-shadow(0 0 2px rgba(255,177,63,.28));
+  animation:v63SignLetters 4.2s ease-in-out infinite;
+}
+@keyframes v63SignLetters{
+  0%,100%{opacity:.12;filter:brightness(1.12) drop-shadow(0 0 1px rgba(255,177,63,.20))}
+  46%{opacity:.42;filter:brightness(1.42) drop-shadow(0 0 3px rgba(255,197,87,.56))}
+  52%{opacity:.27}
+  59%{opacity:.46;filter:brightness(1.48) drop-shadow(0 0 4px rgba(255,180,57,.58))}
+  66%{opacity:.24}
+}
+
+.mq-v63-steam-live{
+  position:absolute;z-index:13;left:1120px;top:680px;width:300px;height:261px;
+  overflow:visible;pointer-events:none;
+}
+.mq-v63-steam-wisp{
+  position:absolute;inset:0;width:300px;height:261px;display:block;object-fit:fill;
+  pointer-events:none;transform-origin:35% 85%;will-change:transform,opacity,filter;
+  mix-blend-mode:screen;
+  filter:brightness(1.20) saturate(.72) contrast(1.02) blur(.15px);
+}
+.mq-v63-steam-wisp.steam-front{animation:v63SteamFront 3.9s ease-out infinite}
+.mq-v63-steam-wisp.steam-upper{animation:v63SteamUpper 5.1s ease-out -2.35s infinite}
+.mq-v63-steam-wisp.steam-full{animation:v63SteamFull 6.4s ease-in-out -4.7s infinite}
+@keyframes v63SteamFront{
+  0%{transform:translate(0,4px) scale(.995,.985);opacity:.18}
+  20%{opacity:.66}
+  52%{transform:translate(-3px,-8px) scale(1.035,1.075);opacity:.54}
+  78%{transform:translate(4px,-17px) scale(1.07,1.14);opacity:.31}
+  100%{transform:translate(7px,-28px) scale(1.11,1.22);opacity:.05}
+}
+@keyframes v63SteamUpper{
+  0%{transform:translate(5px,5px) scale(.98,.98);opacity:.10}
+  24%{opacity:.48}
+  56%{transform:translate(1px,-10px) scale(1.04,1.09);opacity:.42}
+  82%{transform:translate(-6px,-21px) scale(1.09,1.17);opacity:.24}
+  100%{transform:translate(-10px,-33px) scale(1.14,1.25);opacity:.04}
+}
+@keyframes v63SteamFull{
+  0%,100%{transform:translate(0,0) scale(1);opacity:.14;filter:brightness(1.12) saturate(.72) blur(.15px)}
+  50%{transform:translate(-2px,-5px) scale(1.025,1.055);opacity:.34;filter:brightness(1.28) saturate(.68) blur(.45px)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .mq-v63-bulb-halo,.mq-v63-bulb-group,.mq-v63-sign-letters,.mq-v63-steam-wisp{animation:none!important}
+  .mq-v63-bulb-halo{opacity:.16}.mq-v63-bulb-group{opacity:.24}.mq-v63-sign-letters{opacity:.20}
+  .mq-v63-steam-wisp.steam-front{opacity:.34}.mq-v63-steam-wisp.steam-upper{opacity:.20}.mq-v63-steam-wisp.steam-full{opacity:.14}
+}
