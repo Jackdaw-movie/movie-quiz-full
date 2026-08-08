@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='exterior-integration-v6.1';
+  const VERSION='exterior-integration-v6.2';
   const exterior=document.getElementById('mqExteriorScene');
   const stage=document.getElementById('mqExteriorStage');
   const booth=document.getElementById('mqTicketBoothHotspot');
