@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='exterior-integration-v6.6';
+  const VERSION='exterior-integration-v6.7-city-audio-stable';
   const exterior=document.getElementById('mqExteriorScene');
   const stage=document.getElementById('mqExteriorStage');
   const booth=document.getElementById('mqTicketBoothHotspot');
@@ -36,6 +36,9 @@
   cityAmbience.crossOrigin='anonymous';
   let cityAmbienceStarted=false;
   let cityAmbienceBlocked=false;
+  let cityWanted=true;
+  let cityRestartTimer=0;
+  let cityPlayInFlight=null;
 
   const MUSIC_KEY='movieQuizMusicVolumeV1';
   const SFX_KEY='movieQuizSfxVolumeV1';
@@ -101,31 +104,46 @@
   }
 
   function startCityAmbience(){
-    if(auditoriumEntered||document.body.classList.contains('mq-auditorium-entered'))return Promise.resolve(false);
+    if(!cityWanted||auditoriumEntered||document.body.classList.contains('mq-auditorium-entered'))return Promise.resolve(false);
     syncCityAmbienceVolume();
     if(cityAmbienceTargetVolume()<=0)return Promise.resolve(false);
-    try{
-      const playPromise=cityAmbience.play();
-      if(playPromise&&typeof playPromise.then==='function'){
-        return playPromise.then(()=>{
-          cityAmbienceStarted=true;
-          cityAmbienceBlocked=false;
-          return true;
-        }).catch(()=>{
-          cityAmbienceBlocked=true;
-          return false;
-        });
-      }
+    if(!cityAmbience.paused&&!cityAmbience.ended){
       cityAmbienceStarted=true;
       cityAmbienceBlocked=false;
       return Promise.resolve(true);
+    }
+    if(cityPlayInFlight)return cityPlayInFlight;
+    try{
+      cityPlayInFlight=Promise.resolve(cityAmbience.play()).then(()=>{
+        cityAmbienceStarted=true;
+        cityAmbienceBlocked=false;
+        return true;
+      }).catch(()=>{
+        cityAmbienceStarted=false;
+        cityAmbienceBlocked=true;
+        return false;
+      }).finally(()=>{cityPlayInFlight=null});
+      return cityPlayInFlight;
     }catch(_){
+      cityPlayInFlight=null;
+      cityAmbienceStarted=false;
       cityAmbienceBlocked=true;
       return Promise.resolve(false);
     }
   }
 
+  function scheduleCityRestart(delay=90){
+    if(cityRestartTimer)clearTimeout(cityRestartTimer);
+    if(!cityWanted||auditoriumEntered||document.hidden)return;
+    cityRestartTimer=window.setTimeout(()=>{
+      cityRestartTimer=0;
+      if(cityWanted&&!auditoriumEntered&&!document.hidden)startCityAmbience();
+    },delay);
+  }
+
   function stopCityAmbience(fadeMs=450){
+    cityWanted=false;
+    if(cityRestartTimer){clearTimeout(cityRestartTimer);cityRestartTimer=0}
     try{
       if(cityAmbience.paused)return;
       const start=cityAmbience.volume;
@@ -147,7 +165,6 @@
      deliberately not used. Audio is unlocked by a real player gesture and
      then remains continuous when the player enters the auditorium. */
   function startExteriorAudio(){
-    startCityAmbience();
     try{
       if(typeof initAudio==='function')initAudio();
       window.MovieQuizSettings?.apply?.();
@@ -164,7 +181,12 @@
 
   function previewExteriorSfx(){
     if(sfxLevel()<=0)return;
-    startExteriorAudio();
+    startCityAmbience();
+    try{
+      if(typeof initAudio==='function')initAudio();
+      if(typeof audioCtx!=='undefined'&&audioCtx?.state==='suspended')audioCtx.resume?.().catch?.(()=>{});
+      window.MovieQuizSettings?.apply?.();
+    }catch(_){}
     if(sfxPreviewTimer)clearTimeout(sfxPreviewTimer);
     sfxPreviewTimer=window.setTimeout(()=>{
       try{
@@ -176,7 +198,7 @@
 
   function playFootsteps(){
     try{
-      startExteriorAudio();
+      startCityAmbience();
       const volume=(sfxLevel()/100)*.62;
       if(volume<=0)return;
       footsteps.pause();
@@ -367,8 +389,16 @@
      exterior. This also unlocks the audio context for footsteps and previews. */
   const unlockExteriorSound=()=>{
     if(!document.body.classList.contains('mq-exterior-active')||auditoriumEntered)return;
+    cityWanted=true;
     startCityAmbience();
-    startExteriorAudio();
+    /* Unlock WebAudio for later game SFX, but do not start the synthesized
+       menu score on the same gesture as the city ambience. Keeping those two
+       systems separate avoids the short-start/race heard in v6.6. */
+    try{
+      if(typeof initAudio==='function')initAudio();
+      if(typeof audioCtx!=='undefined'&&audioCtx?.state==='suspended')audioCtx.resume?.().catch?.(()=>{});
+      window.MovieQuizSettings?.apply?.();
+    }catch(_){}
     document.removeEventListener('pointerdown',unlockExteriorSound,true);
     document.removeEventListener('keydown',unlockExteriorSound,true);
   };
@@ -380,13 +410,34 @@
      an audible autoplay may be blocked; the unlock handler above is the
      mandatory fallback and starts it on the first interaction anywhere. */
   syncCityAmbienceVolume();
+  cityWanted=true;
+  /* Best-effort audible autoplay. If the browser blocks it, the first real
+     user gesture above starts the already-preloaded 24 s loop immediately. */
   requestAnimationFrame(()=>startCityAmbience());
-  setTimeout(()=>{if(!cityAmbienceStarted)startCityAmbience()},180);
+  setTimeout(()=>{if(cityWanted&&!cityAmbienceStarted)startCityAmbience()},220);
+
+  cityAmbience.addEventListener('playing',()=>{
+    cityAmbienceStarted=true;
+    cityAmbienceBlocked=false;
+  });
+  cityAmbience.addEventListener('pause',()=>{
+    cityAmbienceStarted=false;
+    if(cityWanted&&!auditoriumEntered&&!document.hidden)scheduleCityRestart(80);
+  });
+  cityAmbience.addEventListener('ended',()=>{
+    cityAmbienceStarted=false;
+    if(cityWanted&&!auditoriumEntered){
+      try{cityAmbience.currentTime=0}catch(_){}
+      scheduleCityRestart(0);
+    }
+  });
+  cityAmbience.addEventListener('stalled',()=>scheduleCityRestart(140));
 
   document.addEventListener('visibilitychange',()=>{
     if(document.hidden){
       try{cityAmbience.pause()}catch(_){}
     }else if(!auditoriumEntered&&document.body.classList.contains('mq-exterior-active')){
+      cityWanted=true;
       startCityAmbience();
     }
   });
