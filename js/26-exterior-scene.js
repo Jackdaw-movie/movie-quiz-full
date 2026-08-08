@@ -1,6 +1,6 @@
 (()=>{
   'use strict';
-  const VERSION='exterior-integration-v4.0';
+  const VERSION='exterior-integration-v5.0';
   const exterior=document.getElementById('mqExteriorScene');
   const stage=document.getElementById('mqExteriorStage');
   const booth=document.getElementById('mqTicketBoothHotspot');
@@ -34,7 +34,7 @@
   function mountProfileOnTicket(){const panel=findProfilePanel();if(!panel)return false;if(!profilePlaceholder){profilePlaceholder=document.createComment('mq-profile-return');panel.parentNode?.insertBefore(profilePlaceholder,panel)}panel.classList.add('mq-ticket-player-panel');ticketMount.appendChild(panel);return true}
   function restoreProfilePanel(){const panel=findProfilePanel();if(!panel)return;if(profilePlaceholder?.parentNode)profilePlaceholder.parentNode.insertBefore(panel,profilePlaceholder.nextSibling);panel.classList.remove('mq-ticket-player-panel')}
   function showTicketLayer(){ticketLayer.hidden=false;document.body.classList.add('mq-ticket-open');ticketOpen=true;requestAnimationFrame(mountProfileOnTicket);setTimeout(mountProfileOnTicket,90);setTimeout(mountProfileOnTicket,300)}
-  function openTicket(){if(ticketOpen||entering)return;unlockAmbience();playFootsteps();exterior.classList.add('is-approaching');setTimeout(()=>{try{originalShowView?.('playerView')}catch(_){}showTicketLayer()},760)}
+  function openTicket(){if(ticketOpen||entering)return;unlockAmbience();playFootsteps();exterior.classList.add('is-approaching');setTimeout(()=>{try{originalShowView?.('playerView')}catch(_){}showTicketLayer()},1550)}
   function enterAuditorium(){if(entering)return;entering=true;document.body.classList.add('mq-entering-auditorium');exterior.classList.add('is-leaving');stopAmbience();setTimeout(()=>{restoreProfilePanel();ticketLayer.hidden=true;exterior.hidden=true;ticketOpen=false;auditoriumEntered=true;entering=false;document.body.classList.remove('mq-exterior-active','mq-ticket-open','mq-entering-auditorium');document.body.classList.add('mq-auditorium-entered');cinema.classList.add('running','open');try{originalShowView?.('difficulty')}catch(_){}try{document.getElementById('screen')?.removeAttribute('data-genre');if(typeof switchMusic==='function')switchMusic('menu');if(typeof sound==='function')sound('soft')}catch(_){}setTimeout(()=>window.dispatchEvent(new Event('resize')),80)},820)}
   function wrapShowView(){if(wrapped||typeof window.showView!=='function')return false;originalShowView=window.showView;window.showView=function(id){if(id==='difficulty'&&ticketOpen&&!auditoriumEntered){enterAuditorium();return}if(id==='playerView'&&auditoriumEntered){originalShowView(id);showTicketLayer();return}return originalShowView(id)};wrapped=true;return true}
   function waitForGameSystems(){if(wrapShowView())return;setTimeout(waitForGameSystems,60)}
@@ -55,7 +55,7 @@
   document.addEventListener('pointerdown',()=>setAudioOpen(false));
   music?.addEventListener('input',()=>settings()?.setMusicVolume?.(Number(music.value)));
   sfx?.addEventListener('input',()=>{settings()?.setSfxVolume?.(Number(sfx.value));syncExternalAudio()});
-  window.addEventListener('mq:settings-changed',syncSliders);setInterval(syncSliders,900);
+  window.addEventListener('mq:settings-changed',syncSliders);setInterval(syncSliders,900);setAudioOpen(false);
 
   booth.addEventListener('pointerenter',e=>{showWalk(true);updateWalkCursor(e)});
   booth.addEventListener('pointermove',updateWalkCursor);
