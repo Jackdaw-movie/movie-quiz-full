@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='exterior-scene-v1.1-polish';
+  const VERSION='exterior-scene-v1.2-asset-exterior';
   const exterior=document.getElementById('mqExteriorScene');
   const booth=document.getElementById('mqTicketBoothHotspot');
   const ticketLayer=document.getElementById('mqTicketLayer');
