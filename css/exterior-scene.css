@@ -379,3 +379,68 @@ body.mq-exterior-active>#homeBtn,body.mq-ticket-open>#homeBtn{opacity:0!importan
   .mq-v63-sign-letters{opacity:.62!important}.mq-v64-hotel-letters{opacity:.60!important}
   .mq-v64-steam-wisp.steam-full{opacity:.50!important}.mq-v64-steam-wisp.steam-front{opacity:.58!important}.mq-v64-steam-wisp.steam-upper{opacity:.34!important}
 }
+
+/* ================================================================
+   EXTERIOR v6.5 — lower drain steam only, stronger vertical-sign glow
+   and restored functional exterior audio. Existing approved artwork only.
+   ================================================================ */
+
+/* Retire all older steam implementations so only the lower drain plume runs. */
+.mq-v6-steam-live,.mq-v63-steam-live,.mq-v64-steam-live{display:none!important}
+
+/* Only the lower plume that actually emerges from the drain. Two copies of
+   the SAME approved lower-plume pixels are staggered for a seamless loop. */
+.mq-v65-steam-live{
+  position:absolute;inset:0;z-index:13;pointer-events:none;overflow:visible;
+}
+.mq-v65-steam-low{
+  position:absolute;left:1168px;top:802px;width:141px;height:129px;
+  display:block;pointer-events:none;object-fit:fill;
+  transform-origin:31% 91%;will-change:transform,opacity,filter;
+  mix-blend-mode:screen;
+  filter:brightness(1.18) saturate(.86) contrast(1.03) blur(.12px);
+}
+.mq-v65-steam-low.steam-a{animation:v65DrainSteam 3.8s ease-out infinite}
+.mq-v65-steam-low.steam-b{animation:v65DrainSteam 3.8s ease-out -1.9s infinite}
+@keyframes v65DrainSteam{
+  0%{transform:translate(0,3px) scale(.99,.98);opacity:0}
+  13%{opacity:.38}
+  34%{transform:translate(-1px,-2px) scale(1.015,1.035);opacity:.66}
+  62%{transform:translate(2px,-8px) scale(1.035,1.075);opacity:.54}
+  82%{transform:translate(-2px,-13px) scale(1.055,1.11);opacity:.27;filter:brightness(1.20) saturate(.84) contrast(1.02) blur(.34px)}
+  100%{transform:translate(2px,-18px) scale(1.075,1.15);opacity:0;filter:brightness(1.20) saturate(.82) contrast(1.01) blur(.62px)}
+}
+
+/* Stronger illumination of the two existing vertical signs. No movement and
+   no rectangular backing layer — only isolated letter pixels are animated. */
+.mq-v63-sign-letters{
+  opacity:.66!important;
+  filter:brightness(1.62) saturate(1.17)
+    drop-shadow(0 0 2px rgba(255,222,137,.88))
+    drop-shadow(0 0 6px rgba(255,176,53,.52))
+    drop-shadow(0 0 12px rgba(255,130,24,.22))!important;
+  animation:v65JackdawsGlow 3.25s ease-in-out infinite!important;
+}
+@keyframes v65JackdawsGlow{
+  0%,100%{opacity:.60;filter:brightness(1.52) saturate(1.15) drop-shadow(0 0 2px rgba(255,219,130,.78)) drop-shadow(0 0 5px rgba(255,169,47,.42)) drop-shadow(0 0 10px rgba(255,126,22,.17))}
+  50%{opacity:.96;filter:brightness(2.08) saturate(1.22) drop-shadow(0 0 3px rgba(255,236,170,.98)) drop-shadow(0 0 9px rgba(255,183,58,.70)) drop-shadow(0 0 17px rgba(255,127,20,.30))}
+}
+.mq-v64-hotel-letters{
+  opacity:.62!important;
+  filter:brightness(1.64) saturate(1.16)
+    drop-shadow(0 0 2px rgba(255,218,124,.84))
+    drop-shadow(0 0 6px rgba(255,170,48,.48))
+    drop-shadow(0 0 12px rgba(255,127,22,.20))!important;
+  animation:v65HotelGlow 3.7s ease-in-out -1.1s infinite!important;
+}
+@keyframes v65HotelGlow{
+  0%,100%{opacity:.56;filter:brightness(1.48) saturate(1.14) drop-shadow(0 0 2px rgba(255,213,115,.72)) drop-shadow(0 0 5px rgba(255,164,44,.38)) drop-shadow(0 0 9px rgba(255,125,21,.15))}
+  50%{opacity:.92;filter:brightness(2.00) saturate(1.21) drop-shadow(0 0 3px rgba(255,234,164,.96)) drop-shadow(0 0 9px rgba(255,181,55,.66)) drop-shadow(0 0 16px rgba(255,127,20,.27))}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .mq-v65-steam-low,.mq-v63-sign-letters,.mq-v64-hotel-letters{animation:none!important}
+  .mq-v65-steam-low.steam-a{opacity:.48!important}
+  .mq-v65-steam-low.steam-b{display:none!important}
+  .mq-v63-sign-letters{opacity:.78!important}.mq-v64-hotel-letters{opacity:.74!important}
+}

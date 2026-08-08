@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='exterior-integration-v6.2';
+  const VERSION='exterior-integration-v6.5';
   const exterior=document.getElementById('mqExteriorScene');
   const stage=document.getElementById('mqExteriorStage');
   const booth=document.getElementById('mqTicketBoothHotspot');
@@ -19,6 +19,8 @@
   let profilePanel=null;
   let profilePlaceholder=null;
   let approachTimer=0;
+  let exteriorAudioStarted=false;
+  let sfxPreviewTimer=0;
 
   const footsteps=new Audio('assets/audio/footsteps.ogg');
   footsteps.preload='auto';
@@ -54,7 +56,13 @@
     const v=clampVolume(value);
     const key=kind==='music'?MUSIC_KEY:SFX_KEY;
     try{localStorage.setItem(key,String(v))}catch(_){}
+    if(v>0)startExteriorAudio();
     syncStoredLevelsToGame();
+    if(kind==='music'&&v>0){
+      try{if(typeof switchMusic==='function')switchMusic('menu')}catch(_){}
+    }else if(kind==='sfx'&&v>0){
+      previewExteriorSfx();
+    }
     window.dispatchEvent(new CustomEvent('mq:volume-changed',{detail:{kind,value:v,source:VERSION}}));
   }
 
@@ -62,8 +70,43 @@
     try{return clampVolume(window.MovieQuizSettings?.sfxVolume?.()??storedVolume(SFX_KEY))}catch(_){return storedVolume(SFX_KEY)}
   }
 
+  function musicLevel(){
+    try{return clampVolume(window.MovieQuizSettings?.musicVolume?.()??storedVolume(MUSIC_KEY))}catch(_){return storedVolume(MUSIC_KEY)}
+  }
+
+  /* Use the game's real musical engine. The previous exterior noise loop is
+     deliberately not used. Audio is unlocked by a real player gesture and
+     then remains continuous when the player enters the auditorium. */
+  function startExteriorAudio(){
+    try{
+      if(typeof initAudio==='function')initAudio();
+      window.MovieQuizSettings?.apply?.();
+      if(typeof audioCtx!=='undefined'&&audioCtx?.state==='suspended'){
+        audioCtx.resume?.().catch?.(()=>{});
+      }
+      if(musicLevel()>0&&typeof switchMusic==='function'){
+        switchMusic('menu');
+      }
+      exteriorAudioStarted=true;
+      return true;
+    }catch(_){return false}
+  }
+
+  function previewExteriorSfx(){
+    if(sfxLevel()<=0)return;
+    startExteriorAudio();
+    if(sfxPreviewTimer)clearTimeout(sfxPreviewTimer);
+    sfxPreviewTimer=window.setTimeout(()=>{
+      try{
+        if(typeof sound==='function')sound('tick');
+        else if(typeof tone==='function')tone(720,.035,'sine',.012);
+      }catch(_){}
+    },70);
+  }
+
   function playFootsteps(){
     try{
+      startExteriorAudio();
       const volume=(sfxLevel()/100)*.62;
       if(volume<=0)return;
       footsteps.pause();
@@ -247,6 +290,17 @@
       openTicket();
     }
   });
+
+  /* Start the real menu soundtrack on the first genuine interaction with the
+     exterior. This also unlocks the audio context for footsteps and previews. */
+  const unlockExteriorSound=()=>{
+    if(!document.body.classList.contains('mq-exterior-active')||auditoriumEntered)return;
+    startExteriorAudio();
+    document.removeEventListener('pointerdown',unlockExteriorSound,true);
+    document.removeEventListener('keydown',unlockExteriorSound,true);
+  };
+  document.addEventListener('pointerdown',unlockExteriorSound,true);
+  document.addEventListener('keydown',unlockExteriorSound,true);
 
   waitForGameSystems();
   syncSliders();
