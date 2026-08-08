@@ -1,11 +1,22 @@
 (()=>{
   'use strict';
 
-  const VERSION='avatar-system-v2.0-carousel';
-  const DEFAULT_ID='popcorn_noir_01';
-  const DEFAULT_PATH='assets/avatars/popcorn_noir_01.png';
+  const VERSION='avatar-system-v3.0-static-carousel-onboarding';
+  const DEFAULT_ID='avatar_01';
+  const DEFAULT_PATH='assets/avatars/Avatar_01.png';
   const GUEST_ID='guest_unknown';
   const GUEST_PATH='assets/avatars/guest_unknown.svg';
+  const STATIC_AVATARS=Array.from({length:20},(_,index)=>{
+    const number=String(index+1).padStart(2,'0');
+    return {
+      avatar_id:`avatar_${number}`,
+      label:`Avatar ${number}`,
+      asset_path:`assets/avatars/Avatar_${number}.png`,
+      unlocked:true,
+      selectable:true,
+      unlock_rule:null
+    };
+  });
 
   let galleryOpen=false;
   let galleryLoading=false;
@@ -15,6 +26,8 @@
   let dragPointerId=null;
   let dragStartX=0;
   let scoreboardTimer=0;
+  let onboardingMode=false;
+  let onboardingDoneButton=null;
 
   const onlineApi=()=>window.MovieQuizOnline;
   const isGuest=()=>window.__mqGuestMode===true;
@@ -44,7 +57,7 @@
     const profile=currentProfile();
     return {
       id:profile?.avatarId||DEFAULT_ID,
-      label:profile?.avatarLabel||'Popcorn Noir',
+      label:profile?.avatarLabel||'Avatar',
       path:safePath(profile?.avatarPath,DEFAULT_PATH),
       guest:false
     };
@@ -337,8 +350,8 @@
     const selected=Boolean(row?.selected);
     if(counter)counter.textContent=`${String(wrapIndex(carouselIndex)+1).padStart(2,'0')} / ${String(total).padStart(2,'0')}`;
     if(confirm){
-      confirm.disabled=!row||!available||selected;
-      confirm.textContent=selected?'Aktuálně vybraný':available?'Použít avatara':'Avatar je zamčený';
+      confirm.disabled=!row||!available||(!onboardingMode&&selected);
+      confirm.textContent=onboardingMode?(selected?'Potvrdit tento avatar':'Vybrat a pokračovat'):(selected?'Aktuálně vybraný':available?'Použít avatara':'Avatar je zamčený');
     }
   }
 
@@ -351,16 +364,22 @@
     try{
       const api=onlineApi();
       if(!api?.ensureBackend)throw new Error('Online profil není připravený.');
-      const {client:db}=await api.ensureBackend();
-      const {data,error}=await db.rpc('list_my_player_avatars');
-      if(error)throw error;
-      galleryRows=Array.isArray(data)?data:[];
+      await api.ensureBackend();
+      await api.refreshProfileState?.();
+      const selectedId=String(currentProfile()?.avatarId||'');
+      galleryRows=STATIC_AVATARS.map(row=>({
+        ...row,
+        selected:row.avatar_id===selectedId
+      }));
       carouselIndex=selectedGalleryIndex();
       renderGallery();
       if(status)status.textContent='';
     }catch(error){
-      if(status)status.textContent='Galerii se nepodařilo načíst.';
-      console.error('Movie Quiz: galerie avatarů se nepodařila načíst.',error);
+      galleryRows=STATIC_AVATARS.map((row,index)=>({...row,selected:index===0}));
+      carouselIndex=0;
+      renderGallery();
+      if(status)status.textContent='Galerie je připravená. Připojení profilu se ověří při uložení.';
+      console.warn('Movie Quiz: profil se při načtení galerie nepodařilo ověřit.',error);
     }finally{
       galleryLoading=false;
     }
@@ -388,37 +407,68 @@
       scheduleScoreboard();
       window.dispatchEvent(new CustomEvent('mq:avatar-changed',{detail:{avatarId}}));
       if(status)status.textContent='Avatar byl uložen.';
+      if(onboardingMode){
+        const doneButton=onboardingDoneButton;
+        onboardingMode=false;
+        onboardingDoneButton=null;
+        closeGallery(true);
+        window.dispatchEvent(new CustomEvent('mq:avatar-onboarding-complete',{detail:{avatarId}}));
+        if(doneButton){
+          doneButton.dataset.mqAvatarOnboardingComplete='1';
+          setTimeout(()=>doneButton.click(),40);
+        }
+      }
     }catch(error){
       console.error('Movie Quiz: avatar se nepodařilo uložit.',error);
-      if(status)status.textContent='Avatar se nepodařilo uložit.';
+      const message=String(error?.message||error||'');
+      if(status)status.textContent=/AVATAR_NOT_AVAILABLE/i.test(message)?'Avatar není ještě zaregistrovaný v databázi. Spusťte přiložený SQL patch.':'Avatar se nepodařilo uložit.';
     }finally{
       if(button)button.disabled=false;
       renderGallery();
     }
   }
 
-  function openGallery(){
+  function applyModalMode(){
+    const modal=document.getElementById('mqAvatarModal');
+    if(!modal)return;
+    modal.classList.toggle('is-onboarding',onboardingMode);
+    const title=modal.querySelector('#mqAvatarTitle');
+    const paragraph=modal.querySelector('.mq-avatar-dialog-head p');
+    if(title)title.textContent=onboardingMode?'Vyberte si svůj avatar':'Vyberte avatar';
+    if(paragraph)paragraph.textContent=onboardingMode
+      ?'Ještě poslední krok. Vyberte postavu, která vás bude ve hře reprezentovat.'
+      :'Posouvejte šipkami, kolečkem nebo tažením. Prostřední avatar je připravený k výběru.';
+  }
+
+  function openGallery(options={}){
     if(isGuest())return;
     if(!currentProfile()?.profileId)return;
+    onboardingMode=Boolean(options.onboarding);
+    onboardingDoneButton=options.doneButton||null;
 
     ensureModal();
+    applyModalMode();
     const modal=document.getElementById('mqAvatarModal');
     modal.hidden=false;
     galleryOpen=true;
-    if(galleryRows.length){
-      carouselIndex=selectedGalleryIndex();
-      renderGallery();
-    }else{
-      loadGallery();
-    }
+    loadGallery();
     requestAnimationFrame(()=>document.getElementById('mqAvatarCarouselViewport')?.focus({preventScroll:true}));
   }
 
-  function closeGallery(){
+  function openOnboarding(doneButton=null){
+    openGallery({onboarding:true,doneButton});
+  }
+
+  function closeGallery(force=false){
+    if(onboardingMode&&!force)return;
     const modal=document.getElementById('mqAvatarModal');
     if(modal)modal.hidden=true;
     galleryOpen=false;
     dragPointerId=null;
+    if(force){
+      onboardingMode=false;
+      onboardingDoneButton=null;
+    }
   }
 
   function syncAll(){
@@ -466,6 +516,16 @@
   }
 
   function bind(){
+    document.addEventListener('click',event=>{
+      const done=event.target?.closest?.('#mqRecoveryDone');
+      if(!done||done.dataset.mqAvatarOnboardingComplete==='1')return;
+      const title=document.querySelector('#mqProfileShell .mq-profile-title')?.textContent||'';
+      if(!/Profil byl vytvořen/i.test(title))return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      openOnboarding(done);
+    },true);
+
     document.addEventListener('click',event=>{
       if(event.target.closest?.('[data-open-avatar-gallery]')){
         event.preventDefault();
@@ -546,8 +606,9 @@
 
   window.MovieQuizAvatars=Object.freeze({
     version:VERSION,
-    open:openGallery,
-    close:closeGallery,
+    open:()=>openGallery(),
+    openOnboarding,
+    close:()=>closeGallery(),
     refresh:syncAll,
     current:currentAvatar
   });
