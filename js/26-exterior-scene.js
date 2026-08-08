@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='exterior-integration-v6.8-city-people-audio';
+  const VERSION='exterior-integration-v6.9-preloaded-production';
   const exterior=document.getElementById('mqExteriorScene');
   const stage=document.getElementById('mqExteriorStage');
   const booth=document.getElementById('mqTicketBoothHotspot');
@@ -22,20 +22,18 @@
   let exteriorAudioStarted=false;
   let sfxPreviewTimer=0;
 
-  const footsteps=new Audio('assets/audio/footsteps.ogg');
+  const preloadPool=window.MovieQuizPreload||null;
+  const footsteps=preloadPool?.footsteps||new Audio('assets/audio/footsteps.ogg');
   footsteps.preload='auto';
   footsteps.playsInline=true;
 
-  /* v6.8: The old local synthetic/noisy ambience is no longer used.
-     Exterior ambience is built from two real street recordings from Mixkit:
-     - people / footsteps / street chatter (primary)
-     - traffic ambience (quiet supporting bed)
-     Both are controlled by the same Herní zvuky slider. */
+  /* v6.9 reuses the Audio elements created by the loading gate. That means the
+     first trusted click can start already-buffered city recordings immediately,
+     without creating duplicate downloads or competing playback objects. */
   const STREET_PEOPLE_URL='https://assets.mixkit.co/active_storage/sfx/375/375-preview.mp3';
   const STREET_TRAFFIC_URL='https://assets.mixkit.co/active_storage/sfx/2930/2930-preview.mp3';
-
-  const cityPeople=new Audio(STREET_PEOPLE_URL);
-  const cityTraffic=new Audio(STREET_TRAFFIC_URL);
+  const cityPeople=preloadPool?.cityPeople||new Audio(STREET_PEOPLE_URL);
+  const cityTraffic=preloadPool?.cityTraffic||new Audio(STREET_TRAFFIC_URL);
   for(const track of [cityPeople,cityTraffic]){
     track.preload='auto';
     track.loop=true;
@@ -152,6 +150,7 @@
   }
 
   function startCityAmbience(){
+    if(document.body.classList.contains('mq-preloading'))return Promise.resolve(false);
     if(!cityWanted||auditoriumEntered||document.body.classList.contains('mq-auditorium-entered'))return Promise.resolve(false);
     syncCityAmbienceVolume();
     if(cityAmbienceTargetVolume()<=0)return Promise.resolve(false);
@@ -440,6 +439,7 @@
   /* Start the real menu soundtrack on the first genuine interaction with the
      exterior. This also unlocks the audio context for footsteps and previews. */
   const unlockExteriorSound=()=>{
+    if(document.body.classList.contains('mq-preloading'))return;
     if(!document.body.classList.contains('mq-exterior-active')||auditoriumEntered)return;
     cityWanted=true;
     startCityAmbience();
@@ -463,17 +463,22 @@
   };
   document.addEventListener('pointerdown',unlockExteriorSound,true);
   document.addEventListener('keydown',unlockExteriorSound,true);
+  window.addEventListener('mq:preload-entered',()=>{
+    cityWanted=true;
+    syncCityAmbienceVolume();
+    // Same preloaded tracks are already playing; this only reconciles state,
+    // unlocks WebAudio and starts the normal menu score at the stored volume.
+    unlockExteriorSound();
+  },{once:true});
 
-  /* Try to start the city immediately on page entry. This succeeds where
-     the browser/site autoplay policy permits it. On a fresh browser profile
-     an audible autoplay may be blocked; the unlock handler above is the
-     mandatory fallback and starts it on the first interaction anywhere. */
   syncCityAmbienceVolume();
   cityWanted=true;
-  /* Best-effort audible autoplay. If the browser blocks it, the first real
-     user gesture above starts the preloaded street layers immediately. */
-  requestAnimationFrame(()=>startCityAmbience());
-  setTimeout(()=>{if(cityWanted&&!cityAmbienceStarted)startCityAmbience()},220);
+  /* With the v6.9 gate we intentionally wait for the explicit Enter click.
+     Keep the old best-effort path only if the gate is absent/already released. */
+  if(!document.body.classList.contains('mq-preloading')){
+    requestAnimationFrame(()=>startCityAmbience());
+    setTimeout(()=>{if(cityWanted&&!cityAmbienceStarted)startCityAmbience()},220);
+  }
 
   for(const track of [cityPeople,cityTraffic]){
     track.addEventListener('playing',()=>{

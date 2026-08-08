@@ -1,0 +1,6 @@
+/* Movie Quiz v6.9 production rendering optimisations. */
+.mq-v6-stage{contain:layout paint style;transform-style:flat}
+.mq-v6-master,.mq-v6-depth,.mq-v63-marquee-lights img,.mq-v63-sign-letters,.mq-v64-hotel-letters,.mq-v65-steam-low{image-rendering:auto;backface-visibility:hidden}
+.mq-v6-car-shine-aligned{-webkit-mask-image:url('../assets/exterior-v6-9/production/car.webp')!important;mask-image:url('../assets/exterior-v6-9/production/car.webp')!important}
+body.mq-exterior-active #page{content-visibility:hidden!important;contain-intrinsic-size:1672px 941px}
+body.mq-auditorium-entered #page{content-visibility:visible!important}
