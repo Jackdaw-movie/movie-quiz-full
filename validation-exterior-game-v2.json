@@ -1,0 +1,12 @@
+{
+  "canvas": true,
+  "audio_panel": true,
+  "ticket_layer": true,
+  "shoe_left": true,
+  "shoe_right": true,
+  "no_exterior_image_refs": true,
+  "no_old_exterior_runtime": true,
+  "new_runtime": true,
+  "all_js_syntax": "OK",
+  "css_braces": "OK"
+}

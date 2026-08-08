@@ -1,0 +1,314 @@
+/* ===============================================================
+   MOVIE QUIZ — JACKDAW'S CINEMA / EXTERIOR GAME SCENE v2
+   Canvas-driven 2.5D adventure scene. No environment bitmap assets.
+   =============================================================== */
+
+body.mq-exterior-active{
+  overflow:hidden!important;
+  background:#030407!important;
+}
+
+body.mq-exterior-active #page{
+  opacity:0!important;
+  pointer-events:none!important;
+  transform:none!important;
+}
+
+body.mq-auditorium-entered #page{
+  opacity:1!important;
+  pointer-events:auto!important;
+  transform:none!important;
+  transition:opacity .9s ease!important;
+}
+
+.mq-exterior-game{
+  position:fixed;
+  inset:0;
+  z-index:2147481000;
+  overflow:hidden;
+  background:#040508;
+  cursor:default;
+  isolation:isolate;
+}
+
+.mq-exterior-canvas{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+  background:#05070b;
+  touch-action:none;
+}
+
+.mq-exterior-game.is-approaching .mq-exterior-canvas{
+  cursor:none;
+}
+
+/* ----------------------- Adventure cursor ----------------------- */
+.mq-walk-cursor-game{
+  position:fixed;
+  left:0;
+  top:0;
+  z-index:2147482950;
+  width:122px;
+  height:82px;
+  opacity:0;
+  visibility:hidden;
+  transform:translate(-34px,-12px);
+  pointer-events:none;
+  transition:opacity .08s ease,visibility .08s ease;
+  filter:drop-shadow(0 7px 7px rgba(0,0,0,.68)) drop-shadow(0 0 6px rgba(241,198,103,.18));
+}
+
+.mq-walk-cursor-game.is-visible{
+  opacity:1;
+  visibility:visible;
+}
+
+.mq-walk-cursor-game img{
+  position:absolute;
+  width:68px;
+  height:auto;
+  display:block;
+  user-select:none;
+  -webkit-user-drag:none;
+  transform-origin:50% 70%;
+}
+
+.mq-walk-cursor-game .shoe-left{
+  left:0;
+  top:12px;
+  transform:rotate(-18deg);
+  animation:mqGameShoeLeft .52s ease-in-out infinite alternate;
+}
+
+.mq-walk-cursor-game .shoe-right{
+  right:0;
+  top:0;
+  transform:rotate(13deg);
+  animation:mqGameShoeRight .52s ease-in-out infinite alternate;
+}
+
+@keyframes mqGameShoeLeft{
+  from{transform:translateY(3px) rotate(-19deg)}
+  to{transform:translateY(-3px) rotate(-13deg)}
+}
+@keyframes mqGameShoeRight{
+  from{transform:translateY(-3px) rotate(11deg)}
+  to{transform:translateY(4px) rotate(16deg)}
+}
+
+/* ----------------------- Exterior audio UI ----------------------- */
+.mq-exterior-audio{
+  position:fixed;
+  top:14px;
+  right:14px;
+  z-index:2147483000;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:8px;
+  color:#f6e3ba;
+}
+
+.mq-exterior-audio-button{
+  position:relative;
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  padding:0;
+  border:1px solid rgba(226,185,91,.72);
+  border-radius:7px;
+  color:#f2ca73;
+  background:
+    linear-gradient(145deg,rgba(95,67,33,.28),transparent 42%),
+    linear-gradient(180deg,#28211d,#0a0a0c 70%);
+  box-shadow:
+    0 10px 28px rgba(0,0,0,.50),
+    inset 0 0 0 2px rgba(4,4,5,.78),
+    inset 0 0 0 3px rgba(213,166,70,.18),
+    inset 0 1px rgba(255,240,198,.12);
+  cursor:pointer;
+}
+
+.mq-exterior-audio-button::before,
+.mq-exterior-audio-button::after{
+  content:"";
+  position:absolute;
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:#c59947;
+  box-shadow:0 0 5px rgba(242,196,95,.28);
+}
+.mq-exterior-audio-button::before{left:5px;top:5px}
+.mq-exterior-audio-button::after{right:5px;bottom:5px}
+
+.mq-exterior-audio-button svg{
+  width:23px;
+  height:23px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.mq-exterior-audio-button:hover,
+.mq-exterior-audio-button:focus-visible,
+.mq-exterior-audio-button[aria-expanded="true"]{
+  color:#ffe1a0;
+  border-color:#f2c86c;
+  background:
+    linear-gradient(145deg,rgba(139,89,35,.34),transparent 42%),
+    linear-gradient(180deg,#3a2b20,#100d0e 70%);
+  outline:none;
+}
+
+.mq-exterior-audio-panel[hidden]{display:none!important}
+.mq-exterior-audio-panel{
+  width:min(330px,calc(100vw - 28px));
+  padding:15px 16px 14px;
+  border:1px solid rgba(223,181,88,.54);
+  border-radius:7px;
+  background:
+    radial-gradient(circle at 90% 0,rgba(107,61,25,.18),transparent 36%),
+    linear-gradient(180deg,rgba(27,22,20,.985),rgba(7,8,10,.99));
+  box-shadow:
+    0 22px 58px rgba(0,0,0,.64),
+    inset 0 0 0 2px rgba(0,0,0,.52),
+    inset 0 0 0 3px rgba(203,157,65,.10);
+}
+
+.mq-exterior-audio-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:11px;
+  color:#f2dfb8;
+}
+.mq-exterior-audio-title span{
+  color:#c9a455;
+  font:500 9px/1 "Oswald",sans-serif;
+  letter-spacing:.20em;
+  text-transform:uppercase;
+}
+.mq-exterior-audio-title strong{
+  display:block;
+  margin-top:3px;
+  font:400 18px/1 "Limelight",serif;
+  letter-spacing:.03em;
+}
+
+.mq-exterior-audio-row{
+  display:grid;
+  grid-template-columns:72px 1fr 42px;
+  align-items:center;
+  gap:9px;
+  min-height:42px;
+  border-top:1px solid rgba(218,175,83,.12);
+}
+.mq-exterior-audio-row:first-of-type{border-top:0}
+.mq-exterior-audio-row label{
+  color:#d9c397;
+  font:500 12px/1 "Oswald",sans-serif;
+  letter-spacing:.035em;
+}
+.mq-exterior-audio-row output{
+  color:#caa75d;
+  font:500 11px/1 "Oswald",sans-serif;
+  text-align:right;
+}
+
+.mq-exterior-audio-row input[type="range"]{
+  width:100%;
+  height:18px;
+  margin:0;
+  padding:0;
+  appearance:none;
+  background:transparent;
+  cursor:pointer;
+}
+.mq-exterior-audio-row input[type="range"]::-webkit-slider-runnable-track{
+  height:4px;
+  border-radius:0;
+  background:linear-gradient(90deg,#725323,#d3aa56);
+  box-shadow:0 0 0 1px rgba(0,0,0,.55);
+}
+.mq-exterior-audio-row input[type="range"]::-webkit-slider-thumb{
+  width:15px;
+  height:15px;
+  margin-top:-5px;
+  appearance:none;
+  border:1px solid #f0d18c;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#ffe5a4,#a8762e 52%,#412a12 100%);
+  box-shadow:0 3px 7px rgba(0,0,0,.48);
+}
+.mq-exterior-audio-row input[type="range"]::-moz-range-track{
+  height:4px;
+  background:linear-gradient(90deg,#725323,#d3aa56);
+}
+.mq-exterior-audio-row input[type="range"]::-moz-range-thumb{
+  width:15px;
+  height:15px;
+  border:1px solid #f0d18c;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#ffe5a4,#a8762e 52%,#412a12 100%);
+}
+
+.mq-exterior-audio-note{
+  margin:8px 0 0;
+  color:rgba(231,214,178,.56);
+  font:400 9px/1.45 "Oswald",sans-serif;
+  letter-spacing:.025em;
+}
+
+/* Before the player enters the hall there is no regular player HUD/home. */
+body.mq-exterior-active > #mqPlayerBadge,
+body.mq-exterior-active > #homeBtn{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+
+/* Keep exterior sound control above the ticket as well. */
+body.mq-entering-auditorium .mq-exterior-audio,
+body.mq-auditorium-entered .mq-exterior-audio{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .35s ease,visibility .35s ease;
+}
+
+/* Intentional booth approach only — no pointer-driven camera motion. */
+.mq-exterior-game.is-approaching{
+  animation:mqExteriorIntentionalApproach .92s cubic-bezier(.22,.74,.18,1) forwards;
+  transform-origin:63% 64%;
+}
+@keyframes mqExteriorIntentionalApproach{
+  from{transform:scale(1)}
+  to{transform:scale(1.075) translate(-1.8%,-1.0%)}
+}
+
+.mq-exterior-game.is-leaving{
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .62s ease;
+}
+
+@media(max-width:700px){
+  .mq-exterior-audio{top:7px;right:7px}
+  .mq-exterior-audio-button{width:43px;height:43px}
+  .mq-exterior-audio-panel{width:min(300px,calc(100vw - 14px))}
+  .mq-walk-cursor-game{width:96px;height:66px;transform:translate(-27px,-8px)}
+  .mq-walk-cursor-game img{width:55px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .mq-exterior-game.is-approaching{animation:none!important;transform:scale(1.035)}
+  .mq-walk-cursor-game img{animation:none!important}
+}

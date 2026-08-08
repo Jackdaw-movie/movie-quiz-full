@@ -1635,3 +1635,278 @@ body.mq-exterior-active .mq-exterior-scene--asset{
   .mq-exterior-scene--asset .mq-walk-cursor{width:62px;height:50px;transform:translate(-30px,-42px)}
   .mq-exterior-scene--asset .mq-ticket-hotspot--asset{left:53.6%;top:50.3%;width:18%;height:25.5%}
 }
+
+
+/* =====================================================================
+   EXTERIOR LAYERED ADVENTURE PATCH v1.5
+   Replaces the static-image approach with a composited game scene.
+   ===================================================================== */
+
+body.mq-exterior-active .mq-exterior-scene--layered{
+  background:
+    radial-gradient(circle at 50% 18%, rgba(40,47,61,.28), transparent 28%),
+    linear-gradient(180deg,#06070a 0%,#0c1017 55%,#030405 100%);
+}
+
+.mq-exterior-scene--layered .mq-exterior-stage{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  isolation:isolate;
+}
+
+.mq-exterior-scene--layered .mq-exterior-sky{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 40% 12%, rgba(111,122,143,.16), transparent 0 16%),
+    linear-gradient(180deg,#070910 0%,#131822 52%,#050608 100%);
+}
+
+.mq-exterior-scene--layered .mq-exterior-city-art,
+.mq-exterior-scene--layered .mq-exterior-cinema-art,
+.mq-exterior-scene--layered .mq-exterior-car-art{
+  position:absolute;
+  display:block;
+  user-select:none;
+  -webkit-user-drag:none;
+  pointer-events:none;
+}
+
+.mq-exterior-scene--layered .mq-exterior-city-art{
+  left:50%;
+  bottom:0;
+  width:min(100vw, 178vh);
+  min-width:100%;
+  transform:translateX(-50%);
+  opacity:.98;
+  filter:brightness(.95) saturate(.96);
+  z-index:1;
+}
+
+.mq-exterior-scene--layered .mq-exterior-cinema-art{
+  left:50.7%;
+  bottom:10.2%;
+  width:min(74vw, 1120px);
+  transform:translateX(-50%);
+  z-index:4;
+  filter:drop-shadow(0 16px 36px rgba(0,0,0,.45));
+}
+
+.mq-exterior-scene--layered .mq-exterior-marquee-copy{
+  position:absolute;
+  left:50.4%;
+  top:31.6%;
+  width:min(38vw, 610px);
+  transform:translateX(-50%);
+  z-index:5;
+  text-align:center;
+  color:#131313;
+  text-shadow:0 1px 0 rgba(255,255,255,.24);
+  pointer-events:none;
+}
+.mq-exterior-scene--layered .mq-exterior-marquee-copy span,
+.mq-exterior-scene--layered .mq-exterior-marquee-copy em,
+.mq-exterior-scene--layered .mq-exterior-marquee-copy strong{display:block;font-style:normal}
+.mq-exterior-scene--layered .mq-exterior-marquee-copy span{
+  font-family:'Oswald',sans-serif;
+  font-size:clamp(12px,1.22vw,22px);
+  font-weight:600;
+  letter-spacing:.16em;
+}
+.mq-exterior-scene--layered .mq-exterior-marquee-copy strong{
+  margin:.10em 0 .04em;
+  font-family:'Oswald',sans-serif;
+  font-size:clamp(30px,4vw,66px);
+  font-weight:600;
+  letter-spacing:.22em;
+}
+.mq-exterior-scene--layered .mq-exterior-marquee-copy em{
+  font-family:'Oswald',sans-serif;
+  font-size:clamp(11px,1.28vw,22px);
+  font-weight:500;
+  letter-spacing:.07em;
+}
+
+.mq-exterior-scene--layered .mq-exterior-booth-glow{
+  position:absolute;
+  left:49.9%;
+  top:52.2%;
+  width:min(8.4vw, 140px);
+  aspect-ratio:1/1.35;
+  transform:translateX(-50%);
+  border-radius:40px;
+  background:
+    radial-gradient(circle at 50% 32%, rgba(255,246,212,.62), rgba(255,198,101,.38) 36%, rgba(255,166,65,.18) 52%, transparent 72%),
+    radial-gradient(circle at 50% 78%, rgba(255,184,78,.15), transparent 58%);
+  filter:blur(16px);
+  mix-blend-mode:screen;
+  z-index:3;
+  animation:mqBoothBreathe 2.4s ease-in-out infinite alternate;
+}
+@keyframes mqBoothBreathe{from{opacity:.72;transform:translateX(-50%) scale(.97)}to{opacity:1;transform:translateX(-50%) scale(1.06)}}
+
+.mq-exterior-scene--layered .mq-exterior-side-glow{
+  position:absolute;
+  top:48.4%;
+  width:min(4.2vw,72px);
+  height:min(12vw,180px);
+  background:radial-gradient(circle at 50% 50%, rgba(255,200,105,.20), transparent 72%);
+  filter:blur(18px);
+  mix-blend-mode:screen;
+  z-index:2;
+  animation:mqSideGlow 3.2s ease-in-out infinite alternate;
+}
+.mq-exterior-scene--layered .mq-exterior-side-glow-left{left:38.8%}
+.mq-exterior-scene--layered .mq-exterior-side-glow-right{left:61.5%; animation-delay:-1.4s}
+@keyframes mqSideGlow{from{opacity:.45}to{opacity:.82}}
+
+.mq-exterior-scene--layered .mq-searchlight-beams{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  mix-blend-mode:screen;
+  opacity:.54;
+}
+.mq-exterior-scene--layered .mq-searchlight-beams i{
+  position:absolute;
+  top:-10%;
+  left:51.3%;
+  width:min(16vw,240px);
+  height:52%;
+  background:linear-gradient(180deg, rgba(196,214,255,.28), rgba(196,214,255,.10) 30%, transparent 100%);
+  clip-path:polygon(47% 0,53% 0,100% 100%,0 100%);
+  transform-origin:50% 100%;
+  filter:blur(1px);
+}
+.mq-exterior-scene--layered .mq-searchlight-beams i:first-child{animation:mqSearchA 7.5s ease-in-out infinite alternate}
+.mq-exterior-scene--layered .mq-searchlight-beams i:last-child{animation:mqSearchB 9s ease-in-out infinite alternate; opacity:.82}
+@keyframes mqSearchA{from{transform:translateX(-50%) rotate(-9deg)}to{transform:translateX(-50%) rotate(8deg)}}
+@keyframes mqSearchB{from{transform:translateX(-50%) rotate(13deg)}to{transform:translateX(-50%) rotate(-5deg)}}
+
+.mq-exterior-scene--layered .mq-exterior-car-art{
+  left:4.8%;
+  bottom:3.4%;
+  width:min(31vw, 510px);
+  z-index:6;
+  filter:drop-shadow(0 18px 26px rgba(0,0,0,.38));
+}
+
+.mq-exterior-scene--layered .mq-exterior-steam{
+  position:absolute;
+  z-index:6;
+  pointer-events:none;
+}
+.mq-exterior-scene--layered .mq-exterior-steam-a{right:6.8%;bottom:7%;width:min(11vw,170px);height:min(14vw,220px)}
+.mq-exterior-scene--layered .mq-exterior-steam-b{left:10%;bottom:11%;width:min(8vw,130px);height:min(10vw,160px)}
+.mq-exterior-scene--layered .mq-exterior-steam i{
+  position:absolute;
+  bottom:0;
+  left:50%;
+  width:36%;
+  height:60%;
+  background:radial-gradient(ellipse at 50% 55%, rgba(228,232,240,.30), rgba(228,232,240,.12) 36%, transparent 72%);
+  border-radius:50%;
+  filter:blur(11px);
+  opacity:0;
+  animation:mqStreetSteam 5.2s ease-in-out infinite;
+}
+.mq-exterior-scene--layered .mq-exterior-steam i:nth-child(1){margin-left:-16%;animation-delay:0s}
+.mq-exterior-scene--layered .mq-exterior-steam i:nth-child(2){margin-left:4%;transform:scale(.74);animation-delay:-1.8s}
+.mq-exterior-scene--layered .mq-exterior-steam i:nth-child(3){margin-left:-32%;transform:scale(.58);animation-delay:-3.2s}
+@keyframes mqStreetSteam{0%{transform:translate(-50%,18px) scale(.50);opacity:0}12%{opacity:.28}100%{transform:translate(calc(-50% + 18px),-110px) scale(1.65);opacity:0}}
+
+.mq-exterior-scene--layered .mq-exterior-vignette{
+  position:absolute;
+  inset:0;
+  z-index:8;
+  pointer-events:none;
+  box-shadow:inset 0 0 140px rgba(0,0,0,.72), inset 0 -36px 80px rgba(0,0,0,.44);
+}
+
+.mq-exterior-scene--layered .mq-exterior-grain{
+  position:absolute;
+  inset:0;
+  z-index:7;
+  pointer-events:none;
+  opacity:.10;
+  mix-blend-mode:soft-light;
+  background-image:repeating-radial-gradient(circle at 17% 23%, rgba(255,255,255,.24) 0 1px, transparent 1px 4px);
+  background-size:13px 14px;
+  animation:mqExteriorGrain .28s steps(2) infinite;
+}
+
+.mq-exterior-scene--layered .mq-ticket-hotspot--layered{
+  position:absolute;
+  left:46.7%;
+  top:49.6%;
+  width:min(7.2vw,118px);
+  height:min(12vw,176px);
+  z-index:9;
+  border:0;
+  border-radius:28px;
+  background:transparent;
+  cursor:none!important;
+}
+.mq-exterior-scene--layered .mq-ticket-hotspot--layered:hover,
+.mq-exterior-scene--layered .mq-ticket-hotspot--layered:focus-visible{
+  outline:none;
+}
+
+.mq-exterior-scene--layered .mq-walk-cursor--shoes{
+  position:fixed;
+  width:116px;
+  height:76px;
+  transform:translate(-34px,-18px);
+  z-index:2147483400;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .12s ease;
+}
+.mq-exterior-scene--layered .mq-walk-cursor--shoes.is-visible{opacity:1}
+.mq-exterior-scene--layered .mq-walk-shoe-img{
+  position:absolute;
+  width:64px;
+  height:auto;
+  filter:drop-shadow(0 8px 10px rgba(0,0,0,.45));
+}
+.mq-exterior-scene--layered .mq-walk-shoe-left{left:0;top:8px;transform:rotate(-14deg);animation:mqCursorShoeLeft .55s ease-in-out infinite alternate}
+.mq-exterior-scene--layered .mq-walk-shoe-right{right:0;top:0;transform:rotate(11deg);animation:mqCursorShoeRight .55s ease-in-out infinite alternate}
+@keyframes mqCursorShoeLeft{from{transform:rotate(-16deg) translateY(2px)}to{transform:rotate(-11deg) translateY(-1px)}}
+@keyframes mqCursorShoeRight{from{transform:rotate(9deg) translateY(-1px)}to{transform:rotate(14deg) translateY(3px)}}
+
+/* player / settings visible already on exterior */
+body.mq-exterior-active > #mqPlayerBadge.mq-player-dock{
+  position:fixed!important;
+  left:clamp(14px,1.8vw,24px)!important;
+  top:clamp(14px,1.8vw,24px)!important;
+  z-index:2147483300!important;
+}
+body.mq-exterior-active.mq-ticket-open > #mqPlayerBadge.mq-player-dock{opacity:1!important;pointer-events:auto!important}
+body.mq-exterior-active > #homeBtn.mq-home-dock{
+  position:fixed!important;
+  top:clamp(14px,1.4vw,22px)!important;
+  right:clamp(14px,1.5vw,24px)!important;
+  z-index:2147483300!important;
+}
+
+@media(max-width:1100px){
+  .mq-exterior-scene--layered .mq-exterior-cinema-art{width:min(84vw,960px);left:51%}
+  .mq-exterior-scene--layered .mq-exterior-marquee-copy{width:min(46vw,520px);top:33.1%}
+  .mq-exterior-scene--layered .mq-ticket-hotspot--layered{left:46.2%;top:50.4%;width:min(8.8vw,110px);height:min(15vw,172px)}
+  .mq-exterior-scene--layered .mq-exterior-car-art{width:min(34vw,430px)}
+}
+@media(max-width:760px){
+  .mq-exterior-scene--layered .mq-exterior-city-art{width:170vw;max-width:none;left:48%}
+  .mq-exterior-scene--layered .mq-exterior-cinema-art{width:132vw;left:52%;bottom:15%}
+  .mq-exterior-scene--layered .mq-exterior-marquee-copy{width:70vw;left:52%;top:34.8%}
+  .mq-exterior-scene--layered .mq-exterior-marquee-copy span{font-size:10px}
+  .mq-exterior-scene--layered .mq-exterior-marquee-copy strong{font-size:30px}
+  .mq-exterior-scene--layered .mq-exterior-marquee-copy em{font-size:10px;letter-spacing:.04em}
+  .mq-exterior-scene--layered .mq-exterior-car-art{width:46vw;left:-2%;bottom:3%}
+  .mq-exterior-scene--layered .mq-ticket-hotspot--layered{left:42.5%;top:51.5%;width:13vw;height:18vw}
+  .mq-exterior-scene--layered .mq-exterior-booth-glow{left:51.2%;top:55%;width:13vw}
+  .mq-exterior-scene--layered .mq-walk-cursor--shoes{width:94px;height:60px}
+  .mq-exterior-scene--layered .mq-walk-shoe-img{width:54px}
+}
