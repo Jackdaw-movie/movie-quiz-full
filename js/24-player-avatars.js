@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='avatar-system-v3.2-safe-onboarding';
+  const VERSION='avatar-system-v3.3-onboarding-direct-bind';
   const DEFAULT_ID='avatar_01';
   const DEFAULT_PATH='assets/avatars/Avatar_01.png';
   const GUEST_ID='guest_unknown';
@@ -531,14 +531,23 @@
       if(done.dataset.mqAvatarOnboardingComplete==='1')return;
       event.preventDefault();
       event.stopPropagation();
-      if(done.dataset.mqAvatarOnboardingPending==='1')return;
+      if(done.dataset.mqAvatarOnboardingPending==='1'&&galleryOpen)return;
       done.dataset.mqAvatarOnboardingPending='1';
       const opened=openOnboarding(done);
       if(!opened){
         delete done.dataset.mqAvatarOnboardingPending;
         const error=document.getElementById('mqNameError');
         if(error)error.textContent='Výběr avatara se nepodařilo otevřít. Obnovte stránku a zkuste to znovu.';
+        return;
       }
+      requestAnimationFrame(()=>{
+        const modal=document.getElementById('mqAvatarModal');
+        if(!modal||modal.hidden){
+          delete done.dataset.mqAvatarOnboardingPending;
+          const error=document.getElementById('mqNameError');
+          if(error)error.textContent='Výběr avatara se nepodařilo zobrazit. Obnovte stránku a zkuste to znovu.';
+        }
+      });
     });
   }
 
