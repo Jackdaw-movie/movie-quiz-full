@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='avatar-system-v1.3-clean-ui';
+  const VERSION='avatar-system-v2.0-carousel';
   const DEFAULT_ID='popcorn_noir_01';
   const DEFAULT_PATH='assets/avatars/popcorn_noir_01.png';
   const GUEST_ID='guest_unknown';
@@ -10,6 +10,10 @@
   let galleryOpen=false;
   let galleryLoading=false;
   let galleryRows=[];
+  let carouselIndex=0;
+  let wheelCooldown=0;
+  let dragPointerId=null;
+  let dragStartX=0;
   let scoreboardTimer=0;
 
   const onlineApi=()=>window.MovieQuizOnline;
@@ -192,6 +196,17 @@
     scoreboardTimer=setTimeout(()=>enrichScoreboard(),60);
   }
 
+  function wrapIndex(index){
+    const total=galleryRows.length;
+    if(!total)return 0;
+    return ((index%total)+total)%total;
+  }
+
+  function selectedGalleryIndex(){
+    const index=galleryRows.findIndex(row=>Boolean(row.selected));
+    return index>=0?index:0;
+  }
+
   function ensureModal(){
     if(document.getElementById('mqAvatarModal'))return;
 
@@ -206,47 +221,125 @@
           <div>
             <div class="eyebrow">Hráčský profil</div>
             <h2 id="mqAvatarTitle">Vyberte avatar</h2>
-            <p>Vyberte avatar pro svůj hráčský profil.</p>
+            <p>Posouvejte šipkami, kolečkem nebo tažením. Prostřední avatar je právě vybraný pro potvrzení.</p>
           </div>
           <button type="button" class="mq-avatar-close" data-close-avatar-gallery aria-label="Zavřít">×</button>
         </div>
-        <div class="mq-avatar-grid" id="mqAvatarGrid"></div>
+
+        <div class="mq-avatar-carousel-shell">
+          <button type="button" class="mq-avatar-carousel-arrow is-prev" data-avatar-nav="-1" aria-label="Předchozí avatar">
+            <span aria-hidden="true">‹</span>
+          </button>
+          <div class="mq-avatar-carousel-viewport" id="mqAvatarCarouselViewport" tabindex="0" aria-label="Výběr avatara">
+            <div class="mq-avatar-carousel-stage" id="mqAvatarGrid"></div>
+          </div>
+          <button type="button" class="mq-avatar-carousel-arrow is-next" data-avatar-nav="1" aria-label="Další avatar">
+            <span aria-hidden="true">›</span>
+          </button>
+        </div>
+
+        <div class="mq-avatar-carousel-footer">
+          <span class="mq-avatar-carousel-count" id="mqAvatarCounter" aria-live="polite"></span>
+          <button type="button" class="mq-avatar-confirm" id="mqAvatarConfirm" data-avatar-confirm>Vybrat avatara</button>
+        </div>
         <div class="mq-avatar-modal-status" id="mqAvatarStatus" aria-live="polite"></div>
         <p class="mq-avatar-modal-note">Výběr se uloží k vašemu profilu.</p>
       </section>`;
 
     document.body.appendChild(modal);
+
+    const viewport=modal.querySelector('#mqAvatarCarouselViewport');
+    viewport?.addEventListener('wheel',event=>{
+      if(!galleryOpen||galleryRows.length<2)return;
+      event.preventDefault();
+      const now=performance.now();
+      if(now<wheelCooldown)return;
+      const delta=Math.abs(event.deltaX)>Math.abs(event.deltaY)?event.deltaX:event.deltaY;
+      if(Math.abs(delta)<3)return;
+      wheelCooldown=now+145;
+      moveCarousel(delta>0?1:-1);
+    },{passive:false});
+
+    viewport?.addEventListener('pointerdown',event=>{
+      if(event.button!==0)return;
+      dragPointerId=event.pointerId;
+      dragStartX=event.clientX;
+      viewport.setPointerCapture?.(event.pointerId);
+    });
+    viewport?.addEventListener('pointerup',event=>{
+      if(dragPointerId!==event.pointerId)return;
+      const delta=event.clientX-dragStartX;
+      dragPointerId=null;
+      if(Math.abs(delta)>=34)moveCarousel(delta<0?1:-1);
+    });
+    viewport?.addEventListener('pointercancel',()=>{dragPointerId=null;});
+  }
+
+  function currentCarouselRow(){
+    return galleryRows.length?galleryRows[wrapIndex(carouselIndex)]:null;
+  }
+
+  function moveCarousel(delta){
+    if(galleryRows.length<2)return;
+    carouselIndex=wrapIndex(carouselIndex+delta);
+    renderGallery();
+  }
+
+  function setCarouselIndex(index){
+    if(!galleryRows.length)return;
+    carouselIndex=wrapIndex(Number(index)||0);
+    renderGallery();
   }
 
   function renderGallery(){
-    const grid=document.getElementById('mqAvatarGrid');
-    if(!grid)return;
+    const stage=document.getElementById('mqAvatarGrid');
+    const counter=document.getElementById('mqAvatarCounter');
+    const confirm=document.getElementById('mqAvatarConfirm');
+    if(!stage)return;
 
     if(!galleryRows.length){
-      grid.innerHTML='<div class="mq-score-empty">Zatím není k dispozici žádný avatar.</div>';
+      stage.innerHTML='<div class="mq-score-empty">Zatím není k dispozici žádný avatar.</div>';
+      if(counter)counter.textContent='';
+      if(confirm){confirm.disabled=true;confirm.textContent='Vybrat avatara';}
       return;
     }
 
-    grid.innerHTML=galleryRows.map(row=>{
+    const total=galleryRows.length;
+    const slots=[-2,-1,0,1,2];
+    stage.innerHTML=slots.map(offset=>{
+      const index=wrapIndex(carouselIndex+offset);
+      const row=galleryRows[index];
       const selected=Boolean(row.selected);
       const unlocked=Boolean(row.unlocked);
       const selectable=Boolean(row.selectable);
-      const disabled=!unlocked||!selectable;
-      const stateText=selected?'Vybráno':disabled?'Zamčeno':'Vybrat';
-
+      const available=unlocked&&selectable;
+      const distance=Math.abs(offset);
+      const slotClass=offset===0?'is-center':offset<0?`is-left-${distance}`:`is-right-${distance}`;
+      const stateClass=selected?' is-current':'';
+      const lockedClass=available?'':' is-locked';
+      const ariaState=selected?', aktuálně používaný':'';
       return `
         <button type="button"
-          class="mq-avatar-choice${selected?' is-selected':''}"
-          data-avatar-id="${escapeHtml(row.avatar_id)}"
-          aria-label="${selected?'Aktuálně vybraný avatar':disabled?'Zamčený avatar':'Vybrat avatar'}"
-          ${disabled?'disabled':''}>
+          class="mq-avatar-carousel-choice ${slotClass}${stateClass}${lockedClass}"
+          data-carousel-index="${index}"
+          aria-label="Avatar ${index+1} z ${total}${ariaState}"
+          aria-current="${offset===0?'true':'false'}"
+          tabindex="${offset===0?'0':'-1'}">
           <span class="mq-avatar-frame">
-            <img class="mq-avatar-img" src="${escapeHtml(safePath(row.asset_path,DEFAULT_PATH))}" alt="Avatar">
+            <img class="mq-avatar-img" src="${escapeHtml(safePath(row.asset_path,DEFAULT_PATH))}" alt="" decoding="async" loading="${distance<=1?'eager':'lazy'}">
           </span>
-          <small>${stateText}</small>
-          ${selected?'<span class="mq-avatar-selected-mark" aria-hidden="true">✓</span>':''}
+          ${selected?'<span class="mq-avatar-current-mark" aria-hidden="true">✓</span>':''}
         </button>`;
     }).join('');
+
+    const row=currentCarouselRow();
+    const available=Boolean(row?.unlocked)&&Boolean(row?.selectable);
+    const selected=Boolean(row?.selected);
+    if(counter)counter.textContent=`${String(wrapIndex(carouselIndex)+1).padStart(2,'0')} / ${String(total).padStart(2,'0')}`;
+    if(confirm){
+      confirm.disabled=!row||!available||selected;
+      confirm.textContent=selected?'Aktuálně vybraný':available?'Použít avatara':'Avatar je zamčený';
+    }
   }
 
   async function loadGallery(){
@@ -262,6 +355,7 @@
       const {data,error}=await db.rpc('list_my_player_avatars');
       if(error)throw error;
       galleryRows=Array.isArray(data)?data:[];
+      carouselIndex=selectedGalleryIndex();
       renderGallery();
       if(status)status.textContent='';
     }catch(error){
@@ -299,6 +393,7 @@
       if(status)status.textContent='Avatar se nepodařilo uložit.';
     }finally{
       if(button)button.disabled=false;
+      renderGallery();
     }
   }
 
@@ -310,13 +405,20 @@
     const modal=document.getElementById('mqAvatarModal');
     modal.hidden=false;
     galleryOpen=true;
-    loadGallery();
+    if(galleryRows.length){
+      carouselIndex=selectedGalleryIndex();
+      renderGallery();
+    }else{
+      loadGallery();
+    }
+    requestAnimationFrame(()=>document.getElementById('mqAvatarCarouselViewport')?.focus({preventScroll:true}));
   }
 
   function closeGallery(){
     const modal=document.getElementById('mqAvatarModal');
     if(modal)modal.hidden=true;
     galleryOpen=false;
+    dragPointerId=null;
   }
 
   function syncAll(){
@@ -377,15 +479,51 @@
         return;
       }
 
-      const choice=event.target.closest?.('[data-avatar-id]');
+      const nav=event.target.closest?.('[data-avatar-nav]');
+      if(nav){
+        event.preventDefault();
+        moveCarousel(Number(nav.dataset.avatarNav)||0);
+        return;
+      }
+
+      const choice=event.target.closest?.('[data-carousel-index]');
       if(choice){
         event.preventDefault();
-        chooseAvatar(choice.dataset.avatarId,choice);
+        setCarouselIndex(choice.dataset.carouselIndex);
+        return;
+      }
+
+      const confirm=event.target.closest?.('[data-avatar-confirm]');
+      if(confirm){
+        event.preventDefault();
+        const row=currentCarouselRow();
+        if(row)chooseAvatar(row.avatar_id,confirm);
       }
     });
 
     document.addEventListener('keydown',event=>{
-      if(event.key==='Escape'&&galleryOpen)closeGallery();
+      if(!galleryOpen)return;
+      if(event.key==='Escape'){
+        event.preventDefault();
+        closeGallery();
+        return;
+      }
+      if(event.key==='ArrowLeft'){
+        event.preventDefault();
+        moveCarousel(-1);
+        return;
+      }
+      if(event.key==='ArrowRight'){
+        event.preventDefault();
+        moveCarousel(1);
+        return;
+      }
+      if(event.key==='Enter'&&event.target.closest?.('#mqAvatarCarouselViewport')){
+        event.preventDefault();
+        const confirm=document.getElementById('mqAvatarConfirm');
+        const row=currentCarouselRow();
+        if(row&&confirm&&!confirm.disabled)chooseAvatar(row.avatar_id,confirm);
+      }
     });
 
     window.addEventListener('mq:guest-mode-changed',syncAll);
