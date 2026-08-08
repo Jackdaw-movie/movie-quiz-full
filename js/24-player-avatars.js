@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='avatar-system-v3.1-onboarding-hotfix';
+  const VERSION='avatar-system-v3.2-safe-onboarding';
   const DEFAULT_ID='avatar_01';
   const DEFAULT_PATH='assets/avatars/Avatar_01.png';
   const GUEST_ID='guest_unknown';
@@ -443,11 +443,9 @@
 
   function openGallery(options={}){
     if(isGuest())return false;
-
-    // Nezastavujeme otevření galerie podle profileId. Po čerstvé registraci může být
-    // lokální snapshot profilu o jeden render pozadu, přestože profil už v DB existuje.
-    // Samotné ověření profilu a oprávnění proběhne v loadGallery()/chooseAvatar().
-    onboardingMode=Boolean(options.onboarding);
+    const onboarding=Boolean(options.onboarding);
+    if(!onboarding&&!currentProfile()?.profileId)return false;
+    onboardingMode=onboarding;
     onboardingDoneButton=options.doneButton||null;
 
     ensureModal();
@@ -486,6 +484,8 @@
   function observe(){
     const shell=document.getElementById('mqProfileShell');
     if(shell){
+      new MutationObserver(()=>bindRecoveryDoneButton()).observe(shell,{childList:true,subtree:true});
+      bindRecoveryDoneButton();
       let profileSyncQueued=false;
       const queueProfileSync=()=>{
         if(profileSyncQueued)return;
@@ -521,17 +521,17 @@
     }
   }
 
-  function bind(){
-    document.addEventListener('click',event=>{
-      const done=event.target?.closest?.('#mqRecoveryDone');
-      if(!done||done.dataset.mqAvatarOnboardingComplete==='1')return;
-      const title=document.querySelector('#mqProfileShell .mq-profile-title')?.textContent||'';
-      if(!/Profil byl vytvořen/i.test(title))return;
-
-      // Nový profil nesmí projít rovnou do hry. Tento capture handler zastaví původní
-      // proceedToGame() a otevře povinný výběr avatara.
+  function bindRecoveryDoneButton(){
+    const done=document.getElementById('mqRecoveryDone');
+    if(!done||done.dataset.mqAvatarDirectBound==='1')return;
+    const title=document.querySelector('#mqProfileShell .mq-profile-title')?.textContent||'';
+    if(!/Profil byl vytvořen/i.test(title))return;
+    done.dataset.mqAvatarDirectBound='1';
+    done.addEventListener('click',event=>{
+      if(done.dataset.mqAvatarOnboardingComplete==='1')return;
       event.preventDefault();
-      event.stopImmediatePropagation();
+      event.stopPropagation();
+      if(done.dataset.mqAvatarOnboardingPending==='1')return;
       done.dataset.mqAvatarOnboardingPending='1';
       const opened=openOnboarding(done);
       if(!opened){
@@ -539,8 +539,10 @@
         const error=document.getElementById('mqNameError');
         if(error)error.textContent='Výběr avatara se nepodařilo otevřít. Obnovte stránku a zkuste to znovu.';
       }
-    },true);
+    });
+  }
 
+  function bind(){
     document.addEventListener('click',event=>{
       if(event.target.closest?.('[data-open-avatar-gallery]')){
         event.preventDefault();
