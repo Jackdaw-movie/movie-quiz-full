@@ -23,7 +23,7 @@ f10fc143a9d41030bcd68733972e46b71b42932517812cc727171667be39f6cd  ./assets/ticke
 06362decd39014842d79a4e960c096618988576b69c8066e08d7a729788b40aa  ./assets/ticket-login/source/ticket-main-approved.png
 921dcc369aed51d52d1db50c25790949a89a70d2933731cca29c8356f29029d5  ./assets/ticket-login/source/ticket-secondary-approved.png
 4867e5c05adf3a89bc738d5efa35b9eb1ecf6303e000b3f21f3d1ccbe02d21ba  ./assets/ticket-login/source/ticket-stack-approved-angle-tall.png
-8803418cbfa489775e9c8f15be59b04225e9578f1ba8975870b95bc1d08636d0  ./css/avatar-onboarding-stage.css
+d295c382291833ddd5b981e3824ac7ce0efb7710181b6bb42494018c9d41bd4a  ./css/avatar-onboarding-stage.css
 2ce56efcf3e99497086c81308ec4656bca619439b23b0dd7dc4d24498afe94dc  ./css/preload-gate.css
 4b94b5157321cc33e4e8f7367792faa5329ee89d38a9b45d4e5f45f0c6d1049b  ./css/ticket-login.css
 ba81df36a25551284b7a060babceaeb11859bab8decf46593e68b377b27c9a7e  ./index.html
@@ -32,7 +32,7 @@ a9312321e109767a6ad799094c7d7f25c039ec61cf077cf351e6976fcc299811  ./js/05-preloa
 405d72f14f781320736b3db024abc1a189f1c032ac77a1406b89eb88b52ab314  ./js/24a-avatar-performance.js
 508505acf15d4fd38262f7cabd914c0b636c7c256f4c60c1049ef2f8c804f68c  ./js/26-exterior-scene.js
 bacf5f6419a38f8966e2e738b9382a1460a86cfbe44173c29b327dd02b5a52b6  ./js/27-ticket-login-ui.js
-504f4b9af8053fee3580fe50295af41bbfe8ed7b8f2af8b4080f461f8229fd4b  ./js/28-avatar-onboarding-stage.js
+5b9f7bfd280079b177aaa26dcd1eff0a63299644dff7882bc9414a51342c694e  ./js/28-avatar-onboarding-stage.js
 dd7bd1996854378a29e332dc9a0105d720f8a0d79b98dac5fa5ff74e2bbe28dd  ./sw.js
 cde5daa886e97353f3a6500c7cee15165f2d21db2585c050609a0d883f1686a4  ./validation-avatar-stage-v15.json
 da956f91776944e1af8937f9d48c541a57e56c4109ae36ee0afef7ea5b861dd9  ./validation-performance-v10.json
