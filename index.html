@@ -8,11 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Limelight&family=Oswald:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<link rel="preload" as="image" href="assets/loading/new-york-night-fast.webp" type="image/webp" fetchpriority="high">
-<link rel="preload" as="image" href="assets/loading/film-reel-fast.webp" type="image/webp" fetchpriority="high">
 <link rel="preload" as="image" href="assets/exterior-v6-9/production/master.webp" type="image/webp" fetchpriority="high">
-<link rel="stylesheet" href="css/preload-gate.css?v=8.0-fast">
-<link rel="stylesheet" href="css/core.css" media="print" onload="this.media='all'">
+<link rel="preload" as="image" href="assets/loading/new-york-night.webp" type="image/webp">
+<link rel="preload" as="image" href="assets/ticket-login/production/desk.webp" type="image/webp">
+<link rel="preload" as="image" href="assets/ticket-login/production/ticket-stack.webp" type="image/webp">
+<link rel="stylesheet" href="css/preload-gate.css?v=7.0-loading2">
+<link rel="stylesheet" href="css/core.css">
 <link rel="stylesheet" href="css/cinematic.css" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="css/refinements.css" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="css/fantasy.css" media="print" onload="this.media='all'">
@@ -23,9 +24,11 @@
 <link rel="stylesheet" href="css/player-avatars.css?v=3.0" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="css/player-settings.css?v=1.4" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="css/noir-master.css?v=1.2" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="css/exterior-scene.css?v=6.5" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="css/exterior-performance.css?v=6.9" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="css/ticket-login.css?v=7.0" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="css/exterior-scene.css?v=6.5">
+<link rel="stylesheet" href="css/exterior-performance.css?v=6.9">
+<link rel="stylesheet" href="css/ticket-login.css?v=8.0">
+<link rel="preconnect" href="https://assets.mixkit.co" crossorigin>
+<link rel="dns-prefetch" href="//assets.mixkit.co">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 </head>
 <body class="mq-noir-master mq-exterior-active mq-preloading">
@@ -45,7 +48,7 @@
     </div>
   </div>
 </section>
-<script src="js/05-preload-gate.js?v=8.0-fast"></script>
+<script src="js/05-preload-gate.js?v=7.0-loading2"></script>
 <section class="mq-exterior-scene mq-exterior-v6 mq-exterior-v6-1 mq-exterior-v6-2 mq-exterior-v6-3 mq-exterior-v6-4" id="mqExteriorScene" aria-label="Ulice před Jackdaw's Cinema">
   <div class="mq-v6-viewport">
     <div class="mq-v6-stage" id="mqExteriorStage">
@@ -96,7 +99,7 @@
   <div class="mq-ticket-backdrop" aria-hidden="true"></div>
   <div class="mq-ticket-scene">
     <article class="mq-admit-ticket" id="mqAdmitTicket" aria-label="Přihlášení hráče">
-      <img class="mq-ticket-art" src="assets/ticket-login/production/ticket-stack.webp?v=7.0" alt="" decoding="async">
+      <img class="mq-ticket-art" src="assets/ticket-login/production/ticket-stack.webp" alt="" decoding="async">
       <div class="mq-ticket-profile-mount" id="mqTicketProfileMount"></div>
       <div class="mq-ticket-error" id="mqTicketError" aria-live="polite"></div>
       <button class="mq-ticket-online-mark" id="mqTicketOnlineMark" type="button" aria-label="Stav online archivu"></button>
@@ -203,6 +206,6 @@ Máte tři životy. Patnáct správných odpovědí znamená vítězství.
 <script id="mq-v33-fantasy-dragon-runtime-fix-script" src="js/41-fantasy-runtime.js"></script>
 <script id="mq-v34-fantasy-rebuild-script" src="js/42-fantasy-rebuild.js"></script>
 <script id="mq-exterior-scene-script" src="js/26-exterior-scene.js?v=6.10"></script>
-<script id="mq-ticket-login-ui-script" src="js/27-ticket-login-ui.js?v=7.0"></script>
+<script id="mq-ticket-login-ui-script" src="js/27-ticket-login-ui.js?v=8.0"></script>
 </body>
 </html>

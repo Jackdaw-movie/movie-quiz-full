@@ -1,0 +1,19 @@
+{
+  "version": "v8",
+  "approved_ticket_sources_reused": true,
+  "ticket_height": "150% original vertical height",
+  "secondary_ticket": "down-right offset with slight clockwise rotation",
+  "ticket_background_independent": true,
+  "facade_between_printed_rules": true,
+  "facade_body_shifted_up": true,
+  "player_entry_heading_shifted_down": true,
+  "loading_remote_audio_blocking": false,
+  "loading_reel_runtime_size_bytes": 7072,
+  "loading_background_runtime_size_bytes": 31832,
+  "loading_cta_runtime_size_bytes": 22734,
+  "javascript_syntax": "checked",
+  "ticket_title_moved_up": true,
+  "player_context_enlarged": true,
+  "new_profile_recovery_to_avatar_direct": true,
+  "avatar_confirm_to_difficulty": true
+}

@@ -1,5 +1,4 @@
-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ./CHECKSUMS.sha256
-200047b447141cf61616d75cf791aebb47089362510a131655f6bdb35e3ff73f  ./README_TICKET_LOADING_v7.txt
+c8fcfbf722956b9e5481fce7a43ef80c2d785af37e67df288f568a64dd28a6bd  ./README_TICKET_LOADING_v8.txt
 3310bce2010ba2f5c5bca3ab668469afc38419749283c3bc405a7476ed179fa4  ./assets/loading/enter-button-fast.webp
 81e1a61754e7f70f7592934a4d8cf6791c227087f983c095d3010e2eb70b85ae  ./assets/loading/film-reel-fast.webp
 652c808c1601858ddd7ccc1cb3d37255733eafe8dba4a0b57ad40aae153609d1  ./assets/loading/new-york-night-fast.webp
@@ -12,9 +11,9 @@ f10fc143a9d41030bcd68733972e46b71b42932517812cc727171667be39f6cd  ./assets/ticke
 921dcc369aed51d52d1db50c25790949a89a70d2933731cca29c8356f29029d5  ./assets/ticket-login/source/ticket-secondary-approved.png
 4867e5c05adf3a89bc738d5efa35b9eb1ecf6303e000b3f21f3d1ccbe02d21ba  ./assets/ticket-login/source/ticket-stack-approved-angle-tall.png
 2ce56efcf3e99497086c81308ec4656bca619439b23b0dd7dc4d24498afe94dc  ./css/preload-gate.css
-51978bf88c23999c2cf39b27da6f81fb6594fe8f0ffab897786acaa515f6c0bc  ./css/ticket-login.css
-ee159eae8fa736685baadfef0f0928f1a96daf1421bc75a06a8eca51cec5f4b9  ./index.html
+9050e7860aa846f5487f65e70b6b1e1690a656f18d68a785d054391d74800b15  ./css/ticket-login.css
+b0fa20b848932ba5f0b938d81511dafe24713c80fc769b70f2d9cffc393016c9  ./index.html
 75295d875f89c4fc7acfbb82b3096244c87ccb57d5740e43539fa4c3f9217671  ./js/05-preload-gate.js
 758a5597a2fc57cabac28a51eff7cb7b3cc1c6a7d3c9920a1cd9b4f265358f6b  ./js/26-exterior-scene.js
-9c4d649f885a9736f7c8b5f6620b10194f92748ece6da560bbaeab028863b8b6  ./js/27-ticket-login-ui.js
-cd79c642b04984fd6b3da26682b11654caca863bdaab66ea3e0cda588cce8cea  ./validation-ticket-loading-v7.json
+0cd976bbfc91651d8c43c2f5f69029f4a41a7ae79f04e696f7abd17abf1ba579  ./js/27-ticket-login-ui.js
+6717ca5f8ef96b5592a3b3194692177723e40266fe966a8ed5fd28ec26868884  ./validation-ticket-loading-v8.json

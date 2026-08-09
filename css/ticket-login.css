@@ -59,7 +59,7 @@ body.mq-ticket-open .mq-ticket-profile-mount #mqProfileShell *{animation:none!im
   gap:clamp(3px,.45vh,6px);align-items:stretch;
 }
 
-.mqf-head{display:flex;align-items:center;justify-content:center;gap:10px;min-height:30px;text-align:center;transform:translateY(10px);position:relative;z-index:2}
+.mqf-head{display:flex;align-items:center;justify-content:center;gap:10px;min-height:30px;text-align:center;transform:translateY(4px);position:relative;z-index:2}
 .mqf-title{
   margin:0;color:#65391b;
   font:700 clamp(15px,1.32vw,21px)/1 'Cormorant Garamond',Georgia,serif;
@@ -67,8 +67,9 @@ body.mq-ticket-open .mq-ticket-profile-mount #mqProfileShell *{animation:none!im
 }
 .mqf-context{
   margin:0;text-align:center;color:#633818;
-  font:700 clamp(11px,.93vw,14px)/1.1 'Cormorant Garamond',Georgia,serif;
+  font:700 clamp(15px,1.18vw,18px)/1.08 'Cormorant Garamond',Georgia,serif;
   letter-spacing:.035em;
+  transform:translateY(-4px);
 }
 .mqf-body{min-height:0;display:flex;flex-direction:column;justify-content:flex-start;gap:clamp(4px,.55vh,7px);padding-top:22px;transform:translateY(-10px);position:relative;z-index:1}
 .mqf-label-row{display:flex;align-items:center;gap:8px;min-height:18px}

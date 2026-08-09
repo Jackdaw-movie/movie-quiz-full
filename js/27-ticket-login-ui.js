@@ -1,6 +1,6 @@
 (()=>{
   'use strict';
-  const VERSION='ticket-login-v7.0-approved-angle';
+  const VERSION='ticket-login-v8.0-avatar-flow';
   const layer=document.getElementById('mqTicketLayer');
   const mount=document.getElementById('mqTicketProfileMount');
   const shell=document.getElementById('mqProfileShell');
@@ -139,12 +139,16 @@
   function renderReveal(){
     const title=originalTitle();
     const code=clean(shell.querySelector('#mqRecoveryCodeValue')?.textContent);
+    const isNewProfile=/Profil byl vytvořen/i.test(title);
+    const continueButton=isNewProfile
+      ?btn('Pokračovat','mqf-primary','data-avatar-onboarding="1"')
+      :click('Pokračovat','mqf-primary','#mqRecoveryDone');
     return `<div class="mqf-panel" data-state="reveal">
       <div class="mqf-head"><h2 class="mqf-title">${esc(title||'Profil je připraven')}</h2>${tip(hint())}</div>
       <div class="mqf-body"><div class="mqf-recovery-box"><small>Recovery code</small><div class="mqf-recovery-value">${esc(code)}</div></div></div>
       <div class="mqf-footer">
         <div class="mqf-left-actions">${click(workingLabel('#mqCopyRecovery','Kopírovat kód'),'mqf-back','#mqCopyRecovery')}</div>
-        <div class="mqf-right-actions">${click('Pokračovat','mqf-primary','#mqRecoveryDone')}</div>
+        <div class="mqf-right-actions">${continueButton}</div>
       </div>
     </div>`;
   }
@@ -233,6 +237,20 @@
     const tipBtn=e.target.closest?.('[data-tip]');
     if(tipBtn){e.preventDefault();e.stopPropagation();tipAnchor===tipBtn&&tooltip?.classList.contains('visible')?hideTip():showTip(tipBtn);return}
     const submit=e.target.closest?.('[data-submit-form]');if(submit){e.preventDefault();submitForm(submit.dataset.submitForm);return}
+    const onboarding=e.target.closest?.('[data-avatar-onboarding]');
+    if(onboarding){
+      e.preventDefault();
+      const api=window.MovieQuizAvatars;
+      const opened=api?.openOnboarding?.(null);
+      if(opened){
+        facade.dataset.awaitingAvatar='1';
+        hideTip();
+      }else if(errorMirror){
+        errorMirror.textContent='Výběr avatara se nepodařilo otevřít. Zkuste to znovu.';
+        errorMirror.classList.add('has-error');
+      }
+      return;
+    }
     const click=e.target.closest?.('[data-source-click]');if(click){e.preventDefault();sourceClick(click.dataset.sourceClick);return}
     const pinWrap=e.target.closest?.('.mqf-pin');pinWrap?.querySelector('.mqf-pin-capture')?.focus();
   });
@@ -250,6 +268,16 @@
   });
   window.addEventListener('resize',hideTip,{passive:true});window.addEventListener('scroll',hideTip,{passive:true,capture:true});
   window.addEventListener('mq:guest-mode-changed',queue);
+  window.addEventListener('mq:avatar-onboarding-complete',()=>{
+    if(facade.dataset.awaitingAvatar!=='1')return;
+    delete facade.dataset.awaitingAvatar;
+    const done=document.getElementById('mqRecoveryDone');
+    if(done)done.dataset.mqAvatarOnboardingComplete='1';
+    setTimeout(()=>{
+      if(typeof window.showView==='function')window.showView('difficulty');
+      else done?.click?.();
+    },60);
+  });
   layer.dataset.ticketUiVersion=VERSION;
   queue();
 })();
