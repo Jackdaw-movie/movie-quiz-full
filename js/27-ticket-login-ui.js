@@ -1,6 +1,6 @@
 (()=>{
   'use strict';
-  const VERSION='ticket-login-v4.0-facade';
+  const VERSION='ticket-login-v5.0-tall-facade';
   const layer=document.getElementById('mqTicketLayer');
   const mount=document.getElementById('mqTicketProfileMount');
   const shell=document.getElementById('mqProfileShell');

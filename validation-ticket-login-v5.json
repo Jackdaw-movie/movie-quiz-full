@@ -1,0 +1,10 @@
+{
+  "version": "ticket-login-v5.0-tall-facade",
+  "ticket_stack": "transparent single asset",
+  "ticket_height": "150% of previous approved ticket",
+  "background_independent": true,
+  "profile_logic_reused": true,
+  "guest_login_return_preserved": true,
+  "main_cta_style": "dark brown cut-corner plaque with gold edge/hover",
+  "javascript_syntax": "checked"
+}

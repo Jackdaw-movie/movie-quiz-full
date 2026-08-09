@@ -1,41 +1,44 @@
-/* Movie Quiz – Ticket login v4.0
-   The approved ticket and desk remain untouched. The original functional
-   profile UI stays alive off-screen while a dedicated ticket facade mirrors it.
-   This prevents legacy dark/profile CSS from leaking into the ticket design. */
+/* Movie Quiz – Ticket login v5.0
+   Taller 150% ticket stack. Desk/backdrop remains an independent asset.
+   The functional Supabase profile DOM stays hidden; this facade mirrors it. */
 
 body.mq-ticket-open{overflow:hidden!important}
 .mq-ticket-layer[hidden]{display:none!important}
 .mq-ticket-layer{
   position:fixed!important;inset:0!important;z-index:2147482800!important;
-  display:grid!important;place-items:center!important;padding:clamp(8px,2vw,26px)!important;
+  display:grid!important;place-items:center!important;padding:clamp(6px,1.5vw,20px)!important;
   overflow:hidden!important;isolation:isolate!important;
 }
 .mq-ticket-backdrop{
   position:absolute!important;inset:0!important;
   background:url('../assets/ticket-login/production/desk.webp') center/cover no-repeat!important;
-  transform:scale(1.012);
+  transform:scale(1.01);
 }
 .mq-ticket-backdrop::after{
   content:"";position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(ellipse at 50% 47%,transparent 43%,rgba(18,7,2,.06) 75%,rgba(5,2,0,.20) 100%);
+  background:radial-gradient(ellipse at 50% 48%,transparent 46%,rgba(18,7,2,.05) 76%,rgba(4,1,0,.17) 100%);
 }
-.mq-ticket-scene{
-  position:relative;z-index:2;width:min(1120px,95vw);aspect-ratio:1297/614;max-height:90vh;
-  filter:drop-shadow(0 22px 30px rgba(0,0,0,.32));overflow:visible!important;
-}
-/* The second approved ticket is a real image only: no HTML number/label overlay. */
-.mq-ticket-secondary{
-  position:absolute;z-index:0;width:97%;left:11.5%;top:5.2%;transform:rotate(1.05deg);
-  transform-origin:center;pointer-events:none;filter:drop-shadow(0 11px 14px rgba(0,0,0,.24));opacity:1;
-}
-.mq-ticket-secondary>img{display:block;width:100%;height:auto}
-.mq-admit-ticket{
-  position:absolute!important;inset:0!important;z-index:2!important;width:100%!important;height:100%!important;
-  margin:0!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important;
-}
-.mq-ticket-art{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;user-select:none}
 
-/* Keep the real Supabase/profile DOM fully functional, but never render it as UI. */
+/* One transparent graphic contains the taller main ticket + the peeking second ticket. */
+.mq-ticket-scene{
+  position:relative;z-index:2;
+  width:min(1180px,95vw,calc(92vh * 1.4017));
+  aspect-ratio:1340/956;
+  filter:drop-shadow(0 24px 30px rgba(0,0,0,.34));
+  overflow:visible!important;
+}
+.mq-ticket-secondary{display:none!important}
+.mq-admit-ticket{
+  position:absolute!important;inset:0!important;z-index:2!important;
+  width:100%!important;height:100%!important;margin:0!important;padding:0!important;
+  border:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important;
+}
+.mq-ticket-art{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;
+  pointer-events:none;user-select:none;
+}
+
+/* The real profile UI remains alive only as the functional/data source. */
 body.mq-ticket-open .mq-ticket-profile-mount{
   position:absolute!important;left:50%!important;top:50%!important;width:2px!important;height:2px!important;
   overflow:hidden!important;clip-path:inset(50%)!important;opacity:0!important;pointer-events:none!important;z-index:-1!important;
@@ -43,135 +46,177 @@ body.mq-ticket-open .mq-ticket-profile-mount{
 body.mq-ticket-open .mq-ticket-profile-mount #mqProfileShell,
 body.mq-ticket-open .mq-ticket-profile-mount #mqProfileShell *{animation:none!important;transition:none!important}
 
-/* Dedicated visual interface fitted exactly into the blank center of the approved ticket. */
+/* Maximum usable area: from the underline below JACKDAW'S CINEMA to the lower printed line. */
 .mq-ticket-facade{
-  position:absolute;z-index:7;left:19.9%;right:19.9%;top:29.5%;height:39.3%;
-  color:#5c351a;font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;
-  text-shadow:0 1px rgba(255,249,226,.65);
+  position:absolute;z-index:7;
+  left:15.5%;right:22.0%;top:23.9%;height:39.0%;
+  color:#5a3218;
+  font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  text-shadow:0 1px rgba(255,249,226,.62);
 }
-.mqf-panel{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:5px;align-items:stretch}
-.mqf-head{display:flex;align-items:center;justify-content:center;gap:10px;min-height:25px;text-align:center}
+.mqf-panel{
+  height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto;
+  gap:clamp(5px,.6vh,8px);align-items:stretch;
+}
+.mqf-head{display:flex;align-items:center;justify-content:center;gap:10px;min-height:30px;text-align:center}
 .mqf-title{
-  margin:0;color:#663c1d;font:700 clamp(14px,1.35vw,19px)/1 'Cormorant Garamond',Georgia,serif;
+  margin:0;color:#65391b;
+  font:700 clamp(15px,1.32vw,21px)/1 'Cormorant Garamond',Georgia,serif;
   letter-spacing:.105em;text-transform:uppercase;
 }
-.mqf-context{margin:0;text-align:center;color:#7b4a25;font:700 clamp(10px,.83vw,12px)/1.05 'Cormorant Garamond',Georgia,serif;letter-spacing:.04em}
-.mqf-body{min-height:0;display:flex;flex-direction:column;justify-content:center;gap:5px}
-.mqf-label-row{display:flex;align-items:center;gap:7px;min-height:17px}
-.mqf-label{color:#6b3d1d;font:700 clamp(11px,.95vw,14px)/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.055em;text-transform:uppercase}
+.mqf-context{
+  margin:0;text-align:center;color:#633818;
+  font:700 clamp(11px,.93vw,14px)/1.1 'Cormorant Garamond',Georgia,serif;
+  letter-spacing:.035em;
+}
+.mqf-body{min-height:0;display:flex;flex-direction:column;justify-content:center;gap:clamp(5px,.7vh,9px)}
+.mqf-label-row{display:flex;align-items:center;gap:8px;min-height:18px}
+.mqf-label{
+  color:#65391a;font:700 clamp(11px,.9vw,14px)/1 'Cormorant Garamond',Georgia,serif;
+  letter-spacing:.055em;text-transform:uppercase;
+}
+
+/* Fields intentionally resemble printed boxes on the ticket, not web inputs. */
 .mqf-field{
-  width:100%;height:clamp(37px,3.25vw,45px);margin:0;padding:0 13px;box-sizing:border-box;
-  border:1.5px solid rgba(117,70,31,.76);border-radius:5px;outline:0;
-  background:rgba(255,249,226,.14);color:#492812;-webkit-text-fill-color:#492812;caret-color:#76451f;
-  box-shadow:inset 0 0 0 2px rgba(255,252,238,.17),inset 0 1px 4px rgba(67,32,10,.045);
-  font:700 clamp(15px,1.32vw,18px)/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;
+  width:100%;height:clamp(40px,4.15vh,49px);margin:0;padding:0 clamp(13px,1.25vw,18px);box-sizing:border-box;
+  border:1.5px solid rgba(115,66,27,.78);border-radius:5px;outline:0;
+  background:rgba(255,249,226,.12);color:#472611;-webkit-text-fill-color:#472611;caret-color:#744019;
+  box-shadow:inset 0 0 0 2px rgba(255,252,238,.18),inset 0 1px 4px rgba(67,32,10,.05);
+  font:700 clamp(15px,1.28vw,19px)/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.018em;
   transition:border-color .16s ease,box-shadow .16s ease,background .16s ease;
 }
-.mqf-field::placeholder{color:rgba(73,40,18,.58);-webkit-text-fill-color:rgba(73,40,18,.58);opacity:1}
-.mqf-field:focus{border-color:#a26b2f;background:rgba(255,251,235,.28);box-shadow:inset 0 0 0 1px rgba(170,116,49,.18),0 0 0 2px rgba(176,126,57,.07)}
+.mqf-field::placeholder{color:rgba(69,36,16,.62);-webkit-text-fill-color:rgba(69,36,16,.62);opacity:1}
+.mqf-field:focus{border-color:#9c6329;background:rgba(255,251,235,.25);box-shadow:inset 0 0 0 1px rgba(170,116,49,.18),0 0 0 2px rgba(176,126,57,.07)}
 
-/* PIN: one real visual input captures typing; six printed cells provide the look. */
-.mqf-pin{position:relative;height:clamp(36px,3.2vw,44px)}
+.mqf-pin{position:relative;height:clamp(40px,4.1vh,48px)}
 .mqf-pin-capture{
   position:absolute;inset:0;z-index:3;width:100%;height:100%;border:0;background:transparent;color:transparent;
   -webkit-text-fill-color:transparent;caret-color:transparent;outline:0;opacity:.01;cursor:text;font-size:16px;
 }
-.mqf-pin-boxes{position:absolute;inset:0;display:grid;grid-template-columns:repeat(6,1fr);gap:clamp(7px,.78vw,10px);pointer-events:none}
+.mqf-pin-boxes{position:absolute;inset:0;display:grid;grid-template-columns:repeat(6,1fr);gap:clamp(8px,.8vw,12px);pointer-events:none}
 .mqf-pin-box{
-  display:grid;place-items:center;border:1.5px solid rgba(117,70,31,.76);border-radius:5px;
-  background:rgba(255,249,226,.14);box-shadow:inset 0 0 0 2px rgba(255,252,238,.16),inset 0 1px 4px rgba(67,32,10,.045);
-  color:#74431f;font:700 clamp(18px,1.7vw,23px)/1 Georgia,serif;transition:border-color .15s ease,background .15s ease;
+  display:grid;place-items:center;border:1.5px solid rgba(115,66,27,.78);border-radius:5px;
+  background:rgba(255,249,226,.12);box-shadow:inset 0 0 0 2px rgba(255,252,238,.17),inset 0 1px 4px rgba(67,32,10,.05);
+  color:#71401e;font:700 clamp(19px,1.65vw,25px)/1 Georgia,serif;transition:border-color .15s ease,background .15s ease;
 }
-.mqf-pin:focus-within .mqf-pin-box{border-color:#a26b2f;background:rgba(255,251,235,.28)}
+.mqf-pin:focus-within .mqf-pin-box{border-color:#9c6329;background:rgba(255,251,235,.25)}
 .mqf-pin-box.filled::after{content:'•';transform:translateY(-1px)}
 
-/* Compact states still use the same ticket dimensions and never overlap. */
-.mqf-panel[data-state="register"] .mqf-body{justify-content:flex-start;gap:3px}
-.mqf-panel[data-state="register"] .mqf-label-row{min-height:13px}
-.mqf-panel[data-state="register"] .mqf-label{font-size:clamp(9px,.74vw,11px)}
-.mqf-panel[data-state="register"] .mqf-pin{height:clamp(27px,2.35vw,32px)}
-.mqf-panel[data-state="register"] .mqf-context{font-size:clamp(9px,.72vw,11px)}
-.mqf-recovery-code{height:clamp(31px,2.65vw,36px);font-size:clamp(13px,1.12vw,16px)}
-.mqf-recovery-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:2px}
-.mqf-recovery-grid .mqf-label-row{min-height:12px}
-.mqf-recovery-grid .mqf-label{font-size:clamp(8px,.69vw,10px)}
-.mqf-recovery-grid .mqf-pin{height:clamp(26px,2.25vw,31px)}
-.mqf-recovery-grid .mqf-pin-boxes{gap:4px}
-.mqf-panel[data-state="recovery"] .mqf-body{justify-content:flex-start;gap:3px}
-.mqf-panel[data-state="recovery"] .mqf-title{font-size:clamp(12px,1.08vw,16px)}
+/* Taller ticket means register/recovery no longer need aggressive shrinking. */
+.mqf-panel[data-state="register"] .mqf-body,
+.mqf-panel[data-state="recovery"] .mqf-body{justify-content:flex-start;gap:clamp(3px,.45vh,6px)}
+.mqf-panel[data-state="register"] .mqf-label-row,
+.mqf-panel[data-state="recovery"] .mqf-label-row{min-height:15px}
+.mqf-panel[data-state="register"] .mqf-label,
+.mqf-panel[data-state="recovery"] .mqf-label{font-size:clamp(10px,.78vw,12px)}
+.mqf-panel[data-state="register"] .mqf-pin,
+.mqf-panel[data-state="recovery"] .mqf-pin{height:clamp(33px,3.4vh,40px)}
+.mqf-recovery-code{height:clamp(35px,3.65vh,43px);font-size:clamp(13px,1.1vw,16px)}
+.mqf-recovery-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,1vw,16px);margin-top:2px}
+.mqf-recovery-grid .mqf-label-row{min-height:14px}
+.mqf-recovery-grid .mqf-pin-boxes{gap:clamp(4px,.45vw,7px)}
 
-.mqf-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:39px;padding-top:4px;border-top:1px solid rgba(111,65,27,.22)}
-.mqf-left-actions,.mqf-right-actions{display:flex;align-items:center;gap:8px;min-width:0}
+.mqf-footer{
+  display:flex;align-items:center;justify-content:space-between;gap:clamp(9px,1vw,14px);
+  min-height:46px;padding-top:clamp(5px,.55vh,8px);border-top:1px solid rgba(111,65,27,.25);
+}
+.mqf-left-actions,.mqf-right-actions{display:flex;align-items:center;gap:clamp(7px,.7vw,10px);min-width:0}
 .mqf-btn{
   -webkit-appearance:none;appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:7px;box-sizing:border-box;
-  min-height:34px;margin:0;padding:0 14px;cursor:pointer;white-space:nowrap;text-transform:uppercase;
-  font:700 clamp(11px,.93vw,14px)/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.055em;
+  min-height:38px;margin:0;padding:0 clamp(13px,1.2vw,18px);cursor:pointer;white-space:nowrap;text-transform:uppercase;
+  font:700 clamp(11px,.92vw,14px)/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.065em;
   transition:color .18s ease,background .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease;
 }
-.mqf-primary{
-  min-width:clamp(152px,15vw,198px);border:1.5px solid #a27532;border-radius:4px;
-  background:linear-gradient(180deg,#6b3a21 0%,#4b2416 100%);color:#f6e9ce;
-  box-shadow:inset 0 0 0 1px rgba(255,231,174,.21),0 2px 4px rgba(60,28,9,.17);
-  clip-path:polygon(6px 0,calc(100% - 6px) 0,100% 6px,100% calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,0 calc(100% - 6px),0 6px);
-}
-.mqf-primary:hover,.mqf-primary:focus-visible{color:#f0c76b;border-color:#c28b3b;box-shadow:inset 0 0 0 1px rgba(255,229,160,.26),0 0 11px rgba(202,148,54,.20);transform:translateY(-1px);outline:0}
-.mqf-primary:disabled{opacity:.6;cursor:wait;transform:none}
-.mqf-back{
-  min-width:94px;border:1px solid rgba(122,74,33,.58);border-radius:4px;background:rgba(255,248,225,.18);color:#623718;
-  box-shadow:inset 0 0 0 1px rgba(255,252,238,.18);
-}
-.mqf-back:hover,.mqf-back:focus-visible{border-color:#a66d2e;background:rgba(255,249,227,.32);color:#8a5422;transform:translateY(-1px);outline:0}
-.mqf-link{
-  border:0;border-bottom:1px solid rgba(117,70,31,.42);border-radius:0;background:transparent;color:#6b3d1d;padding:0 5px;min-height:30px;
-}
-.mqf-link:hover,.mqf-link:focus-visible{color:#a0672a;border-bottom-color:#a0672a;outline:0}
-.mqf-guest{
-  min-width:clamp(170px,16vw,214px);border:1.5px solid rgba(145,96,43,.72);border-radius:4px;
-  background:linear-gradient(180deg,rgba(255,248,224,.38),rgba(233,210,161,.19));color:#663919;
-  box-shadow:inset 0 0 0 2px rgba(255,252,237,.18);font-size:clamp(12px,1.02vw,15px);
-}
-.mqf-guest:hover,.mqf-guest:focus-visible{border-color:#a66d2e;background:linear-gradient(180deg,rgba(255,250,231,.54),rgba(232,207,153,.29));color:#8d5521;transform:translateY(-1px);outline:0}
 
-/* Art-deco tooltip mark: a small brass diamond, not a generic circled "i". */
-.mqf-tip{
-  width:17px;height:17px;min-width:17px;padding:0;border:1px solid rgba(143,92,40,.58);border-radius:2px;
-  background:linear-gradient(135deg,rgba(255,248,219,.48),rgba(218,186,124,.22));color:#70401e;cursor:help;
-  transform:rotate(45deg);display:inline-grid;place-items:center;box-shadow:inset 0 0 0 1px rgba(255,250,233,.23);
+/* Main button follows the approved mockup: dark brown plaque, double warm-gold edge, cut corners. */
+.mqf-primary{
+  min-width:clamp(162px,15.5vw,215px);
+  border:2px solid #8d5725;border-radius:4px;
+  background:linear-gradient(180deg,#7a4724 0%,#5c2c18 58%,#4a2113 100%);color:#f7e9ca;
+  box-shadow:
+    inset 0 0 0 1px rgba(240,193,103,.78),
+    inset 0 0 0 3px rgba(76,35,15,.30),
+    0 2px 0 rgba(63,27,10,.42),0 3px 7px rgba(58,25,8,.18);
+  clip-path:polygon(7px 0,calc(100% - 7px) 0,100% 7px,100% calc(100% - 7px),calc(100% - 7px) 100%,7px 100%,0 calc(100% - 7px),0 7px);
 }
-.mqf-tip>span{display:block;transform:rotate(-45deg);font:700 11px/1 Georgia,serif}
-.mqf-tip:hover,.mqf-tip:focus-visible{border-color:#ad7430;background:linear-gradient(135deg,rgba(255,250,229,.68),rgba(220,185,116,.32));outline:0}
+.mqf-primary:hover,.mqf-primary:focus-visible{
+  color:#f4c96e;border-color:#b97c35;
+  box-shadow:inset 0 0 0 1px rgba(255,212,125,.90),inset 0 0 0 3px rgba(83,39,17,.25),0 0 12px rgba(203,148,53,.24);
+  transform:translateY(-1px);outline:0;
+}
+.mqf-primary:disabled{opacity:.58;cursor:wait;transform:none}
+
+.mqf-back{
+  min-width:104px;border:1.5px solid rgba(122,72,29,.68);border-radius:4px;
+  background:rgba(255,248,225,.20);color:#5c3015;box-shadow:inset 0 0 0 1px rgba(255,252,238,.20);
+}
+.mqf-back:hover,.mqf-back:focus-visible{border-color:#9f6428;background:rgba(255,249,227,.34);color:#875020;transform:translateY(-1px);outline:0}
+.mqf-link{
+  border:1px solid transparent;border-bottom-color:rgba(117,70,31,.46);border-radius:0;background:transparent;color:#643718;padding:0 7px;min-height:34px;
+}
+.mqf-link:hover,.mqf-link:focus-visible{color:#985e25;border-bottom-color:#985e25;outline:0}
+.mqf-guest{
+  min-width:clamp(184px,17vw,230px);border:1.5px solid rgba(137,83,34,.72);border-radius:4px;
+  background:linear-gradient(180deg,rgba(255,248,224,.42),rgba(228,201,145,.24));color:#603317;
+  box-shadow:inset 0 0 0 1px rgba(255,252,237,.25);font-size:clamp(12px,1vw,15px);
+}
+.mqf-guest:hover,.mqf-guest:focus-visible{border-color:#9f6428;background:linear-gradient(180deg,rgba(255,250,231,.60),rgba(229,199,137,.34));color:#875020;transform:translateY(-1px);outline:0}
+
+/* Small brass ticket-punch style help mark. */
+.mqf-tip{
+  width:19px;height:19px;min-width:19px;padding:0;border:1px solid rgba(128,76,30,.64);border-radius:50%;
+  background:radial-gradient(circle at 38% 32%,#f4dda2 0 18%,#c79a4d 42%,#8f5926 100%);color:#4c2a14;cursor:help;
+  display:inline-grid;place-items:center;box-shadow:inset 0 0 0 1px rgba(255,242,197,.42),0 1px 1px rgba(70,34,12,.18);
+}
+.mqf-tip>span{font:700 12px/1 Georgia,serif;text-shadow:0 1px rgba(255,239,191,.45)}
+.mqf-tip:hover,.mqf-tip:focus-visible{filter:brightness(1.08);outline:0;box-shadow:inset 0 0 0 1px rgba(255,242,197,.55),0 0 7px rgba(176,118,42,.22)}
 
 .mqf-recovery-box{
-  margin:auto 0;padding:10px 13px;border:1.5px dashed rgba(112,66,28,.58);border-radius:4px;
-  background:rgba(255,249,226,.14);text-align:center;
+  margin:auto 0;padding:12px 14px;border:1.5px dashed rgba(112,66,28,.60);border-radius:4px;background:rgba(255,249,226,.13);text-align:center;
 }
 .mqf-recovery-box small{display:block;margin-bottom:4px;color:#70411e;font:700 10px/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.08em;text-transform:uppercase}
-.mqf-recovery-value{color:#4b2914;font:700 clamp(16px,1.55vw,21px)/1.15 'Cormorant Garamond',Georgia,serif;letter-spacing:.07em;overflow-wrap:anywhere}
-.mqf-status-copy{text-align:center;color:#6a3d1e;font:700 clamp(13px,1.1vw,16px)/1.2 'Cormorant Garamond',Georgia,serif}
-.mqf-status-name{display:block;margin-top:4px;color:#4f2c16;font-size:clamp(18px,1.7vw,24px);letter-spacing:.04em}
+.mqf-recovery-value{color:#492711;font:700 clamp(17px,1.5vw,22px)/1.15 'Cormorant Garamond',Georgia,serif;letter-spacing:.07em;overflow-wrap:anywhere}
+.mqf-status-copy{text-align:center;color:#633719;font:700 clamp(14px,1.1vw,17px)/1.25 'Cormorant Garamond',Georgia,serif}
+.mqf-status-name{display:block;margin-top:6px;color:#492611;font-size:clamp(20px,1.7vw,26px);letter-spacing:.045em}
 
+/* Validation line is kept inside the large blank field, just above the lower printed line. */
 .mq-ticket-error{
-  position:absolute;z-index:9;left:22%;right:22%;top:69%;height:18px;display:flex;align-items:center;justify-content:center;
-  overflow:hidden;color:#8c3423;font:700 clamp(9px,.76vw,11px)/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;text-align:center;
+  position:absolute;z-index:9;left:24%;right:30%;top:61.7%;height:19px;display:flex;align-items:center;justify-content:center;
+  overflow:hidden;color:#8c3423;font:700 clamp(10px,.78vw,12px)/1 'Cormorant Garamond',Georgia,serif;letter-spacing:.02em;text-align:center;
   opacity:0;transition:opacity .14s ease;pointer-events:none;text-shadow:0 1px rgba(255,247,218,.75);
 }
 .mq-ticket-error.has-error{opacity:1}
-.mq-ticket-online-mark{position:absolute;z-index:9;right:19.4%;top:25.6%;width:14px;height:14px;display:grid;place-items:center;padding:0;border:0;background:transparent;cursor:help;opacity:.55}
+.mq-ticket-online-mark{position:absolute;z-index:9;right:21.8%;top:22.2%;width:14px;height:14px;display:grid;place-items:center;padding:0;border:0;background:transparent;cursor:help;opacity:.50}
 .mq-ticket-online-mark::before{content:"";width:5px;height:5px;border-radius:50%;background:#b78a44;box-shadow:0 0 0 1px rgba(80,43,18,.24)}
 .mq-ticket-online-mark[data-state="online"]::before{background:#6f8c56}.mq-ticket-online-mark[data-state="offline"]::before{background:#a85343}
 .mq-ticket-tooltip{
-  position:fixed;z-index:2147483500;width:max-content;max-width:min(340px,calc(100vw - 28px));padding:10px 12px;
+  position:fixed;z-index:2147483500;width:max-content;max-width:min(350px,calc(100vw - 28px));padding:10px 12px;
   border:1px solid rgba(205,164,92,.52);border-radius:5px;background:rgba(40,23,11,.98);color:#f3dfac;
   box-shadow:0 14px 34px rgba(0,0,0,.40);font:600 12px/1.42 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;
   text-align:left;white-space:normal;opacity:0;visibility:hidden;transform:translateY(-3px);transition:opacity .12s ease,transform .12s ease,visibility .12s ease;pointer-events:none;
 }
 .mq-ticket-tooltip.visible{opacity:1;visibility:visible;transform:translateY(0)}
 
-body.mq-ticket-open #playerView .mq-player-note,body.mq-ticket-open #playerView .mq-storage-note,body.mq-ticket-open #playerView .mq-player-actions,body.mq-ticket-open #playerView>.mq-online-status{visibility:hidden!important}
+body.mq-ticket-open #playerView .mq-player-note,
+body.mq-ticket-open #playerView .mq-storage-note,
+body.mq-ticket-open #playerView .mq-player-actions,
+body.mq-ticket-open #playerView>.mq-online-status{visibility:hidden!important}
+
 .mq-ticket-layer:not(.is-leaving) .mq-ticket-scene{animation:mqTicketSettle .48s cubic-bezier(.2,.78,.25,1) both}
-@keyframes mqTicketSettle{from{opacity:0;transform:translateY(16px) scale(.987)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes mqTicketSettle{from{opacity:0;transform:translateY(15px) scale(.988)}to{opacity:1;transform:translateY(0) scale(1)}}
 .mq-ticket-layer.is-leaving .mq-ticket-scene{animation:mqTicketLeave .48s ease both}
 @keyframes mqTicketLeave{to{opacity:0;transform:translateY(10px) scale(.992)}}
-@media(max-width:760px){.mq-ticket-layer{padding:6px!important;overflow:auto!important}.mq-ticket-scene{width:min(1040px,98vw);min-width:640px;transform-origin:center}}
-@media(max-height:610px){.mq-ticket-scene{width:min(900px,92vw,calc(84vh * 2.112))}}
-@media(prefers-reduced-motion:reduce){.mq-ticket-layer:not(.is-leaving) .mq-ticket-scene,.mq-ticket-layer.is-leaving .mq-ticket-scene{animation:none!important}.mqf-btn,.mqf-field,.mqf-pin-box{transition:none!important}}
+
+@media(max-width:760px){
+  .mq-ticket-layer{padding:5px!important;overflow:auto!important}
+  .mq-ticket-scene{width:min(980px,98vw);min-width:660px;transform-origin:center}
+  .mqf-footer{gap:6px}.mqf-left-actions,.mqf-right-actions{gap:5px}
+}
+@media(max-height:640px){
+  .mq-ticket-scene{width:min(930px,94vw,calc(88vh * 1.4017))}
+  .mqf-btn{min-height:34px}.mqf-field{height:37px}.mqf-pin{height:37px}
+}
+@media(prefers-reduced-motion:reduce){
+  .mq-ticket-layer:not(.is-leaving) .mq-ticket-scene,.mq-ticket-layer.is-leaving .mq-ticket-scene{animation:none!important}
+  .mqf-btn,.mqf-field,.mqf-pin-box{transition:none!important}
+}
