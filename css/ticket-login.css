@@ -20,8 +20,8 @@ body.mq-ticket-open{overflow:hidden!important}
   filter:drop-shadow(0 22px 30px rgba(0,0,0,.34));
 }
 .mq-ticket-secondary{
-  position:absolute;z-index:0;width:96%;left:9.2%;top:5.3%;transform:rotate(1deg);transform-origin:center;
-  pointer-events:none;filter:drop-shadow(0 12px 14px rgba(0,0,0,.24));opacity:.97;
+  position:absolute;z-index:0;width:95.4%;left:11.4%;top:4.9%;transform:rotate(0.85deg);transform-origin:center;
+  pointer-events:none;filter:drop-shadow(0 10px 14px rgba(0,0,0,.22));opacity:1;
 }
 .mq-ticket-secondary>img{display:block;width:100%;height:auto}
 
@@ -90,9 +90,9 @@ body.mq-ticket-open .mq-ticket-profile-mount .mq-form-stack{
   gap:clamp(4px,.48vw,7px)!important;background:transparent!important;border:0!important;box-shadow:none!important;
 }
 body.mq-ticket-open .mq-ticket-profile-mount .mq-form-label{
-  display:flex!important;align-items:center!important;gap:6px!important;margin:0!important;padding:0!important;
+  display:flex!important;align-items:center!important;gap:8px!important;margin:0!important;padding:0!important;
   color:#6f4020!important;text-shadow:0 1px rgba(255,249,229,.60)!important;
-  font:600 clamp(9px,.78vw,11px)/1 'Oswald',Arial,sans-serif!important;letter-spacing:.075em!important;text-transform:uppercase!important;
+  font:700 clamp(11px,.96vw,14px)/1 'Cormorant Garamond',Georgia,serif!important;letter-spacing:.06em!important;text-transform:uppercase!important;
 }
 
 /* Paper-integrated text fields matching the approved visual proposal. */
@@ -109,7 +109,7 @@ body.mq-ticket-open .mq-ticket-profile-mount input.mq-recovery-input{
   opacity:1!important;filter:none!important;transition:border-color .17s ease,background-color .17s ease,box-shadow .17s ease!important;
 }
 body.mq-ticket-open .mq-ticket-profile-mount input.mq-name-input::placeholder,
-body.mq-ticket-open .mq-ticket-profile-mount input.mq-recovery-input::placeholder{color:rgba(77,43,21,.40)!important;-webkit-text-fill-color:rgba(77,43,21,.40)!important}
+body.mq-ticket-open .mq-ticket-profile-mount input.mq-recovery-input::placeholder{color:rgba(77,43,21,.62)!important;-webkit-text-fill-color:rgba(77,43,21,.62)!important}
 body.mq-ticket-open .mq-ticket-profile-mount input.mq-name-input:focus,
 body.mq-ticket-open .mq-ticket-profile-mount input.mq-recovery-input:focus{
   border-color:#9a672e!important;background-color:rgba(255,251,235,.31)!important;
@@ -143,25 +143,27 @@ body.mq-ticket-open .mq-ticket-profile-mount .mq-ticket-pin-boxes>i.is-filled::a
 
 /* Printed actions. Main CTA resembles the proposal; secondary actions sit directly on the paper. */
 body.mq-ticket-open .mq-ticket-profile-mount .mq-profile-button-row{
-  display:flex!important;align-items:center!important;justify-content:space-between!important;gap:clamp(8px,.9vw,12px)!important;
-  min-height:34px!important;margin:clamp(5px,.6vw,8px) 0 0!important;padding:0!important;background:transparent!important;border:0!important;
+  display:flex!important;align-items:center!important;justify-content:space-between!important;gap:clamp(10px,1vw,14px)!important;
+  min-height:40px!important;margin:clamp(6px,.7vw,10px) 0 0!important;padding:0!important;background:transparent!important;border:0!important;
 }
 body.mq-ticket-open .mq-ticket-profile-mount button.mq-primary,
 body.mq-ticket-open .mq-ticket-profile-mount button.mq-secondary,
 body.mq-ticket-open .mq-ticket-profile-mount button.mq-link-button,
 body.mq-ticket-open .mq-ticket-profile-mount button.mq-guest-button{
-  -webkit-appearance:none!important;appearance:none!important;box-sizing:border-box!important;cursor:pointer!important;white-space:nowrap!important;
-  font:600 clamp(9px,.77vw,11px)/1 'Oswald',Arial,sans-serif!important;letter-spacing:.075em!important;text-transform:uppercase!important;
-  transition:color .2s ease,background-color .2s ease,border-color .2s ease,box-shadow .2s ease,transform .2s ease!important;
+  min-height:32px!important;margin:0!important;padding:0 12px!important;border:1px solid rgba(125,77,35,.58)!important;border-radius:5px!important;
+  background:rgba(255,248,225,.16)!important;background-image:none!important;color:#6a391a!important;
+  box-shadow:inset 0 0 0 1px rgba(255,251,236,.18)!important;text-decoration:none!important;
 }
 body.mq-ticket-open .mq-ticket-profile-mount button.mq-primary{
-  min-height:clamp(31px,2.9vw,38px)!important;margin:0!important;padding:0 clamp(14px,1.5vw,21px)!important;
-  border:1.5px solid #9a6a2d!important;border-radius:4px!important;background:#5b2d18!important;background-image:linear-gradient(180deg,#6b391e,#4d2415)!important;
-  color:#f4e6c0!important;box-shadow:inset 0 0 0 1px rgba(255,227,159,.15),0 2px 4px rgba(58,27,8,.18)!important;
+  min-height:clamp(34px,3vw,42px)!important;margin:0!important;padding:0 clamp(16px,1.7vw,24px)!important;
+  border:1.5px solid #a27230!important;border-radius:5px!important;
+  background:linear-gradient(180deg,#6d3a20 0%,#4d2415 100%)!important;
+  color:#f7ead0!important;box-shadow:inset 0 0 0 1px rgba(255,231,175,.22),0 2px 5px rgba(58,27,8,.16)!important;
+  clip-path:polygon(7px 0,calc(100% - 7px) 0,100% 7px,100% calc(100% - 7px),calc(100% - 7px) 100%,7px 100%,0 calc(100% - 7px),0 7px)!important;
 }
 body.mq-ticket-open .mq-ticket-profile-mount button.mq-primary:hover:not(:disabled),
 body.mq-ticket-open .mq-ticket-profile-mount button.mq-primary:focus-visible:not(:disabled){
-  color:#efc66c!important;border-color:#c08b3d!important;box-shadow:inset 0 0 0 1px rgba(255,226,154,.22),0 0 10px rgba(202,148,54,.20)!important;
+  color:#efc66c!important;border-color:#c08b3d!important;box-shadow:inset 0 0 0 1px rgba(255,226,154,.26),0 0 12px rgba(202,148,54,.22)!important;
   transform:translateY(-1px)!important;outline:none!important;
 }
 body.mq-ticket-open .mq-ticket-profile-mount button.mq-primary:disabled{opacity:.58!important;cursor:wait!important;transform:none!important}
@@ -173,22 +175,25 @@ body.mq-ticket-open .mq-ticket-profile-mount button.mq-guest-button{
 }
 body.mq-ticket-open .mq-ticket-profile-mount button.mq-secondary:hover,
 body.mq-ticket-open .mq-ticket-profile-mount button.mq-link-button:hover,
-body.mq-ticket-open .mq-ticket-profile-mount button.mq-guest-button:hover{
-  color:#a16a2a!important;background:transparent!important;text-decoration:none!important;transform:none!important;
+body.mq-ticket-open .mq-ticket-profile-mount button.mq-guest-button:hover,
+body.mq-ticket-open .mq-ticket-profile-mount button.mq-secondary:focus-visible,
+body.mq-ticket-open .mq-ticket-profile-mount button.mq-link-button:focus-visible,
+body.mq-ticket-open .mq-ticket-profile-mount button.mq-guest-button:focus-visible{
+  color:#8f5724!important;border-color:#b27a36!important;background:rgba(255,249,228,.30)!important;text-decoration:none!important;transform:translateY(-1px)!important;outline:none!important;
 }
 body.mq-ticket-open .mq-ticket-profile-mount .mq-profile-links{
-  position:absolute!important;left:0!important;bottom:-1px!important;display:flex!important;margin:0!important;padding:0!important;background:transparent!important;
+  position:static!important;display:flex!important;align-items:center!important;gap:8px!important;margin:0!important;padding:0!important;background:transparent!important;
 }
 
 /* Name step: one field, CTA on right, guest as a discreet paper link below. */
 body.mq-ticket-open .mq-ticket-layer[data-ticket-state="name"] .mq-ticket-profile-mount .mq-form-stack{align-content:start!important;gap:5px!important}
 body.mq-ticket-open .mq-ticket-layer[data-ticket-state="name"] .mq-ticket-profile-mount #mqCheckNameForm>button.mq-primary{justify-self:end!important;margin-top:6px!important}
 body.mq-ticket-open .mq-ticket-profile-mount .mq-guest-entry{
-  margin:clamp(4px,.45vw,6px) 0 0!important;padding:clamp(4px,.45vw,6px) 0 0!important;
+  margin:clamp(6px,.55vw,8px) 0 0!important;padding:clamp(6px,.55vw,8px) 0 0!important;
   border-top:1px solid rgba(110,64,26,.25)!important;background:transparent!important;text-align:center!important;
 }
 body.mq-ticket-open .mq-ticket-profile-mount .mq-guest-separator{display:none!important}
-body.mq-ticket-open .mq-ticket-profile-mount button.mq-guest-button{width:auto!important;min-width:0!important;margin:auto!important;padding:0 8px!important}
+body.mq-ticket-open .mq-ticket-profile-mount button.mq-guest-button{width:auto!important;min-width:210px!important;margin:auto!important;padding:0 16px!important;color:#75431f!important;font-size:clamp(13px,1.1vw,16px)!important}
 
 /* Recovery code appears like a printed coupon area, not a dark card. */
 body.mq-ticket-open .mq-ticket-profile-mount .mq-recovery-code-wrap{
@@ -202,11 +207,11 @@ body.mq-ticket-open .mq-ticket-profile-mount .mq-recovery-code{display:block!imp
 /* State compaction without ever changing ticket size. */
 body.mq-ticket-open .mq-ticket-layer[data-ticket-state="login"] .mq-ticket-profile-mount .mq-form-stack{align-content:center!important}
 body.mq-ticket-open .mq-ticket-layer[data-ticket-state="register"] .mq-ticket-profile-mount .mq-profile-step,
-body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-profile-step{margin-bottom:3px!important}
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-profile-step{margin-bottom:2px!important}
 body.mq-ticket-open .mq-ticket-layer[data-ticket-state="register"] .mq-ticket-profile-mount .mq-form-stack,
-body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-form-stack{gap:3px!important}
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-form-stack{gap:2px!important;align-content:start!important}
 body.mq-ticket-open .mq-ticket-layer[data-ticket-state="register"] .mq-ticket-profile-mount .mq-profile-button-row,
-body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-profile-button-row{margin-top:3px!important}
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-profile-button-row{margin-top:2px!important}
 body.mq-ticket-open .mq-ticket-layer[data-ticket-state="linked"] .mq-ticket-profile-mount .mq-profile-card,
 body.mq-ticket-open .mq-ticket-layer[data-ticket-state="guest"] .mq-ticket-profile-mount .mq-profile-card,
 body.mq-ticket-open .mq-ticket-layer[data-ticket-state="reveal"] .mq-ticket-profile-mount .mq-profile-card{justify-content:center!important;text-align:center!important}
@@ -215,14 +220,24 @@ body.mq-ticket-open .mq-ticket-layer[data-ticket-state="guest"] .mq-ticket-profi
 body.mq-ticket-open .mq-ticket-layer[data-ticket-state="reveal"] .mq-ticket-profile-mount .mq-profile-button-row{justify-content:center!important}
 
 /* Three-input recovery state: scaled down cleanly inside the same paper field. */
-body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-profile-title{font-size:clamp(12px,1.1vw,15px)!important}
-body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-profile-step{min-height:18px!important;margin-bottom:1px!important}
-body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-context-name{margin-bottom:2px!important;font-size:clamp(7px,.62vw,9px)!important}
-body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-form-label{font-size:clamp(7px,.62vw,9px)!important}
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="register"] .mq-ticket-profile-mount .mq-profile-title,
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-profile-title{font-size:clamp(11px,1vw,14px)!important}
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="register"] .mq-ticket-profile-mount .mq-profile-step,
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-profile-step{min-height:17px!important;margin-bottom:1px!important}
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="register"] .mq-ticket-context-name,
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-context-name{margin-bottom:1px!important;font-size:clamp(7px,.62vw,9px)!important}
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="register"] .mq-ticket-profile-mount .mq-form-label,
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-form-label{font-size:clamp(8px,.72vw,10px)!important}
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="register"] .mq-ticket-profile-mount input.mq-name-input,
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="register"] .mq-ticket-profile-mount input.mq-recovery-input,
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="register"] .mq-ticket-profile-mount .mq-ticket-pin-wrap,
 body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount input.mq-name-input,
 body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount input.mq-recovery-input,
-body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-ticket-pin-wrap{height:clamp(26px,2.35vw,31px)!important}
-body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount button.mq-primary{min-height:29px!important}
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-ticket-pin-wrap{height:clamp(24px,2.15vw,29px)!important}
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="register"] .mq-ticket-profile-mount button.mq-primary,
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount button.mq-primary,
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="register"] .mq-ticket-profile-mount button.mq-secondary,
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount button.mq-secondary{min-height:28px!important}
 
 /* Error has a reserved printed line. */
 .mq-ticket-error{
@@ -238,8 +253,8 @@ body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-pr
 .mq-ticket-online-mark[data-state="online"]::before{background:#6f8c56}.mq-ticket-online-mark[data-state="offline"]::before{background:#a85343}
 
 /* Tooltips live outside ticket layout. */
-.mq-ticket-info{flex:0 0 auto!important;width:16px!important;height:16px!important;min-height:16px!important;padding:0!important;margin:0!important;display:inline-grid!important;place-items:center!important;border:1px solid rgba(101,57,22,.45)!important;border-radius:50%!important;background:rgba(255,247,218,.14)!important;color:#70421f!important;font:700 9px/1 Georgia,serif!important;letter-spacing:0!important;text-transform:none!important;cursor:help!important}
-.mq-ticket-info:hover,.mq-ticket-info:focus-visible{border-color:#a46c2f!important;background:rgba(255,249,225,.34)!important;outline:none!important}
+.mq-ticket-info{flex:0 0 auto!important;width:18px!important;height:18px!important;min-height:18px!important;padding:0!important;margin:0!important;display:inline-grid!important;place-items:center!important;border:1px solid rgba(146,99,49,.48)!important;border-radius:4px!important;background:linear-gradient(180deg,rgba(255,247,218,.34),rgba(235,214,168,.18))!important;color:#744620!important;font:700 11px/1 'Cormorant Garamond',Georgia,serif!important;letter-spacing:0!important;text-transform:none!important;cursor:help!important;box-shadow:inset 0 0 0 1px rgba(255,248,228,.25)!important}
+.mq-ticket-info:hover,.mq-ticket-info:focus-visible{border-color:#a46c2f!important;background:linear-gradient(180deg,rgba(255,249,225,.52),rgba(235,214,168,.28))!important;outline:none!important}
 .mq-ticket-tooltip{position:fixed;z-index:2147483500;width:max-content;max-width:min(330px,calc(100vw - 28px));padding:9px 11px;border:1px solid rgba(205,164,92,.50);border-radius:4px;background:rgba(35,20,10,.97);color:#f2dfad;box-shadow:0 14px 34px rgba(0,0,0,.40);font:500 11px/1.45 'Oswald',Arial,sans-serif;letter-spacing:.015em;text-align:left;white-space:normal;opacity:0;visibility:hidden;transform:translateY(-3px);transition:opacity .12s ease,transform .12s ease,visibility .12s ease;pointer-events:none}
 .mq-ticket-tooltip.visible{opacity:1;visibility:visible;transform:translateY(0)}
 

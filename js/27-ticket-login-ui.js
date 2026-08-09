@@ -1,6 +1,6 @@
 (()=>{
   'use strict';
-  const VERSION='ticket-login-v2.0';
+  const VERSION='ticket-login-v3.0';
   const layer=document.getElementById('mqTicketLayer');
   const mount=document.getElementById('mqTicketProfileMount');
   const shell=document.getElementById('mqProfileShell');
@@ -150,7 +150,7 @@
       button.className='mq-ticket-info';
       button.dataset.generated='main';
       button.setAttribute('aria-label','Více informací');
-      button.textContent='i';
+      button.textContent='?';
       step.appendChild(button);
     }
     if(button.dataset.mqTicketTip!==text)button.dataset.mqTicketTip=text;
@@ -167,7 +167,7 @@
       info.className='mq-ticket-info';
       info.dataset.generated='guest';
       info.setAttribute('aria-label','Informace o hraní jako host');
-      info.textContent='i';
+      info.textContent='?';
       guestButton.insertAdjacentElement('afterend',info);
     }
     if(info.dataset.mqTicketTip!==note)info.dataset.mqTicketTip=note;
@@ -290,6 +290,14 @@
   window.addEventListener('resize',hideTooltip,{passive:true});
   window.addEventListener('scroll',hideTooltip,{passive:true,capture:true});
   window.addEventListener('mq:guest-mode-changed',queueEnhance);
+  document.addEventListener('click',event=>{
+    const btn=event.target?.closest?.('#mqLeaveGuest');
+    if(btn){
+      layer.hidden=false;
+      document.body.classList.add('mq-ticket-open');
+      queueEnhance();
+    }
+  },true);
 
   layer.dataset.ticketUiVersion=VERSION;
   queueEnhance();
