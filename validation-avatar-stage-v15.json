@@ -1,0 +1,9 @@
+{
+  "version": "15.0",
+  "background_asset": "assets/avatar-onboarding-v15/production/background.webp",
+  "standalone_controls": ["arrow-left.webp", "arrow-right.webp", "continue.webp", "back.webp"],
+  "visible_avatar_slots": 3,
+  "back_from_registration": "recovery-code ticket",
+  "back_from_other_contexts": "original underlying screen",
+  "status": "ready"
+}

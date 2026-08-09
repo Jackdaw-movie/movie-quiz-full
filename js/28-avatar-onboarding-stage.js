@@ -1,36 +1,51 @@
 (()=>{
   'use strict';
-  const VERSION='avatar-stage-v14.0';
-  const STAGE_ASSET='assets/avatar-onboarding/production/avatar-stage-v13.webp?v=14.0';
+  const VERSION='avatar-stage-assets-v15.0';
+  const ASSETS=[
+    'assets/avatar-onboarding-v15/production/background.webp?v=15.0',
+    'assets/avatar-onboarding-v15/production/arrow-left.webp?v=15.0',
+    'assets/avatar-onboarding-v15/production/arrow-right.webp?v=15.0',
+    'assets/avatar-onboarding-v15/production/continue.webp?v=15.0',
+    'assets/avatar-onboarding-v15/production/back.webp?v=15.0'
+  ];
 
-  function preloadStage(){
-    try{
+  const warmed=[];
+  function warmAssets(){
+    if(warmed.length)return;
+    ASSETS.forEach((src,index)=>{
       const img=new Image();
+      warmed.push(img);
       img.decoding='async';
-      img.fetchPriority='low';
-      img.src=STAGE_ASSET;
-    }catch(_e){}
+      try{img.fetchPriority=index===0?'low':'auto'}catch(_e){}
+      img.src=src;
+    });
   }
 
-  function syncBackLabel(){
+  function scheduleWarm(){
+    const run=()=>{
+      if('requestIdleCallback' in window)requestIdleCallback(warmAssets,{timeout:1600});
+      else setTimeout(warmAssets,220);
+    };
+    window.addEventListener('mq:preload-ready',run,{once:true});
+    if(window.MovieQuizPreload?.ready)run();
+    else window.addEventListener('load',()=>setTimeout(run,220),{once:true});
+  }
+
+  function markBackControl(){
     const back=document.querySelector('#mqAvatarModal .mq-avatar-close');
     if(!back)return;
     back.setAttribute('aria-label','Zpět');
     back.setAttribute('title','Zpět');
   }
 
-  function backToRecoveryTicket(event){
-    const back=event.target?.closest?.('#mqAvatarModal .mq-avatar-close');
-    if(!back)return;
-    const modal=document.getElementById('mqAvatarModal');
-    if(!modal?.classList.contains('is-onboarding'))return;
+  function isCreationOnboarding(modal){
+    if(!modal?.classList.contains('is-onboarding'))return false;
+    const done=document.getElementById('mqRecoveryDone');
+    const title=document.querySelector('#mqProfileShell .mq-profile-title')?.textContent||'';
+    return Boolean(done)&&/Profil byl vytvořen/i.test(title);
+  }
 
-    /* The stock avatar module deliberately prevents closeGallery() while onboarding.
-       For the painted ZPĚT control we explicitly return to the recovery-code ticket. */
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-
+  function returnToRecoveryCode(modal){
     modal.hidden=true;
 
     const done=document.getElementById('mqRecoveryDone');
@@ -47,27 +62,45 @@
     }
 
     requestAnimationFrame(()=>done?.focus?.({preventScroll:true}));
-    window.dispatchEvent(new CustomEvent('mq:avatar-onboarding-back'));
+    window.dispatchEvent(new CustomEvent('mq:avatar-onboarding-back',{detail:{destination:'recovery-code'}}));
+  }
+
+  /* Only override ZPĚT for the mandatory avatar step after a newly-created account.
+     Everywhere else the stock gallery close handler runs untouched, so the player
+     returns to the exact screen/modal underneath the gallery. */
+  function handleBack(event){
+    const back=event.target?.closest?.('#mqAvatarModal .mq-avatar-close');
+    if(!back)return;
+    const modal=document.getElementById('mqAvatarModal');
+    if(!isCreationOnboarding(modal))return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    returnToRecoveryCode(modal);
   }
 
   function observeModal(){
     const observer=new MutationObserver(mutations=>{
-      if(mutations.some(m=>[...m.addedNodes].some(n=>n instanceof Element && (n.id==='mqAvatarModal'||n.querySelector?.('#mqAvatarModal'))))){
-        syncBackLabel();
+      for(const mutation of mutations){
+        for(const node of mutation.addedNodes||[]){
+          if(!(node instanceof Element))continue;
+          if(node.id==='mqAvatarModal'||node.querySelector?.('#mqAvatarModal')){
+            markBackControl();
+            warmAssets();
+            return;
+          }
+        }
       }
     });
     observer.observe(document.documentElement,{childList:true,subtree:true});
-    syncBackLabel();
+    markBackControl();
   }
 
-  /* Capture phase is intentional: the original module's onboarding close handler is a no-op. */
-  document.addEventListener('click',backToRecoveryTicket,true);
-
+  document.addEventListener('click',handleBack,true);
+  scheduleWarm();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',observeModal,{once:true});
   else observeModal();
-
-  if('requestIdleCallback' in window)window.requestIdleCallback(preloadStage,{timeout:1200});
-  else window.addEventListener('load',()=>setTimeout(preloadStage,250),{once:true});
 
   window.__mqAvatarStageVersion=VERSION;
 })();
