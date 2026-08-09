@@ -1,4 +1,4 @@
-/* Movie Quiz – Ticket login v5.0
+/* Movie Quiz – Ticket login v6.0
    Taller 150% ticket stack. Desk/backdrop remains an independent asset.
    The functional Supabase profile DOM stays hidden; this facade mirrors it. */
 
@@ -23,7 +23,7 @@ body.mq-ticket-open{overflow:hidden!important}
 .mq-ticket-scene{
   position:relative;z-index:2;
   width:min(1180px,95vw,calc(92vh * 1.4017));
-  aspect-ratio:1340/956;
+  aspect-ratio:1320/910;
   filter:drop-shadow(0 24px 30px rgba(0,0,0,.34));
   overflow:visible!important;
 }
@@ -49,7 +49,7 @@ body.mq-ticket-open .mq-ticket-profile-mount #mqProfileShell *{animation:none!im
 /* Maximum usable area: from the underline below JACKDAW'S CINEMA to the lower printed line. */
 .mq-ticket-facade{
   position:absolute;z-index:7;
-  left:15.5%;right:22.0%;top:23.9%;height:39.0%;
+  left:15.4%;right:21.0%;top:24.8%;height:39.5%;
   color:#5a3218;
   font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;
   text-shadow:0 1px rgba(255,249,226,.62);
