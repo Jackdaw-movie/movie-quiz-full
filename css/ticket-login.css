@@ -223,3 +223,17 @@ body.mq-ticket-open #playerView>.mq-online-status{visibility:hidden!important}
   .mq-ticket-layer:not(.is-leaving) .mq-ticket-scene,.mq-ticket-layer.is-leaving .mq-ticket-scene{animation:none!important}
   .mqf-btn,.mqf-field,.mqf-pin-box{transition:none!important}
 }
+
+/* v9: avatar onboarding must sit above the physical ticket layer. */
+#mqAvatarModal{z-index:2147483640!important}
+#mqAvatarModal .mq-avatar-dialog{position:relative;z-index:2}
+#mqAvatarModal .mq-avatar-modal-backdrop{z-index:1}
+
+/* v9: real visual caret in the currently active PIN cell. */
+.mqf-pin-box.active{border-color:#9c6329;background:rgba(255,251,235,.30);box-shadow:inset 0 0 0 2px rgba(255,252,238,.20),0 0 0 2px rgba(156,99,41,.06)}
+.mqf-pin-box.active::before{
+  content:"";display:block;width:2px;height:54%;min-height:15px;max-height:24px;border-radius:2px;
+  background:#744019;box-shadow:0 0 0 1px rgba(255,248,222,.18);animation:mqPinCaretBlink 1.05s steps(1,end) infinite;
+}
+@keyframes mqPinCaretBlink{0%,46%{opacity:1}47%,100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.mqf-pin-box.active::before{animation-duration:1.6s}}

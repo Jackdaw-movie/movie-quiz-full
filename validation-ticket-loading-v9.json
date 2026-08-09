@@ -1,0 +1,11 @@
+{
+  "version": "v9",
+  "checks": {
+    "ticket_continue_uses_original_recovery_done": true,
+    "avatar_modal_above_ticket": true,
+    "pin_active_caret": true,
+    "exterior_city_only_audio": true,
+    "auditorium_music_restored": true,
+    "js_syntax_checked": true
+  }
+}

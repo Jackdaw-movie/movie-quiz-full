@@ -1,6 +1,6 @@
 (()=>{
   'use strict';
-  const VERSION='ticket-login-v8.0-avatar-flow';
+  const VERSION='ticket-login-v9.0-recovery-pin-caret';
   const layer=document.getElementById('mqTicketLayer');
   const mount=document.getElementById('mqTicketProfileMount');
   const shell=document.getElementById('mqProfileShell');
@@ -140,9 +140,7 @@
     const title=originalTitle();
     const code=clean(shell.querySelector('#mqRecoveryCodeValue')?.textContent);
     const isNewProfile=/Profil byl vytvořen/i.test(title);
-    const continueButton=isNewProfile
-      ?btn('Pokračovat','mqf-primary','data-avatar-onboarding="1"')
-      :click('Pokračovat','mqf-primary','#mqRecoveryDone');
+    const continueButton=click('Pokračovat','mqf-primary','#mqRecoveryDone');
     return `<div class="mqf-panel" data-state="reveal">
       <div class="mqf-head"><h2 class="mqf-title">${esc(title||'Profil je připraven')}</h2>${tip(hint())}</div>
       <div class="mqf-body"><div class="mqf-recovery-box"><small>Recovery code</small><div class="mqf-recovery-value">${esc(code)}</div></div></div>
@@ -204,14 +202,28 @@
   function updatePin(input){
     const wrap=input.closest('.mqf-pin');if(!wrap)return;
     const n=digits(input.value).length;
-    wrap.querySelectorAll('.mqf-pin-box').forEach((box,i)=>box.classList.toggle('filled',i<n));
+    const focused=document.activeElement===input;
+    wrap.querySelectorAll('.mqf-pin-box').forEach((box,i)=>{
+      box.classList.toggle('filled',i<n);
+      box.classList.toggle('active',focused&&n<6&&i===n);
+    });
   }
   function submitForm(id){
     facade.querySelectorAll('[data-source-input]').forEach(syncToSource);
     const form=document.getElementById(id);form?.requestSubmit?.();
   }
   function sourceClick(sel){
-    const target=actual(sel);target?.click?.();
+    const target=actual(sel);
+    if(!target)return;
+    if(sel==='#mqRecoveryDone'){
+      const title=clean(shell.querySelector('.mq-profile-title')?.textContent);
+      const isNewProfile=/Profil byl vytvořen/i.test(title);
+      if(isNewProfile&&target.dataset.mqAvatarDirectBound!=='1'){
+        const opened=window.MovieQuizAvatars?.openOnboarding?.(target);
+        if(opened)return;
+      }
+    }
+    target.click?.();
   }
   function syncError(){
     if(!errorMirror)return;const text=clean(errorSource?.textContent);errorMirror.textContent=text;errorMirror.classList.toggle('has-error',Boolean(text));
@@ -237,27 +249,19 @@
     const tipBtn=e.target.closest?.('[data-tip]');
     if(tipBtn){e.preventDefault();e.stopPropagation();tipAnchor===tipBtn&&tooltip?.classList.contains('visible')?hideTip():showTip(tipBtn);return}
     const submit=e.target.closest?.('[data-submit-form]');if(submit){e.preventDefault();submitForm(submit.dataset.submitForm);return}
-    const onboarding=e.target.closest?.('[data-avatar-onboarding]');
-    if(onboarding){
-      e.preventDefault();
-      const api=window.MovieQuizAvatars;
-      const opened=api?.openOnboarding?.(null);
-      if(opened){
-        facade.dataset.awaitingAvatar='1';
-        hideTip();
-      }else if(errorMirror){
-        errorMirror.textContent='Výběr avatara se nepodařilo otevřít. Zkuste to znovu.';
-        errorMirror.classList.add('has-error');
-      }
-      return;
-    }
     const click=e.target.closest?.('[data-source-click]');if(click){e.preventDefault();sourceClick(click.dataset.sourceClick);return}
     const pinWrap=e.target.closest?.('.mqf-pin');pinWrap?.querySelector('.mqf-pin-capture')?.focus();
   });
   facade.addEventListener('mouseover',e=>{const a=e.target.closest?.('[data-tip]');if(a)showTip(a)});
   facade.addEventListener('mouseout',e=>{if(e.target.closest?.('[data-tip]'))hideTip()});
-  facade.addEventListener('focusin',e=>{const a=e.target.closest?.('[data-tip]');if(a)showTip(a)});
-  facade.addEventListener('focusout',e=>{if(e.target.closest?.('[data-tip]'))hideTip()});
+  facade.addEventListener('focusin',e=>{
+    const a=e.target.closest?.('[data-tip]');if(a)showTip(a);
+    const pinInput=e.target.closest?.('.mqf-pin-capture');if(pinInput)updatePin(pinInput);
+  });
+  facade.addEventListener('focusout',e=>{
+    if(e.target.closest?.('[data-tip]'))hideTip();
+    const pinInput=e.target.closest?.('.mqf-pin-capture');if(pinInput)setTimeout(()=>updatePin(pinInput),0);
+  });
   onlineMark?.addEventListener('mouseenter',()=>showTip(onlineMark));onlineMark?.addEventListener('mouseleave',hideTip);onlineMark?.addEventListener('focus',()=>showTip(onlineMark));onlineMark?.addEventListener('blur',hideTip);
 
   /* The original profile module focuses its own hidden inputs. Redirect that focus
@@ -268,16 +272,6 @@
   });
   window.addEventListener('resize',hideTip,{passive:true});window.addEventListener('scroll',hideTip,{passive:true,capture:true});
   window.addEventListener('mq:guest-mode-changed',queue);
-  window.addEventListener('mq:avatar-onboarding-complete',()=>{
-    if(facade.dataset.awaitingAvatar!=='1')return;
-    delete facade.dataset.awaitingAvatar;
-    const done=document.getElementById('mqRecoveryDone');
-    if(done)done.dataset.mqAvatarOnboardingComplete='1';
-    setTimeout(()=>{
-      if(typeof window.showView==='function')window.showView('difficulty');
-      else done?.click?.();
-    },60);
-  });
   layer.dataset.ticketUiVersion=VERSION;
   queue();
 })();

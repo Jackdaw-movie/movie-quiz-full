@@ -1,6 +1,6 @@
 (()=>{
   'use strict';
-  const VERSION='exterior-integration-v6.10-ticket-reentry';
+  const VERSION='exterior-integration-v6.11-city-only';
   const exterior=document.getElementById('mqExteriorScene');
   const stage=document.getElementById('mqExteriorStage');
   const booth=document.getElementById('mqTicketBoothHotspot');
@@ -67,6 +67,7 @@
   ensureDefaultAudioLevels();
   setTimeout(()=>{
     try{window.MovieQuizSettings?.apply?.()}catch(_){}
+    suppressExteriorMusic();
     window.dispatchEvent(new CustomEvent('mq:volume-changed',{detail:{kind:'all',value:50,source:VERSION}}));
   },0);
   function clampVolume(value){
@@ -89,6 +90,7 @@
 
   function syncStoredLevelsToGame(){
     try{window.MovieQuizSettings?.apply?.()}catch(_){}
+    suppressExteriorMusic();
   }
   function writeExteriorVolume(kind,value){
     const v=clampVolume(value);
@@ -96,10 +98,9 @@
     try{localStorage.setItem(key,String(v))}catch(_){}
     syncStoredLevelsToGame();
     if(kind==='music'){
-      if(v>0){
-        startExteriorAudio();
-        try{if(typeof switchMusic==='function')switchMusic('menu')}catch(_){}
-      }
+      /* Music preference is stored for the auditorium, but the exterior itself
+         deliberately stays city-only. */
+      suppressExteriorMusic();
     }else if(kind==='sfx'){
       syncCityAmbienceVolume();
       if(v>0){
@@ -118,6 +119,34 @@
   function musicLevel(){
     try{return clampVolume(window.MovieQuizSettings?.musicVolume?.()??storedVolume(MUSIC_KEY))}catch(_){return storedVolume(MUSIC_KEY)}
   }
+  let originalSwitchMusicForExterior=null;
+  function suppressExteriorMusic(){
+    if(auditoriumEntered||!document.body.classList.contains('mq-exterior-active'))return;
+    try{
+      if(typeof audioCtx!=='undefined'&&audioCtx&&typeof musicGain!=='undefined'&&musicGain?.gain){
+        const now=audioCtx.currentTime||0;
+        musicGain.gain.cancelScheduledValues?.(now);
+        if(musicGain.gain.setTargetAtTime)musicGain.gain.setTargetAtTime(.0001,now,.018);
+        else musicGain.gain.value=.0001;
+      }
+    }catch(_){}
+  }
+  function installExteriorMusicGuard(){
+    try{
+      if(typeof window.switchMusic!=='function'||window.switchMusic.__mqExteriorCityOnly)return;
+      originalSwitchMusicForExterior=window.switchMusic;
+      const guarded=function(){
+        if(!auditoriumEntered&&document.body.classList.contains('mq-exterior-active')){
+          suppressExteriorMusic();
+          return;
+        }
+        return originalSwitchMusicForExterior.apply(this,arguments);
+      };
+      guarded.__mqExteriorCityOnly=true;
+      window.switchMusic=guarded;
+    }catch(_){}
+  }
+  installExteriorMusicGuard();
   function cityPeopleTargetVolume(){
     /* At the standard 50% SFX setting the human street layer is clearly
        audible (~0.31) without sitting on top of the menu music. */
@@ -193,9 +222,9 @@
     };
     requestAnimationFrame(step);
   }
-  /* Use the game's real musical engine. The previous exterior noise loop is
-     deliberately not used. Audio is unlocked by a real player gesture and
-     then remains continuous when the player enters the auditorium. */
+  /* Exterior sound is intentionally city-only. WebAudio is merely unlocked
+     here so footsteps/game SFX are ready; the music bus stays silent until the
+     player actually enters the auditorium. */
   function startExteriorAudio(){
     try{
       if(typeof initAudio==='function')initAudio();
@@ -203,9 +232,7 @@
       if(typeof audioCtx!=='undefined'&&audioCtx?.state==='suspended'){
         audioCtx.resume?.().catch?.(()=>{});
       }
-      if(musicLevel()>0&&typeof switchMusic==='function'){
-        switchMusic('menu');
-      }
+      suppressExteriorMusic();
       exteriorAudioStarted=true;
       return true;
     }catch(_){return false}
@@ -217,6 +244,7 @@
       if(typeof initAudio==='function')initAudio();
       if(typeof audioCtx!=='undefined'&&audioCtx?.state==='suspended')audioCtx.resume?.().catch?.(()=>{});
       window.MovieQuizSettings?.apply?.();
+      suppressExteriorMusic();
     }catch(_){}
     if(sfxPreviewTimer)clearTimeout(sfxPreviewTimer);
     sfxPreviewTimer=window.setTimeout(()=>{
@@ -415,8 +443,12 @@
   document.addEventListener('pointerdown',()=>setAudioOpen(false));
   music?.addEventListener('input',()=>writeExteriorVolume('music',music.value));
   sfx?.addEventListener('input',()=>writeExteriorVolume('sfx',sfx.value));
-  window.addEventListener('mq:settings-changed',syncSliders);
-  window.addEventListener('mq:volume-changed',syncSliders);
+  const syncExteriorAudioState=()=>{
+    syncSliders();
+    if(!auditoriumEntered)requestAnimationFrame(suppressExteriorMusic);
+  };
+  window.addEventListener('mq:settings-changed',syncExteriorAudioState);
+  window.addEventListener('mq:volume-changed',syncExteriorAudioState);
   setAudioOpen(false);
   booth.addEventListener('pointerenter',event=>{showWalk(true);updateWalkCursor(event)});
   booth.addEventListener('pointermove',updateWalkCursor);
@@ -440,20 +472,13 @@
     if(!document.body.classList.contains('mq-exterior-active')||auditoriumEntered)return;
     cityWanted=true;
     startCityAmbience();
-    /* Unlock WebAudio for later game SFX, but do not start the synthesized
-       menu score on the same gesture as the city ambience. Keeping those two
-       systems separate avoids the short-start/race heard in v6.6. */
+    /* Unlock WebAudio for later game SFX, but keep the music bus muted while
+       the player is outside. Only the two city recordings are audible here. */
     try{
       if(typeof initAudio==='function')initAudio();
       if(typeof audioCtx!=='undefined'&&audioCtx?.state==='suspended')audioCtx.resume?.().catch?.(()=>{});
       window.MovieQuizSettings?.apply?.();
-      /* Start the normal menu score after the browser gesture has unlocked
-         WebAudio. A small delay keeps it independent from HTMLAudio ambience. */
-      if(musicLevel()>0&&typeof switchMusic==='function'){
-        setTimeout(()=>{
-          try{if(!auditoriumEntered&&musicLevel()>0)switchMusic('menu')}catch(_){}
-        },140);
-      }
+      suppressExteriorMusic();
     }catch(_){}
     document.removeEventListener('pointerdown',unlockExteriorSound,true);
     document.removeEventListener('keydown',unlockExteriorSound,true);
@@ -464,7 +489,7 @@
     cityWanted=true;
     syncCityAmbienceVolume();
     // Same preloaded tracks are already playing; this only reconciles state,
-    // unlocks WebAudio and starts the normal menu score at the stored volume.
+    // unlocks WebAudio while keeping the music bus silent outdoors.
     unlockExteriorSound();
   },{once:true});
   syncCityAmbienceVolume();
