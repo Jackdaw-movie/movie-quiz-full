@@ -1,4 +1,4 @@
-const CACHE='movie-quiz-avatar-stage-v11';
+const CACHE='movie-quiz-avatar-stage-v13';
 const ASSET_RE=/\/assets\/(avatars|exterior-v6-9\/production|avatar-onboarding\/production)\//;
 self.addEventListener('install',()=>self.skipWaiting());
 self.addEventListener('activate',event=>event.waitUntil((async()=>{
