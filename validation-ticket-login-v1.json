@@ -1,0 +1,30 @@
+{
+  "version": "ticket-login-v1.0",
+  "date": "2026-08-09",
+  "checks": {
+    "html_parsed": true,
+    "js_syntax_checked": true,
+    "css_braces_balanced": true,
+    "production_assets_present": true,
+    "approved_source_assets_archived": true,
+    "profile_logic_files_modified": false
+  },
+  "states": [
+    "name",
+    "login",
+    "register",
+    "recovery",
+    "recoveryReveal",
+    "linked",
+    "guest"
+  ],
+  "changed_files": [
+    "index.html",
+    "css/ticket-login.css",
+    "js/27-ticket-login-ui.js"
+  ],
+  "notes": [
+    "Uses existing #mqTicketProfileMount from exterior scene.",
+    "Preserves original recovery reveal heading used by avatar onboarding."
+  ]
+}
