@@ -1,0 +1,8 @@
+{
+  "version": "ticket-login-v4.0-facade",
+  "approved_assets_modified": false,
+  "legacy_profile_ui_visible_on_ticket": false,
+  "ticket_facade": true,
+  "guest_login_reopens_ticket": true,
+  "js_syntax": "passed"
+}

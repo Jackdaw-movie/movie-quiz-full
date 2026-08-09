@@ -1,6 +1,6 @@
 (()=>{
   'use strict';
-  const VERSION='exterior-integration-v6.9-preloaded-production';
+  const VERSION='exterior-integration-v6.10-ticket-reentry';
   const exterior=document.getElementById('mqExteriorScene');
   const stage=document.getElementById('mqExteriorStage');
   const booth=document.getElementById('mqTicketBoothHotspot');
@@ -325,16 +325,49 @@
       setTimeout(()=>window.dispatchEvent(new Event('resize')),80);
     },650);
   }
+  function closeReopenedTicket(){
+    if(entering)return;
+    entering=true;
+    ticketLayer.classList.add('is-leaving');
+    setTimeout(()=>{
+      restoreProfilePanel();
+      ticketLayer.hidden=true;
+      ticketLayer.setAttribute('hidden','');
+      ticketLayer.classList.remove('is-leaving');
+      ticketOpen=false;
+      entering=false;
+      document.body.classList.remove('mq-ticket-open');
+      try{originalShowView?.('difficulty')}catch(_){}
+      try{if(typeof sound==='function')sound('soft')}catch(_){}
+    },480);
+  }
+  function reopenTicketFromAuditorium(){
+    if(ticketOpen||entering)return;
+    ticketLayer.hidden=false;
+    ticketLayer.removeAttribute('hidden');
+    ticketLayer.classList.remove('is-leaving');
+    document.body.classList.add('mq-ticket-open');
+    ticketOpen=true;
+    try{originalShowView?.('playerView')}catch(_){}
+    requestAnimationFrame(()=>{
+      mountProfileOnTicket();
+      ticketLayer.querySelector('.mq-ticket-facade input,.mq-ticket-facade button')?.focus?.({preventScroll:true});
+    });
+    setTimeout(mountProfileOnTicket,80);
+    setTimeout(mountProfileOnTicket,260);
+  }
   function wrapShowView(){
     if(wrapped||typeof window.showView!=='function')return false;
     originalShowView=window.showView;
     window.showView=function(id){
-      if(id==='difficulty'&&ticketOpen&&!auditoriumEntered){
-        enterAuditorium();
+      if(id==='difficulty'&&ticketOpen){
+        if(auditoriumEntered)closeReopenedTicket();
+        else enterAuditorium();
         return;
       }
       if(id==='playerView'&&auditoriumEntered){
-        return originalShowView(id);
+        reopenTicketFromAuditorium();
+        return;
       }
       return originalShowView(id);
     };
