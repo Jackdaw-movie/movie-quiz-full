@@ -1,12 +1,11 @@
 (()=>{
   'use strict';
-  const VERSION='avatar-stage-assets-v15.0';
+  const VERSION='avatar-stage-assets-v16.0';
   const ASSETS=[
-    'assets/avatar-onboarding-v15/production/background.webp?v=15.0',
-    'assets/avatar-onboarding-v15/production/arrow-left.webp?v=15.0',
-    'assets/avatar-onboarding-v15/production/arrow-right.webp?v=15.0',
-    'assets/avatar-onboarding-v15/production/continue.webp?v=15.0',
-    'assets/avatar-onboarding-v15/production/back.webp?v=15.0'
+    'assets/avatar-onboarding-v15/production/background.webp?v=16.0',
+    'assets/avatar-onboarding-v15/production/arrow-left.webp?v=16.0',
+    'assets/avatar-onboarding-v15/production/continue.webp?v=16.0',
+    'assets/avatar-onboarding-v15/production/back.webp?v=16.0'
   ];
 
   const warmed=[];

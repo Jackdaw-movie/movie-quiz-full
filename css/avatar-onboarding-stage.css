@@ -56,7 +56,7 @@
 
 /* ACTIVE AVATAR – central parchment field, dominant but not oversized. */
 #mqAvatarModal .mq-avatar-carousel-choice.is-center{
-  left:40.05%!important;top:32.3%!important;width:19.9%!important;height:43.0%!important;z-index:8!important;opacity:1!important;
+  left:40.05%!important;top:31.2%!important;width:19.2%!important;height:41.2%!important;z-index:8!important;opacity:1!important;
 }
 #mqAvatarModal .mq-avatar-carousel-choice.is-center:hover,
 #mqAvatarModal .mq-avatar-carousel-choice.is-center:focus-visible{
@@ -66,11 +66,11 @@
 /* SIDE AVATARS – exact circular wells from the approved background. */
 #mqAvatarModal .mq-avatar-carousel-choice.is-left-1,
 #mqAvatarModal .mq-avatar-carousel-choice.is-right-1{
-  top:39.55%!important;width:12.28%!important;height:21.83%!important;z-index:5!important;
+  top:39.15%!important;width:13.0%!important;height:23.1%!important;z-index:5!important;
   border-radius:50%!important;overflow:hidden!important;opacity:.96!important;filter:brightness(.94) saturate(.92)!important;
 }
-#mqAvatarModal .mq-avatar-carousel-choice.is-left-1{left:16.45%!important}
-#mqAvatarModal .mq-avatar-carousel-choice.is-right-1{left:71.33%!important}
+#mqAvatarModal .mq-avatar-carousel-choice.is-left-1{left:19.2%!important}
+#mqAvatarModal .mq-avatar-carousel-choice.is-right-1{left:67.8%!important}
 #mqAvatarModal .mq-avatar-carousel-choice.is-left-1 .mq-avatar-frame,
 #mqAvatarModal .mq-avatar-carousel-choice.is-right-1 .mq-avatar-frame{overflow:hidden!important;border-radius:50%!important}
 #mqAvatarModal .mq-avatar-carousel-choice.is-left-1 .mq-avatar-img,
@@ -98,10 +98,10 @@
   transition:transform .16s ease,filter .16s ease!important;
 }
 #mqAvatarModal .mq-avatar-carousel-arrow.is-prev{
-  left:28.55%!important;background-image:url('../assets/avatar-onboarding-v15/production/arrow-left.webp?v=15.0')!important;
+  left:27.75%!important;background-image:url('../assets/avatar-onboarding-v15/production/arrow-left.webp?v=16.0')!important;
 }
 #mqAvatarModal .mq-avatar-carousel-arrow.is-next{
-  left:66.12%!important;background-image:url('../assets/avatar-onboarding-v15/production/arrow-right.webp?v=15.0')!important;
+  left:66.95%!important;background-image:url('../assets/avatar-onboarding-v15/production/arrow-left.webp?v=16.0')!important;transform:scaleX(-1)!important;
 }
 #mqAvatarModal .mq-avatar-carousel-arrow span{display:none!important}
 #mqAvatarModal .mq-avatar-carousel-arrow:hover,
@@ -109,25 +109,30 @@
   transform:scale(1.07)!important;
   filter:brightness(1.14) saturate(1.08) drop-shadow(0 0 10px rgba(241,184,66,.62))!important;
 }
+#mqAvatarModal .mq-avatar-carousel-arrow.is-next:hover,
+#mqAvatarModal .mq-avatar-carousel-arrow.is-next:focus-visible{
+  transform:scaleX(-1) scale(1.07)!important;
+}
 #mqAvatarModal .mq-avatar-carousel-arrow:active{transform:scale(.98)!important;filter:brightness(1.05)!important}
+#mqAvatarModal .mq-avatar-carousel-arrow.is-next:active{transform:scaleX(-1) scale(.98)!important}
 
 /* Standalone continue/back assets – button itself is the asset, so hover follows it exactly. */
 #mqAvatarModal .mq-avatar-carousel-footer{position:static!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important}
 #mqAvatarModal .mq-avatar-confirm,
 #mqAvatarModal .mq-avatar-close{
-  position:absolute!important;z-index:28!important;margin:0!important;padding:0!important;border:0!important;background-color:transparent!important;
+  display:block!important;position:absolute!important;z-index:38!important;margin:0!important;padding:0!important;border:0!important;background-color:transparent!important;opacity:1!important;pointer-events:auto!important;
   background-repeat:no-repeat!important;background-position:center!important;background-size:contain!important;
   color:transparent!important;-webkit-text-fill-color:transparent!important;font-size:0!important;line-height:0!important;box-shadow:none!important;
   cursor:pointer!important;outline:none!important;transform-origin:center!important;
   transition:transform .16s ease,filter .16s ease,opacity .16s ease!important;
 }
 #mqAvatarModal .mq-avatar-confirm{
-  left:34.25%!important;top:86.55%!important;width:31.55%!important;aspect-ratio:900/183!important;
-  background-image:url('../assets/avatar-onboarding-v15/production/continue.webp?v=15.0')!important;
+  left:34.55%!important;top:86.35%!important;width:31.55%!important;aspect-ratio:900/183!important;
+  background-image:url('../assets/avatar-onboarding-v15/production/continue.webp?v=16.0')!important;
 }
 #mqAvatarModal .mq-avatar-close{
-  left:67.12%!important;top:86.65%!important;width:13.55%!important;aspect-ratio:430/187!important;
-  background-image:url('../assets/avatar-onboarding-v15/production/back.webp?v=15.0')!important;
+  left:68.15%!important;top:86.35%!important;width:14.6%!important;aspect-ratio:430/187!important;
+  background-image:url('../assets/avatar-onboarding-v15/production/back.webp?v=16.0')!important;
 }
 #mqAvatarModal .mq-avatar-confirm:hover:not(:disabled),
 #mqAvatarModal .mq-avatar-confirm:focus-visible,
