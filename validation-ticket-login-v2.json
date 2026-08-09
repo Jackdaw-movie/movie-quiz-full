@@ -1,0 +1,11 @@
+{
+  "version": "ticket-login-v2.0-fix",
+  "manual_secondary_number_overlay": false,
+  "dark_profile_panel_removed": true,
+  "paper_inputs": true,
+  "six_cell_pin": true,
+  "approved_source_assets_unchanged": true,
+  "css_cache_bust": "2.0",
+  "js_cache_bust": "2.0",
+  "profile_backend_logic_modified": false
+}

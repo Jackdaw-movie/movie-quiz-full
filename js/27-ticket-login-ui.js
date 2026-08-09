@@ -1,6 +1,6 @@
 (()=>{
   'use strict';
-  const VERSION='ticket-login-v1.0';
+  const VERSION='ticket-login-v2.0';
   const layer=document.getElementById('mqTicketLayer');
   const mount=document.getElementById('mqTicketProfileMount');
   const shell=document.getElementById('mqProfileShell');
@@ -41,18 +41,21 @@
   }
 
   function ensureContextName(state,titleText){
-    shell.querySelectorAll('.mq-ticket-context-name').forEach(node=>node.remove());
     let name='';
     if(state==='login')name=titleText.match(/^Jméno\s+(.+?)\s+už existuje/i)?.[1]||'';
     if(state==='register')name=titleText.match(/^Vytvořit profil\s+(.+)$/i)?.[1]||'';
     if(state==='recovery')name=titleText.match(/^Obnova profilu\s+(.+)$/i)?.[1]||'';
-    if(!name)return;
+    let context=shell.querySelector('.mq-ticket-context-name');
+    if(!name){context?.remove();return}
     const step=shell.querySelector('.mq-profile-step');
     if(!step)return;
-    const context=document.createElement('div');
-    context.className='mq-ticket-context-name';
-    context.textContent=`Hráč: ${clean(name)}`;
-    step.insertAdjacentElement('afterend',context);
+    if(!context){
+      context=document.createElement('div');
+      context.className='mq-ticket-context-name';
+      step.insertAdjacentElement('afterend',context);
+    }
+    const text=`Hráč: ${clean(name)}`;
+    if(context.textContent!==text)context.textContent=text;
   }
 
   function titleForState(state,current){
@@ -61,6 +64,7 @@
     if(state==='register')return 'Nový hráč';
     if(state==='recovery')return 'Obnovení profilu';
     if(state==='guest')return 'Vstup hosta';
+    if(state==='linked')return 'Vítejte zpět';
     /* Keep recovery-reveal heading untouched: the avatar onboarding module uses
        'Profil byl vytvořen' as a functional hook. */
     if(state==='reveal')return current;
@@ -136,47 +140,75 @@
     return [...new Set(texts)].join(' ');
   }
   function ensureMainInfo(){
-    shell.querySelectorAll('.mq-ticket-info[data-generated="main"]').forEach(node=>node.remove());
     const text=infoText();
     const step=shell.querySelector('.mq-profile-step');
-    if(!text||!step)return;
-    const button=document.createElement('button');
-    button.type='button';
-    button.className='mq-ticket-info';
-    button.dataset.generated='main';
-    button.dataset.mqTicketTip=text;
-    button.setAttribute('aria-label','Více informací');
-    button.textContent='i';
-    step.appendChild(button);
+    let button=shell.querySelector('.mq-ticket-info[data-generated="main"]');
+    if(!text||!step){button?.remove();return}
+    if(!button){
+      button=document.createElement('button');
+      button.type='button';
+      button.className='mq-ticket-info';
+      button.dataset.generated='main';
+      button.setAttribute('aria-label','Více informací');
+      button.textContent='i';
+      step.appendChild(button);
+    }
+    if(button.dataset.mqTicketTip!==text)button.dataset.mqTicketTip=text;
   }
   function ensureGuestInfo(){
-    shell.querySelectorAll('.mq-ticket-info[data-generated="guest"]').forEach(node=>node.remove());
     const entry=shell.querySelector('.mq-guest-entry');
     const guestButton=entry?.querySelector('#mqPlayAsGuest');
     const note=clean(entry?.querySelector('.mq-guest-note')?.textContent);
-    if(!guestButton||!note)return;
-    const info=document.createElement('button');
-    info.type='button';
-    info.className='mq-ticket-info';
-    info.dataset.generated='guest';
-    info.dataset.mqTicketTip=note;
-    info.setAttribute('aria-label','Informace o hraní jako host');
-    info.textContent='i';
-    guestButton.insertAdjacentElement('afterend',info);
+    let info=shell.querySelector('.mq-ticket-info[data-generated="guest"]');
+    if(!guestButton||!note){info?.remove();return}
+    if(!info){
+      info=document.createElement('button');
+      info.type='button';
+      info.className='mq-ticket-info';
+      info.dataset.generated='guest';
+      info.setAttribute('aria-label','Informace o hraní jako host');
+      info.textContent='i';
+      guestButton.insertAdjacentElement('afterend',info);
+    }
+    if(info.dataset.mqTicketTip!==note)info.dataset.mqTicketTip=note;
+  }
+
+  function forcePaperCritical(){
+    const imp=(el,prop,value)=>{if(el)el.style.setProperty(prop,value,'important')};
+    [shell,...shell.querySelectorAll('.mq-profile-card,.mq-profile-linked,.mq-profile-reveal,.mq-guest-card,.mq-form-stack')].forEach(el=>{
+      imp(el,'background','transparent');imp(el,'background-color','transparent');imp(el,'background-image','none');
+      imp(el,'border','0');imp(el,'border-radius','0');imp(el,'box-shadow','none');imp(el,'backdrop-filter','none');imp(el,'filter','none');
+      imp(el,'color','#563219');
+    });
+    shell.querySelectorAll('.mq-profile-title').forEach(el=>{imp(el,'color','#60371b');imp(el,'background','transparent');imp(el,'text-shadow','0 1px rgba(255,248,224,.70)')});
+    shell.querySelectorAll('input.mq-name-input,input.mq-recovery-input').forEach(el=>{
+      if(el.classList.contains('mq-pin-input')&&el.closest('.mq-ticket-pin-wrap'))return;
+      imp(el,'background','rgba(255,249,226,.16)');imp(el,'background-color','rgba(255,249,226,.16)');imp(el,'background-image','none');
+      imp(el,'color','#4b2914');imp(el,'-webkit-text-fill-color','#4b2914');imp(el,'border','1.5px solid rgba(113,67,29,.78)');
+      imp(el,'box-shadow','inset 0 0 0 2px rgba(255,251,235,.20), inset 0 1px 4px rgba(75,39,13,.05)');imp(el,'opacity','1');
+    });
+    shell.querySelectorAll('.mq-ticket-pin-wrap>input.mq-pin-input').forEach(el=>{
+      imp(el,'background','transparent');imp(el,'border','0');imp(el,'box-shadow','none');imp(el,'opacity','.01');
+      imp(el,'color','transparent');imp(el,'-webkit-text-fill-color','transparent');
+    });
   }
 
   function enhance(){
     queued=false;
     const state=detectState();
     layer.dataset.ticketState=state;
-    /* Keep the original profile headings intact. Other modules (notably avatar
-       onboarding) use some of those strings as functional hooks. */
-    originalTitle();
-    shell.querySelectorAll('.mq-ticket-context-name').forEach(node=>node.remove());
+    const title=shell.querySelector('.mq-profile-title');
+    const sourceTitle=originalTitle();
+    if(title&&state!=='reveal'){
+      const next=titleForState(state,sourceTitle);
+      if(next&&clean(title.textContent)!==next)title.textContent=next;
+    }
+    ensureContextName(state,sourceTitle);
     normalizeLabels(state);
     shell.querySelectorAll('.mq-pin-input').forEach(ensurePinVisual);
     ensureMainInfo();
     ensureGuestInfo();
+    forcePaperCritical();
     syncError();
     syncOnline();
   }

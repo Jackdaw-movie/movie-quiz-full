@@ -1,555 +1,255 @@
-/* Movie Quiz – ticket login v1.0
-   Keeps the existing profile/Supabase logic; only skins the ticket layer. */
+/* Movie Quiz – ticket login v2.0
+   Approved ticket/desk assets only. Functional profile DOM is re-skinned in place. */
 
 body.mq-ticket-open{overflow:hidden!important}
-
 .mq-ticket-layer[hidden]{display:none!important}
 .mq-ticket-layer{
-  position:fixed!important;
-  inset:0!important;
-  z-index:2147482800!important;
-  display:grid!important;
-  place-items:center!important;
-  padding:clamp(8px,2.2vw,30px)!important;
-  overflow:hidden!important;
-  isolation:isolate!important;
+  position:fixed!important;inset:0!important;z-index:2147482800!important;
+  display:grid!important;place-items:center!important;padding:clamp(8px,2vw,26px)!important;
+  overflow:hidden!important;isolation:isolate!important;
 }
 .mq-ticket-backdrop{
-  position:absolute!important;
-  inset:0!important;
-  background-image:
-    linear-gradient(rgba(12,6,2,.06),rgba(12,6,2,.12)),
-    url('../assets/ticket-login/production/desk.webp')!important;
-  background-size:cover!important;
-  background-position:center!important;
-  filter:none!important;
-  backdrop-filter:none!important;
-  transform:scale(1.015);
+  position:absolute!important;inset:0!important;
+  background:url('../assets/ticket-login/production/desk.webp') center/cover no-repeat!important;
+  transform:scale(1.012);filter:none!important;
 }
-.mq-ticket-backdrop::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  background:radial-gradient(ellipse at 50% 46%,transparent 38%,rgba(11,4,1,.13) 78%,rgba(4,1,0,.28) 100%);
-}
+.mq-ticket-backdrop::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 48%,transparent 42%,rgba(13,5,1,.08) 76%,rgba(4,1,0,.23) 100%)}
 
 .mq-ticket-scene{
-  position:relative;
-  z-index:2;
-  width:min(1080px,94vw);
-  max-height:90vh;
-  aspect-ratio:1297/614;
+  position:relative;z-index:2;width:min(1120px,95vw);aspect-ratio:1297/614;max-height:90vh;
   filter:drop-shadow(0 22px 30px rgba(0,0,0,.34));
 }
 .mq-ticket-secondary{
-  position:absolute;
-  z-index:0;
-  width:96%;
-  left:9.5%;
-  top:4.8%;
-  transform:rotate(1.15deg);
-  transform-origin:center;
-  pointer-events:none;
-  filter:drop-shadow(0 12px 15px rgba(0,0,0,.25));
-  opacity:.96;
+  position:absolute;z-index:0;width:96%;left:9.2%;top:5.3%;transform:rotate(1deg);transform-origin:center;
+  pointer-events:none;filter:drop-shadow(0 12px 14px rgba(0,0,0,.24));opacity:.97;
 }
 .mq-ticket-secondary>img{display:block;width:100%;height:auto}
-.mq-ticket-secondary-number-patch{
-  position:absolute;
-  right:3.2%;
-  top:25%;
-  width:6.7%;
-  height:47%;
-  display:grid;
-  place-items:center;
-  background:linear-gradient(90deg,rgba(245,229,194,.98),rgba(250,239,210,.98),rgba(235,215,175,.98));
-  color:#a3432a;
-  font:500 clamp(18px,2.35vw,30px)/1 'Oswald',sans-serif;
-  letter-spacing:.025em;
-  writing-mode:vertical-rl;
-  text-orientation:mixed;
-  transform:rotate(180deg);
-  box-shadow:inset 1px 0 rgba(122,74,28,.16),inset -1px 0 rgba(122,74,28,.16);
-}
 
 .mq-admit-ticket{
-  position:absolute!important;
-  inset:0!important;
-  z-index:2!important;
-  display:block!important;
-  width:100%!important;
-  min-height:0!important;
-  max-width:none!important;
-  margin:0!important;
-  padding:0!important;
-  border:0!important;
-  border-radius:0!important;
-  background:none!important;
-  color:#4a2913!important;
-  box-shadow:none!important;
-  overflow:visible!important;
-  transform:none!important;
+  position:absolute!important;inset:0!important;z-index:2!important;display:block!important;
+  width:100%!important;height:100%!important;min-height:0!important;max-width:none!important;
+  margin:0!important;padding:0!important;border:0!important;border-radius:0!important;
+  background:transparent!important;color:#4e2e18!important;box-shadow:none!important;overflow:visible!important;
 }
-.mq-ticket-art{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  display:block;
-  pointer-events:none;
-  user-select:none;
-}
+.mq-ticket-art{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;user-select:none}
 
-/* Fixed content area. Nothing in the profile flow changes the ticket's size. */
+/* The approved ticket's blank central field. */
 .mq-ticket-profile-mount{
-  position:absolute!important;
-  z-index:6!important;
-  left:18.9%!important;
-  right:18.9%!important;
-  top:28.8%!important;
-  height:39.5%!important;
-  min-height:0!important;
-  display:flex!important;
-  align-items:stretch!important;
-  justify-content:center!important;
-  overflow:visible!important;
-  color:#4a2913!important;
+  position:absolute!important;z-index:6!important;
+  left:18.7%!important;right:18.7%!important;top:29.2%!important;height:38.7%!important;
+  min-height:0!important;display:flex!important;align-items:stretch!important;justify-content:center!important;
+  overflow:visible!important;color:#563219!important;
 }
-.mq-ticket-profile-mount #mqProfileShell{
-  position:relative!important;
-  inset:auto!important;
-  width:100%!important;
-  max-width:none!important;
-  height:100%!important;
-  margin:0!important;
-  padding:0!important;
-  transform:none!important;
-  z-index:1!important;
-  color:#4a2913!important;
+body.mq-ticket-open .mq-ticket-profile-mount #mqProfileShell{
+  position:relative!important;inset:auto!important;display:block!important;width:100%!important;max-width:none!important;height:100%!important;
+  min-height:0!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;
+  background:transparent!important;background-image:none!important;box-shadow:none!important;backdrop-filter:none!important;
+  transform:none!important;overflow:visible!important;color:#563219!important;
   font-family:'Cormorant Garamond',Georgia,serif!important;
 }
-.mq-ticket-profile-mount #mqProfileShell>*{box-sizing:border-box}
-.mq-ticket-profile-mount .mq-profile-card,
-.mq-ticket-profile-mount .mq-profile-linked,
-.mq-ticket-profile-mount .mq-profile-reveal,
-.mq-ticket-profile-mount .mq-guest-card{
-  width:100%!important;
-  max-width:none!important;
-  height:100%!important;
-  min-height:0!important;
-  margin:0!important;
-  padding:0!important;
-  border:0!important;
-  border-radius:0!important;
-  background:transparent!important;
-  box-shadow:none!important;
-  color:#4a2913!important;
-  display:flex!important;
-  flex-direction:column!important;
-  justify-content:flex-start!important;
-  overflow:visible!important;
-  text-align:left!important;
+body.mq-ticket-open .mq-ticket-profile-mount #mqProfileShell *,
+body.mq-ticket-open .mq-ticket-profile-mount #mqProfileShell *::before,
+body.mq-ticket-open .mq-ticket-profile-mount #mqProfileShell *::after{box-sizing:border-box}
+
+/* Absolutely remove the old dark profile card look. */
+body.mq-ticket-open .mq-ticket-profile-mount #mqProfileShell .mq-profile-card,
+body.mq-ticket-open .mq-ticket-profile-mount #mqProfileShell .mq-profile-linked,
+body.mq-ticket-open .mq-ticket-profile-mount #mqProfileShell .mq-profile-reveal,
+body.mq-ticket-open .mq-ticket-profile-mount #mqProfileShell .mq-guest-card{
+  position:relative!important;display:flex!important;flex-direction:column!important;justify-content:flex-start!important;
+  width:100%!important;max-width:none!important;height:100%!important;min-height:0!important;
+  margin:0!important;padding:0!important;border:0!important;border-radius:0!important;
+  background:transparent!important;background-color:transparent!important;background-image:none!important;
+  box-shadow:none!important;backdrop-filter:none!important;filter:none!important;overflow:visible!important;
+  color:#563219!important;text-align:left!important;
 }
 
-.mq-ticket-profile-mount .mq-profile-step{
-  position:relative!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  gap:7px!important;
-  margin:0 0 clamp(4px,.55vw,8px)!important;
-  min-height:22px!important;
-  text-align:center!important;
+/* Heading: small, printed into the ticket, never a poster headline. */
+body.mq-ticket-open .mq-ticket-profile-mount .mq-profile-step{
+  position:relative!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;
+  min-height:24px!important;margin:0 0 clamp(6px,.7vw,9px)!important;padding:0!important;text-align:center!important;
+  background:transparent!important;border:0!important;box-shadow:none!important;
 }
-.mq-ticket-profile-mount .mq-profile-title{
-  margin:0!important;
-  padding:0!important;
-  color:#5a3218!important;
-  font:700 clamp(14px,1.55vw,20px)/1.05 'Cormorant Garamond',Georgia,serif!important;
-  letter-spacing:.11em!important;
-  text-transform:uppercase!important;
-  text-shadow:0 1px rgba(255,248,222,.62)!important;
+body.mq-ticket-open .mq-ticket-profile-mount .mq-profile-title{
+  margin:0!important;padding:0!important;color:#60371b!important;text-shadow:0 1px rgba(255,248,224,.70)!important;
+  font:700 clamp(13px,1.28vw,18px)/1.05 'Cormorant Garamond',Georgia,serif!important;
+  letter-spacing:.12em!important;text-transform:uppercase!important;
 }
-.mq-ticket-profile-mount .mq-profile-subtitle,
-.mq-ticket-profile-mount .mq-profile-hint,
-.mq-ticket-profile-mount .mq-guest-note{
-  display:none!important;
-}
-.mq-ticket-profile-mount .mq-profile-chip-row{display:none!important}
+body.mq-ticket-open .mq-ticket-profile-mount .mq-profile-subtitle,
+body.mq-ticket-open .mq-ticket-profile-mount .mq-profile-hint,
+body.mq-ticket-open .mq-ticket-profile-mount .mq-guest-note{display:none!important}
+body.mq-ticket-open .mq-ticket-profile-mount .mq-profile-chip-row{display:none!important}
 .mq-ticket-context-name{
-  margin:-1px 0 clamp(3px,.45vw,6px)!important;
-  color:#7a4a24!important;
-  font:600 clamp(9px,.78vw,11px)/1 'Oswald',Arial,sans-serif!important;
-  letter-spacing:.07em!important;
-  text-align:center!important;
-  text-transform:uppercase!important;
+  margin:-2px 0 clamp(4px,.55vw,7px)!important;color:#8a542a!important;text-align:center!important;
+  font:600 clamp(8px,.68vw,10px)/1 'Oswald',Arial,sans-serif!important;letter-spacing:.08em!important;text-transform:uppercase!important;
 }
 
-.mq-ticket-profile-mount .mq-form-stack{
-  flex:1!important;
-  min-height:0!important;
-  margin:0!important;
-  padding:0!important;
-  display:grid!important;
-  grid-template-columns:1fr!important;
-  grid-auto-rows:min-content!important;
-  align-content:center!important;
-  gap:clamp(3px,.38vw,6px)!important;
+body.mq-ticket-open .mq-ticket-profile-mount .mq-form-stack{
+  flex:1!important;min-height:0!important;width:100%!important;margin:0!important;padding:0!important;
+  display:grid!important;grid-template-columns:1fr!important;grid-auto-rows:min-content!important;align-content:center!important;
+  gap:clamp(4px,.48vw,7px)!important;background:transparent!important;border:0!important;box-shadow:none!important;
 }
-.mq-ticket-profile-mount .mq-form-label{
-  display:flex!important;
-  align-items:center!important;
-  gap:6px!important;
-  margin:0!important;
-  color:#60391e!important;
-  font:600 clamp(9px,.82vw,12px)/1 'Oswald',Arial,sans-serif!important;
-  letter-spacing:.095em!important;
-  text-transform:uppercase!important;
+body.mq-ticket-open .mq-ticket-profile-mount .mq-form-label{
+  display:flex!important;align-items:center!important;gap:6px!important;margin:0!important;padding:0!important;
+  color:#6f4020!important;text-shadow:0 1px rgba(255,249,229,.60)!important;
+  font:600 clamp(9px,.78vw,11px)/1 'Oswald',Arial,sans-serif!important;letter-spacing:.075em!important;text-transform:uppercase!important;
 }
 
-.mq-ticket-profile-mount .mq-name-input,
-.mq-ticket-profile-mount .mq-recovery-input{
-  box-sizing:border-box!important;
-  width:100%!important;
-  height:clamp(31px,3vw,39px)!important;
-  min-height:0!important;
-  margin:0!important;
-  padding:0 clamp(10px,1.2vw,16px)!important;
-  border:1px solid rgba(111,65,25,.70)!important;
-  border-radius:4px!important;
-  outline:none!important;
-  background:rgba(255,247,218,.28)!important;
-  color:#3f2312!important;
-  box-shadow:inset 0 0 0 2px rgba(255,249,228,.22),inset 0 1px 4px rgba(78,42,15,.07)!important;
-  font:600 clamp(14px,1.45vw,18px)/1 'Cormorant Garamond',Georgia,serif!important;
-  letter-spacing:.03em!important;
-  caret-color:#7c461e!important;
-  transition:border-color .16s ease,background .16s ease,box-shadow .16s ease!important;
+/* Paper-integrated text fields matching the approved visual proposal. */
+body.mq-ticket-open .mq-ticket-profile-mount input.mq-name-input,
+body.mq-ticket-open .mq-ticket-profile-mount input.mq-recovery-input{
+  -webkit-appearance:none!important;appearance:none!important;box-sizing:border-box!important;
+  display:block!important;width:100%!important;height:clamp(35px,3.25vw,45px)!important;min-height:0!important;
+  margin:0!important;padding:0 clamp(11px,1.15vw,15px)!important;
+  border:1.5px solid rgba(113,67,29,.78)!important;border-radius:5px!important;outline:none!important;
+  background:rgba(255,249,226,.16)!important;background-color:rgba(255,249,226,.16)!important;background-image:none!important;
+  color:#4b2914!important;-webkit-text-fill-color:#4b2914!important;caret-color:#75451f!important;
+  box-shadow:inset 0 0 0 2px rgba(255,251,235,.20),inset 0 1px 4px rgba(75,39,13,.05)!important;
+  font:600 clamp(14px,1.35vw,18px)/1 'Cormorant Garamond',Georgia,serif!important;letter-spacing:.025em!important;text-align:left!important;
+  opacity:1!important;filter:none!important;transition:border-color .17s ease,background-color .17s ease,box-shadow .17s ease!important;
 }
-.mq-ticket-profile-mount .mq-name-input::placeholder,
-.mq-ticket-profile-mount .mq-recovery-input::placeholder{color:rgba(75,42,20,.43)!important}
-.mq-ticket-profile-mount .mq-name-input:focus,
-.mq-ticket-profile-mount .mq-recovery-input:focus{
-  border-color:#9b692f!important;
-  background:rgba(255,250,230,.46)!important;
-  box-shadow:inset 0 0 0 1px rgba(174,122,52,.35),0 0 0 2px rgba(195,147,69,.10)!important;
+body.mq-ticket-open .mq-ticket-profile-mount input.mq-name-input::placeholder,
+body.mq-ticket-open .mq-ticket-profile-mount input.mq-recovery-input::placeholder{color:rgba(77,43,21,.40)!important;-webkit-text-fill-color:rgba(77,43,21,.40)!important}
+body.mq-ticket-open .mq-ticket-profile-mount input.mq-name-input:focus,
+body.mq-ticket-open .mq-ticket-profile-mount input.mq-recovery-input:focus{
+  border-color:#9a672e!important;background-color:rgba(255,251,235,.31)!important;
+  box-shadow:inset 0 0 0 1px rgba(170,116,49,.22),0 0 0 2px rgba(175,126,57,.08)!important;
 }
 
-/* Six-cell PIN visual, with the real input still receiving all existing events. */
-.mq-ticket-profile-mount .mq-ticket-pin-wrap{
-  position:relative!important;
-  display:block!important;
-  width:100%!important;
-  height:clamp(31px,3vw,39px)!important;
-  margin:0!important;
+/* Six printed PIN cells. The real input remains fully functional above them. */
+body.mq-ticket-open .mq-ticket-profile-mount .mq-ticket-pin-wrap{
+  position:relative!important;display:block!important;width:100%!important;height:clamp(35px,3.25vw,45px)!important;margin:0!important;
+  background:transparent!important;border:0!important;box-shadow:none!important;
 }
-.mq-ticket-profile-mount .mq-ticket-pin-wrap>.mq-pin-input{
-  position:absolute!important;
-  inset:0!important;
-  z-index:3!important;
-  width:100%!important;
-  height:100%!important;
-  margin:0!important;
-  padding:0!important;
-  opacity:.015!important;
-  color:transparent!important;
-  background:transparent!important;
-  border:0!important;
-  box-shadow:none!important;
-  caret-color:transparent!important;
-  cursor:text!important;
+body.mq-ticket-open .mq-ticket-profile-mount .mq-ticket-pin-wrap>input.mq-pin-input{
+  position:absolute!important;inset:0!important;z-index:3!important;width:100%!important;height:100%!important;
+  margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;background-image:none!important;
+  box-shadow:none!important;opacity:.01!important;color:transparent!important;-webkit-text-fill-color:transparent!important;caret-color:transparent!important;
+  letter-spacing:0!important;cursor:text!important;
 }
-.mq-ticket-profile-mount .mq-ticket-pin-boxes{
-  position:absolute;
-  inset:0;
-  z-index:1;
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
-  gap:clamp(4px,.65vw,8px);
-  pointer-events:none;
+body.mq-ticket-open .mq-ticket-profile-mount .mq-ticket-pin-boxes{
+  position:absolute!important;inset:0!important;z-index:1!important;display:grid!important;grid-template-columns:repeat(6,1fr)!important;
+  gap:clamp(6px,.8vw,10px)!important;pointer-events:none!important;
 }
-.mq-ticket-profile-mount .mq-ticket-pin-boxes>i{
-  position:relative;
-  display:grid;
-  place-items:center;
-  min-width:0;
-  border:1px solid rgba(111,65,25,.72);
-  border-radius:4px;
-  background:rgba(255,247,218,.26);
-  box-shadow:inset 0 0 0 2px rgba(255,249,228,.18),inset 0 1px 4px rgba(78,42,15,.06);
-  color:#633716;
-  font:700 clamp(16px,1.8vw,24px)/1 Georgia,serif;
-  transition:border-color .15s ease,background .15s ease,box-shadow .15s ease;
+body.mq-ticket-open .mq-ticket-profile-mount .mq-ticket-pin-boxes>i{
+  position:relative!important;display:grid!important;place-items:center!important;min-width:0!important;
+  border:1.5px solid rgba(113,67,29,.78)!important;border-radius:5px!important;
+  background:rgba(255,249,226,.16)!important;box-shadow:inset 0 0 0 2px rgba(255,251,235,.18),inset 0 1px 4px rgba(75,39,13,.05)!important;
+  color:#70401e!important;font:700 clamp(17px,1.7vw,23px)/1 Georgia,serif!important;
+  transition:border-color .15s ease,background-color .15s ease!important;
 }
-.mq-ticket-profile-mount .mq-ticket-pin-wrap:focus-within .mq-ticket-pin-boxes>i{
-  border-color:#9d6b32;
-  background:rgba(255,250,230,.44);
-}
-.mq-ticket-profile-mount .mq-ticket-pin-boxes>i.is-filled::after{content:'•';transform:translateY(-1px)}
+body.mq-ticket-open .mq-ticket-profile-mount .mq-ticket-pin-wrap:focus-within .mq-ticket-pin-boxes>i{border-color:#9a672e!important;background:rgba(255,251,235,.30)!important}
+body.mq-ticket-open .mq-ticket-profile-mount .mq-ticket-pin-boxes>i.is-filled::after{content:'•';transform:translateY(-1px)}
 
-.mq-ticket-profile-mount .mq-profile-button-row{
-  display:flex!important;
-  align-items:center!important;
-  justify-content:flex-end!important;
-  gap:clamp(7px,.8vw,11px)!important;
-  margin:clamp(4px,.55vw,8px) 0 0!important;
-  padding:0!important;
-  min-height:32px!important;
+/* Printed actions. Main CTA resembles the proposal; secondary actions sit directly on the paper. */
+body.mq-ticket-open .mq-ticket-profile-mount .mq-profile-button-row{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;gap:clamp(8px,.9vw,12px)!important;
+  min-height:34px!important;margin:clamp(5px,.6vw,8px) 0 0!important;padding:0!important;background:transparent!important;border:0!important;
 }
-.mq-ticket-profile-mount .mq-primary,
-.mq-ticket-profile-mount .mq-secondary,
-.mq-ticket-profile-mount .mq-link-button,
-body.mq-ticket-open .mq-ticket-profile-mount .mq-guest-button{
-  box-sizing:border-box!important;
-  min-height:clamp(29px,2.8vw,36px)!important;
-  margin:0!important;
-  padding:0 clamp(12px,1.45vw,20px)!important;
-  border-radius:3px!important;
-  cursor:pointer!important;
-  font:600 clamp(9px,.82vw,12px)/1 'Oswald',Arial,sans-serif!important;
-  letter-spacing:.085em!important;
-  text-transform:uppercase!important;
-  white-space:nowrap!important;
-  transition:color .2s ease,background .2s ease,border-color .2s ease,box-shadow .2s ease,transform .2s ease!important;
+body.mq-ticket-open .mq-ticket-profile-mount button.mq-primary,
+body.mq-ticket-open .mq-ticket-profile-mount button.mq-secondary,
+body.mq-ticket-open .mq-ticket-profile-mount button.mq-link-button,
+body.mq-ticket-open .mq-ticket-profile-mount button.mq-guest-button{
+  -webkit-appearance:none!important;appearance:none!important;box-sizing:border-box!important;cursor:pointer!important;white-space:nowrap!important;
+  font:600 clamp(9px,.77vw,11px)/1 'Oswald',Arial,sans-serif!important;letter-spacing:.075em!important;text-transform:uppercase!important;
+  transition:color .2s ease,background-color .2s ease,border-color .2s ease,box-shadow .2s ease,transform .2s ease!important;
 }
-.mq-ticket-profile-mount .mq-primary{
-  border:1px solid #9a6a2b!important;
-  background:linear-gradient(180deg,#6c351b,#4b2113)!important;
-  color:#f7e9c2!important;
-  box-shadow:inset 0 0 0 1px rgba(255,226,158,.16),0 2px 4px rgba(59,27,9,.18)!important;
+body.mq-ticket-open .mq-ticket-profile-mount button.mq-primary{
+  min-height:clamp(31px,2.9vw,38px)!important;margin:0!important;padding:0 clamp(14px,1.5vw,21px)!important;
+  border:1.5px solid #9a6a2d!important;border-radius:4px!important;background:#5b2d18!important;background-image:linear-gradient(180deg,#6b391e,#4d2415)!important;
+  color:#f4e6c0!important;box-shadow:inset 0 0 0 1px rgba(255,227,159,.15),0 2px 4px rgba(58,27,8,.18)!important;
 }
-.mq-ticket-profile-mount .mq-primary:hover:not(:disabled),
-.mq-ticket-profile-mount .mq-primary:focus-visible:not(:disabled){
-  color:#f1c76b!important;
-  border-color:#c39243!important;
-  background:linear-gradient(180deg,#724020,#4b2113)!important;
-  box-shadow:inset 0 0 0 1px rgba(255,226,158,.22),0 0 9px rgba(209,155,60,.22)!important;
-  transform:translateY(-1px)!important;
-  outline:none!important;
+body.mq-ticket-open .mq-ticket-profile-mount button.mq-primary:hover:not(:disabled),
+body.mq-ticket-open .mq-ticket-profile-mount button.mq-primary:focus-visible:not(:disabled){
+  color:#efc66c!important;border-color:#c08b3d!important;box-shadow:inset 0 0 0 1px rgba(255,226,154,.22),0 0 10px rgba(202,148,54,.20)!important;
+  transform:translateY(-1px)!important;outline:none!important;
 }
-.mq-ticket-profile-mount .mq-primary:disabled{opacity:.58!important;cursor:wait!important;transform:none!important}
-.mq-ticket-profile-mount .mq-secondary,
-.mq-ticket-profile-mount .mq-link-button,
-body.mq-ticket-open .mq-ticket-profile-mount .mq-guest-button{
-  border:1px solid rgba(111,65,25,.36)!important;
-  background:rgba(255,247,218,.16)!important;
-  color:#633718!important;
-  box-shadow:none!important;
+body.mq-ticket-open .mq-ticket-profile-mount button.mq-primary:disabled{opacity:.58!important;cursor:wait!important;transform:none!important}
+body.mq-ticket-open .mq-ticket-profile-mount button.mq-secondary,
+body.mq-ticket-open .mq-ticket-profile-mount button.mq-link-button,
+body.mq-ticket-open .mq-ticket-profile-mount button.mq-guest-button{
+  min-height:28px!important;margin:0!important;padding:0 6px!important;border:0!important;border-radius:0!important;
+  background:transparent!important;background-image:none!important;color:#6c3d1e!important;box-shadow:none!important;text-decoration:none!important;
 }
-.mq-ticket-profile-mount .mq-secondary:hover,
-.mq-ticket-profile-mount .mq-link-button:hover,
-body.mq-ticket-open .mq-ticket-profile-mount .mq-guest-button:hover{
-  color:#8d5b21!important;
-  border-color:rgba(143,91,29,.58)!important;
-  background:rgba(255,248,222,.32)!important;
-  transform:none!important;
+body.mq-ticket-open .mq-ticket-profile-mount button.mq-secondary:hover,
+body.mq-ticket-open .mq-ticket-profile-mount button.mq-link-button:hover,
+body.mq-ticket-open .mq-ticket-profile-mount button.mq-guest-button:hover{
+  color:#a16a2a!important;background:transparent!important;text-decoration:none!important;transform:none!important;
 }
-.mq-ticket-profile-mount .mq-profile-links{
-  position:absolute!important;
-  left:0!important;
-  bottom:0!important;
-  margin:0!important;
-  padding:0!important;
-}
-.mq-ticket-profile-mount .mq-profile-links .mq-link-button{
-  min-height:26px!important;
-  padding:0 8px!important;
-  border-color:transparent!important;
-  background:transparent!important;
+body.mq-ticket-open .mq-ticket-profile-mount .mq-profile-links{
+  position:absolute!important;left:0!important;bottom:-1px!important;display:flex!important;margin:0!important;padding:0!important;background:transparent!important;
 }
 
-/* Guest entry stays compact and belongs to the paper rather than looking like a new card. */
+/* Name step: one field, CTA on right, guest as a discreet paper link below. */
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="name"] .mq-ticket-profile-mount .mq-form-stack{align-content:start!important;gap:5px!important}
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="name"] .mq-ticket-profile-mount #mqCheckNameForm>button.mq-primary{justify-self:end!important;margin-top:6px!important}
 body.mq-ticket-open .mq-ticket-profile-mount .mq-guest-entry{
-  margin:clamp(4px,.5vw,7px) 0 0!important;
-  padding:clamp(4px,.5vw,7px) 0 0!important;
-  border-top:1px solid rgba(103,59,24,.28)!important;
-  text-align:center!important;
+  margin:clamp(4px,.45vw,6px) 0 0!important;padding:clamp(4px,.45vw,6px) 0 0!important;
+  border-top:1px solid rgba(110,64,26,.25)!important;background:transparent!important;text-align:center!important;
 }
-body.mq-ticket-open .mq-ticket-profile-mount .mq-guest-separator{
-  display:none!important;
-}
-body.mq-ticket-open .mq-ticket-profile-mount .mq-guest-button{
-  width:auto!important;
-  min-width:150px!important;
-}
+body.mq-ticket-open .mq-ticket-profile-mount .mq-guest-separator{display:none!important}
+body.mq-ticket-open .mq-ticket-profile-mount button.mq-guest-button{width:auto!important;min-width:0!important;margin:auto!important;padding:0 8px!important}
 
-/* Recovery code print area. */
-.mq-ticket-profile-mount .mq-recovery-code-wrap{
-  margin:auto 0 0!important;
-  padding:clamp(7px,.8vw,11px) clamp(9px,1vw,14px)!important;
-  border:1px dashed rgba(103,59,24,.58)!important;
-  border-radius:3px!important;
-  background:rgba(255,247,218,.20)!important;
-  text-align:center!important;
+/* Recovery code appears like a printed coupon area, not a dark card. */
+body.mq-ticket-open .mq-ticket-profile-mount .mq-recovery-code-wrap{
+  margin:auto 0 0!important;padding:clamp(7px,.75vw,10px) clamp(9px,.95vw,13px)!important;
+  border:1.5px dashed rgba(108,62,26,.58)!important;border-radius:4px!important;
+  background:rgba(255,249,226,.13)!important;box-shadow:none!important;text-align:center!important;
 }
-.mq-ticket-profile-mount .mq-recovery-code-label{
-  margin:0 0 3px!important;
-  color:#6b421f!important;
-  font:600 clamp(9px,.74vw,11px)/1 'Oswald',sans-serif!important;
-  letter-spacing:.1em!important;
-  text-transform:uppercase!important;
-}
-.mq-ticket-profile-mount .mq-recovery-code{
-  color:#4e2a13!important;
-  font:700 clamp(14px,1.5vw,20px)/1.15 'Cormorant Garamond',Georgia,serif!important;
-  letter-spacing:.08em!important;
-  overflow-wrap:anywhere!important;
-}
+body.mq-ticket-open .mq-ticket-profile-mount .mq-recovery-code-label{margin:0 0 3px!important;color:#754820!important;font:600 clamp(8px,.7vw,10px)/1 'Oswald',sans-serif!important;letter-spacing:.1em!important;text-transform:uppercase!important}
+body.mq-ticket-open .mq-ticket-profile-mount .mq-recovery-code{display:block!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;color:#4f2b15!important;box-shadow:none!important;font:700 clamp(14px,1.45vw,19px)/1.15 'Cormorant Garamond',Georgia,serif!important;letter-spacing:.07em!important;overflow-wrap:anywhere!important}
 
-/* State-specific compaction. */
-.mq-ticket-layer[data-ticket-state="name"] .mq-ticket-profile-mount .mq-form-stack{align-content:start!important}
-.mq-ticket-layer[data-ticket-state="name"] .mq-ticket-profile-mount .mq-primary{justify-self:end!important;margin-top:2px!important}
-.mq-ticket-layer[data-ticket-state="login"] .mq-ticket-profile-mount .mq-form-stack{align-content:center!important}
-.mq-ticket-layer[data-ticket-state="register"] .mq-ticket-profile-mount .mq-profile-step,
-.mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-profile-step{margin-bottom:3px!important}
-.mq-ticket-layer[data-ticket-state="register"] .mq-ticket-profile-mount .mq-form-stack,
-.mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-form-stack{gap:2px!important}
-.mq-ticket-layer[data-ticket-state="register"] .mq-ticket-profile-mount .mq-profile-button-row,
-.mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-profile-button-row{margin-top:2px!important}
-.mq-ticket-layer[data-ticket-state="linked"] .mq-ticket-profile-mount .mq-profile-card,
-.mq-ticket-layer[data-ticket-state="guest"] .mq-ticket-profile-mount .mq-profile-card,
-.mq-ticket-layer[data-ticket-state="reveal"] .mq-ticket-profile-mount .mq-profile-card{
-  justify-content:center!important;
-  text-align:center!important;
-}
-.mq-ticket-layer[data-ticket-state="linked"] .mq-ticket-profile-mount .mq-profile-button-row,
-.mq-ticket-layer[data-ticket-state="guest"] .mq-ticket-profile-mount .mq-profile-button-row,
-.mq-ticket-layer[data-ticket-state="reveal"] .mq-ticket-profile-mount .mq-profile-button-row{justify-content:center!important}
+/* State compaction without ever changing ticket size. */
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="login"] .mq-ticket-profile-mount .mq-form-stack{align-content:center!important}
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="register"] .mq-ticket-profile-mount .mq-profile-step,
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-profile-step{margin-bottom:3px!important}
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="register"] .mq-ticket-profile-mount .mq-form-stack,
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-form-stack{gap:3px!important}
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="register"] .mq-ticket-profile-mount .mq-profile-button-row,
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-profile-button-row{margin-top:3px!important}
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="linked"] .mq-ticket-profile-mount .mq-profile-card,
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="guest"] .mq-ticket-profile-mount .mq-profile-card,
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="reveal"] .mq-ticket-profile-mount .mq-profile-card{justify-content:center!important;text-align:center!important}
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="linked"] .mq-ticket-profile-mount .mq-profile-button-row,
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="guest"] .mq-ticket-profile-mount .mq-profile-button-row,
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="reveal"] .mq-ticket-profile-mount .mq-profile-button-row{justify-content:center!important}
 
-/* Fixed error line: errors never resize the ticket. */
+/* Three-input recovery state: scaled down cleanly inside the same paper field. */
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-profile-title{font-size:clamp(12px,1.1vw,15px)!important}
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-profile-step{min-height:18px!important;margin-bottom:1px!important}
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-context-name{margin-bottom:2px!important;font-size:clamp(7px,.62vw,9px)!important}
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-form-label{font-size:clamp(7px,.62vw,9px)!important}
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount input.mq-name-input,
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount input.mq-recovery-input,
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-ticket-pin-wrap{height:clamp(26px,2.35vw,31px)!important}
+body.mq-ticket-open .mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount button.mq-primary{min-height:29px!important}
+
+/* Error has a reserved printed line. */
 .mq-ticket-error{
-  position:absolute;
-  z-index:8;
-  left:23%;
-  right:23%;
-  top:68.2%;
-  height:18px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-  color:#8d2e1f;
-  font:600 clamp(8px,.72vw,11px)/1 'Oswald',Arial,sans-serif;
-  letter-spacing:.025em;
-  text-align:center;
-  opacity:0;
-  transition:opacity .15s ease;
-  pointer-events:none;
-  text-shadow:0 1px rgba(255,247,218,.75);
+  position:absolute;z-index:8;left:23%;right:23%;top:68.5%;height:17px;display:flex;align-items:center;justify-content:center;
+  overflow:hidden;color:#8d3524;font:600 clamp(8px,.7vw,10px)/1 'Oswald',Arial,sans-serif;letter-spacing:.025em;text-align:center;
+  opacity:0;transition:opacity .15s ease;pointer-events:none;text-shadow:0 1px rgba(255,247,218,.72);
 }
 .mq-ticket-error.has-error{opacity:1}
 
-/* Small status mark – the full database text lives in a tooltip. */
-.mq-ticket-online-mark{
-  position:absolute;
-  z-index:8;
-  right:18.8%;
-  top:24.7%;
-  width:18px;
-  height:18px;
-  display:grid;
-  place-items:center;
-  padding:0;
-  border:0;
-  background:transparent;
-  cursor:help;
-}
-.mq-ticket-online-mark::before{
-  content:"";
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background:#b78a44;
-  box-shadow:0 0 0 1px rgba(80,43,18,.26);
-}
-.mq-ticket-online-mark[data-state="online"]::before{background:#6f8c56}
-.mq-ticket-online-mark[data-state="offline"]::before{background:#a85343}
+/* Online status is reduced to a tiny unobtrusive mark with tooltip. */
+.mq-ticket-online-mark{position:absolute;z-index:8;right:19.5%;top:25.8%;width:14px;height:14px;display:grid;place-items:center;padding:0;border:0;background:transparent;cursor:help;opacity:.56}
+.mq-ticket-online-mark::before{content:"";width:5px;height:5px;border-radius:50%;background:#b78a44;box-shadow:0 0 0 1px rgba(80,43,18,.24)}
+.mq-ticket-online-mark[data-state="online"]::before{background:#6f8c56}.mq-ticket-online-mark[data-state="offline"]::before{background:#a85343}
 
-/* Tooltip portal lives above the ticket and never participates in layout. */
-.mq-ticket-info{
-  flex:0 0 auto!important;
-  width:17px!important;
-  height:17px!important;
-  min-height:17px!important;
-  padding:0!important;
-  margin:0!important;
-  display:inline-grid!important;
-  place-items:center!important;
-  border:1px solid rgba(101,57,22,.47)!important;
-  border-radius:50%!important;
-  background:rgba(255,247,218,.18)!important;
-  color:#70421f!important;
-  font:700 10px/1 Georgia,serif!important;
-  letter-spacing:0!important;
-  text-transform:none!important;
-  cursor:help!important;
-}
-.mq-ticket-info:hover,.mq-ticket-info:focus-visible{
-  border-color:#a46c2f!important;
-  background:rgba(255,249,225,.40)!important;
-  outline:none!important;
-}
-.mq-ticket-tooltip{
-  position:fixed;
-  z-index:2147483500;
-  width:max-content;
-  max-width:min(330px,calc(100vw - 28px));
-  padding:9px 11px;
-  border:1px solid rgba(205,164,92,.50);
-  border-radius:4px;
-  background:rgba(35,20,10,.97);
-  color:#f2dfad;
-  box-shadow:0 14px 34px rgba(0,0,0,.40);
-  font:500 11px/1.45 'Oswald',Arial,sans-serif;
-  letter-spacing:.015em;
-  text-align:left;
-  white-space:normal;
-  opacity:0;
-  visibility:hidden;
-  transform:translateY(-3px);
-  transition:opacity .12s ease,transform .12s ease,visibility .12s ease;
-  pointer-events:none;
-}
+/* Tooltips live outside ticket layout. */
+.mq-ticket-info{flex:0 0 auto!important;width:16px!important;height:16px!important;min-height:16px!important;padding:0!important;margin:0!important;display:inline-grid!important;place-items:center!important;border:1px solid rgba(101,57,22,.45)!important;border-radius:50%!important;background:rgba(255,247,218,.14)!important;color:#70421f!important;font:700 9px/1 Georgia,serif!important;letter-spacing:0!important;text-transform:none!important;cursor:help!important}
+.mq-ticket-info:hover,.mq-ticket-info:focus-visible{border-color:#a46c2f!important;background:rgba(255,249,225,.34)!important;outline:none!important}
+.mq-ticket-tooltip{position:fixed;z-index:2147483500;width:max-content;max-width:min(330px,calc(100vw - 28px));padding:9px 11px;border:1px solid rgba(205,164,92,.50);border-radius:4px;background:rgba(35,20,10,.97);color:#f2dfad;box-shadow:0 14px 34px rgba(0,0,0,.40);font:500 11px/1.45 'Oswald',Arial,sans-serif;letter-spacing:.015em;text-align:left;white-space:normal;opacity:0;visibility:hidden;transform:translateY(-3px);transition:opacity .12s ease,transform .12s ease,visibility .12s ease;pointer-events:none}
 .mq-ticket-tooltip.visible{opacity:1;visibility:visible;transform:translateY(0)}
 
-/* Keep all existing outer player-view prose behind the ticket. */
-body.mq-ticket-open #playerView .mq-player-note,
-body.mq-ticket-open #playerView .mq-storage-note,
-body.mq-ticket-open #playerView .mq-player-actions,
-body.mq-ticket-open #playerView>.mq-online-status{visibility:hidden!important}
+/* Hide the old player-view prose while profile DOM is physically mounted on ticket. */
+body.mq-ticket-open #playerView .mq-player-note,body.mq-ticket-open #playerView .mq-storage-note,body.mq-ticket-open #playerView .mq-player-actions,body.mq-ticket-open #playerView>.mq-online-status{visibility:hidden!important}
 
-/* Ticket opening/closing keeps the existing exterior choreography. */
 .mq-ticket-layer:not(.is-leaving) .mq-ticket-scene{animation:mqTicketSettle .48s cubic-bezier(.2,.78,.25,1) both}
-@keyframes mqTicketSettle{
-  from{opacity:0;transform:translateY(18px) scale(.985)}
-  to{opacity:1;transform:translateY(0) scale(1)}
-}
-.mq-ticket-layer.is-leaving .mq-ticket-scene{animation:mqTicketLeave .56s ease both}
-@keyframes mqTicketLeave{to{opacity:0;transform:translateY(12px) scale(.99)}}
+@keyframes mqTicketSettle{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+.mq-ticket-layer.is-leaving .mq-ticket-scene{animation:mqTicketLeave .56s ease both}@keyframes mqTicketLeave{to{opacity:0;transform:translateY(12px) scale(.99)}}
 
-@media (max-width:760px){
-  .mq-ticket-layer{padding:6px!important;overflow:auto!important}
-  .mq-ticket-scene{width:min(1040px,98vw);min-width:640px;transform-origin:center}
-  .mq-ticket-profile-mount{left:18.5%!important;right:18.5%!important}
-  .mq-ticket-backdrop{background-position:center}
-}
-@media (max-height:610px){
-  .mq-ticket-scene{width:min(900px,92vw,calc(84vh * 2.112))}
-}
-@media (prefers-reduced-motion:reduce){
-  .mq-ticket-layer:not(.is-leaving) .mq-ticket-scene,.mq-ticket-layer.is-leaving .mq-ticket-scene{animation:none!important}
-  .mq-ticket-profile-mount *{transition:none!important}
-}
-
-/* The recovery step contains three credentials; compact it without resizing the ticket. */
-.mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-profile-title{font-size:clamp(13px,1.3vw,17px)!important}
-.mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-profile-step{min-height:17px!important;margin-bottom:1px!important}
-.mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-context-name{margin-bottom:2px!important;font-size:clamp(8px,.68vw,10px)!important}
-.mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-form-label{font-size:clamp(8px,.65vw,10px)!important}
-.mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-name-input,
-.mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-recovery-input,
-.mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-pin-wrap{height:clamp(25px,2.35vw,31px)!important}
-.mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-primary,
-.mq-ticket-layer[data-ticket-state="recovery"] .mq-ticket-profile-mount .mq-secondary{min-height:clamp(25px,2.3vw,30px)!important}
+@media(max-width:760px){.mq-ticket-layer{padding:6px!important;overflow:auto!important}.mq-ticket-scene{width:min(1040px,98vw);min-width:640px;transform-origin:center}.mq-ticket-profile-mount{left:18.5%!important;right:18.5%!important}}
+@media(max-height:610px){.mq-ticket-scene{width:min(900px,92vw,calc(84vh * 2.112))}}
+@media(prefers-reduced-motion:reduce){.mq-ticket-layer:not(.is-leaving) .mq-ticket-scene,.mq-ticket-layer.is-leaving .mq-ticket-scene{animation:none!important}.mq-ticket-profile-mount *{transition:none!important}}
