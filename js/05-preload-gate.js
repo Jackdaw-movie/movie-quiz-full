@@ -1,6 +1,6 @@
 (()=>{
   'use strict';
-  const VERSION='preload-gate-v7.0-loading1';
+  const VERSION='preload-gate-v7.0-loading2';
   const PEOPLE_URL='https://assets.mixkit.co/active_storage/sfx/375/375-preview.mp3';
   const TRAFFIC_URL='https://assets.mixkit.co/active_storage/sfx/2930/2930-preview.mp3';
   const SFX_KEY='movieQuizSfxVolumeV1';
