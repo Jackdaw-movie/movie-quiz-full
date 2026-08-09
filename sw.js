@@ -1,9 +1,9 @@
-const CACHE='movie-quiz-performance-v10';
-const ASSET_RE=/\/assets\/(avatars|exterior-v6-9\/production)\//;
+const CACHE='movie-quiz-avatar-stage-v11';
+const ASSET_RE=/\/assets\/(avatars|exterior-v6-9\/production|avatar-onboarding\/production)\//;
 self.addEventListener('install',()=>self.skipWaiting());
 self.addEventListener('activate',event=>event.waitUntil((async()=>{
   const keys=await caches.keys();
-  await Promise.all(keys.filter(k=>k.startsWith('movie-quiz-performance-')&&k!==CACHE).map(k=>caches.delete(k)));
+  await Promise.all(keys.filter(k=>k.startsWith('movie-quiz-')&&k!==CACHE).map(k=>caches.delete(k)));
   await self.clients.claim();
 })()));
 self.addEventListener('fetch',event=>{

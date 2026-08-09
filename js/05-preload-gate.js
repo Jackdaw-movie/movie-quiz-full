@@ -1,6 +1,6 @@
 (()=>{
   'use strict';
-  const VERSION='preload-gate-v8.0-fast-first-paint';
+  const VERSION='preload-gate-v10.0-priority-pipeline';
   const PEOPLE_URL='https://assets.mixkit.co/active_storage/sfx/375/375-preview.mp3';
   const TRAFFIC_URL='https://assets.mixkit.co/active_storage/sfx/2930/2930-preview.mp3';
   const SFX_KEY='movieQuizSfxVolumeV1';
@@ -12,13 +12,15 @@
     'assets/exterior-v6-9/production/jackdaws-letters.webp',
     'assets/exterior-v6-9/production/hotel-letters.webp',
     'assets/exterior-v6-9/production/marquee.webp',
+    'assets/exterior-v6-9/production/lamp.webp',
+    'assets/exterior-v6-9/production/car.webp',
+    'assets/exterior-v6-9/production/booth.webp'
+  ];
+  const secondaryExteriorImages=[
     'assets/exterior-v6-9/production/marquee-bulbs-halo.webp',
     'assets/exterior-v6-9/production/marquee-bulbs-1.webp',
     'assets/exterior-v6-9/production/marquee-bulbs-2.webp',
     'assets/exterior-v6-9/production/marquee-bulbs-3.webp',
-    'assets/exterior-v6-9/production/lamp.webp',
-    'assets/exterior-v6-9/production/car.webp',
-    'assets/exterior-v6-9/production/booth.webp',
     'assets/exterior-v6-9/production/steam-front.webp',
     'assets/exterior-v6-9/production/shoe-left.webp',
     'assets/exterior-v6-9/production/shoe-right.webp'
@@ -50,9 +52,28 @@
   }
 
   function primePostEntryAssets(){
-    for(const url of ['assets/ticket-login/production/desk.webp','assets/ticket-login/production/ticket-stack.webp?v=7.0']){
-      try{const img=new Image();img.decoding='async';img.src=url}catch(_){}
+    /* Profile/ticket CSS is deliberately low priority during the first paint.
+       Once the exterior is ready, promote it so the booth and avatar onboarding
+       are fully styled before the player reaches them. */
+    for(const part of ['css/ticket-login.css','css/online.css','css/player-avatars.css','css/player-settings.css']){
+      const link=[...document.querySelectorAll('link[rel="stylesheet"]')].find(el=>(el.getAttribute('href')||'').includes(part));
+      if(link&&link.media==='print')link.media='all';
     }
+    const urls=[
+      ...secondaryExteriorImages,
+      'assets/ticket-login/production/desk.webp',
+      'assets/ticket-login/production/ticket-stack.webp?v=7.0'
+    ];
+    urls.forEach((url,index)=>{
+      window.setTimeout(()=>{
+        try{
+          const img=new Image();
+          img.decoding='async';
+          img.fetchPriority='low';
+          img.src=url;
+        }catch(_){}
+      },index*36);
+    });
   }
 
   const pool=window.MovieQuizPreload={
@@ -90,7 +111,7 @@
   }
 
   function essentialStylesReady(){
-    const refs=['css/core.css','css/exterior-scene.css','css/exterior-performance.css'];
+    const refs=['css/exterior-scene.css','css/exterior-performance.css'];
     return refs.every(part=>{
       const link=[...document.querySelectorAll('link[rel="stylesheet"]')].find(el=>(el.getAttribute('href')||'').includes(part));
       return !link||Boolean(link.sheet);
@@ -147,10 +168,11 @@
       enter.disabled=false;
       enter.removeAttribute('aria-disabled');
       enter.classList.add('is-ready');
+      window.dispatchEvent(new CustomEvent('mq:preload-ready',{detail:{version:VERSION}}));
       /* Start buffering ambience only after visual readiness. It no longer
          competes with the assets needed to draw the loading/exterior screens. */
-      setTimeout(primeAudio,80);
-      setTimeout(primePostEntryAssets,140);
+      setTimeout(primeAudio,120);
+      setTimeout(primePostEntryAssets,180);
     });
 
     enter.addEventListener('click',()=>{
@@ -171,6 +193,10 @@
     });
   }
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
+  /* The loading gate already exists before this script tag. Start immediately
+     instead of waiting for DOMContentLoaded, so exterior requests run in parallel
+     with parsing and the non-critical application scripts below. */
+  if(document.getElementById('mqPreloadGate')) init();
+  else if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true});
   else init();
 })();

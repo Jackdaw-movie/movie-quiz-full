@@ -1,0 +1,143 @@
+/* Movie Quiz – avatar onboarding stage visual integration v11 */
+#mqAvatarModal{
+  position:fixed!important;inset:0!important;z-index:2147483645!important;
+  display:grid!important;place-items:center!important;padding:clamp(10px,1.2vw,18px)!important;
+  background:rgba(12,8,5,.58)!important;backdrop-filter:blur(2px);
+}
+#mqAvatarModal[hidden]{display:none!important}
+#mqAvatarModal .mq-avatar-modal-backdrop{position:absolute!important;inset:0!important;background:transparent!important}
+#mqAvatarModal .mq-avatar-dialog{
+  position:relative!important;
+  width:min(94vw,1460px)!important;
+  aspect-ratio:1672/941!important;
+  max-height:96vh!important;
+  min-height:540px!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent url('../assets/avatar-onboarding/production/avatar-stage.webp') center/contain no-repeat!important;
+  box-shadow:none!important;
+  overflow:hidden!important;
+}
+/* Screen-reader keepalive for original textual UI */
+#mqAvatarModal .mq-avatar-dialog-head .eyebrow,
+#mqAvatarModal .mq-avatar-dialog-head h2,
+#mqAvatarModal .mq-avatar-dialog-head p,
+#mqAvatarModal .mq-avatar-carousel-count,
+#mqAvatarModal .mq-avatar-modal-note{
+  position:absolute!important;
+  width:1px!important;height:1px!important;
+  padding:0!important;margin:-1px!important;border:0!important;
+  overflow:hidden!important;clip:rect(0 0 0 0)!important;clip-path:inset(50%)!important;
+  white-space:nowrap!important;
+}
+/* Live status stays available but unobtrusive */
+#mqAvatarModal .mq-avatar-modal-status{
+  position:absolute!important;left:50%!important;bottom:13.2%!important;transform:translateX(-50%)!important;
+  min-height:1.2em!important;max-width:52%!important;padding:0!important;margin:0!important;
+  background:transparent!important;border:0!important;
+  color:#f0d39d!important;text-align:center!important;
+  font:600 clamp(11px,.92vw,14px)/1.15 'Cormorant Garamond',Georgia,serif!important;
+  letter-spacing:.03em!important;text-shadow:0 1px 2px rgba(17,10,6,.62)!important;
+}
+#mqAvatarModal .mq-avatar-dialog-head{position:static!important;padding:0!important;margin:0!important;border:0!important;background:transparent!important}
+#mqAvatarModal .mq-avatar-carousel-shell{
+  position:absolute!important;
+  left:17.2%!important;top:23.6%!important;
+  width:65.6%!important;height:54.7%!important;
+  margin:0!important;padding:0!important;border:0!important;background:transparent!important;
+}
+#mqAvatarModal .mq-avatar-carousel-viewport{
+  position:absolute!important;left:15.8%!important;top:4.1%!important;
+  width:68.4%!important;height:83.6%!important;
+  margin:0!important;padding:0!important;border:0!important;outline:none!important;background:transparent!important;
+  overflow:hidden!important;
+}
+#mqAvatarModal .mq-avatar-carousel-stage{
+  position:relative!important;width:100%!important;height:100%!important;
+  overflow:hidden!important;
+}
+#mqAvatarModal .mq-avatar-carousel-choice{
+  position:absolute!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;
+  background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;
+  padding:0!important;margin:0!important;cursor:pointer!important;outline:none!important;
+  transition:transform .22s ease, opacity .22s ease, filter .22s ease!important;
+}
+#mqAvatarModal .mq-avatar-carousel-choice .mq-avatar-frame{
+  position:relative!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;
+  width:100%!important;height:100%!important;padding:0!important;margin:0!important;
+  background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important;overflow:visible!important;
+}
+#mqAvatarModal .mq-avatar-carousel-choice .mq-avatar-img{
+  width:100%!important;height:100%!important;object-fit:contain!important;object-position:center bottom!important;
+  filter:drop-shadow(0 10px 12px rgba(0,0,0,.24));
+}
+#mqAvatarModal .mq-avatar-current-mark{display:none!important}
+#mqAvatarModal .mq-avatar-carousel-choice.is-center{
+  z-index:5!important;left:50%!important;top:51.5%!important;transform:translate(-50%,-50%)!important;
+  width:41.2%!important;height:92%!important;opacity:1!important;filter:none!important;
+}
+#mqAvatarModal .mq-avatar-carousel-choice.is-left-1{
+  z-index:4!important;left:-3.5%!important;top:54%!important;transform:translate(0,-50%) scale(.88)!important;
+  width:30.5%!important;height:78%!important;opacity:.96!important;filter:brightness(.96) saturate(.92)!important;
+}
+#mqAvatarModal .mq-avatar-carousel-choice.is-right-1{
+  z-index:4!important;right:-3.5%!important;top:54%!important;transform:translate(0,-50%) scale(.88)!important;
+  width:30.5%!important;height:78%!important;opacity:.96!important;filter:brightness(.96) saturate(.92)!important;
+}
+#mqAvatarModal .mq-avatar-carousel-choice.is-left-2,
+#mqAvatarModal .mq-avatar-carousel-choice.is-right-2{
+  z-index:1!important;top:54%!important;width:20%!important;height:58%!important;opacity:0!important;pointer-events:none!important;
+}
+#mqAvatarModal .mq-avatar-carousel-choice:focus-visible,
+#mqAvatarModal .mq-avatar-carousel-choice.is-center{
+  outline:none!important;
+}
+/* Invisible click targets over the painted arrows */
+#mqAvatarModal .mq-avatar-carousel-arrow{
+  position:absolute!important;top:51.2%!important;transform:translateY(-50%)!important;
+  width:8.2%!important;height:17%!important;padding:0!important;margin:0!important;
+  background:rgba(255,255,255,.001)!important;border:0!important;border-radius:999px!important;
+  color:transparent!important;font-size:0!important;line-height:0!important;box-shadow:none!important;cursor:pointer!important;
+}
+#mqAvatarModal .mq-avatar-carousel-arrow.is-prev{left:1.9%!important}
+#mqAvatarModal .mq-avatar-carousel-arrow.is-next{right:1.9%!important}
+#mqAvatarModal .mq-avatar-carousel-arrow span{display:none!important}
+#mqAvatarModal .mq-avatar-carousel-arrow:hover,
+#mqAvatarModal .mq-avatar-carousel-arrow:focus-visible,
+#mqAvatarModal .mq-avatar-confirm:hover,
+#mqAvatarModal .mq-avatar-confirm:focus-visible,
+#mqAvatarModal .mq-avatar-close:hover,
+#mqAvatarModal .mq-avatar-close:focus-visible{
+  outline:none!important;
+  box-shadow:0 0 0 3px rgba(245,205,115,.48),0 0 18px rgba(245,205,115,.18)!important;
+}
+/* Footer buttons become invisible hit areas over painted buttons */
+#mqAvatarModal .mq-avatar-carousel-footer{position:static!important;padding:0!important;margin:0!important;border:0!important;background:transparent!important}
+#mqAvatarModal .mq-avatar-confirm,
+#mqAvatarModal .mq-avatar-close{
+  position:absolute!important;bottom:2.8%!important;height:10.2%!important;padding:0!important;margin:0!important;
+  background:rgba(255,255,255,.001)!important;border:0!important;border-radius:18px!important;
+  color:transparent!important;font-size:0!important;line-height:0!important;cursor:pointer!important;box-shadow:none!important;
+}
+#mqAvatarModal .mq-avatar-confirm{left:31.8%!important;width:32.4%!important}
+#mqAvatarModal .mq-avatar-close{right:16.9%!important;width:15.4%!important}
+#mqAvatarModal .mq-avatar-confirm[disabled]{opacity:.55!important;cursor:not-allowed!important;box-shadow:none!important}
+/* Onboarding visual polish */
+#mqAvatarModal.is-onboarding .mq-avatar-dialog{filter:drop-shadow(0 14px 28px rgba(0,0,0,.32))}
+@media (max-width: 1100px){
+  #mqAvatarModal .mq-avatar-dialog{width:min(98vw,1200px)!important;min-height:480px!important}
+  #mqAvatarModal .mq-avatar-modal-status{bottom:12.6%!important;max-width:60%!important}
+}
+@media (max-width: 800px){
+  #mqAvatarModal{padding:8px!important}
+  #mqAvatarModal .mq-avatar-dialog{width:100%!important;min-height:420px!important}
+  #mqAvatarModal .mq-avatar-carousel-shell{left:15%!important;width:70%!important;top:23.2%!important;height:55.6%!important}
+  #mqAvatarModal .mq-avatar-carousel-viewport{left:14.2%!important;width:71.6%!important;height:82.8%!important}
+  #mqAvatarModal .mq-avatar-carousel-choice.is-center{width:46%!important;height:92%!important}
+  #mqAvatarModal .mq-avatar-carousel-choice.is-left-1,
+  #mqAvatarModal .mq-avatar-carousel-choice.is-right-1{width:35%!important;height:76%!important}
+  #mqAvatarModal .mq-avatar-confirm{left:28.2%!important;width:38.5%!important}
+  #mqAvatarModal .mq-avatar-close{right:12.3%!important;width:19%!important}
+}
