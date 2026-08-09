@@ -1,6 +1,6 @@
 (()=>{
   'use strict';
-  const VERSION='ticket-login-v6.0-tall-facade';
+  const VERSION='ticket-login-v7.0-approved-angle';
   const layer=document.getElementById('mqTicketLayer');
   const mount=document.getElementById('mqTicketProfileMount');
   const shell=document.getElementById('mqProfileShell');
