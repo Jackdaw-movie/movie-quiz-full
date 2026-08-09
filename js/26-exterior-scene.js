@@ -1,6 +1,6 @@
 (()=>{
   'use strict';
-  const VERSION='exterior-integration-v6.11-city-only';
+  const VERSION='exterior-integration-v6.12-early-boot';
   const exterior=document.getElementById('mqExteriorScene');
   const stage=document.getElementById('mqExteriorStage');
   const booth=document.getElementById('mqTicketBoothHotspot');
@@ -11,6 +11,8 @@
   if(!exterior||!stage||!booth||!ticketLayer||!ticketMount||!cinema)return;
   let originalShowView=null;
   let wrapped=false;
+  let wrappedTarget=null;
+  const wrapWatchUntil=performance.now()+20000;
   let ticketOpen=false;
   let entering=false;
   let auditoriumEntered=false;
@@ -385,9 +387,17 @@
     setTimeout(mountProfileOnTicket,260);
   }
   function wrapShowView(){
-    if(wrapped||typeof window.showView!=='function')return false;
-    originalShowView=window.showView;
-    window.showView=function(id){
+    const current=window.showView;
+    if(typeof current!=='function')return false;
+    if(current===wrappedTarget||current.__mqExteriorWrapper===true){
+      wrappedTarget=current;
+      wrapped=true;
+      return true;
+    }
+    /* The online module replaces showView later during startup. Re-wrap the
+       newest implementation instead of assuming the first function is final. */
+    originalShowView=current;
+    const wrappedFn=function(id){
       if(id==='difficulty'&&ticketOpen){
         if(auditoriumEntered)closeReopenedTicket();
         else enterAuditorium();
@@ -399,6 +409,9 @@
       }
       return originalShowView(id);
     };
+    wrappedFn.__mqExteriorWrapper=true;
+    window.showView=wrappedFn;
+    wrappedTarget=wrappedFn;
     wrapped=true;
     if(ticketOpen){
       try{originalShowView('playerView')}catch(_){}
@@ -407,8 +420,8 @@
     return true;
   }
   function waitForGameSystems(){
-    if(wrapShowView())return;
-    setTimeout(waitForGameSystems,70);
+    wrapShowView();
+    if(performance.now()<wrapWatchUntil)setTimeout(waitForGameSystems,120);
   }
 
   function updateWalkCursor(event){

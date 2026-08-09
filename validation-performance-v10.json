@@ -1,0 +1,13 @@
+{
+  "version": "performance-v10",
+  "syntax_checked": [
+    "js/26-exterior-scene.js",
+    "js/24a-avatar-performance.js",
+    "js/07-runtime-cache.js",
+    "sw.js",
+    "inline preload bootstrap in index.html"
+  ],
+  "visual_assets_regenerated": false,
+  "profile_logic_replaced": false,
+  "avatar_logic_replaced": false
+}
