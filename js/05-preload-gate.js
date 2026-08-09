@@ -1,10 +1,11 @@
 (()=>{
   'use strict';
-  const VERSION='preload-gate-v6.9';
+  const VERSION='preload-gate-v7.0-loading1';
   const PEOPLE_URL='https://assets.mixkit.co/active_storage/sfx/375/375-preview.mp3';
   const TRAFFIC_URL='https://assets.mixkit.co/active_storage/sfx/2930/2930-preview.mp3';
-  const MUSIC_KEY='movieQuizMusicVolumeV1';
   const SFX_KEY='movieQuizSfxVolumeV1';
+  const MIN_VISUAL_MS=900;
+
   const criticalImages=[
     'assets/exterior-v6-9/production/master.webp',
     'assets/exterior-v6-9/production/sign.webp',
@@ -22,8 +23,10 @@
     'assets/exterior-v6-9/production/shoe-left.webp',
     'assets/exterior-v6-9/production/shoe-right.webp'
   ];
+
   const clamp=v=>Math.max(0,Math.min(100,Number(v)||0));
   const stored=(key,fallback=50)=>{try{const v=localStorage.getItem(key);return v===null?fallback:clamp(v)}catch(_){return fallback}};
+  const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 
   const people=new Audio(PEOPLE_URL);
   const traffic=new Audio(TRAFFIC_URL);
@@ -35,9 +38,9 @@
   }
   people.loop=true;
   traffic.loop=true;
+
   const pool=window.MovieQuizPreload={
-    version:VERSION, cityPeople:people, cityTraffic:traffic, footsteps,
-    released:false, ready:false,
+    version:VERSION,cityPeople:people,cityTraffic:traffic,footsteps,released:false,ready:false,
     startAudio(){
       const sfx=stored(SFX_KEY,50)/100;
       people.volume=Math.min(1,sfx*.62);
@@ -52,38 +55,39 @@
     }
   };
 
-  function preloadImage(url,index,total,onStep){
+  function preloadImage(url,index,onStep){
     return new Promise(resolve=>{
       const img=new Image();
       img.decoding='async';
       if(index===0)img.fetchPriority='high';
+      let settled=false;
       const done=async ok=>{
-        if(ok&&typeof img.decode==='function'){
-          try{await img.decode()}catch(_){}
-        }
-        onStep();
-        resolve(ok);
+        if(settled)return;settled=true;
+        if(ok&&typeof img.decode==='function'){try{await img.decode()}catch(_){}}
+        onStep();resolve(ok);
       };
       img.onload=()=>done(true);
       img.onerror=()=>done(false);
       img.src=url;
     });
   }
+
   function audioReady(audio){
     return new Promise(resolve=>{
       if(audio.readyState>=3){resolve(true);return}
       let settled=false;
       const finish=ok=>{if(settled)return;settled=true;cleanup();resolve(ok)};
       const cleanup=()=>{
-        audio.removeEventListener('canplay',yes);audio.removeEventListener('canplaythrough',yes);audio.removeEventListener('error',no);audio.removeEventListener('stalled',no);
+        audio.removeEventListener('canplay',yes);audio.removeEventListener('canplaythrough',yes);audio.removeEventListener('error',no);
       };
-      const yes=()=>finish(true), no=()=>finish(false);
+      const yes=()=>finish(true),no=()=>finish(false);
       audio.addEventListener('canplay',yes,{once:true});
       audio.addEventListener('canplaythrough',yes,{once:true});
       audio.addEventListener('error',no,{once:true});
       setTimeout(()=>finish(audio.readyState>=2),7000);
     });
   }
+
   function appReady(){
     return new Promise(resolve=>{
       const start=performance.now();
@@ -95,43 +99,54 @@
       tick();
     });
   }
+
   function init(){
     const gate=document.getElementById('mqPreloadGate');
     const bar=document.getElementById('mqPreloadProgress');
-    const percent=document.getElementById('mqPreloadPercent');
+    const track=document.getElementById('mqPreloadTrack');
+    const reel=document.getElementById('mqPreloadReel');
     const status=document.getElementById('mqPreloadStatus');
     const enter=document.getElementById('mqPreloadEnter');
-    if(!gate||!bar||!status||!enter)return;
+    if(!gate||!bar||!track||!reel||!status||!enter)return;
+
+    const startedAt=performance.now();
     let completed=0;
-    const imageTotal=criticalImages.length;
-    const total=imageTotal+3; // people + traffic + application readiness
+    const total=criticalImages.length+3; // images + city people + traffic + complete application/exterior
+
+    const renderProgress=value=>{
+      const p=Math.max(0,Math.min(100,value));
+      bar.style.width=`${p}%`;
+      track.setAttribute('aria-valuenow',String(p));
+      // Three complete reel rotations across 0–100%, visually tied to the progress line.
+      reel.style.setProperty('--mq-reel-angle',`${p*10.8}deg`);
+    };
     const step=()=>{
       completed=Math.min(total,completed+1);
-      const p=Math.round((completed/total)*100);
-      bar.style.width=`${p}%`;
-      percent.textContent=`${p}%`;
-      if(p<45)status.textContent='Připravuji ulici…';
-      else if(p<82)status.textContent='Rozsvěcím kino a načítám ruch města…';
-      else status.textContent='Dokončuji promítání…';
+      renderProgress(Math.round((completed/total)*100));
     };
-    const imagesPromise=Promise.all(criticalImages.map((url,i)=>preloadImage(url,i,imageTotal,step)));
+
+    const imagesPromise=Promise.all(criticalImages.map((url,i)=>preloadImage(url,i,step)));
     const peoplePromise=audioReady(people).then(v=>{step();return v});
     const trafficPromise=audioReady(traffic).then(v=>{step();return v});
     const appPromise=appReady().then(v=>{step();return v});
-    Promise.all([imagesPromise,peoplePromise,trafficPromise,appPromise]).then(()=>{
+
+    Promise.all([imagesPromise,peoplePromise,trafficPromise,appPromise]).then(async()=>{
+      const elapsed=performance.now()-startedAt;
+      if(elapsed<MIN_VISUAL_MS)await delay(MIN_VISUAL_MS-elapsed);
       pool.ready=true;
-      bar.style.width='100%';percent.textContent='100%';
-      status.textContent='New York je připraven.';
+      renderProgress(100);
+      status.textContent='VŠE JE PŘIPRAVENO';
+      gate.classList.add('is-ready');
       enter.disabled=false;
       enter.removeAttribute('aria-disabled');
-      enter.textContent='Vstoupit do New Yorku';
+      enter.classList.add('is-ready');
     });
+
     enter.addEventListener('click',()=>{
-      if(enter.disabled)return;
+      if(enter.disabled||!pool.ready)return;
       enter.disabled=true;
-      // This trusted click is the audio permission gesture. Start HTML audio synchronously.
       pool.startAudio();
-      // Also unlock the game's WebAudio engine while the trusted gesture is still active.
+      // Trusted user gesture also unlocks the existing game's WebAudio engine.
       try{
         if(typeof initAudio==='function')initAudio();
         if(typeof audioCtx!=='undefined'&&audioCtx?.state==='suspended')audioCtx.resume?.().catch?.(()=>{});
@@ -142,9 +157,10 @@
       document.body.classList.add('mq-preload-released');
       window.dispatchEvent(new CustomEvent('mq:preload-entered',{detail:{version:VERSION}}));
       gate.classList.add('is-leaving');
-      setTimeout(()=>{gate.hidden=true;gate.setAttribute('hidden','')},620);
+      setTimeout(()=>{gate.hidden=true;gate.setAttribute('hidden','')},760);
     });
   }
+
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
   else init();
 })();

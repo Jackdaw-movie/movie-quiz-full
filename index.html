@@ -9,7 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Limelight&family=Oswald:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <link rel="preload" as="image" href="assets/exterior-v6-9/production/master.webp" type="image/webp" fetchpriority="high">
-<link rel="stylesheet" href="css/preload-gate.css?v=6.9">
+<link rel="preload" as="image" href="assets/loading/new-york-night.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/preload-gate.css?v=7.0-loading1">
 <link rel="stylesheet" href="css/core.css">
 <link rel="stylesheet" href="css/cinematic.css" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="css/refinements.css" media="print" onload="this.media='all'">
@@ -29,24 +30,27 @@
 </head>
 <body class="mq-noir-master mq-exterior-active mq-preloading">
 <section class="mq-preload-gate" id="mqPreloadGate" aria-label="Načítání Movie Quiz">
-  <div class="mq-preload-card">
-    <span class="mq-preload-kicker">Jackdaw's Cinema</span>
-    <h1 class="mq-preload-title">Movie Quiz</h1>
-    <p class="mq-preload-status" id="mqPreloadStatus">Připravuji ulici…</p>
-    <div class="mq-preload-track" aria-hidden="true"><span class="mq-preload-progress" id="mqPreloadProgress"></span></div>
-    <span class="mq-preload-percent" id="mqPreloadPercent">0%</span>
-    <button class="mq-preload-enter" id="mqPreloadEnter" type="button" disabled aria-disabled="true">Načítání…</button>
+  <div class="mq-preload-atmosphere" aria-hidden="true"></div>
+  <div class="mq-preload-content">
+    <p class="mq-preload-status" id="mqPreloadStatus" aria-live="polite">NAČÍTÁM KVÍZOVÝ ZÁŽITEK</p>
+    <div class="mq-preload-track" id="mqPreloadTrack" role="progressbar" aria-label="Načítání" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <span class="mq-preload-progress" id="mqPreloadProgress"></span>
+    </div>
+    <div class="mq-preload-action-slot">
+      <div class="mq-preload-reel" id="mqPreloadReel" aria-hidden="true">
+        <span class="mq-reel-hole h1"></span><span class="mq-reel-hole h2"></span><span class="mq-reel-hole h3"></span><span class="mq-reel-hole h4"></span><span class="mq-reel-hole h5"></span>
+        <i class="mq-reel-hub"></i>
+      </div>
+      <button class="mq-preload-enter" id="mqPreloadEnter" type="button" disabled aria-disabled="true">VSTOUPIT DO FILMOVÉHO SVĚTA</button>
+    </div>
   </div>
 </section>
-<script src="js/05-preload-gate.js?v=6.9"></script>
-
+<script src="js/05-preload-gate.js?v=7.0-loading1"></script>
 <section class="mq-exterior-scene mq-exterior-v6 mq-exterior-v6-1 mq-exterior-v6-2 mq-exterior-v6-3 mq-exterior-v6-4" id="mqExteriorScene" aria-label="Ulice před Jackdaw's Cinema">
   <div class="mq-v6-viewport">
     <div class="mq-v6-stage" id="mqExteriorStage">
       <img class="mq-v6-master" src="assets/exterior-v6-9/production/master.webp" alt="Jackdaw's Cinema" width="1672" height="941" decoding="async" fetchpriority="high">
-
       <div class="mq-v6-searchlights" aria-hidden="true"><i></i><i></i></div>
-
       <img class="mq-v6-depth mq-v6-sign" src="assets/exterior-v6-9/production/sign.webp" alt="" decoding="async">
       <img class="mq-v63-sign-letters" src="assets/exterior-v6-9/production/jackdaws-letters.webp" alt="" aria-hidden="true" decoding="async">
       <img class="mq-v64-hotel-letters" src="assets/exterior-v6-9/production/hotel-letters.webp" alt="" aria-hidden="true" decoding="async">
@@ -59,12 +63,10 @@
       </div>
       <img class="mq-v6-depth mq-v6-lamp" src="assets/exterior-v6-9/production/lamp.webp" alt="" decoding="async">
       <img class="mq-v6-depth mq-v6-car" src="assets/exterior-v6-9/production/car.webp" alt="" decoding="async">
-
       <div class="mq-v6-car-shine mq-v6-car-shine-aligned" aria-hidden="true"></div>
 
       <button class="mq-booth-button" id="mqTicketBoothHotspot" type="button" aria-label="Přejít k pokladně"></button>
       <img class="mq-v6-depth mq-v6-booth mq-v6-booth-direct" src="assets/exterior-v6-9/production/booth.webp" alt="" decoding="async">
-
       <div class="mq-v65-steam-live" aria-hidden="true">
         <img class="mq-v65-steam-low steam-a" src="assets/exterior-v6-9/production/steam-front.webp" alt="" decoding="async">
         <img class="mq-v65-steam-low steam-b" src="assets/exterior-v6-9/production/steam-front.webp" alt="" decoding="async">
@@ -72,12 +74,10 @@
       <div class="mq-v6-vignette" aria-hidden="true"></div>
     </div>
   </div>
-
   <div class="mq-walk-cursor mq-walk-cursor-v6" id="mqWalkCursor" aria-hidden="true">
     <img src="assets/exterior-v6-9/production/shoe-left.webp" alt="" decoding="async">
     <img src="assets/exterior-v6-9/production/shoe-right.webp" alt="" decoding="async">
   </div>
-
   <aside class="mq-exterior-audio" id="mqExteriorAudio" aria-label="Nastavení zvuku">
     <button class="mq-exterior-audio-toggle" type="button" id="mqExteriorAudioOpen" aria-label="Nastavení zvuku" title="Nastavení zvuku" aria-expanded="false">
       <svg viewBox="0 0 32 32" aria-hidden="true">
@@ -92,14 +92,12 @@
     </div>
   </aside>
 </section>
-
 <section class="mq-ticket-layer" id="mqTicketLayer" hidden aria-label="Vstupenka do Jackdaw's Cinema">
   <div class="mq-ticket-backdrop"></div>
   <article class="mq-admit-ticket" id="mqAdmitTicket">
     <div class="mq-ticket-stub mq-ticket-stub-left">
       <span>NO.</span><strong>1936</strong><b>0827</b>
     </div>
-
     <div class="mq-ticket-main">
       <div class="mq-ticket-brand">
         <span>JACKDAW'S</span>
@@ -115,13 +113,11 @@
         <span>NEW YORK</span><i>★</i><span>TONIGHT</span><i>★</i><span>ONE ADMISSION</span>
       </div>
     </div>
-
     <div class="mq-ticket-stub mq-ticket-stub-right">
       <span>ADMIT</span><strong>ONE</strong><b>JDC</b>
     </div>
   </article>
 </section>
-
 <div id="page">
 <main class="cinema" id="cinema" aria-label="Movie Quiz">
 <div class="hall-bg"></div><div class="ceiling"></div>
@@ -130,13 +126,11 @@
 <div class="ambient-rib left" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="ambient-rib right" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="stage-floor"></div><div class="aisle-glow"></div>
-
 <section class="proscenium">
 <div class="marquee">Movie Quiz</div>
 <div class="screen-frame">
 <div class="screen" id="screen">
 <div class="projection-grain" aria-hidden="true"></div>
-
 <section class="view active" id="intro">
 <button class="start-link" id="startBtn">Spustit promítání</button>
 <button class="help" id="helpBtn" aria-label="Nápověda" title="Nápověda" data-mq-tip="Nápověda" aria-expanded="false">?</button>
@@ -145,7 +139,6 @@ Vyberte obtížnost a žánr, potom označte jednu ze čtyř odpovědí.
 Máte tři životy. Patnáct správných odpovědí znamená vítězství.
 </div>
 </section>
-
 <section class="view selection-view" id="difficulty">
 <div class="selection-panel difficulty-panel">
 <div class="eyebrow">Obtížnost projekce</div>
@@ -166,7 +159,6 @@ Máte tři životy. Patnáct správných odpovědí znamená vítězství.
 </div>
 </div>
 </section>
-
 <section class="view selection-view" id="genres">
 <div class="selection-panel genre-panel">
 <button class="selection-back" id="difficultyBack" aria-label="Zpět na výběr obtížnosti"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span>Změnit obtížnost</span></button>
@@ -182,7 +174,6 @@ Máte tři životy. Patnáct správných odpovědí znamená vítězství.
 </div>
 </div>
 </section>
-
 <section class="view" id="game">
 <div class="theme-scene" aria-hidden="true"><i class="scene-a"></i><i class="scene-b"></i><i class="scene-c"></i><i class="scene-d"></i></div>
 <div class="hud">
@@ -196,11 +187,9 @@ Máte tři životy. Patnáct správných odpovědí znamená vítězství.
 </div>
 <div class="question-wrap"><div class="question-meta"><span class="pill" id="qType">Film</span><span class="pill" id="qEra">1990s</span></div><h2 class="question" id="question">Otázka</h2><div class="answers" id="answers"></div></div>
 </section>
-
 <section class="view" id="creditsView"><button class="credits-skip" id="creditsSkip" aria-label="Přeskočit titulky a vrátit se do menu" title="Zpět do menu"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M19 7L10 16l9 9"/><path d="M11 16h13"/></svg><span>Menu</span></button><div class="credits-window"><div class="credits-roll" id="creditsRoll"></div></div></section>
 <section class="view" id="endView"><div class="end-card" id="endCard"><h2 class="end-title">The End</h2><div class="end-sub" id="endScore">Promítání skončilo</div><button class="replay" id="replayEnd">Hrát znovu</button></div></section>
 <section class="view" id="winView"><div class="winView-bg"></div><div class="spotlight"></div><div class="win-card" id="winCard"><h2 class="win-title">You won an Oscar</h2><div class="big-award" id="bigAward"></div><div class="podium"></div><div class="end-sub">15 správných odpovědí</div><button class="replay" id="replayWin">Nové promítání</button></div></section>
-
 <canvas id="fx"></canvas><div class="feedback" id="feedback">Správně</div><div class="dust" id="dust"></div>
 <div class="curtain left"></div><div class="curtain right"></div><div class="valance"></div>
 </div>
@@ -209,9 +198,7 @@ Máte tři životy. Patnáct správných odpovědí znamená vítězství.
 <div class="seats" id="seats"></div>
 </main>
 </div>
-
 <template id="awardSvg"><svg viewBox="0 0 180 460" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="mqGold" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#4b1d00"/><stop offset=".25" stop-color="#c17a0c"/><stop offset=".48" stop-color="#fff1a4"/><stop offset=".7" stop-color="#d18a14"/><stop offset="1" stop-color="#4b1d00"/></linearGradient><radialGradient id="mqHead" cx="35%" cy="25%" r="80%"><stop stop-color="#fff5b3"/><stop offset=".35" stop-color="#dfa126"/><stop offset="1" stop-color="#4a1e00"/></radialGradient></defs><ellipse cx="90" cy="444" rx="64" ry="9" fill="#000" opacity=".5"/><path d="M30 403h120l10 34H20z" fill="#090807" stroke="#493013" stroke-width="3"/><path d="M41 370h98l10 35H31z" fill="url(#mqGold)" stroke="#572800" stroke-width="2"/><ellipse cx="90" cy="48" rx="19" ry="24" fill="url(#mqHead)" stroke="#612a00" stroke-width="1.4"/><path d="M80 69c3 7 17 7 20 0l4 17H76zM75 82c-11 5-18 16-20 33-2 20 4 38 11 56l7 22-4 54 7 42-5 62h17l2-100 2 100h17l-5-62 7-42-4-54 7-22c7-18 13-36 11-56-2-17-9-28-20-33-9 7-21 7-30 0z" fill="url(#mqGold)" stroke="#612a00" stroke-width="1.4"/><path d="M66 97c-13 12-19 31-18 50 1 21 10 41 27 60l12-13c-13-16-20-32-20-48 0-16 6-31 14-43zM114 97c13 12 19 31 18 50-1 21-10 41-27 60l-12-13c13-16 20-32 20-48 0-16-6-31-14-43z" fill="url(#mqGold)" stroke="#612a00" stroke-width="1.4"/><path d="M72 341h18v17l-24 5zM90 341h18l6 22-24-5z" fill="url(#mqGold)" stroke="#612a00" stroke-width="1.4"/></svg></template>
-
 <script src="js/00-core.js"></script>
 <script id="mq-cinematic-upgrade-script" src="js/10-cinematic-upgrade.js"></script>
 <script id="mq-cinematic-refinement-v2-script" src="js/11-cinematic-refinement.js"></script>
@@ -222,11 +209,9 @@ Máte tři životy. Patnáct správných odpovědí znamená vítězství.
 <script id="mq-v37-database-questions-script" src="js/21-database-questions.js"></script>
 <script id="mq-v40-question-reporting-script" src="js/22-question-reporting.js"></script>
 <script id="mq-v41-player-statistics-script" src="js/23-player-statistics.js"></script>
-
 <script id="mq-guest-mode-script" src="js/30-difficulty-tools.js?v=1.5"></script>
 <script id="mq-player-avatar-script" src="js/24-player-avatars.js?v=3.3"></script>
 <script id="mq-player-settings-script" src="js/25-player-settings.js?v=1.5"></script>
-
 <script id="mq-v25-genre-tools-top-right-script" src="js/31-genre-tools.js"></script>
 <script id="mq-v30-fantasy-dragon-script" src="js/40-fantasy-dragon.js"></script>
 <script id="mq-v33-fantasy-dragon-runtime-fix-script" src="js/41-fantasy-runtime.js"></script>

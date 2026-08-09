@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+<defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#08101c"/><stop offset="0.55" stop-color="#111722"/><stop offset="1" stop-color="#161616"/></linearGradient>
+  <radialGradient id="glow" cx="50%" cy="38%" r="52%"><stop offset="0" stop-color="#586170" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+  <linearGradient id="street" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#161719"/><stop offset="1" stop-color="#050607"/></linearGradient>
+  <linearGradient id="mist" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#8390a0" stop-opacity="0"/><stop offset=".5" stop-color="#8390a0" stop-opacity=".12"/><stop offset="1" stop-color="#8390a0" stop-opacity="0"/></linearGradient>
+  <pattern id="grain" width="90" height="90" patternUnits="userSpaceOnUse"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency=".68" numOctaves="2" stitchTiles="stitch"/></filter><rect width="90" height="90" filter="url(#noise)" opacity=".055"/></pattern>
+</defs>
+<rect width="1920" height="1080" fill="url(#sky)"/>
+<rect width="1920" height="850" fill="url(#glow)"/>
+<circle cx="1465" cy="172" r="70" fill="#d9d6c7" opacity=".12"/>
+<g fill="#080b0f">
+  <path d="M0 635V390h112v245h52V330h150v305h48V448h100v187h53V265h170v370h52V414h94v221h55V230h145v405h58V351h128v284h54V300h182v335h60V425h105v210h70V340h154v295h86V280h154v355h120v445H0z"/>
+</g>
+<g fill="#10151b">
+  <path d="M0 678V505h145v173h45V430h120v248h44V546h130v132h60V470h126v208h58V520h133v158h45V435h170v243h65V500h112v178h52V454h156v224h70V515h132v163h60V443h145v235h79v402H0z"/>
+</g>
+<g fill="#bd9d60" opacity=".28">
+  <rect x="191" y="363" width="10" height="20"/><rect x="230" y="363" width="10" height="20"/><rect x="269" y="363" width="10" height="20"/>
+  <rect x="550" y="315" width="12" height="22"/><rect x="598" y="315" width="12" height="22"/><rect x="646" y="315" width="12" height="22"/>
+  <rect x="943" y="282" width="11" height="20"/><rect x="985" y="282" width="11" height="20"/>
+  <rect x="1308" y="345" width="12" height="21"/><rect x="1352" y="345" width="12" height="21"/><rect x="1396" y="345" width="12" height="21"/>
+  <rect x="1728" y="324" width="11" height="20"/><rect x="1770" y="324" width="11" height="20"/>
+</g>
+<g opacity=".16" fill="#e0c98e">
+  <g transform="translate(70 0)"><rect x="0" y="538" width="9" height="16"/><rect x="28" y="538" width="9" height="16"/><rect x="56" y="538" width="9" height="16"/><rect x="84" y="538" width="9" height="16"/></g>
+  <g transform="translate(1090 0)"><rect x="0" y="478" width="10" height="18"/><rect x="34" y="478" width="10" height="18"/><rect x="68" y="478" width="10" height="18"/><rect x="102" y="478" width="10" height="18"/></g>
+  <g transform="translate(1520 0)"><rect x="0" y="542" width="9" height="16"/><rect x="32" y="542" width="9" height="16"/><rect x="64" y="542" width="9" height="16"/></g>
+</g>
+<!-- classic rooftop water tanks -->
+<g fill="#090b0e" stroke="#1e2329" stroke-width="7">
+  <path d="M380 385l18-50h92l18 50z"/><rect x="397" y="384" width="93" height="65" rx="2"/><path d="M410 450v82m68-82v82M390 532h110"/>
+  <path d="M1185 358l15-43h77l16 43z"/><rect x="1200" y="357" width="78" height="57"/><path d="M1210 414v70m58-70v70M1192 484h95"/>
+</g>
+<!-- distant elevated rail / avenue -->
+<g opacity=".45" fill="#090b0d"><rect x="0" y="675" width="1920" height="28"/><rect x="0" y="715" width="1920" height="18"/></g>
+<g stroke="#15191d" stroke-width="13" opacity=".8"><path d="M90 702v165M355 702v165M620 702v165M885 702v165M1150 702v165M1415 702v165M1680 702v165"/></g>
+<!-- foreground street -->
+<path d="M0 810L1920 730v350H0z" fill="url(#street)"/>
+<path d="M0 912L1920 827" stroke="#827357" stroke-width="3" opacity=".12"/>
+<path d="M0 1005L1920 920" stroke="#c0ad7d" stroke-width="2" opacity=".09"/>
+<!-- subtle headlight streaks / city haze -->
+<path d="M190 862C620 821 1185 792 1750 772" stroke="#c6b17c" stroke-opacity=".08" stroke-width="9" fill="none"/>
+<ellipse cx="950" cy="695" rx="750" ry="105" fill="url(#mist)"/>
+<rect width="1920" height="1080" fill="url(#grain)" style="mix-blend-mode:screen"/>
+</svg>

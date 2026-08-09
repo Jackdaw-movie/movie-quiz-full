@@ -1,20 +1,106 @@
-/* Movie Quiz v6.9 technical preload gate. Visual art can be swapped in later. */
+/* Movie Quiz — loading screen v1.0
+   Agreed flow: night New York -> real preload -> enter film world -> existing exterior.
+*/
 html,body{min-height:100%}
-body.mq-preloading{overflow:hidden!important;background:#050506!important}
-.mq-preload-gate{position:fixed;inset:0;z-index:2147483640;display:grid;place-items:center;background:radial-gradient(circle at 50% 42%,#18140f 0,#09090b 42%,#020204 100%);color:#ead9b5;font-family:Georgia,'Times New Roman',serif;opacity:1;visibility:visible;transition:opacity .58s ease,visibility .58s step-end}
+body.mq-preloading{overflow:hidden!important;background:#020305!important}
+
+.mq-preload-gate{
+  position:fixed;inset:0;z-index:2147483640;overflow:hidden;
+  display:block;background:#030508;color:#eee4cf;
+  opacity:1;visibility:visible;transition:opacity .72s ease,visibility .72s step-end;
+  isolation:isolate;
+}
+.mq-preload-gate::before{
+  content:"";position:absolute;inset:-2%;z-index:-4;
+  background-image:
+    linear-gradient(180deg,rgba(4,7,12,.08) 0%,rgba(4,7,12,.18) 42%,rgba(2,3,6,.64) 76%,rgba(1,2,4,.92) 100%),
+    url("../assets/loading/new-york-night.svg");
+  background-size:cover;background-position:center 47%;
+  filter:saturate(.76) contrast(1.06);
+  transform:scale(1.025);
+}
+.mq-preload-gate::after{
+  content:"";position:absolute;inset:0;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 50% 42%,transparent 22%,rgba(2,3,6,.14) 58%,rgba(0,0,0,.72) 100%),
+    linear-gradient(180deg,rgba(6,8,13,.16),rgba(0,0,0,.13) 48%,rgba(0,0,0,.62));
+  box-shadow:inset 0 0 14vw rgba(0,0,0,.58);
+}
+.mq-preload-atmosphere{position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.2;mix-blend-mode:screen;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E")}
+
+.mq-preload-content{
+  position:absolute;left:50%;bottom:clamp(8.8vh,10.5vh,13vh);transform:translateX(-50%);
+  width:min(680px,calc(100vw - 42px));text-align:center;
+  filter:drop-shadow(0 5px 20px rgba(0,0,0,.62));
+}
+.mq-preload-status{
+  margin:0 0 17px;color:#eee1c4;
+  font:500 clamp(14px,1.45vw,18px)/1.25 'Oswald',Arial,sans-serif;
+  letter-spacing:.22em;text-transform:uppercase;text-shadow:0 2px 14px #000;
+}
+.mq-preload-track{
+  position:relative;height:3px;width:min(560px,88%);margin:0 auto;
+  overflow:visible;background:rgba(221,216,203,.22);
+  box-shadow:0 1px 0 rgba(255,255,255,.04),0 0 12px rgba(0,0,0,.48);
+}
+.mq-preload-progress{
+  position:absolute;inset:0 auto 0 0;display:block;width:0%;
+  background:linear-gradient(90deg,#84704b 0%,#c4a66e 65%,#ead8a5 100%);
+  box-shadow:0 0 7px rgba(227,199,137,.36);
+  transition:width .28s cubic-bezier(.22,.72,.23,1);
+}
+.mq-preload-progress::after{
+  content:"";position:absolute;right:-3px;top:50%;width:6px;height:6px;border-radius:50%;
+  transform:translateY(-50%);background:#f1ddb0;box-shadow:0 0 8px rgba(240,213,156,.62);
+}
+.mq-preload-action-slot{position:relative;height:92px;margin-top:22px;display:grid;place-items:start center}
+
+.mq-preload-reel{
+  --mq-reel-angle:0deg;
+  position:absolute;top:0;left:50%;width:60px;height:60px;margin-left:-30px;border-radius:50%;
+  border:3px solid rgba(218,208,187,.82);
+  background:radial-gradient(circle at 50% 50%,rgba(223,214,195,.18) 0 14%,transparent 15% 100%),rgba(19,22,26,.56);
+  box-shadow:0 0 0 1px rgba(0,0,0,.6),inset 0 0 0 2px rgba(0,0,0,.32),0 6px 18px rgba(0,0,0,.34);
+  transform:rotate(var(--mq-reel-angle));
+  transition:transform .28s cubic-bezier(.22,.72,.23,1),opacity .26s ease,scale .26s ease;
+}
+.mq-preload-reel::before,.mq-preload-reel::after{content:"";position:absolute;inset:6px;border:1px solid rgba(235,224,203,.24);border-radius:50%}
+.mq-preload-reel::after{inset:23px;background:#cbb98e;border:0;box-shadow:0 0 0 3px rgba(7,8,10,.7)}
+.mq-reel-hole{position:absolute;left:50%;top:50%;width:11px;height:16px;margin:-8px 0 0 -5.5px;border-radius:55% 55% 45% 45%;background:#05070a;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);transform-origin:5.5px 8px}
+.mq-reel-hole.h1{transform:translateY(-17px)}
+.mq-reel-hole.h2{transform:rotate(72deg) translateY(-17px)}
+.mq-reel-hole.h3{transform:rotate(144deg) translateY(-17px)}
+.mq-reel-hole.h4{transform:rotate(216deg) translateY(-17px)}
+.mq-reel-hole.h5{transform:rotate(288deg) translateY(-17px)}
+.mq-reel-hub{position:absolute;z-index:2;left:50%;top:50%;width:7px;height:7px;border-radius:50%;background:#08090b;transform:translate(-50%,-50%);box-shadow:0 0 0 1px rgba(238,225,199,.8)}
+
+.mq-preload-enter{
+  position:absolute;top:0;left:50%;transform:translate(-50%,7px);min-height:48px;min-width:min(360px,88vw);
+  padding:0 28px;border:1px solid rgba(220,198,151,.72);border-radius:2px;
+  background:linear-gradient(180deg,rgba(26,28,29,.86),rgba(8,10,12,.92));
+  color:#eadbb9;font:500 clamp(12px,1.25vw,14px)/1 'Oswald',Arial,sans-serif;letter-spacing:.15em;text-transform:uppercase;
+  box-shadow:0 9px 28px rgba(0,0,0,.48),inset 0 0 0 1px rgba(255,255,255,.025);
+  opacity:0;visibility:hidden;pointer-events:none;cursor:pointer;
+  transition:opacity .32s ease,transform .32s ease,background .18s ease,border-color .18s ease;
+}
+.mq-preload-enter.is-ready{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0)}
+.mq-preload-enter.is-ready:hover{background:linear-gradient(180deg,rgba(45,42,34,.92),rgba(14,14,13,.96));border-color:rgba(238,218,175,.96)}
+.mq-preload-enter.is-ready:focus-visible{outline:2px solid #e5c98e;outline-offset:4px}
+.mq-preload-gate.is-ready .mq-preload-reel{opacity:0;scale:.82;pointer-events:none}
 .mq-preload-gate.is-leaving{opacity:0;visibility:hidden;pointer-events:none}
-.mq-preload-card{width:min(560px,calc(100vw - 44px));text-align:center;padding:32px 30px 28px;border:1px solid rgba(219,181,102,.35);background:rgba(8,8,10,.80);box-shadow:0 28px 80px rgba(0,0,0,.48),inset 0 0 55px rgba(180,123,46,.05);border-radius:12px}
-.mq-preload-kicker{display:block;margin-bottom:7px;font:600 12px/1.1 system-ui,sans-serif;letter-spacing:.34em;text-transform:uppercase;color:#b8904b}
-.mq-preload-title{margin:0;font:700 clamp(31px,6vw,54px)/.98 Georgia,'Times New Roman',serif;letter-spacing:.055em;color:#f1dca9;text-shadow:0 2px 18px rgba(213,157,65,.13)}
-.mq-preload-status{margin:17px 0 12px;font:500 14px/1.4 system-ui,sans-serif;color:#bfb49e}
-.mq-preload-track{height:4px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.075);box-shadow:inset 0 1px 3px rgba(0,0,0,.65)}
-.mq-preload-progress{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,#805f2b,#ddad56,#f0d58e);transition:width .18s ease}
-.mq-preload-percent{display:block;margin-top:8px;font:600 11px/1 system-ui,sans-serif;letter-spacing:.12em;color:#877c68}
-.mq-preload-enter{display:inline-flex;align-items:center;justify-content:center;min-width:230px;min-height:48px;margin-top:20px;padding:0 25px;border:1px solid rgba(231,192,108,.72);border-radius:8px;background:linear-gradient(180deg,rgba(58,43,24,.96),rgba(25,20,14,.98));color:#f0d79d;font:650 14px/1 system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;box-shadow:0 10px 28px rgba(0,0,0,.35),inset 0 1px rgba(255,255,255,.07);transition:filter .16s ease,transform .16s ease,opacity .16s ease}
-.mq-preload-enter[disabled]{opacity:.28;cursor:default;filter:saturate(.45)}
-.mq-preload-enter:not([disabled]):hover{filter:brightness(1.12);transform:translateY(-1px)}
-/* Do not waste layout/paint/GPU cycles on the hidden game or exterior animations while loading. */
+
+/* Keep the already approved exterior/game fully hidden and paused while preloading. */
 body.mq-preloading #page{content-visibility:hidden!important;contain-intrinsic-size:1672px 941px}
 body.mq-preloading .mq-exterior-scene{visibility:hidden!important}
 body.mq-preloading .mq-exterior-scene *{animation-play-state:paused!important}
-@media (prefers-reduced-motion:reduce){.mq-preload-gate,.mq-preload-enter,.mq-preload-progress{transition:none!important}}
+
+@media(max-width:700px){
+  .mq-preload-content{bottom:8.5vh;width:calc(100vw - 28px)}
+  .mq-preload-status{letter-spacing:.16em;margin-bottom:15px}
+  .mq-preload-track{width:86%}
+  .mq-preload-action-slot{margin-top:20px}
+  .mq-preload-reel{width:56px;height:56px;margin-left:-28px}
+}
+@media(prefers-reduced-motion:reduce){
+  .mq-preload-gate,.mq-preload-progress,.mq-preload-reel,.mq-preload-enter{transition:none!important}
+}
