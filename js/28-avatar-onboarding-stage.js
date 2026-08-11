@@ -1,11 +1,11 @@
 (()=>{
   'use strict';
-  const VERSION='avatar-stage-assets-v22.0-masterstage';
+  const VERSION='avatar-stage-assets-v25.0';
   const ASSETS=[
-    'assets/avatar-onboarding-v15/production/background.webp?v=22.0',
-    'assets/avatar-onboarding-v15/production/arrow-left.webp?v=22.0',
-    'assets/avatar-onboarding-v15/production/continue.webp?v=22.0',
-    'assets/avatar-onboarding-v15/production/back.webp?v=22.0'
+    'assets/avatar-onboarding-v15/production/background.webp?v=25.0',
+    'assets/avatar-onboarding-v15/production/arrow-left.webp?v=25.0',
+    'assets/avatar-onboarding-v15/production/continue.webp?v=25.0',
+    'assets/avatar-onboarding-v15/production/back.webp?v=25.0'
   ];
 
   const warmed=[];

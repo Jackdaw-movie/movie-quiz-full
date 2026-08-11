@@ -493,6 +493,18 @@
   const unlockExteriorSound=()=>{
     if(document.body.classList.contains('mq-preloading'))return;
     if(!document.body.classList.contains('mq-exterior-active')||auditoriumEntered)return;
+
+    /* Ticket/profile/avatar overlays are part of the transition into the cinema,
+       not genuine interactions with the exterior. Previously their first
+       pointerdown could fall through this global handler and suppress the music
+       bus. Ignore those clicks and keep the listener armed for the actual
+       exterior instead. */
+    const ticketLayer=document.getElementById('mqTicketLayer');
+    const avatarModal=document.getElementById('mqAvatarModal');
+    const ticketOpen=Boolean(ticketLayer && !ticketLayer.hidden);
+    const avatarOpen=Boolean(avatarModal && !avatarModal.hidden);
+    if(ticketOpen||avatarOpen)return;
+
     cityWanted=true;
     startCityAmbience();
     /* Unlock WebAudio for later game SFX, but keep the music bus muted while
