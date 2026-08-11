@@ -9,9 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Limelight&family=Oswald:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <link rel="preload" as="image" href="assets/exterior-v6-9/production/master.webp" type="image/webp" fetchpriority="high">
-<link rel="preload" as="image" href="assets/loading/new-york-night.webp" type="image/webp">
-<link rel="preload" as="image" href="assets/ticket-login/production/desk.webp" type="image/webp">
-<link rel="preload" as="image" href="assets/ticket-login/production/ticket-stack.webp" type="image/webp">
+<link rel="preload" as="image" href="assets/loading/new-york-night-fast.webp" type="image/webp" fetchpriority="high">
 <link rel="stylesheet" href="css/preload-gate.css?v=7.0-loading2">
 <link rel="stylesheet" href="css/core.css">
 <link rel="stylesheet" href="css/cinematic.css" media="print" onload="this.media='all'">
@@ -26,17 +24,21 @@
 <link rel="stylesheet" href="css/noir-master.css?v=1.2" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="css/exterior-scene.css?v=6.5">
 <link rel="stylesheet" href="css/exterior-performance.css?v=6.9">
-<link rel="stylesheet" href="css/ticket-login.css?v=9.0">
-<link rel="stylesheet" href="css/avatar-onboarding-stage.css?v=17.0">
-<link rel="preload" as="image" href="assets/avatar-onboarding/production/avatar-stage.webp">
+<link rel="stylesheet" href="css/ticket-login.css?v=22.0-masterstage">
+<link rel="stylesheet" href="css/avatar-onboarding-stage.css?v=22.0-masterstage">
+<link rel="stylesheet" href="css/master-stage.css?v=1.0">
+<link rel="prefetch" as="image" href="assets/ticket-login/production/desk.webp" type="image/webp">
+<link rel="prefetch" as="image" href="assets/ticket-login/production/ticket-stack.webp" type="image/webp">
+<link rel="prefetch" as="image" href="assets/avatar-onboarding-v15/production/background.webp" type="image/webp">
 <link rel="preconnect" href="https://assets.mixkit.co" crossorigin>
 <link rel="dns-prefetch" href="//assets.mixkit.co">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 </head>
-<body class="mq-noir-master mq-exterior-active mq-preloading">
+<body class="mq-noir-master mq-exterior-active mq-preloading mq-master-stage-layout">
 <section class="mq-preload-gate" id="mqPreloadGate" aria-label="Načítání Movie Quiz">
-  <div class="mq-preload-atmosphere" aria-hidden="true"></div>
-  <div class="mq-preload-content">
+  <div class="mq-master-stage mq-preload-master-stage" id="mqPreloadMasterStage">
+    <div class="mq-preload-atmosphere" aria-hidden="true"></div>
+    <div class="mq-preload-content">
     <p class="mq-preload-status" id="mqPreloadStatus" aria-live="polite">NAČÍTÁM KVÍZOVÝ ZÁŽITEK</p>
     <div class="mq-preload-track" id="mqPreloadTrack" role="progressbar" aria-label="Načítání" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
       <span class="mq-preload-progress" id="mqPreloadProgress"></span>
@@ -48,9 +50,12 @@
       </div>
       <button class="mq-preload-enter" id="mqPreloadEnter" type="button" disabled aria-disabled="true">VSTOUPIT DO FILMOVÉHO SVĚTA</button>
     </div>
+    </div>
   </div>
 </section>
+<script src="js/06-master-stage.js?v=1.0"></script>
 <script src="js/05-preload-gate.js?v=7.0-loading2"></script>
+<script src="js/07-runtime-cache.js?v=22.0-masterstage"></script>
 <section class="mq-exterior-scene mq-exterior-v6 mq-exterior-v6-1 mq-exterior-v6-2 mq-exterior-v6-3 mq-exterior-v6-4" id="mqExteriorScene" aria-label="Ulice před Jackdaw's Cinema">
   <div class="mq-v6-viewport">
     <div class="mq-v6-stage" id="mqExteriorStage">
@@ -98,14 +103,16 @@
   </aside>
 </section>
 <section class="mq-ticket-layer" id="mqTicketLayer" hidden aria-label="Vstupenka do Jackdaw's Cinema">
-  <div class="mq-ticket-backdrop" aria-hidden="true"></div>
-  <div class="mq-ticket-scene">
+  <div class="mq-master-stage mq-ticket-master-stage" id="mqTicketMasterStage">
+    <div class="mq-ticket-backdrop" aria-hidden="true"></div>
+    <div class="mq-ticket-scene">
     <article class="mq-admit-ticket" id="mqAdmitTicket" aria-label="Přihlášení hráče">
       <img class="mq-ticket-art" src="assets/ticket-login/production/ticket-stack.webp" alt="" decoding="async">
       <div class="mq-ticket-profile-mount" id="mqTicketProfileMount"></div>
       <div class="mq-ticket-error" id="mqTicketError" aria-live="polite"></div>
       <button class="mq-ticket-online-mark" id="mqTicketOnlineMark" type="button" aria-label="Stav online archivu"></button>
     </article>
+    </div>
   </div>
   <div class="mq-ticket-tooltip" id="mqTicketTooltip" role="tooltip"></div>
 </section>
@@ -202,13 +209,14 @@ Máte tři životy. Patnáct správných odpovědí znamená vítězství.
 <script id="mq-v41-player-statistics-script" src="js/23-player-statistics.js"></script>
 <script id="mq-guest-mode-script" src="js/30-difficulty-tools.js?v=1.5"></script>
 <script id="mq-player-avatar-script" src="js/24-player-avatars.js?v=3.3"></script>
+<script id="mq-player-avatar-performance-script" src="js/24a-avatar-performance.js?v=22.0-masterstage"></script>
 <script id="mq-player-settings-script" src="js/25-player-settings.js?v=1.5"></script>
 <script id="mq-v25-genre-tools-top-right-script" src="js/31-genre-tools.js"></script>
 <script id="mq-v30-fantasy-dragon-script" src="js/40-fantasy-dragon.js"></script>
 <script id="mq-v33-fantasy-dragon-runtime-fix-script" src="js/41-fantasy-runtime.js"></script>
 <script id="mq-v34-fantasy-rebuild-script" src="js/42-fantasy-rebuild.js"></script>
 <script id="mq-exterior-scene-script" src="js/26-exterior-scene.js?v=6.11-city-only"></script>
-<script id="mq-ticket-login-ui-script" src="js/27-ticket-login-ui.js?v=9.0"></script>
-<script id="mq-avatar-stage-script" src="js/28-avatar-onboarding-stage.js?v=17.0"></script>
+<script id="mq-ticket-login-ui-script" src="js/27-ticket-login-ui.js?v=22.0-masterstage"></script>
+<script id="mq-avatar-stage-script" src="js/28-avatar-onboarding-stage.js?v=22.0-masterstage"></script>
 </body>
 </html>

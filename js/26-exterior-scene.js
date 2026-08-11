@@ -1,6 +1,6 @@
 (()=>{
   'use strict';
-  const VERSION='exterior-integration-v6.12-early-boot';
+  const VERSION='exterior-integration-v6.13-master-stage';
   const exterior=document.getElementById('mqExteriorScene');
   const stage=document.getElementById('mqExteriorStage');
   const booth=document.getElementById('mqTicketBoothHotspot');
@@ -84,11 +84,19 @@
     }catch(_){return 50}
   }
   function resizeStage(){
-    const scale=Math.max(.34,Math.min(window.innerWidth/1672,window.innerHeight/941));
+    if(window.MovieQuizMasterStage?.updateNow){
+      window.MovieQuizMasterStage.updateNow();
+      return;
+    }
+    const vv=window.visualViewport;
+    const vw=vv?.width||window.innerWidth;
+    const vh=vv?.height||window.innerHeight;
+    const scale=Math.max(.12,Math.min(vw/1672,vh/941));
     stage.style.transform=`translate(-50%,-50%) scale(${scale})`;
   }
   resizeStage();
   window.addEventListener('resize',resizeStage,{passive:true});
+  window.visualViewport?.addEventListener('resize',resizeStage,{passive:true});
 
   function syncStoredLevelsToGame(){
     try{window.MovieQuizSettings?.apply?.()}catch(_){}
@@ -297,6 +305,7 @@
     ticketLayer.hidden=false;
     ticketLayer.removeAttribute('hidden');
     document.body.classList.add('mq-ticket-open');
+    window.MovieQuizMasterStage?.updateNow?.();
     exterior.classList.remove('is-approaching');
     ticketOpen=true;
     /* Player view can be prepared either before or just after the layer appears. */
@@ -377,6 +386,7 @@
     ticketLayer.removeAttribute('hidden');
     ticketLayer.classList.remove('is-leaving');
     document.body.classList.add('mq-ticket-open');
+    window.MovieQuizMasterStage?.updateNow?.();
     ticketOpen=true;
     try{originalShowView?.('playerView')}catch(_){}
     requestAnimationFrame(()=>{

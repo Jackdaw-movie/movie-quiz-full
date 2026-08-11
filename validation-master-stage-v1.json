@@ -1,0 +1,17 @@
+{
+  "version": "master-stage-v1.0",
+  "status": "validated",
+  "checks": {
+    "html_structure": true,
+    "javascript_syntax": true,
+    "ticket_master": "1672x941",
+    "avatar_master": "1672x941",
+    "exterior_master": "1672x941",
+    "loading_master": "1279x720",
+    "ticket_background_cover_removed": true,
+    "avatar_stage_single_coordinate_system": true,
+    "visual_viewport_resize_supported": true,
+    "runtime_asset_cache_enabled": true,
+    "avatar_preload_helper_enabled": true
+  }
+}

@@ -1,6 +1,6 @@
 (()=>{
   'use strict';
-  const VERSION='preload-gate-v10.0-priority-pipeline';
+  const VERSION='preload-gate-v10.1-master-stage';
   const PEOPLE_URL='https://assets.mixkit.co/active_storage/sfx/375/375-preview.mp3';
   const TRAFFIC_URL='https://assets.mixkit.co/active_storage/sfx/2930/2930-preview.mp3';
   const SFX_KEY='movieQuizSfxVolumeV1';
@@ -62,7 +62,11 @@
     const urls=[
       ...secondaryExteriorImages,
       'assets/ticket-login/production/desk.webp',
-      'assets/ticket-login/production/ticket-stack.webp?v=7.0'
+      'assets/ticket-login/production/ticket-stack.webp?v=22.0',
+      'assets/avatar-onboarding-v15/production/background.webp?v=22.0',
+      'assets/avatar-onboarding-v15/production/arrow-left.webp?v=22.0',
+      'assets/avatar-onboarding-v15/production/continue.webp?v=22.0',
+      'assets/avatar-onboarding-v15/production/back.webp?v=22.0'
     ];
     urls.forEach((url,index)=>{
       window.setTimeout(()=>{

@@ -1,0 +1,187 @@
+/* Movie Quiz — Master Stage layout architecture v1
+   Purpose: every full-art screen shares one fixed coordinate system and scales
+   as a single unit. Assets and interactive overlays never scale independently. */
+
+:root{
+  --mq-stage-bg:#020305;
+  --mq-stage-shadow:0 18px 54px rgba(0,0,0,.38);
+}
+html,body{width:100%;min-width:100%;min-height:100%;}
+body{overflow-x:hidden;}
+
+/* Generic stage. JS writes --mq-stage-scale. */
+.mq-master-stage{
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  transform:translate(-50%,-50%) scale(var(--mq-stage-scale,1))!important;
+  transform-origin:50% 50%!important;
+  flex:none!important;
+  margin:0!important;
+  padding:0!important;
+  contain:layout style;
+}
+
+/* --------------------------------------------------------------------------
+   LOADING — source coordinate system 1279 × 720
+   -------------------------------------------------------------------------- */
+.mq-preload-gate{
+  background:var(--mq-stage-bg)!important;
+  display:block!important;
+}
+.mq-preload-master-stage{
+  width:1279px!important;
+  height:720px!important;
+  overflow:hidden!important;
+  isolation:isolate!important;
+  background-color:#071019!important;
+  background-image:
+    linear-gradient(180deg,rgba(2,5,9,.03) 0%,rgba(3,6,10,.06) 46%,rgba(2,4,7,.38) 73%,rgba(1,2,4,.66) 100%),
+    url('../assets/loading/new-york-night-fast.webp')!important;
+  background-size:1279px 720px!important;
+  background-position:0 0!important;
+  background-repeat:no-repeat!important;
+  box-shadow:var(--mq-stage-shadow);
+}
+.mq-preload-master-stage::after{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 45%,transparent 34%,rgba(0,0,0,.08) 68%,rgba(0,0,0,.48) 100%),linear-gradient(180deg,transparent 0 54%,rgba(0,0,0,.34) 100%);
+}
+/* Disable old viewport-based background; master stage owns the art now. */
+.mq-preload-gate::before,.mq-preload-gate::after{display:none!important;}
+.mq-preload-master-stage .mq-preload-content{
+  position:absolute!important;z-index:2!important;left:50%!important;bottom:54px!important;
+  width:760px!important;transform:translateX(-50%)!important;text-align:center!important;
+}
+.mq-preload-master-stage .mq-preload-status{
+  margin:0 0 17px!important;font-size:19px!important;letter-spacing:.225em!important;
+}
+.mq-preload-master-stage .mq-preload-track{width:590px!important;height:3px!important;margin:0 auto!important;}
+.mq-preload-master-stage .mq-preload-action-slot{height:106px!important;margin-top:18px!important;}
+.mq-preload-master-stage .mq-preload-reel{width:82px!important;height:82px!important;margin-left:-41px!important;}
+.mq-preload-master-stage .mq-preload-enter{width:500px!important;height:84px!important;font-size:14px!important;}
+
+/* --------------------------------------------------------------------------
+   EXTERIOR — canonical source coordinate system 1672 × 941
+   Existing visual composition already uses this coordinate space. These rules
+   only make the contract explicit and stop any accidental independent stretch.
+   -------------------------------------------------------------------------- */
+.mq-v6-viewport{background:#020306!important;}
+.mq-v6-stage{
+  width:1672px!important;height:941px!important;
+  left:50%!important;top:50%!important;transform-origin:50% 50%!important;
+}
+.mq-v6-master{width:1672px!important;height:941px!important;object-fit:fill!important;}
+
+/* --------------------------------------------------------------------------
+   TICKET LOGIN — desk is a 1672 × 941 master stage. Ticket-stack is anchored
+   inside that stage in source pixels, then both scale together.
+   -------------------------------------------------------------------------- */
+.mq-ticket-layer{
+  display:block!important;
+  padding:0!important;
+  background:#160a04!important;
+  overflow:hidden!important;
+}
+.mq-ticket-layer[hidden]{display:none!important;}
+.mq-ticket-master-stage{
+  width:1672px!important;height:941px!important;
+  overflow:hidden!important;isolation:isolate!important;
+  box-shadow:var(--mq-stage-shadow);
+}
+.mq-ticket-master-stage .mq-ticket-backdrop{
+  position:absolute!important;inset:0!important;width:1672px!important;height:941px!important;
+  background:url('../assets/ticket-login/production/desk.webp') 0 0/1672px 941px no-repeat!important;
+  transform:none!important;
+}
+.mq-ticket-master-stage .mq-ticket-backdrop::after{inset:0!important;}
+.mq-ticket-master-stage .mq-ticket-scene{
+  position:absolute!important;
+  left:246px!important;top:23px!important;
+  width:1180px!important;height:895px!important;
+  aspect-ratio:auto!important;
+  max-width:none!important;min-width:0!important;
+  transform:none!important;
+  filter:drop-shadow(0 24px 30px rgba(0,0,0,.34))!important;
+}
+/* Any old viewport-based mobile ticket rules must not alter the master geometry. */
+@media(max-width:760px), (max-height:640px){
+  .mq-ticket-layer{overflow:hidden!important;padding:0!important;}
+  .mq-ticket-master-stage .mq-ticket-scene{
+    left:246px!important;top:23px!important;width:1180px!important;height:895px!important;min-width:0!important;transform:none!important;
+  }
+}
+
+/* Tooltip is viewport UI, intentionally outside the scaled master stage. */
+.mq-ticket-tooltip{transform-origin:center!important;}
+
+/* --------------------------------------------------------------------------
+   AVATAR SELECT — canonical source coordinate system 1672 × 941.
+   Background, slots, arrows and buttons are all children of this one dialog,
+   so the percentage coordinates remain locked together on every monitor.
+   -------------------------------------------------------------------------- */
+#mqAvatarModal{
+  display:block!important;padding:0!important;overflow:hidden!important;background:rgba(8,5,3,.78)!important;
+}
+#mqAvatarModal[hidden]{display:none!important;}
+#mqAvatarModal .mq-avatar-dialog{
+  position:absolute!important;
+  left:50%!important;top:50%!important;
+  width:1672px!important;height:941px!important;
+  min-width:1672px!important;max-width:none!important;min-height:941px!important;max-height:none!important;
+  aspect-ratio:auto!important;
+  margin:0!important;
+  transform:translate(-50%,-50%) scale(var(--mq-avatar-stage-scale,1))!important;
+  transform-origin:50% 50%!important;
+  overflow:hidden!important;
+}
+@media(max-width:1100px), (max-width:800px){
+  #mqAvatarModal .mq-avatar-dialog{
+    width:1672px!important;height:941px!important;min-width:1672px!important;min-height:941px!important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   CINEMA / GAME — unlike the artwork screens, the auditorium is fluid UI.
+   Keep it responsive, but prevent viewport rules from cropping the whole app.
+   -------------------------------------------------------------------------- */
+#page{width:100%;min-height:100dvh;overflow:hidden;}
+#cinema{min-width:0;min-height:100dvh;}
+
+/* Debug helper: append ?mqStageDebug=1 to see stage bounds. */
+body.mq-stage-debug .mq-master-stage,
+body.mq-stage-debug #mqAvatarModal .mq-avatar-dialog,
+body.mq-stage-debug .mq-v6-stage{outline:2px dashed rgba(255,208,80,.8)!important;outline-offset:-2px!important;}
+
+/* Ticket facade normalization: once the whole scene is scaled, internal UI must
+   use master pixels instead of vw/vh or it would be scaled twice. */
+.mq-ticket-master-stage .mq-ticket-facade{font-size:16px!important;}
+.mq-ticket-master-stage .mqf-panel{grid-template-rows:40px minmax(0,1fr) 45px!important;gap:5px!important;}
+.mq-ticket-master-stage .mqf-title{font-size:21px!important;}
+.mq-ticket-master-stage .mqf-context{font-size:18px!important;}
+.mq-ticket-master-stage .mqf-body{gap:6px!important;padding-top:22px!important;}
+.mq-ticket-master-stage .mqf-label{font-size:14px!important;}
+.mq-ticket-master-stage .mqf-field{height:49px!important;padding-left:18px!important;padding-right:18px!important;font-size:19px!important;}
+.mq-ticket-master-stage .mqf-pin{height:48px!important;}
+.mq-ticket-master-stage .mqf-pin-boxes{gap:12px!important;}
+.mq-ticket-master-stage .mqf-pin-box{font-size:25px!important;}
+.mq-ticket-master-stage .mqf-panel[data-state="register"] .mqf-body,
+.mq-ticket-master-stage .mqf-panel[data-state="recovery"] .mqf-body{gap:5px!important;padding-top:8px!important;}
+.mq-ticket-master-stage .mqf-panel[data-state="register"] .mqf-label,
+.mq-ticket-master-stage .mqf-panel[data-state="recovery"] .mqf-label{font-size:12px!important;}
+.mq-ticket-master-stage .mqf-panel[data-state="register"] .mqf-pin,
+.mq-ticket-master-stage .mqf-panel[data-state="recovery"] .mqf-pin{height:40px!important;}
+.mq-ticket-master-stage .mqf-recovery-code{height:43px!important;font-size:16px!important;}
+.mq-ticket-master-stage .mqf-recovery-grid{gap:16px!important;}
+.mq-ticket-master-stage .mqf-recovery-grid .mqf-pin-boxes{gap:7px!important;}
+.mq-ticket-master-stage .mqf-footer{gap:14px!important;padding-top:6px!important;}
+.mq-ticket-master-stage .mqf-left-actions,
+.mq-ticket-master-stage .mqf-right-actions{gap:10px!important;}
+.mq-ticket-master-stage .mqf-btn{min-height:38px!important;padding-left:18px!important;padding-right:18px!important;font-size:14px!important;}
+.mq-ticket-master-stage .mqf-primary{min-width:215px!important;}
+.mq-ticket-master-stage .mqf-guest{min-width:230px!important;font-size:15px!important;}
+.mq-ticket-master-stage .mqf-recovery-value{font-size:22px!important;}
+.mq-ticket-master-stage .mqf-status-copy{font-size:17px!important;}
+.mq-ticket-master-stage .mqf-status-name{font-size:26px!important;}
+.mq-ticket-master-stage .mq-ticket-error{font-size:12px!important;}
+#mqAvatarModal .mq-avatar-modal-status{font-size:13px!important;}
