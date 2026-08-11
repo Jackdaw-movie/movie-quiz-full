@@ -24,11 +24,11 @@ f10fc143a9d41030bcd68733972e46b71b42932517812cc727171667be39f6cd  ./assets/ticke
 06362decd39014842d79a4e960c096618988576b69c8066e08d7a729788b40aa  ./assets/ticket-login/source/ticket-main-approved.png
 921dcc369aed51d52d1db50c25790949a89a70d2933731cca29c8356f29029d5  ./assets/ticket-login/source/ticket-secondary-approved.png
 4867e5c05adf3a89bc738d5efa35b9eb1ecf6303e000b3f21f3d1ccbe02d21ba  ./assets/ticket-login/source/ticket-stack-approved-angle-tall.png
-0d4369b6fc1f0309d648bf603374d4a52db497c938276c304f27f832249a9f58  ./css/avatar-onboarding-stage.css
+f7840e001fe9c494b0ffc25676366b568764439f185233983e3912f6735b0da7  ./css/avatar-onboarding-stage.css
 3d0de244ba2e43b5b264721b978ac077c758812fed7a2db9d5bb131dee741864  ./css/master-stage.css
 2ce56efcf3e99497086c81308ec4656bca619439b23b0dd7dc4d24498afe94dc  ./css/preload-gate.css
 4b94b5157321cc33e4e8f7367792faa5329ee89d38a9b45d4e5f45f0c6d1049b  ./css/ticket-login.css
-567049b894ed242edb471663b2c097986b8339ac5eb32badf640d59b6ac8e393  ./index.html
+0b967e1ea785cea8dbb87bef3868242cde8e625dd506234d42c5963b818ec9bb  ./index.html
 60d023c130d29e566a51919b7d42374cacdf11f6313ddc5b54d03a8fff088d64  ./js/05-preload-gate.js
 9252fedfbeb5bfe5b984834485a08fa08bbc07601d13844a4e8ea940f656fda0  ./js/06-master-stage.js
 5c74914722336779e2f30e8aa25743e5023317c3b42732931340b875e3015c5c  ./js/07-runtime-cache.js
