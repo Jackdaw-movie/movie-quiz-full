@@ -1,0 +1,167 @@
+/* Movie Quiz – CINEMA MASTER v1
+   Approved auditorium artwork: 1672 × 941.
+   The artwork and the gameplay screen share one proportional stage, so no
+   monitor can crop/reposition the painted screen independently from the UI. */
+
+:root{
+  --mq-cinema-master-w:1672;
+  --mq-cinema-master-h:941;
+
+  /* Gameplay projection surface measured against the approved 1672×941 art.
+     These are deliberately percentages of the SAME master, not viewport units. */
+  --mq-cinema-screen-x:15.25%;
+  --mq-cinema-screen-y:20.95%;
+  --mq-cinema-screen-w:69.55%;
+  --mq-cinema-screen-h:66.10%;
+}
+
+/* The viewport may be any shape; the auditorium itself always keeps 1672:941.
+   Letterboxing is intentional and preferable to cropping/stretching artwork. */
+#page{
+  position:fixed!important;
+  inset:0!important;
+  width:100vw!important;
+  height:100dvh!important;
+  min-width:0!important;
+  min-height:0!important;
+  overflow:hidden!important;
+  background:#030202!important;
+}
+
+#cinema{
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  width:min(100vw, calc(100dvh * 1672 / 941))!important;
+  height:auto!important;
+  aspect-ratio:1672 / 941!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:none!important;
+  max-height:100dvh!important;
+  margin:0!important;
+  padding:0!important;
+  transform:translate(-50%,-50%)!important;
+  transform-origin:50% 50%!important;
+  overflow:hidden!important;
+  isolation:isolate!important;
+  background-color:#030202!important;
+  background-image:url('../assets/cinema-v1/production/cinema-master.webp?v=1.0')!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+  background-size:100% 100%!important;
+}
+
+/* The approved master already contains architecture, wall lights, curtains and
+   front-row seats. Disable the old procedural auditorium artwork so nothing is
+   doubled and, importantly, nothing intrudes into gameplay UI. */
+#cinema > .hall-bg,
+#cinema > .ceiling,
+#cinema > .ceiling-lights,
+#cinema > .wall,
+#cinema > .ambient-rib,
+#cinema > .stage-floor,
+#cinema > .aisle-glow,
+#cinema > .seats{
+  display:none!important;
+}
+
+/* Proscenium is now only a transparent coordinate container. */
+#cinema > .proscenium{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:none!important;
+  transform:none!important;
+  overflow:visible!important;
+}
+
+#cinema > .proscenium > .marquee{
+  display:none!important;
+}
+
+/* The functional screen is registered to the light projection surface painted
+   into the master. This is the only zone that contains game/menu/question UI. */
+#cinema .screen-frame{
+  position:absolute!important;
+  left:var(--mq-cinema-screen-x)!important;
+  top:var(--mq-cinema-screen-y)!important;
+  width:var(--mq-cinema-screen-w)!important;
+  height:var(--mq-cinema-screen-h)!important;
+  max-width:none!important;
+  max-height:none!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:5.5% / 9%!important;
+  outline:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+  transform:none!important;
+  overflow:hidden!important;
+}
+
+#cinema .screen-frame::before,
+#cinema .screen-frame::after{
+  display:none!important;
+  content:none!important;
+}
+
+#cinema #screen{
+  position:relative!important;
+  inset:auto!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:none!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:inherit!important;
+  box-shadow:none!important;
+  background:transparent!important;
+  transform:none!important;
+  overflow:hidden!important;
+}
+
+/* Remove only legacy decorative curtain layers. The approved static curtain is
+   part of the cinema master and therefore can never cover interface elements. */
+#cinema #screen > .curtain,
+#cinema #screen > .valance{
+  display:none!important;
+}
+
+/* Keep film grain/effects/gameplay layers, but do not let any old screen skin
+   paint another frame on top of the approved artwork. */
+#cinema #screen::before,
+#cinema #screen::after{
+  box-shadow:none!important;
+}
+
+/* The master is a visual layer only. Dynamic UI remains interactive above it. */
+#cinema .view,
+#cinema #fx,
+#cinema .feedback,
+#cinema .dust{
+  position:absolute;
+  z-index:2;
+}
+
+/* Debug: append ?mqCinemaDebug=1; JS isn't required, this can also be toggled
+   manually in DevTools by adding class mq-cinema-debug to <body>. */
+body.mq-cinema-debug #cinema .screen-frame{
+  outline:3px dashed #ffcf55!important;
+  outline-offset:-3px!important;
+}
