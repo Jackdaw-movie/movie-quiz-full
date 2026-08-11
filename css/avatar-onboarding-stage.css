@@ -130,15 +130,16 @@
   transition:transform .16s ease,filter .16s ease,opacity .16s ease!important;
 }
 #mqAvatarModal .mq-avatar-confirm{
-  left:31.90%!important;top:86.25%!important;width:31.55%!important;aspect-ratio:900/183!important;
+  left:34.225%!important;top:86.25%!important;width:31.55%!important;aspect-ratio:900/183!important;
   background-image:url('../assets/avatar-onboarding-v15/production/continue.webp?v=28.0')!important;
 }
 #mqAvatarModal .mq-avatar-close{
-  /* v28: another 10% smaller than v27. Preserve the exact visual centre. */
-  left:65.07%!important;
-  top:87.33%!important;
-  width:12.89%!important;
-  height:9.23%!important;
+  /* v29: move the button centre right by exactly the same amount used to
+     centre POKRAČOVAT, then reduce the button by another 10%. */
+  left:68.040%!important;
+  top:87.792%!important;
+  width:11.601%!important;
+  height:8.307%!important;
   aspect-ratio:auto!important;
   background-size:contain!important;
   background-image:url('../assets/avatar-onboarding-v15/production/back.webp?v=28.0')!important;
