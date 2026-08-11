@@ -1,11 +1,11 @@
 (()=>{
   'use strict';
-  const VERSION='avatar-stage-assets-v25.0';
+  const VERSION='avatar-stage-assets-v26.0';
   const ASSETS=[
-    'assets/avatar-onboarding-v15/production/background.webp?v=25.0',
-    'assets/avatar-onboarding-v15/production/arrow-left.webp?v=25.0',
-    'assets/avatar-onboarding-v15/production/continue.webp?v=25.0',
-    'assets/avatar-onboarding-v15/production/back.webp?v=25.0'
+    'assets/avatar-onboarding-v15/production/background.webp?v=26.0',
+    'assets/avatar-onboarding-v15/production/arrow-left.webp?v=26.0',
+    'assets/avatar-onboarding-v15/production/continue.webp?v=26.0',
+    'assets/avatar-onboarding-v15/production/back.webp?v=26.0'
   ];
 
   const warmed=[];
@@ -30,8 +30,40 @@
     else window.addEventListener('load',()=>setTimeout(run,220),{once:true});
   }
 
+  function isolateOnboardingBlankClicks(modal){
+    if(!modal||modal.dataset.mqBlankClickIsolation==='1')return;
+    modal.dataset.mqBlankClickIsolation='1';
+
+    const isBlankInteraction=event=>{
+      if(modal.hidden||!modal.classList.contains('is-onboarding'))return false;
+      const target=event.target;
+      if(!(target instanceof Element))return false;
+
+      /* Keep every real control fully functional. Only decorative/background
+         clicks are contained inside the modal so they cannot reach global
+         document handlers (settings/audio/exterior). */
+      return !target.closest(
+        'button,input,select,textarea,a,[role="button"],' +
+        '[data-avatar-nav],[data-avatar-confirm],.mq-avatar-close'
+      );
+    };
+
+    modal.addEventListener('pointerdown',event=>{
+      if(isBlankInteraction(event))event.stopPropagation();
+    });
+
+    modal.addEventListener('click',event=>{
+      if(!isBlankInteraction(event))return;
+      event.preventDefault();
+      event.stopPropagation();
+    });
+  }
+
   function markBackControl(){
-    const back=document.querySelector('#mqAvatarModal .mq-avatar-close');
+    const modal=document.getElementById('mqAvatarModal');
+    isolateOnboardingBlankClicks(modal);
+
+    const back=modal?.querySelector('.mq-avatar-close');
     if(!back)return;
     back.setAttribute('aria-label','Zpět');
     back.setAttribute('title','Zpět');

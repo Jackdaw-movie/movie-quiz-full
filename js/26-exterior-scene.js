@@ -490,7 +490,7 @@
   });
   /* Start the real menu soundtrack on the first genuine interaction with the
      exterior. This also unlocks the audio context for footsteps and previews. */
-  const unlockExteriorSound=()=>{
+  const unlockExteriorSound=(event)=>{
     if(document.body.classList.contains('mq-preloading'))return;
     if(!document.body.classList.contains('mq-exterior-active')||auditoriumEntered)return;
 
@@ -503,7 +503,11 @@
     const avatarModal=document.getElementById('mqAvatarModal');
     const ticketOpen=Boolean(ticketLayer && !ticketLayer.hidden);
     const avatarOpen=Boolean(avatarModal && !avatarModal.hidden);
-    if(ticketOpen||avatarOpen)return;
+    const overlayTarget=Boolean(
+      event?.target instanceof Element &&
+      event.target.closest?.('#mqTicketLayer,#mqAvatarModal')
+    );
+    if(ticketOpen||avatarOpen||overlayTarget)return;
 
     cityWanted=true;
     startCityAmbience();
