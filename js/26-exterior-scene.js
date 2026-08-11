@@ -130,7 +130,19 @@
     try{return clampVolume(window.MovieQuizSettings?.musicVolume?.()??storedVolume(MUSIC_KEY))}catch(_){return storedVolume(MUSIC_KEY)}
   }
   let originalSwitchMusicForExterior=null;
+  function avatarOverlayIsVisible(){
+    const modal=document.getElementById('mqAvatarModal');
+    if(!modal||modal.hidden)return false;
+    try{
+      const style=getComputedStyle(modal);
+      return style.display!=='none'&&style.visibility!=='hidden';
+    }catch(_){return true}
+  }
   function suppressExteriorMusic(){
+    /* Avatar onboarding is a foreground cinema UI. The exterior remains mounted
+       underneath for the transition, but it must not be allowed to zero the
+       music bus while this screen is visible. */
+    if(avatarOverlayIsVisible())return;
     if(auditoriumEntered||!document.body.classList.contains('mq-exterior-active'))return;
     try{
       if(typeof audioCtx!=='undefined'&&audioCtx&&typeof musicGain!=='undefined'&&musicGain?.gain){
@@ -146,7 +158,7 @@
       if(typeof window.switchMusic!=='function'||window.switchMusic.__mqExteriorCityOnly)return;
       originalSwitchMusicForExterior=window.switchMusic;
       const guarded=function(){
-        if(!auditoriumEntered&&document.body.classList.contains('mq-exterior-active')){
+        if(!auditoriumEntered&&document.body.classList.contains('mq-exterior-active')&&!avatarOverlayIsVisible()){
           suppressExteriorMusic();
           return;
         }

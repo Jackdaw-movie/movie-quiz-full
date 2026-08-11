@@ -1,60 +1,103 @@
 (()=>{
   'use strict';
-  const VERSION='interaction-guards-v27.0';
+  const VERSION='interaction-guards-v28.0';
 
-  function avatarModalOpen(){
-    const modal=document.getElementById('mqAvatarModal');
-    return Boolean(modal && !modal.hidden);
+  function visible(element){
+    if(!element||element.hidden)return false;
+    try{
+      const style=getComputedStyle(element);
+      return style.display!=='none'&&style.visibility!=='hidden';
+    }catch(_){return true}
+  }
+
+  function avatarModal(){return document.getElementById('mqAvatarModal')}
+  function avatarModalOpen(){return visible(avatarModal())}
+  function insideRealAudioSettings(target){
+    return Boolean(target instanceof Element && target.closest(
+      '#mqSettingsMenu,#mqExteriorAudio,#mqExteriorAudioPanel,'+
+      '#mqMusicVolume,#mqSfxVolume,#mqMusicToggle,#mqSfxToggle,'+
+      '.mq-volume-controls,.mq-volume-row'
+    ));
+  }
+
+  /* Remove the legacy core mute click listener structurally. 00-core.js binds
+     directly to the original node. Replacing that node with an identical clone
+     drops that listener completely. The Settings module remains the only audio UI. */
+  function neutralizeLegacyMuteButton(){
+    const old=document.getElementById('muteBtn');
+    if(!old||old.dataset.mqLegacyMuteNeutralized==='1')return;
+    const clean=old.cloneNode(true);
+    clean.dataset.mqLegacyMuteNeutralized='1';
+    clean.hidden=true;
+    clean.setAttribute('aria-hidden','true');
+    clean.tabIndex=-1;
+    clean.style.display='none';
+    clean.style.pointerEvents='none';
+    old.replaceWith(clean);
+  }
+
+  function restoreConfiguredAudio(){
+    if(!avatarModalOpen())return;
+    try{
+      if(typeof state!=='undefined'&&state)state.muted=false;
+    }catch(_){}
+    try{
+      if(typeof initAudio==='function')initAudio();
+      if(typeof audioCtx!=='undefined'&&audioCtx?.state==='suspended'){
+        audioCtx.resume?.().catch?.(()=>{});
+      }
+    }catch(_){}
+    try{window.MovieQuizSettings?.apply?.()}catch(_){}
+    try{
+      const volume=Number(window.MovieQuizSettings?.musicVolume?.()??50);
+      if(volume>0&&typeof switchMusic==='function')switchMusic('menu');
+      /* apply again after switchMusic: the exterior guard used to zero musicGain. */
+      window.MovieQuizSettings?.apply?.();
+    }catch(_){}
+  }
+
+  function scheduleAudioIntegrityCheck(event){
+    if(insideRealAudioSettings(event?.target))return;
+    if(!avatarModalOpen())return;
+    queueMicrotask(()=>{
+      if(avatarModalOpen())restoreConfiguredAudio();
+    });
+    requestAnimationFrame(()=>{
+      if(avatarModalOpen())restoreConfiguredAudio();
+    });
   }
 
   function installAvatarArrowOnlyGuard(){
-    const modal=document.getElementById('mqAvatarModal');
+    const modal=avatarModal();
     const viewport=document.getElementById('mqAvatarCarouselViewport');
     if(!modal||!viewport||viewport.dataset.mqArrowOnlyGuard==='1')return false;
     viewport.dataset.mqArrowOnlyGuard='1';
 
-    /* The stock avatar module listens for wheel and pointer drag on this viewport.
-       Capture first and contain those gestures before they reach those listeners.
-       We intentionally do NOT preventDefault for wheel, so normal trackpad/page
-       behaviour is not unnecessarily hijacked. */
     viewport.addEventListener('wheel',event=>{
       if(!avatarModalOpen())return;
       event.stopImmediatePropagation();
     },{capture:true,passive:true});
 
-    viewport.addEventListener('pointerdown',event=>{
-      if(!avatarModalOpen())return;
-      event.stopImmediatePropagation();
-    },true);
+    for(const type of ['pointerdown','pointerup','pointercancel']){
+      viewport.addEventListener(type,event=>{
+        if(!avatarModalOpen())return;
+        event.stopImmediatePropagation();
+      },true);
+    }
+    for(const type of ['touchstart','touchmove','touchend']){
+      viewport.addEventListener(type,event=>{
+        if(!avatarModalOpen())return;
+        event.stopImmediatePropagation();
+      },{capture:true,passive:true});
+    }
 
-    viewport.addEventListener('pointerup',event=>{
-      if(!avatarModalOpen())return;
-      event.stopImmediatePropagation();
-    },true);
-
-    viewport.addEventListener('pointercancel',event=>{
-      if(!avatarModalOpen())return;
-      event.stopImmediatePropagation();
-    },true);
-
-    viewport.addEventListener('touchstart',event=>{
-      if(!avatarModalOpen())return;
-      event.stopImmediatePropagation();
-    },{capture:true,passive:true});
-
-    viewport.addEventListener('touchmove',event=>{
-      if(!avatarModalOpen())return;
-      event.stopImmediatePropagation();
-    },{capture:true,passive:true});
-
-    /* Clicking an avatar itself must not jump the carousel. Navigation is only
-       through [data-avatar-nav] buttons, which are siblings of the viewport. */
+    /* Avatar cards are previews only. Navigation happens exclusively through
+       the two graphical [data-avatar-nav] buttons outside the viewport. */
     viewport.addEventListener('click',event=>{
       if(!avatarModalOpen())return;
       event.preventDefault();
       event.stopImmediatePropagation();
     },true);
-
     return true;
   }
 
@@ -66,8 +109,6 @@
     observer.observe(document.documentElement,{childList:true,subtree:true});
   }
 
-  /* Disable keyboard navigation of the carousel. Confirmation and Back remain
-     keyboard-accessible; only changing which avatar is centered is arrow-click-only. */
   document.addEventListener('keydown',event=>{
     if(!avatarModalOpen())return;
     if(event.key!=='ArrowLeft'&&event.key!=='ArrowRight')return;
@@ -75,49 +116,20 @@
     event.stopImmediatePropagation();
   },true);
 
-  /* The legacy cinema HUD has a mute button with a core click listener. It is
-     hidden by CSS, and this capture guard also makes accidental/forwarded or
-     programmatic DOM clicks unable to toggle the global mute state. */
-  document.addEventListener('click',event=>{
-    const mute=event.target instanceof Element ? event.target.closest('#muteBtn') : null;
-    if(!mute)return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-  },true);
+  /* Any ordinary interaction on the avatar screen is allowed to do its UI job,
+     then the configured music level is re-applied. Only actual Settings controls
+     are exempt, because those are the only controls allowed to change audio. */
+  document.addEventListener('pointerdown',scheduleAudioIntegrityCheck,true);
+  document.addEventListener('click',scheduleAudioIntegrityCheck,true);
 
-  /* Defensive recovery: a normal click outside audio Settings must never leave
-     the global core mute flag enabled. Volume sliders remain untouched, so 0%
-     chosen directly in Settings still works exactly as requested. */
-  document.addEventListener('click',event=>{
-    const target=event.target;
-    if(!(target instanceof Element))return;
-    const insideSettings=Boolean(target.closest(
-      '#mqExteriorAudio,.mq-settings-modal,#mqSettingsModal,#mqPlayerSettings,'+
-      '[data-settings-panel],[data-player-settings]'
-    ));
-    if(insideSettings)return;
-
-    queueMicrotask(()=>{
-      try{
-        if(typeof state==='undefined'||!state?.muted)return;
-        state.muted=false;
-        const mute=document.getElementById('muteBtn');
-        mute?.classList.remove('muted');
-        mute?.setAttribute('aria-label','Vypnout zvuk');
-        if(typeof masterGain!=='undefined'&&masterGain?.gain&&
-           typeof audioCtx!=='undefined'&&audioCtx){
-          masterGain.gain.setTargetAtTime(.96,audioCtx.currentTime,.05);
-          if(audioCtx.state==='suspended')audioCtx.resume?.().catch?.(()=>{});
-        }
-      }catch(_){}
-    });
-  },true);
-
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',observeAvatarModal,{once:true});
-  }else{
+  function init(){
+    neutralizeLegacyMuteButton();
     observeAvatarModal();
+    restoreConfiguredAudio();
   }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
+  else init();
 
+  window.addEventListener('mq:avatar-gallery-opened',restoreConfiguredAudio);
   window.__mqInteractionGuardsVersion=VERSION;
 })();
