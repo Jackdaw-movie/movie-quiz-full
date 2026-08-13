@@ -1,0 +1,40 @@
+/* Movie Quiz – master pixel UI v40. Coordinates refer to the 1672×941 cinema master. */
+html body #cinema{container-type:size!important;container-name:mq-cinema-master}
+
+html body #cinema #screen #difficulty{padding:0!important}
+html body #cinema #screen #difficulty .eyebrow{display:none!important}
+html body #cinema #screen #difficulty .difficulty-panel{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;margin:0!important;padding:0!important}
+html body #cinema #screen #difficulty .selection-title{position:absolute!important;left:50%!important;top:8.49846cqh!important;width:94cqw!important;max-width:94cqw!important;margin:0!important;transform:translateX(-50%)!important;text-align:center!important;z-index:12!important}
+html body #cinema #screen #difficulty .difficulty-grid{position:absolute!important;left:50%!important;top:32.61418cqh!important;width:94cqw!important;height:48.23143cqh!important;max-width:none!important;min-width:0!important;margin:0!important;transform:translateX(-50%)!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;align-items:stretch!important;z-index:11!important}
+html body #cinema #screen #difficulty .difficulty-card{height:100%!important;min-height:0!important;max-height:none!important;padding:1cqh 1.4cqw!important;box-sizing:border-box!important;overflow:hidden!important}
+html body #cinema #screen #difficulty .difficulty-icon{max-height:9cqh!important}
+
+/* Right edge of the right-most button = master x 1387; top edge = master y 223. */
+html body #cinema #screen #difficulty>.mq-selection-tools,
+html body #cinema #screen #genres>.mq-selection-tools{
+  position:absolute!important;
+  left:auto!important;
+  right:2.65341cqw!important;
+  top:4.15763cqh!important;
+  bottom:auto!important;
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  gap:.8cqw!important;
+  width:max-content!important;
+  max-width:78cqw!important;
+  margin:0!important;
+  transform:none!important;
+  z-index:40!important
+}
+
+/* Keep Change difficulty level with the top tool row. */
+html body #cinema #screen #genres>#difficultyBack{
+  position:absolute!important;
+  left:1.72cqw!important;
+  top:4.15763cqh!important;
+  right:auto!important;
+  bottom:auto!important;
+  margin:0!important;
+  z-index:41!important
+}
