@@ -170,3 +170,106 @@ html body #cinema #screen .genre-grid > *,
 html body #cinema #screen .answers > *{
   min-width:0!important;
 }
+
+/* --------------------------------------------------------------------------
+   v40 – master-pixel tuning, 1672 × 941 cinema coordinate system
+   -------------------------------------------------------------------------- */
+
+/* Difficulty title starts at master y=250; cards span y=400..700. */
+html body.mq-noir-master #page #cinema #screen #difficulty{padding:0!important}
+html body.mq-noir-master #page #cinema #screen #difficulty .eyebrow{display:none!important}
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-panel{
+  position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;
+  max-width:none!important;max-height:none!important;margin:0!important;padding:0!important
+}
+html body.mq-noir-master #page #cinema #screen #difficulty .selection-title{
+  position:absolute!important;left:50%!important;top:8.49846cqh!important;width:94cqw!important;max-width:94cqw!important;
+  margin:0!important;transform:translateX(-50%)!important;text-align:center!important;z-index:12!important
+}
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-grid{
+  position:absolute!important;left:50%!important;top:32.61418cqh!important;width:94cqw!important;height:48.23143cqh!important;
+  max-width:none!important;margin:0!important;transform:translateX(-50%)!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;align-items:stretch!important;z-index:11!important
+}
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card{
+  height:100%!important;min-height:0!important;max-height:none!important;box-sizing:border-box!important;overflow:hidden!important
+}
+
+/* The three shared tools keep their current size/gap. Their right-most button
+   ends at master x=1387 and the row starts at master y=223. */
+html body.mq-noir-master #page #cinema #screen #difficulty>.mq-selection-tools,
+html body.mq-noir-master #page #cinema #screen #genres>.mq-selection-tools{
+  position:absolute!important;left:auto!important;right:2.65341cqw!important;top:4.15763cqh!important;bottom:auto!important;
+  display:flex!important;align-items:flex-start!important;justify-content:flex-start!important;gap:.8cqw!important;
+  width:max-content!important;max-width:78cqw!important;margin:0!important;transform:none!important;z-index:80!important
+}
+html body.mq-noir-master #page #cinema #screen #genres>#difficultyBack{
+  position:absolute!important;left:1.72cqw!important;top:4.15763cqh!important;right:auto!important;bottom:auto!important;
+  margin:0!important;z-index:81!important
+}
+
+/* Genre headings: preserve a header-sized flow spacer so the genre buttons do
+   not jump when the two texts are registered to master coordinates. */
+html body.mq-noir-master #page #cinema #screen #genres .genre-panel{position:static!important}
+html body.mq-noir-master #page #cinema #screen #genres .genre-panel::before{
+  content:""!important;display:block!important;height:10.25cqh!important;pointer-events:none!important
+}
+html body.mq-noir-master #page #cinema #screen #genres .genre-panel>.eyebrow{
+  position:absolute!important;left:50%!important;top:4.47917cqh!important;width:94cqw!important;margin:0!important;
+  transform:translateX(-50%)!important;text-align:center!important;z-index:20!important
+}
+html body.mq-noir-master #page #cinema #screen #genres .genre-panel>.selection-title{
+  position:absolute!important;left:50%!important;top:7.42cqh!important;width:94cqw!important;max-width:94cqw!important;
+  margin:0!important;transform:translateX(-50%)!important;text-align:center!important;z-index:20!important
+}
+
+/* Page-corner controls are tied to the cinema master even while the settings
+   module keeps them as direct children of BODY. */
+html body.mq-noir-master{
+  --mq-cinema-stage-w:min(100vw,calc(100dvh * 1672 / 941));
+  --mq-cinema-stage-h:min(100dvh,calc(100vw * 941 / 1672));
+}
+html body.mq-noir-master>#homeBtn.mq-home-dock{
+  position:fixed!important;
+  left:calc((100vw - var(--mq-cinema-stage-w))/2 + min(94.348086vw,calc(94.348086dvh * 1672 / 941)))!important;
+  top:calc((100dvh - var(--mq-cinema-stage-h))/2 + min(8.235919dvh,calc(8.235919vw * 941 / 1672)))!important;
+  right:auto!important;
+  width:min(2.691388vw,calc(2.691388dvh * 1672 / 941))!important;
+  height:min(4.782147dvh,calc(4.782147vw * 941 / 1672))!important;
+  min-width:0!important;min-height:0!important;margin:0!important;transform:none!important
+}
+html body.mq-noir-master>#mqPlayerBadge.mq-player-dock{
+  position:fixed!important;
+  left:calc((100vw - var(--mq-cinema-stage-w))/2)!important;
+  top:calc((100dvh - var(--mq-cinema-stage-h))/2 + min(2.656748dvh,calc(2.656748vw * 941 / 1672)))!important;
+  height:min(13.283741dvh,calc(13.283741vw * 941 / 1672))!important;
+  min-height:min(13.283741dvh,calc(13.283741vw * 941 / 1672))!important;
+  max-height:min(13.283741dvh,calc(13.283741vw * 941 / 1672))!important
+}
+html body.mq-noir-master>#mqPlayerBadge .mq-avatar-badge{
+  width:min(6.578947vw,calc(6.578947dvh * 1672 / 941))!important;
+  height:min(11.689692dvh,calc(11.689692vw * 941 / 1672))!important;
+  flex-basis:min(6.578947vw,calc(6.578947dvh * 1672 / 941))!important
+}
+
+/* Same coordinates if v39 temporarily reparents the controls into #cinema. */
+html body.mq-noir-master #page #cinema>#homeBtn.mq-home-dock{
+  position:absolute!important;left:94.348086%!important;top:8.235919%!important;right:auto!important;
+  width:2.691388%!important;height:4.782147%!important;min-width:0!important;min-height:0!important;transform:none!important
+}
+html body.mq-noir-master #page #cinema>#mqPlayerBadge.mq-player-dock{
+  position:absolute!important;left:0!important;top:2.656748%!important;height:13.283741%!important;
+  min-height:13.283741%!important;max-height:13.283741%!important
+}
+html body.mq-noir-master #page #cinema>#mqPlayerBadge .mq-avatar-badge{
+  width:6.578947%!important;height:11.689692%!important;flex-basis:6.578947%!important
+}
+
+/* Settings gear: no rotation; it lights up and rises. */
+html body.mq-noir-master #mqPlayerBadge .mq-settings-gear:hover,
+html body.mq-noir-master #mqPlayerBadge .mq-settings-gear:focus-visible,
+html body.mq-noir-master #mqPlayerBadge .mq-settings-gear[aria-expanded="true"]{
+  transform:translateY(-4px) scale(1.06)!important;filter:brightness(1.22)!important;
+  background:rgba(218,180,89,.22)!important;border-color:rgba(248,218,143,.92)!important;
+  box-shadow:0 0 18px rgba(239,198,101,.42),0 7px 15px rgba(0,0,0,.42)!important;outline:none!important
+}
