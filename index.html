@@ -38,7 +38,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="css/cinema-master-v3.css?v=33.0">
 <link rel="stylesheet" href="css/gameplay-screen-layout-v1.css?v=35.0">
-<link rel="stylesheet" href="css/difficulty-buttons-v42.css?v=42.0">
+<link rel="stylesheet" href="css/difficulty-buttons-v42.css?v=43.0">
 <link rel="stylesheet" href="css/debug-grid.css?v=37.0">
 </head>
 <body class="mq-noir-master mq-exterior-active mq-preloading">
@@ -68,63 +68,20 @@
       <img class="mq-v63-sign-letters" src="assets/exterior-v6-9/production/jackdaws-letters.webp" alt="" aria-hidden="true" decoding="async">
       <img class="mq-v64-hotel-letters" src="assets/exterior-v6-9/production/hotel-letters.webp" alt="" aria-hidden="true" decoding="async">
       <img class="mq-v6-depth mq-v6-marquee" src="assets/exterior-v6-9/production/marquee.webp" alt="" decoding="async">
-      <div class="mq-v63-marquee-lights" aria-hidden="true">
-        <img class="mq-v63-bulb-halo" src="assets/exterior-v6-9/production/marquee-bulbs-halo.webp" alt="" decoding="async">
-        <img class="mq-v63-bulb-group g1" src="assets/exterior-v6-9/production/marquee-bulbs-1.webp" alt="" decoding="async">
-        <img class="mq-v63-bulb-group g2" src="assets/exterior-v6-9/production/marquee-bulbs-2.webp" alt="" decoding="async">
-        <img class="mq-v63-bulb-group g3" src="assets/exterior-v6-9/production/marquee-bulbs-3.webp" alt="" decoding="async">
-      </div>
-      <img class="mq-v6-depth mq-v6-lamp" src="assets/exterior-v6-9/production/lamp.webp" alt="" decoding="async">
-      <img class="mq-v6-depth mq-v6-car" src="assets/exterior-v6-9/production/car.webp" alt="" decoding="async">
-      <div class="mq-v6-car-shine mq-v6-car-shine-aligned" aria-hidden="true"></div>
-
-      <button class="mq-booth-button" id="mqTicketBoothHotspot" type="button" aria-label="Přejít k pokladně"></button>
-      <img class="mq-v6-depth mq-v6-booth mq-v6-booth-direct" src="assets/exterior-v6-9/production/booth.webp" alt="" decoding="async">
-      <div class="mq-v65-steam-live" aria-hidden="true">
-        <img class="mq-v65-steam-low steam-a" src="assets/exterior-v6-9/production/steam-front.webp" alt="" decoding="async">
-        <img class="mq-v65-steam-low steam-b" src="assets/exterior-v6-9/production/steam-front.webp" alt="" decoding="async">
-      </div>
-      <div class="mq-v6-vignette" aria-hidden="true"></div>
+      <div class="mq-v6-depth mq-v6-lamp" aria-hidden="true"></div>
+      <div class="mq-v6-depth mq-v6-ticket" id="mqExteriorTicket" role="button" tabindex="0" aria-label="Vstoupit do pokladny"></div>
+      <div class="mq-v6-steam" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="mq-v6-walk" aria-hidden="true"><span class="mq-v6-step mq-v6-step-a"></span><span class="mq-v6-step mq-v6-step-b"></span></div>
     </div>
   </div>
-  <div class="mq-walk-cursor mq-walk-cursor-v6" id="mqWalkCursor" aria-hidden="true">
-    <img src="assets/exterior-v6-9/production/shoe-left.webp" alt="" decoding="async">
-    <img src="assets/exterior-v6-9/production/shoe-right.webp" alt="" decoding="async">
-  </div>
-  <aside class="mq-exterior-audio" id="mqExteriorAudio" aria-label="Nastavení zvuku">
-    <button class="mq-exterior-audio-toggle" type="button" id="mqExteriorAudioOpen" aria-label="Nastavení zvuku" title="Nastavení zvuku" aria-expanded="false">
-      <svg viewBox="0 0 32 32" aria-hidden="true">
-        <path d="M13.5 4.4h5l.8 3a10.5 10.5 0 0 1 2.3.9l2.7-1.5 3.5 3.5-1.5 2.7c.4.7.7 1.5.9 2.3l3 .8v5l-3 .8a10.5 10.5 0 0 1-.9 2.3l1.5 2.7-3.5 3.5-2.7-1.5a10.5 10.5 0 0 1-2.3.9l-.8 3h-5l-.8-3a10.5 10.5 0 0 1-2.3-.9l-2.7 1.5-3.5-3.5 1.5-2.7a10.5 10.5 0 0 1-.9-2.3l-3-.8v-5l3-.8a10.5 10.5 0 0 1 .9-2.3l-1.5-2.7 3.5-3.5 2.7 1.5a10.5 10.5 0 0 1 2.3-.9z"/>
-        <circle cx="16" cy="18.3" r="4.5"/>
-      </svg>
-    </button>
-    <div class="mq-exterior-audio-panel" id="mqExteriorAudioPanel" hidden>
-      <strong>Zvuk</strong>
-      <label><span>Hudba v kině</span><input id="mqExteriorMusic" type="range" min="0" max="100" step="1" value="50"></label>
-      <label><span>Herní zvuky</span><input id="mqExteriorSfx" type="range" min="0" max="100" step="1" value="50"></label>
-    </div>
-  </aside>
-</section>
-<section class="mq-ticket-layer" id="mqTicketLayer" hidden aria-label="Vstupenka do Jackdaw's Cinema">
-  <div class="mq-ticket-backdrop" aria-hidden="true"></div>
-  <div class="mq-ticket-scene">
-    <article class="mq-admit-ticket" id="mqAdmitTicket" aria-label="Přihlášení hráče">
-      <img class="mq-ticket-art" src="assets/ticket-login/production/ticket-stack.webp" alt="" decoding="async">
-      <div class="mq-ticket-profile-mount" id="mqTicketProfileMount"></div>
-      <div class="mq-ticket-error" id="mqTicketError" aria-live="polite"></div>
-      <button class="mq-ticket-online-mark" id="mqTicketOnlineMark" type="button" aria-label="Stav online archivu"></button>
-    </article>
-  </div>
-  <div class="mq-ticket-tooltip" id="mqTicketTooltip" role="tooltip"></div>
 </section>
 <div id="page">
 <main class="cinema" id="cinema" aria-label="Movie Quiz">
 <img id="mqCinemaMasterArt" class="mq-cinema-master-art" src="assets/cinema-v1/production/cinema-master.webp?v=3.0" alt="" aria-hidden="true" decoding="async">
 <div class="hall-bg"></div><div class="ceiling"></div>
-<div class="ceiling-lights"><i></i><i></i><i></i><i></i><i></i></div>
+<div class="ceiling-lights"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
 <div class="wall left"></div><div class="wall right"></div>
-<div class="ambient-rib left" aria-hidden="true"><i></i><i></i><i></i></div>
-<div class="ambient-rib right" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="ambient-rib left"><i></i><i></i><i></i><i></i></div><div class="ambient-rib right"><i></i><i></i><i></i><i></i></div>
 <div class="stage-floor"></div><div class="aisle-glow"></div>
 <section class="proscenium">
 <div class="marquee">Movie Quiz</div>
@@ -132,7 +89,7 @@
 <div class="screen" id="screen">
 <div class="projection-grain" aria-hidden="true"></div>
 <section class="view active" id="intro">
-<button class="start-link" id="startBtn">Spustit promítání</button>
+<div class="intro-inner"><p class="intro-kicker">Vítejte v kině</p><h1>Movie Quiz</h1><p class="intro-copy">Patnáct správných odpovědí vás dělí od Oscara.</p><button class="start-link" id="startBtn">Spustit promítání</button></div>
 <button class="help" id="helpBtn" aria-label="Nápověda" title="Nápověda" data-mq-tip="Nápověda" aria-expanded="false">?</button>
 <div class="tooltip" id="tooltip" role="tooltip"><strong>Jak se hraje</strong><br>
 Vyberte obtížnost a žánr, potom označte jednu ze čtyř odpovědí.
@@ -175,16 +132,8 @@ Máte tři životy. Patnáct správných odpovědí znamená vítězství.
 </div>
 </section>
 <section class="view" id="game">
-<div class="theme-scene" aria-hidden="true"><i class="scene-a"></i><i class="scene-b"></i><i class="scene-c"></i><i class="scene-d"></i></div>
-<div class="hud">
-<div class="hud-left"><div class="clapper-icon" aria-hidden="true"><i></i></div><div><div class="stat-label">Správně</div><div class="stat-value"><span id="score">0</span> / 15</div></div></div>
-<div class="hud-center"><div class="stat-label" id="themeLabel">Střední · Komedie</div><div class="stat-value">Otázka <span id="questionNo">1</span></div><div class="progress-track"><div class="progress-fill" id="progress"></div></div></div>
-<div class="film-lives" id="filmLives" aria-label="Tři životy" style="display:none"><div class="life"></div><div class="life"></div><div class="life"></div></div>
-<div class="hud-actions">
-<button class="icon-btn" id="muteBtn" aria-label="Vypnout zvuk"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 13h6l7-6v18l-7-6H5z"/><path class="sound-wave" d="M22 11c3 3 3 7 0 10M25 7c6 5 6 13 0 18"/></svg></button>
-<button class="icon-btn" id="homeBtn" aria-label="Domů"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 15L16 6l11 9"/><path d="M8 14v12h6v-7h4v7h6V14"/></svg></button>
-</div>
-</div>
+<div class="theme-scene" id="themeScene" aria-hidden="true"></div>
+<div class="hud"><div class="hud-left"><div class="film-lives" id="lives"><span class="life"></span><span class="life"></span><span class="life"></span></div><span id="score">0 / 15</span></div><div class="hud-actions"><button class="icon-btn" id="muteBtn" aria-label="Vypnout zvuk"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 13h6l7-6v18l-7-6H5z"/><path class="sound-wave" d="M22 11c3 3 3 7 0 10M25 7c6 5 6 13 0 18"/></svg></button><button class="icon-btn" id="homeBtn" aria-label="Domů"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 15L16 6l11 9"/><path d="M8 14v12h6v-7h4v7h6V14"/></svg></button></div></div>
 <div class="question-wrap"><div class="question-meta"><span class="pill" id="qType">Film</span><span class="pill" id="qEra">1990s</span></div><h2 class="question" id="question">Otázka</h2><div class="answers" id="answers"></div></div>
 </section>
 <section class="view" id="creditsView"><button class="credits-skip" id="creditsSkip" aria-label="Přeskočit titulky a vrátit se do menu" title="Zpět do menu"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M19 7L10 16l9 9"/><path d="M11 16h13"/></svg><span>Menu</span></button><div class="credits-window"><div class="credits-roll" id="creditsRoll"></div></div></section>
