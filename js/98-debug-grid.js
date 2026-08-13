@@ -68,9 +68,12 @@
     }
 
     body.classList.add('mq-debug-grid-enabled');
-    toggle.textContent=enabled?'GRID ON · G':'GRID OFF · G';
+    {
+      const label=enabled?'GRID ON · G':'GRID OFF · G';
+      if(toggle.textContent!==label)toggle.textContent=label;
+    }
 
-    if(!cinema)return true; // Toggle still works; cinema may become available later.
+    if(!cinema)return true;
 
     overlay=make('div','mqDebugGridOverlay',cinema);
     canvas=make('canvas','mqDebugGridCanvas',overlay);
@@ -120,7 +123,10 @@
     enabled=!enabled;
     document.body.classList.toggle('mq-debug-grid-on',enabled);
     document.body.classList.toggle('mq-debug-grid-cursor',false);
-    if(toggle)toggle.textContent=enabled?'GRID ON · G':'GRID OFF · G';
+    if(toggle){
+      const label=enabled?'GRID ON · G':'GRID OFF · G';
+      if(toggle.textContent!==label)toggle.textContent=label;
+    }
     if(readout)readout.style.display='none';
     if(elementBox)elementBox.style.display='none';
     if(enabled)updateScreenBox();
@@ -152,7 +158,6 @@
     crossY.style.left=(x/MASTER_W*100)+'%';
     crossX.style.top=(y/MASTER_H*100)+'%';
 
-    // Temporarily hide overlay from hit testing so the real element is found.
     overlay.style.visibility='hidden';
     const hit=document.elementFromPoint(e.clientX,e.clientY);
     overlay.style.visibility='';
@@ -199,14 +204,23 @@
 
   const boot=()=>{
     ensureUI();
-    // Optional auto-enable still supported, but it is no longer required.
     const p=new URLSearchParams(location.search);
     if(p.get('mqGrid')==='1'&&!enabled)toggleGrid();
   };
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
-  else boot();
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',boot,{once:true});
+  }else{
+    boot();
+  }
 
-  const observer=new MutationObserver(()=>ensureUI());
-  observer.observe(document.documentElement,{subtree:true,childList:true});
+  let retryCount=0;
+  const finiteRetry=()=>{
+    if(document.getElementById('cinema')){
+      ensureUI();
+      return;
+    }
+    if(++retryCount<20)setTimeout(finiteRetry,100);
+  };
+  if(!document.getElementById('cinema'))setTimeout(finiteRetry,100);
 })();
