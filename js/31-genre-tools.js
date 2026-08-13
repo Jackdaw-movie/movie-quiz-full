@@ -22,6 +22,35 @@ html body #cinema>#mqPlayerBadge .mq-settings-gear:hover,html body #cinema>#mqPl
 body:not(.mq-auditorium-entered) #cinema>#mqPlayerBadge.mq-player-dock,body.mq-ticket-open #cinema>#mqPlayerBadge.mq-player-dock{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 html body #cinema>#homeBtn.mq-home-dock{position:absolute!important;left:94.34809cqw!important;top:8.23592cqh!important;right:auto!important;bottom:auto!important;width:2.69139cqw!important;height:4.78215cqh!important;min-width:0!important;min-height:0!important;margin:0!important;padding:0!important;transform:none!important;z-index:221!important;display:grid!important;place-items:center!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important}
 body:not(.mq-auditorium-entered) #cinema>#homeBtn.mq-home-dock,body.mq-ticket-open #cinema>#homeBtn.mq-home-dock{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+
+/* v41: restore the large player avatar exactly in cinema-master units.
+   v40 accidentally changed these percentages relative to the badge itself. */
+html body.mq-noir-master #page #cinema>#mqPlayerBadge .mq-avatar-badge{
+  width:6.57895cqw!important;
+  height:11.68969cqh!important;
+  flex:0 0 6.57895cqw!important;
+  margin:0!important
+}
+
+/* v41: both main selection headings end exactly at master y=300.
+   Cinema screen starts at master y=197.1395, so this equals 16.53703cqh. */
+html body.mq-noir-master #page #cinema #screen #difficulty .selection-title,
+html body.mq-noir-master #page #cinema #screen #genres .genre-panel>.selection-title{
+  left:50%!important;
+  top:16.53703cqh!important;
+  bottom:auto!important;
+  margin:0!important;
+  transform:translate(-50%,-100%)!important;
+  text-align:center!important
+}
+
+/* Move the selected-difficulty label by the same master-pixel delta as the
+   genre title, preserving their previous vertical relationship. */
+html body.mq-noir-master #page #cinema #screen #genres .genre-panel>.eyebrow{
+  top:9.19720cqh!important;
+  bottom:auto!important;
+  margin:0!important
+}
 `;
 function installStyle(){let s=document.getElementById('mqMasterPixelUiV39');if(s)return;s=document.createElement('style');s.id='mqMasterPixelUiV39';s.textContent=CSS;document.head.appendChild(s)}
 function anchorDocks(){const c=document.getElementById('cinema');if(!c)return;const b=document.getElementById('mqPlayerBadge');if(b&&b.parentElement!==c){c.appendChild(b);b.classList.add('mq-player-dock')}const h=document.getElementById('homeBtn');if(h&&h.parentElement!==c){c.appendChild(h);h.classList.add('mq-home-dock')}}
