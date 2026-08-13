@@ -1,0 +1,208 @@
+/* Movie Quiz – Cinema Master v3
+   Single coordinate system: approved auditorium art 1672 × 941.
+   Home/profile/settings are deliberately not restyled here. */
+
+:root{
+  --mq-cinema-master-ratio: 1672 / 941;
+
+  /* Functional projection surface registered directly to the approved art.
+     Pixel reference: x≈255, y≈197, w≈1163, h≈622 in 1672×941. */
+  --mq-screen-x:15.25%;
+  --mq-screen-y:20.95%;
+  --mq-screen-w:69.55%;
+  --mq-screen-h:66.10%;
+}
+
+html,body{
+  background:#020101!important;
+}
+
+/* One master stage. No nested cinema scaling. */
+html body #page{
+  position:fixed!important;
+  inset:0!important;
+  width:100vw!important;
+  height:100dvh!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  background:#020101!important;
+}
+
+html body #page #cinema{
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  width:min(100vw, calc(100dvh * 1672 / 941))!important;
+  height:min(100dvh, calc(100vw * 941 / 1672))!important;
+  aspect-ratio:1672 / 941!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:none!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  transform:translate(-50%,-50%)!important;
+  transform-origin:center!important;
+  overflow:hidden!important;
+  isolation:isolate!important;
+  background:#020101!important;
+  box-shadow:none!important;
+}
+
+/* The approved art is an actual layer, not a background competing with the
+   legacy cinema skins. */
+html body #page #cinema > #mqCinemaMasterArt{
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  object-fit:fill!important;
+  margin:0!important;
+  padding:0!important;
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:none!important;
+  user-select:none!important;
+  z-index:0!important;
+}
+
+/* Kill the complete OLD painted auditorium. These are the real direct DOM
+   layers present in index.html. */
+html body #page #cinema > .hall-bg,
+html body #page #cinema > .ceiling,
+html body #page #cinema > .ceiling-lights,
+html body #page #cinema > .wall,
+html body #page #cinema > .ambient-rib,
+html body #page #cinema > .stage-floor,
+html body #page #cinema > .aisle-glow,
+html body #page #cinema > .seats,
+html body #page #cinema > #seats,
+html body #page #cinema > .proscenium > .marquee,
+html body #page #cinema #screen > .curtain,
+html body #page #cinema #screen > .valance{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+
+/* Suppress pseudo-element cinema skins as well. */
+html body #page #cinema::before,
+html body #page #cinema::after,
+html body #page #cinema > .proscenium::before,
+html body #page #cinema > .proscenium::after,
+html body #page #cinema .screen-frame::before,
+html body #page #cinema .screen-frame::after,
+html body #page #cinema #screen::before,
+html body #page #cinema #screen::after{
+  content:none!important;
+  display:none!important;
+  background:none!important;
+  box-shadow:none!important;
+}
+
+/* Proscenium no longer has its own geometry. It is just a transparent holder
+   for the functional screen. This removes the second/nested scale responsible
+   for v30/v31 shrinking and vertical drift. */
+html body #page #cinema > .proscenium{
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:none!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  outline:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  transform:none!important;
+  overflow:visible!important;
+  z-index:5!important;
+}
+
+/* EXACT gameplay registration on the painted projection surface. */
+html body #page #cinema > .proscenium > .screen-frame{
+  display:block!important;
+  position:absolute!important;
+  left:var(--mq-screen-x)!important;
+  top:var(--mq-screen-y)!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:var(--mq-screen-w)!important;
+  height:var(--mq-screen-h)!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:none!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  outline:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  transform:none!important;
+  transform-origin:center!important;
+  border-radius:6.8% / 11.5%!important;
+  overflow:hidden!important;
+  z-index:10!important;
+}
+
+html body #page #cinema > .proscenium > .screen-frame > #screen{
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  left:0!important;
+  top:0!important;
+  right:0!important;
+  bottom:0!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:none!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  outline:0!important;
+  border-radius:inherit!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  transform:none!important;
+  overflow:hidden!important;
+}
+
+/* Existing game/menu content stays exactly as authored inside #screen.
+   Do not touch HUD/Home/profile/settings styles here. */
+html body #page #cinema #screen > .view,
+html body #page #cinema #screen > #fx,
+html body #page #cinema #screen > .feedback,
+html body #page #cinema #screen > .dust{
+  z-index:2;
+}
+
+/* Prevent legacy cinematic filters from repainting a second physical screen. */
+html body #page #cinema #screen > .projection-grain{
+  pointer-events:none!important;
+}
+
+/* Debug only: ?mqCinemaDebug=1 is no longer needed for geometry; manually add
+   mq-cinema-debug to body in DevTools if desired. */
+body.mq-cinema-debug #cinema .screen-frame{
+  outline:3px dashed #ffd05a!important;
+  outline-offset:-3px!important;
+}
