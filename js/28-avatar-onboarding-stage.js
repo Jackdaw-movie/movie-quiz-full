@@ -1,6 +1,6 @@
 (()=>{
   'use strict';
-  const VERSION='avatar-stage-assets-v28.0';
+  const VERSION='avatar-master-stage-v34.0';
   const ASSETS=[
     'assets/avatar-onboarding-v15/production/background.webp?v=28.0',
     'assets/avatar-onboarding-v15/production/arrow-left.webp?v=28.0',
@@ -9,6 +9,46 @@
   ];
 
   const warmed=[];
+
+  const MASTER_WIDTH=1672;
+  const MASTER_HEIGHT=941;
+  const STAGE_MARGIN=8;
+  let resizeRaf=0;
+
+  function viewportSize(){
+    const vv=window.visualViewport;
+    return {
+      width:Math.max(1,Number(vv?.width)||window.innerWidth||document.documentElement.clientWidth||MASTER_WIDTH),
+      height:Math.max(1,Number(vv?.height)||window.innerHeight||document.documentElement.clientHeight||MASTER_HEIGHT)
+    };
+  }
+
+  function applyMasterStageScale(){
+    const dialog=document.querySelector('#mqAvatarModal .mq-avatar-dialog');
+    if(!dialog)return;
+    const {width,height}=viewportSize();
+    const scale=Math.min(
+      Math.max(1,width-STAGE_MARGIN*2)/MASTER_WIDTH,
+      Math.max(1,height-STAGE_MARGIN*2)/MASTER_HEIGHT,
+      1
+    );
+    dialog.style.setProperty('--mq-avatar-stage-scale',String(Math.max(.1,scale)));
+    dialog.dataset.mqMasterWidth=String(MASTER_WIDTH);
+    dialog.dataset.mqMasterHeight=String(MASTER_HEIGHT);
+    dialog.dataset.mqMasterScale=String(scale);
+  }
+
+  function scheduleMasterStageScale(){
+    cancelAnimationFrame(resizeRaf);
+    resizeRaf=requestAnimationFrame(applyMasterStageScale);
+  }
+
+  function installMasterStageScaling(){
+    applyMasterStageScale();
+    window.addEventListener('resize',scheduleMasterStageScale,{passive:true});
+    window.visualViewport?.addEventListener?.('resize',scheduleMasterStageScale,{passive:true});
+    window.visualViewport?.addEventListener?.('scroll',scheduleMasterStageScale,{passive:true});
+  }
   function warmAssets(){
     if(warmed.length)return;
     ASSETS.forEach((src,index)=>{
@@ -62,6 +102,7 @@
   function markBackControl(){
     const modal=document.getElementById('mqAvatarModal');
     isolateOnboardingBlankClicks(modal);
+    scheduleMasterStageScale();
 
     const back=modal?.querySelector('.mq-avatar-close');
     if(!back)return;
@@ -129,6 +170,7 @@
   }
 
   document.addEventListener('click',handleBack,true);
+  installMasterStageScaling();
   scheduleWarm();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',observeModal,{once:true});
   else observeModal();

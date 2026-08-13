@@ -7,10 +7,30 @@
 #mqAvatarModal[hidden]{display:none!important}
 #mqAvatarModal .mq-avatar-modal-backdrop{position:absolute!important;inset:0!important;background:transparent!important}
 #mqAvatarModal .mq-avatar-dialog{
-  position:relative!important;width:min(98vw,1672px)!important;aspect-ratio:1672/941!important;max-height:98vh!important;
-  margin:0!important;padding:0!important;border:0!important;border-radius:0!important;overflow:hidden!important;
-  background:url('../assets/avatar-onboarding-v15/production/background.webp?v=28.0') center/contain no-repeat!important;
-  box-shadow:none!important;filter:drop-shadow(0 16px 30px rgba(0,0,0,.32));
+  /* v34 MASTER-STAGE: this element is ALWAYS 1672×941 internally.
+     Responsive behaviour is applied only as one uniform scale on this element. */
+  --mq-avatar-stage-scale:1;
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  width:1672px!important;
+  height:941px!important;
+  min-width:1672px!important;
+  min-height:941px!important;
+  max-width:none!important;
+  max-height:none!important;
+  aspect-ratio:auto!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  overflow:hidden!important;
+  background:url('../assets/avatar-onboarding-v15/production/background.webp?v=28.0') 0 0/1672px 941px no-repeat!important;
+  box-shadow:none!important;
+  filter:drop-shadow(0 16px 30px rgba(0,0,0,.32));
+  transform:translate(-50%,-50%) scale(var(--mq-avatar-stage-scale))!important;
+  transform-origin:50% 50%!important;
+  contain:layout paint style!important;
 }
 #mqAvatarModal .mq-avatar-dialog-head{position:static!important;padding:0!important;margin:0!important;border:0!important;background:transparent!important}
 #mqAvatarModal .mq-avatar-dialog-head .eyebrow,
@@ -22,9 +42,9 @@
   overflow:hidden!important;clip:rect(0 0 0 0)!important;clip-path:inset(50%)!important;white-space:nowrap!important;
 }
 #mqAvatarModal .mq-avatar-modal-status{
-  position:absolute!important;z-index:30!important;left:50%!important;bottom:13.0%!important;transform:translateX(-50%)!important;
-  max-width:48%!important;min-height:1.1em!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;
-  color:#efd7a2!important;text-align:center!important;font:600 clamp(10px,.85vw,13px)/1.15 'Cormorant Garamond',Georgia,serif!important;
+  position:absolute!important;z-index:30!important;left:836px!important;bottom:122px!important;transform:translateX(-50%)!important;
+  width:803px!important;max-width:803px!important;min-height:14px!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;
+  color:#efd7a2!important;text-align:center!important;font:600 13px/1.15 'Cormorant Garamond',Georgia,serif!important;
   text-shadow:0 1px 2px rgba(0,0,0,.55)!important;pointer-events:none!important;
 }
 
@@ -32,7 +52,7 @@
 #mqAvatarModal .mq-avatar-carousel-shell,
 #mqAvatarModal .mq-avatar-carousel-viewport,
 #mqAvatarModal .mq-avatar-carousel-stage{
-  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;
+  position:absolute!important;left:0!important;top:0!important;width:1672px!important;height:941px!important;margin:0!important;padding:0!important;
   border:0!important;background:transparent!important;overflow:visible!important;
 }
 #mqAvatarModal .mq-avatar-carousel-shell{pointer-events:none!important}
@@ -56,7 +76,7 @@
 
 /* ACTIVE AVATAR – central parchment field, dominant but not oversized. */
 #mqAvatarModal .mq-avatar-carousel-choice.is-center{
-  left:40.10%!important;top:28.8%!important;width:18.6%!important;height:40.2%!important;z-index:8!important;opacity:1!important;
+  left:670px!important;top:271px!important;width:311px!important;height:378px!important;z-index:8!important;opacity:1!important;
 }
 #mqAvatarModal .mq-avatar-carousel-choice.is-center:hover,
 #mqAvatarModal .mq-avatar-carousel-choice.is-center:focus-visible{
@@ -67,11 +87,11 @@
 /* SIDE AVATARS – exact circular wells from the approved background. */
 #mqAvatarModal .mq-avatar-carousel-choice.is-left-1,
 #mqAvatarModal .mq-avatar-carousel-choice.is-right-1{
-  top:38.4%!important;width:14.0%!important;height:24.8%!important;z-index:5!important;
+  top:361px!important;width:234px!important;height:233px!important;z-index:5!important;
   border-radius:50%!important;overflow:hidden!important;opacity:.96!important;filter:brightness(.94) saturate(.92)!important;
 }
-#mqAvatarModal .mq-avatar-carousel-choice.is-left-1{left:27.92%!important}
-#mqAvatarModal .mq-avatar-carousel-choice.is-right-1{left:57.78%!important}
+#mqAvatarModal .mq-avatar-carousel-choice.is-left-1{left:467px!important}
+#mqAvatarModal .mq-avatar-carousel-choice.is-right-1{left:966px!important}
 #mqAvatarModal .mq-avatar-carousel-choice.is-left-1 .mq-avatar-frame,
 #mqAvatarModal .mq-avatar-carousel-choice.is-right-1 .mq-avatar-frame{overflow:hidden!important;border-radius:50%!important}
 #mqAvatarModal .mq-avatar-carousel-choice.is-left-1 .mq-avatar-img,
@@ -93,7 +113,7 @@
 
 /* Standalone arrow assets. */
 #mqAvatarModal .mq-avatar-carousel-arrow{
-  position:absolute!important;z-index:25!important;top:48.1%!important;width:5.35%!important;aspect-ratio:1.02/1!important;
+  position:absolute!important;z-index:25!important;top:453px!important;width:89px!important;height:87px!important;aspect-ratio:auto!important;
   margin:0!important;padding:0!important;border:0!important;border-radius:50%!important;background-color:transparent!important;
   background-repeat:no-repeat!important;background-position:center!important;background-size:contain!important;
   color:transparent!important;font-size:0!important;line-height:0!important;box-shadow:none!important;outline:none!important;
@@ -101,10 +121,10 @@
   transition:transform .16s ease,filter .16s ease!important;
 }
 #mqAvatarModal .mq-avatar-carousel-arrow.is-prev{
-  left:33.10%!important;background-image:url('../assets/avatar-onboarding-v15/production/arrow-left.webp?v=28.0')!important;
+  left:553px!important;background-image:url('../assets/avatar-onboarding-v15/production/arrow-left.webp?v=28.0')!important;
 }
 #mqAvatarModal .mq-avatar-carousel-arrow.is-next{
-  left:61.60%!important;background-image:url('../assets/avatar-onboarding-v15/production/arrow-left.webp?v=28.0')!important;transform:scaleX(-1)!important;
+  left:1030px!important;background-image:url('../assets/avatar-onboarding-v15/production/arrow-left.webp?v=28.0')!important;transform:scaleX(-1)!important;
 }
 #mqAvatarModal .mq-avatar-carousel-arrow span{display:none!important}
 #mqAvatarModal .mq-avatar-carousel-arrow:hover,
@@ -130,16 +150,16 @@
   transition:transform .16s ease,filter .16s ease,opacity .16s ease!important;
 }
 #mqAvatarModal .mq-avatar-confirm{
-  left:34.225%!important;top:86.25%!important;width:31.55%!important;aspect-ratio:900/183!important;
+  left:573px!important;top:812px!important;width:528px!important;height:107px!important;aspect-ratio:auto!important;
   background-image:url('../assets/avatar-onboarding-v15/production/continue.webp?v=28.0')!important;
 }
 #mqAvatarModal .mq-avatar-close{
   /* v29: move the button centre right by exactly the same amount used to
      centre POKRAČOVAT, then reduce the button by another 10%. */
-  left:68.040%!important;
-  top:87.792%!important;
-  width:11.601%!important;
-  height:8.307%!important;
+  left:1138px!important;
+  top:826px!important;
+  width:194px!important;
+  height:78px!important;
   aspect-ratio:auto!important;
   background-size:contain!important;
   background-image:url('../assets/avatar-onboarding-v15/production/back.webp?v=28.0')!important;
@@ -155,10 +175,6 @@
 #mqAvatarModal .mq-avatar-close:active{transform:scale(.985)!important;filter:brightness(1.04)!important}
 #mqAvatarModal .mq-avatar-confirm:disabled{opacity:.46!important;cursor:not-allowed!important;filter:saturate(.65) brightness(.82)!important}
 
-@media(max-width:900px){
-  #mqAvatarModal{padding:4px!important}
-  #mqAvatarModal .mq-avatar-dialog{width:100vw!important;max-height:100vh!important}
-}
 @media(prefers-reduced-motion:reduce){
   #mqAvatarModal .mq-avatar-carousel-choice,
   #mqAvatarModal .mq-avatar-carousel-arrow,
@@ -178,4 +194,22 @@
   display:none!important;
   visibility:hidden!important;
   pointer-events:none!important;
+}
+
+
+/* v34: HARD invariant. Every visible carousel/UI element is a child of the
+   same 1672×941 coordinate plane. No vw/vh/viewport scaling is allowed here. */
+#mqAvatarModal .mq-avatar-dialog,
+#mqAvatarModal .mq-avatar-carousel-shell,
+#mqAvatarModal .mq-avatar-carousel-viewport,
+#mqAvatarModal .mq-avatar-carousel-stage{
+  box-sizing:border-box!important;
+}
+#mqAvatarModal .mq-avatar-carousel-choice,
+#mqAvatarModal .mq-avatar-carousel-arrow,
+#mqAvatarModal .mq-avatar-confirm,
+#mqAvatarModal .mq-avatar-close{
+  flex:none!important;
+  max-width:none!important;
+  max-height:none!important;
 }
