@@ -1,0 +1,172 @@
+/* Movie Quiz – Gameplay Screen Layout v1
+   The painted projection surface is ~1163 x 622 px inside the 1672 x 941 cinema master.
+   This stylesheet expands ONLY the functional UI inside #screen.
+   Home/profile/settings geometry is deliberately untouched. */
+
+html body #cinema #screen{
+  container-type:size!important;
+  container-name:mq-game-screen;
+}
+
+/* ---- Shared selection screens ------------------------------------------------ */
+html body #cinema #screen #difficulty,
+html body #cinema #screen #genres{
+  box-sizing:border-box!important;
+  padding:2.4cqh 2.4cqw!important;
+  overflow:hidden!important;
+}
+
+html body #cinema #screen #difficulty .selection-panel,
+html body #cinema #screen #genres .selection-panel{
+  width:94cqw!important;
+  max-width:none!important;
+  min-width:0!important;
+  max-height:92cqh!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  box-sizing:border-box!important;
+  padding:2.5cqh 2.8cqw!important;
+}
+
+html body #cinema #screen .selection-title{
+  max-width:100%!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  font-size:clamp(24px,4.15cqh,40px)!important;
+  line-height:1.06!important;
+}
+
+html body #cinema #screen .eyebrow{
+  font-size:clamp(11px,1.9cqh,16px)!important;
+}
+
+/* Difficulty: use the full horizontal width of the projection surface. */
+html body #cinema #screen #difficulty .difficulty-grid{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:2.0cqw!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+
+html body #cinema #screen #difficulty .difficulty-card{
+  min-width:0!important;
+  max-width:none!important;
+  min-height:0!important;
+  height:27cqh!important;
+  padding:2.0cqh 1.4cqw!important;
+  box-sizing:border-box!important;
+}
+
+html body #cinema #screen #difficulty .difficulty-icon{
+  max-height:13cqh!important;
+}
+
+/* Genres: two compact rows of three, rather than allowing the cards to push
+   below the painted projection surface. */
+html body #cinema #screen #genres .genre-grid{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-template-rows:repeat(2,minmax(0,1fr))!important;
+  gap:1.6cqh 1.55cqw!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+
+html body #cinema #screen #genres .genre-card{
+  min-width:0!important;
+  max-width:none!important;
+  min-height:0!important;
+  height:18.2cqh!important;
+  padding:1.35cqh 1.15cqw!important;
+  box-sizing:border-box!important;
+}
+
+html body #cinema #screen #genres .genre-icon{
+  max-height:8.5cqh!important;
+}
+
+html body #cinema #screen .selection-card .card-copy,
+html body #cinema #screen .selection-card .card-copy strong{
+  min-width:0!important;
+  max-width:100%!important;
+  overflow-wrap:anywhere!important;
+}
+
+/* ---- Main question screen ----------------------------------------------------
+   Do NOT touch .hud or .hud-actions: Home and the existing upper controls keep
+   their current coordinates. Only the question/answers area becomes wider. */
+html body #cinema #screen #game .question-wrap{
+  width:95cqw!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  padding-left:2.2cqw!important;
+  padding-right:2.2cqw!important;
+  box-sizing:border-box!important;
+}
+
+html body #cinema #screen #game .question-meta{
+  max-width:100%!important;
+}
+
+html body #cinema #screen #game .question{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  font-size:clamp(22px,4.05cqh,38px)!important;
+  line-height:1.10!important;
+  overflow-wrap:anywhere!important;
+}
+
+html body #cinema #screen #game .answers{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:1.45cqh 1.45cqw!important;
+  box-sizing:border-box!important;
+}
+
+html body #cinema #screen #game .answer{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  min-height:11.5cqh!important;
+  max-height:16.5cqh!important;
+  padding:1.35cqh 1.7cqw!important;
+  box-sizing:border-box!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+  line-height:1.12!important;
+  font-size:clamp(14px,2.65cqh,22px)!important;
+}
+
+/* ---- End / credits views: prevent legacy max-widths from wasting the screen. */
+html body #cinema #screen #creditsView .credits-window{
+  width:90cqw!important;
+  max-width:none!important;
+  max-height:82cqh!important;
+  box-sizing:border-box!important;
+}
+
+html body #cinema #screen #endView .end-card,
+html body #cinema #screen #winView .win-card{
+  width:min(88cqw,100%)!important;
+  max-width:none!important;
+  max-height:88cqh!important;
+  box-sizing:border-box!important;
+}
+
+/* Safety: children of the grids may shrink instead of overflowing their cell. */
+html body #cinema #screen .difficulty-grid > *,
+html body #cinema #screen .genre-grid > *,
+html body #cinema #screen .answers > *{
+  min-width:0!important;
+}
