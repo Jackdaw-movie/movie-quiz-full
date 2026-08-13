@@ -1,0 +1,69 @@
+/* Movie Quiz – approved difficulty buttons v42
+   Native design size: 300 × 300 master px each.
+   The artwork remains 300×300 source pixels and is scaled with the cinema master,
+   not independently with the browser viewport. */
+
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-grid{
+  /* 300 master px = ~25.79536% of the 1163 px projection-screen width. */
+  grid-template-columns:repeat(3,25.79536cqw)!important;
+  grid-auto-rows:48.23143cqh!important;
+  justify-content:center!important;
+  align-items:start!important;
+  column-gap:2.15cqw!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card{
+  position:relative!important;
+  width:25.79536cqw!important;
+  height:48.23143cqh!important;
+  min-width:25.79536cqw!important;
+  max-width:25.79536cqw!important;
+  min-height:48.23143cqh!important;
+  max-height:48.23143cqh!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background-color:transparent!important;
+  background-repeat:no-repeat!important;
+  background-position:center!important;
+  background-size:100% 100%!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+  cursor:pointer!important;
+  transform:translateY(0) scale(1)!important;
+  transform-origin:50% 50%!important;
+  filter:brightness(1) saturate(1)!important;
+  transition:transform .18s cubic-bezier(.2,.75,.25,1),filter .18s ease!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card[data-difficulty="easy"]{
+  background-image:url('../assets/difficulty/difficulty-easy.webp?v=42.0')!important;
+}
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card[data-difficulty="medium"]{
+  background-image:url('../assets/difficulty/difficulty-medium.webp?v=42.0')!important;
+}
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card[data-difficulty="hard"]{
+  background-image:url('../assets/difficulty/difficulty-hard.webp?v=42.0')!important;
+}
+
+/* The approved artwork already contains icon + label, so legacy SVG/text is hidden. */
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card>.selection-icon,
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card>.card-copy,
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card>.difficulty-dots{
+  display:none!important;
+}
+
+/* Hover: subtle cinema-marquee lift and warm illumination, no childish bounce/rotation. */
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card:hover,
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card:focus-visible{
+  transform:translateY(-1.285cqh) scale(1.035)!important;
+  filter:brightness(1.10) saturate(1.06) drop-shadow(0 .95cqh 1.35cqh rgba(0,0,0,.40)) drop-shadow(0 0 1.15cqh rgba(235,190,91,.28))!important;
+  outline:none!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card:active{
+  transform:translateY(-.32cqh) scale(1.012)!important;
+  filter:brightness(1.06) saturate(1.04)!important;
+  transition-duration:.07s!important;
+}
