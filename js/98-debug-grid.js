@@ -1,12 +1,36 @@
 (()=>{
   'use strict';
 
-  const MASTER_W=1672;
-  const MASTER_H=941;
+  /* v44 also loads the final UI-polish layer. Keeping this as a separate CSS
+     file makes the geometry patch reversible and avoids touching game logic. */
+  function ensurePolishStyles(){
+    if(document.getElementById('mq-ui-polish-v44'))return;
+    const link=document.createElement('link');
+    link.id='mq-ui-polish-v44';
+    link.rel='stylesheet';
+    link.href='css/ui-polish-v44.css?v=44.0';
+    document.head.appendChild(link);
+  }
+  ensurePolishStyles();
+
+  const STAGES=[
+    {name:'AVATAR',selector:'#mqAvatarModal .mq-avatar-dialog',w:1672,h:941},
+    {name:'TICKET',selector:'.mq-ticket-master-stage',w:1672,h:941},
+    {name:'LOADING',selector:'.mq-preload-master-stage',w:1279,h:720},
+    {name:'EXTERIOR',selector:'.mq-v6-stage',w:1672,h:941},
+    {name:'CINEMA',selector:'#cinema',w:1672,h:941}
+  ];
 
   let enabled=false;
-  let cinema=null, overlay=null, canvas=null, ctx=null;
+  let target=null;
+  let targetName='';
+  let masterW=1672;
+  let masterH=941;
+  let overlay=null, canvas=null, ctx=null;
   let crossX=null, crossY=null, screenBox=null, elementBox=null, readout=null, toggle=null;
+  let rafId=0;
+  let lastGridKey='';
+  let lastRectKey='';
 
   const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
   const round=v=>Math.round(v);
@@ -20,35 +44,70 @@
     return el;
   }
 
-  function drawGrid(){
-    if(!ctx)return;
-    canvas.width=MASTER_W;
-    canvas.height=MASTER_H;
-    ctx.clearRect(0,0,MASTER_W,MASTER_H);
+  function elementVisible(el){
+    if(!el||!el.isConnected)return false;
+    if(el.closest('[hidden]'))return false;
+    const style=getComputedStyle(el);
+    if(style.display==='none'||style.visibility==='hidden'||Number(style.opacity)===0)return false;
+    const r=el.getBoundingClientRect();
+    return r.width>20&&r.height>20&&r.bottom>0&&r.right>0&&r.left<innerWidth&&r.top<innerHeight;
+  }
+
+  function findStage(){
+    for(const spec of STAGES){
+      const nodes=document.querySelectorAll(spec.selector);
+      for(const el of nodes){
+        if(elementVisible(el))return {...spec,el};
+      }
+    }
+    return null;
+  }
+
+  function drawGrid(force=false){
+    if(!ctx||!canvas)return;
+    const key=`${masterW}x${masterH}`;
+    if(!force&&key===lastGridKey)return;
+    lastGridKey=key;
+
+    canvas.width=masterW;
+    canvas.height=masterH;
+    ctx.clearRect(0,0,masterW,masterH);
     ctx.save();
-    for(let x=0;x<=MASTER_W;x+=10){
-      const major=x%100===0, medium=!major&&x%50===0;
-      ctx.beginPath(); ctx.moveTo(x+.5,0); ctx.lineTo(x+.5,MASTER_H);
+
+    for(let x=0;x<=masterW;x+=10){
+      const major=x%100===0;
+      const medium=!major&&x%50===0;
+      ctx.beginPath();
+      ctx.moveTo(x+.5,0);
+      ctx.lineTo(x+.5,masterH);
       ctx.lineWidth=major?2:1;
       ctx.strokeStyle=major?'rgba(255,255,255,.55)':medium?'rgba(255,255,255,.28)':'rgba(255,255,255,.09)';
       ctx.stroke();
     }
-    for(let y=0;y<=MASTER_H;y+=10){
-      const major=y%100===0, medium=!major&&y%50===0;
-      ctx.beginPath(); ctx.moveTo(0,y+.5); ctx.lineTo(MASTER_W,y+.5);
+    for(let y=0;y<=masterH;y+=10){
+      const major=y%100===0;
+      const medium=!major&&y%50===0;
+      ctx.beginPath();
+      ctx.moveTo(0,y+.5);
+      ctx.lineTo(masterW,y+.5);
       ctx.lineWidth=major?2:1;
       ctx.strokeStyle=major?'rgba(255,255,255,.55)':medium?'rgba(255,255,255,.28)':'rgba(255,255,255,.09)';
       ctx.stroke();
     }
+
     ctx.font='700 17px ui-monospace,SFMono-Regular,Menlo,monospace';
     ctx.textBaseline='top';
-    for(let x=0;x<=MASTER_W-20;x+=100){
-      ctx.fillStyle='rgba(0,0,0,.72)'; ctx.fillRect(x+3,3,58,23);
-      ctx.fillStyle='#fff'; ctx.fillText(String(x),x+7,5);
+    for(let x=0;x<=masterW-20;x+=100){
+      ctx.fillStyle='rgba(0,0,0,.72)';
+      ctx.fillRect(x+3,3,58,23);
+      ctx.fillStyle='#fff';
+      ctx.fillText(String(x),x+7,5);
     }
-    for(let y=100;y<=MASTER_H-20;y+=100){
-      ctx.fillStyle='rgba(0,0,0,.72)'; ctx.fillRect(3,y+3,58,23);
-      ctx.fillStyle='#fff'; ctx.fillText(String(y),7,y+5);
+    for(let y=100;y<=masterH-20;y+=100){
+      ctx.fillStyle='rgba(0,0,0,.72)';
+      ctx.fillRect(3,y+3,58,23);
+      ctx.fillStyle='#fff';
+      ctx.fillText(String(y),7,y+5);
     }
     ctx.restore();
   }
@@ -57,7 +116,14 @@
     const body=document.body;
     if(!body)return false;
 
-    cinema=document.getElementById('cinema');
+    overlay=make('div','mqDebugGridOverlay',body);
+    canvas=make('canvas','mqDebugGridCanvas',overlay);
+    ctx=canvas.getContext('2d');
+    crossX=make('div','mqDebugCrosshairX',overlay);
+    crossY=make('div','mqDebugCrosshairY',overlay);
+    screenBox=make('div','mqDebugScreenBox',overlay);
+    elementBox=make('div','mqDebugElementBox',overlay);
+    readout=make('div','mqDebugReadout',body);
 
     toggle=make('button','mqDebugToggle',body);
     toggle.type='button';
@@ -68,82 +134,141 @@
     }
 
     body.classList.add('mq-debug-grid-enabled');
-    {
-      const label=enabled?'GRID ON · G':'GRID OFF · G';
-      if(toggle.textContent!==label)toggle.textContent=label;
+    updateToggleLabel();
+    return true;
+  }
+
+  function updateToggleLabel(){
+    if(!toggle)return;
+    const suffix=targetName?` · ${targetName}`:'';
+    toggle.textContent=enabled?`GRID ON${suffix} · G`:'GRID OFF · G';
+  }
+
+  function setOverlayRect(r){
+    if(!overlay||!r)return;
+    const key=[r.left,r.top,r.width,r.height].map(v=>Math.round(v*100)/100).join('|');
+    if(key===lastRectKey)return;
+    lastRectKey=key;
+    overlay.style.setProperty('left',`${r.left}px`,'important');
+    overlay.style.setProperty('top',`${r.top}px`,'important');
+    overlay.style.setProperty('width',`${r.width}px`,'important');
+    overlay.style.setProperty('height',`${r.height}px`,'important');
+  }
+
+  function syncTarget(force=false){
+    if(!ensureUI())return false;
+    const found=findStage();
+    if(!found){
+      target=null;
+      targetName='';
+      if(overlay){
+        overlay.style.setProperty('width','0px','important');
+        overlay.style.setProperty('height','0px','important');
+      }
+      updateToggleLabel();
+      return false;
     }
 
-    if(!cinema)return true;
+    const changed=target!==found.el||targetName!==found.name||masterW!==found.w||masterH!==found.h;
+    target=found.el;
+    targetName=found.name;
+    masterW=found.w;
+    masterH=found.h;
 
-    overlay=make('div','mqDebugGridOverlay',cinema);
-    canvas=make('canvas','mqDebugGridCanvas',overlay);
-    ctx=canvas.getContext('2d');
-    crossX=make('div','mqDebugCrosshairX',overlay);
-    crossY=make('div','mqDebugCrosshairY',overlay);
-    screenBox=make('div','mqDebugScreenBox',overlay);
-    elementBox=make('div','mqDebugElementBox',overlay);
-    readout=make('div','mqDebugReadout',body);
-    drawGrid();
+    setOverlayRect(target.getBoundingClientRect());
+    if(changed||force){
+      lastGridKey='';
+      drawGrid(true);
+      updateToggleLabel();
+    }else{
+      drawGrid(false);
+    }
     updateScreenBox();
     return true;
   }
 
   function masterRectFromViewportRect(r){
-    if(!cinema)return null;
-    const c=cinema.getBoundingClientRect();
-    if(!c.width||!c.height)return null;
+    if(!target)return null;
+    const t=target.getBoundingClientRect();
+    if(!t.width||!t.height)return null;
     return {
-      x:(r.left-c.left)/c.width*MASTER_W,
-      y:(r.top-c.top)/c.height*MASTER_H,
-      w:r.width/c.width*MASTER_W,
-      h:r.height/c.height*MASTER_H
+      x:(r.left-t.left)/t.width*masterW,
+      y:(r.top-t.top)/t.height*masterH,
+      w:r.width/t.width*masterW,
+      h:r.height/t.height*masterH
     };
   }
 
   function setMasterBox(el,r,label){
     if(!el||!r){if(el)el.style.display='none';return;}
     el.style.display='block';
-    el.style.left=(r.x/MASTER_W*100)+'%';
-    el.style.top=(r.y/MASTER_H*100)+'%';
-    el.style.width=(r.w/MASTER_W*100)+'%';
-    el.style.height=(r.h/MASTER_H*100)+'%';
+    el.style.left=(r.x/masterW*100)+'%';
+    el.style.top=(r.y/masterH*100)+'%';
+    el.style.width=(r.w/masterW*100)+'%';
+    el.style.height=(r.h/masterH*100)+'%';
     el.dataset.label=label;
   }
 
   function updateScreenBox(){
-    if(!cinema||!screenBox)return;
+    if(!screenBox)return;
+    if(targetName!=='CINEMA'){
+      screenBox.style.display='none';
+      return;
+    }
     const screen=document.querySelector('#cinema .screen-frame');
-    if(!screen){screenBox.style.display='none';return;}
+    if(!screen||!elementVisible(screen)){
+      screenBox.style.display='none';
+      return;
+    }
     const r=masterRectFromViewportRect(screen.getBoundingClientRect());
     setMasterBox(screenBox,r,`GAME SCREEN x:${round(r.x)} y:${round(r.y)} ${round(r.w)}×${round(r.h)}`);
+  }
+
+  function startSyncLoop(){
+    cancelAnimationFrame(rafId);
+    const tick=()=>{
+      if(!enabled)return;
+      syncTarget(false);
+      rafId=requestAnimationFrame(tick);
+    };
+    rafId=requestAnimationFrame(tick);
   }
 
   function toggleGrid(){
     ensureUI();
     enabled=!enabled;
     document.body.classList.toggle('mq-debug-grid-on',enabled);
-    document.body.classList.toggle('mq-debug-grid-cursor',false);
-    if(toggle){
-      const label=enabled?'GRID ON · G':'GRID OFF · G';
-      if(toggle.textContent!==label)toggle.textContent=label;
-    }
+    document.body.classList.remove('mq-debug-grid-cursor');
     if(readout)readout.style.display='none';
     if(elementBox)elementBox.style.display='none';
-    if(enabled)updateScreenBox();
+    if(screenBox)screenBox.style.display='none';
+
+    if(enabled){
+      syncTarget(true);
+      startSyncLoop();
+    }else{
+      cancelAnimationFrame(rafId);
+      rafId=0;
+    }
+    updateToggleLabel();
   }
 
   function describeElement(el){
     if(!el||el===document.body||el===document.documentElement)return 'BODY';
     const id=el.id?`#${el.id}`:'';
-    const cls=[...el.classList].filter(c=>!c.startsWith('mq-debug')).slice(0,3).map(c=>'.'+c).join('');
+    const cls=[...el.classList]
+      .filter(c=>!c.startsWith('mq-debug'))
+      .slice(0,3)
+      .map(c=>'.'+c)
+      .join('');
     return `${el.tagName.toLowerCase()}${id}${cls}`;
   }
 
   function pointerMove(e){
     if(!enabled)return;
-    ensureUI();
-    if(!cinema||!overlay||!readout)return;
-    const r=cinema.getBoundingClientRect();
+    if(!syncTarget(false)||!target||!overlay||!readout)return;
+
+    const r=target.getBoundingClientRect();
     const inside=e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom&&r.width>0&&r.height>0;
     if(!inside){
       document.body.classList.remove('mq-debug-grid-cursor');
@@ -152,39 +277,44 @@
       return;
     }
 
-    const x=clamp((e.clientX-r.left)/r.width*MASTER_W,0,MASTER_W);
-    const y=clamp((e.clientY-r.top)/r.height*MASTER_H,0,MASTER_H);
+    const x=clamp((e.clientX-r.left)/r.width*masterW,0,masterW);
+    const y=clamp((e.clientY-r.top)/r.height*masterH,0,masterH);
     document.body.classList.add('mq-debug-grid-cursor');
-    crossY.style.left=(x/MASTER_W*100)+'%';
-    crossX.style.top=(y/MASTER_H*100)+'%';
+    crossY.style.left=(x/masterW*100)+'%';
+    crossX.style.top=(y/masterH*100)+'%';
 
     overlay.style.visibility='hidden';
     const hit=document.elementFromPoint(e.clientX,e.clientY);
     overlay.style.visibility='';
 
     let hitRect=null;
-    if(hit&&cinema.contains(hit)){
+    if(hit&&target.contains(hit)){
       hitRect=masterRectFromViewportRect(hit.getBoundingClientRect());
       setMasterBox(elementBox,hitRect,`${describeElement(hit)} x:${round(hitRect.x)} y:${round(hitRect.y)} ${round(hitRect.w)}×${round(hitRect.h)}`);
     }else if(elementBox){
       elementBox.style.display='none';
     }
 
-    const screen=document.querySelector('#cinema .screen-frame');
     let screenText='';
-    if(screen){
-      const sr=screen.getBoundingClientRect();
-      if(e.clientX>=sr.left&&e.clientX<=sr.right&&e.clientY>=sr.top&&e.clientY<=sr.bottom){
-        const sx=(e.clientX-sr.left)/sr.width*sr.width/(r.width/MASTER_W);
-        const sy=(e.clientY-sr.top)/sr.height*sr.height/(r.height/MASTER_H);
-        screenText=`\nSCREEN x:${round(sx)} y:${round(sy)}`;
+    if(targetName==='CINEMA'){
+      const screen=document.querySelector('#cinema .screen-frame');
+      if(screen){
+        const sr=screen.getBoundingClientRect();
+        if(e.clientX>=sr.left&&e.clientX<=sr.right&&e.clientY>=sr.top&&e.clientY<=sr.bottom){
+          const sx=(e.clientX-r.left)/r.width*masterW-(sr.left-r.left)/r.width*masterW;
+          const sy=(e.clientY-r.top)/r.height*masterH-(sr.top-r.top)/r.height*masterH;
+          screenText=`\nSCREEN local x:${round(sx)} y:${round(sy)}`;
+        }
       }
     }
 
-    readout.textContent=`MASTER x:${round(x)} y:${round(y)} / ${MASTER_W}×${MASTER_H}${screenText}${hitRect?`\n${describeElement(hit)} box ${round(hitRect.x)},${round(hitRect.y)} ${round(hitRect.w)}×${round(hitRect.h)}`:''}`;
+    readout.textContent=`${targetName} MASTER x:${round(x)} y:${round(y)} / ${masterW}×${masterH}${screenText}${hitRect?`\n${describeElement(hit)} box ${round(hitRect.x)},${round(hitRect.y)} ${round(hitRect.w)}×${round(hitRect.h)}`:''}`;
     readout.style.display='block';
-    let left=e.clientX+16, top=e.clientY+16;
-    const rw=readout.offsetWidth||300, rh=readout.offsetHeight||90;
+
+    let left=e.clientX+16;
+    let top=e.clientY+16;
+    const rw=readout.offsetWidth||320;
+    const rh=readout.offsetHeight||100;
     if(left+rw>innerWidth-12)left=e.clientX-rw-16;
     if(top+rh>innerHeight-12)top=e.clientY-rh-16;
     readout.style.left=Math.max(12,left)+'px';
@@ -200,27 +330,28 @@
   },true);
 
   document.addEventListener('mousemove',pointerMove,{passive:true});
-  window.addEventListener('resize',()=>{if(enabled)updateScreenBox();},{passive:true});
+  window.addEventListener('resize',()=>{if(enabled)syncTarget(true);},{passive:true});
 
-  const boot=()=>{
+  /* Page/state switches use class/hidden mutations. Do not observe style here,
+     because the grid itself writes inline geometry while enabled. */
+  const observer=new MutationObserver(mutations=>{
+    if(!enabled)return;
+    if(mutations.some(m=>!m.target.closest?.('#mqDebugGridOverlay,#mqDebugReadout,#mqDebugToggle'))){
+      syncTarget(true);
+    }
+  });
+
+  function boot(){
+    ensurePolishStyles();
     ensureUI();
+    observer.observe(document.documentElement,{subtree:true,attributes:true,attributeFilter:['class','hidden']});
     const p=new URLSearchParams(location.search);
     if(p.get('mqGrid')==='1'&&!enabled)toggleGrid();
-  };
+  }
 
   if(document.readyState==='loading'){
     document.addEventListener('DOMContentLoaded',boot,{once:true});
   }else{
     boot();
   }
-
-  let retryCount=0;
-  const finiteRetry=()=>{
-    if(document.getElementById('cinema')){
-      ensureUI();
-      return;
-    }
-    if(++retryCount<20)setTimeout(finiteRetry,100);
-  };
-  if(!document.getElementById('cinema'))setTimeout(finiteRetry,100);
 })();
