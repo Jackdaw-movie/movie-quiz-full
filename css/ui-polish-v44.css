@@ -1,0 +1,254 @@
+/* Movie Quiz – UI polish v44
+   Approved 14 Aug 2026 adjustments.
+   This file intentionally contains only high-specificity geometry/visual overrides.
+   Game logic and existing assets remain untouched. */
+
+/* --------------------------------------------------------------------------
+   AVATAR SELECT – register the two side avatars to the circular window widgets
+   in the fixed 1672 × 941 avatar master stage.
+
+   Approved visual target centres:
+   left well  ≈ (381, 504)
+   right well ≈ (1311, 504)
+   -------------------------------------------------------------------------- */
+#mqAvatarModal .mq-avatar-carousel-choice.is-left-1,
+#mqAvatarModal .mq-avatar-carousel-choice.is-right-1{
+  top:387px!important;
+  width:234px!important;
+  height:234px!important;
+  border-radius:50%!important;
+  overflow:hidden!important;
+  transform:none!important;
+}
+#mqAvatarModal .mq-avatar-carousel-choice.is-left-1{left:264px!important}
+#mqAvatarModal .mq-avatar-carousel-choice.is-right-1{left:1194px!important}
+
+#mqAvatarModal .mq-avatar-carousel-choice.is-left-1 .mq-avatar-frame,
+#mqAvatarModal .mq-avatar-carousel-choice.is-right-1 .mq-avatar-frame{
+  display:grid!important;
+  place-items:center!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  height:100%!important;
+  overflow:hidden!important;
+  border-radius:50%!important;
+}
+#mqAvatarModal .mq-avatar-carousel-choice.is-left-1 .mq-avatar-img,
+#mqAvatarModal .mq-avatar-carousel-choice.is-right-1 .mq-avatar-img{
+  display:block!important;
+  width:88%!important;
+  height:88%!important;
+  margin:auto!important;
+  object-fit:contain!important;
+  object-position:50% 50%!important;
+  transform:none!important;
+}
+
+/* --------------------------------------------------------------------------
+   DIFFICULTY – the artwork itself is the button. No legacy card, black square,
+   pseudo layer, border, shadow or backdrop may be visible around it.
+
+   The existing source artwork is square, so the mask keeps only the intended
+   circular icon zone plus the lower label/plaque zone. This preserves the dark
+   detail inside the artwork instead of blending all black pixels away.
+   -------------------------------------------------------------------------- */
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card,
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card:hover,
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card:focus,
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card:focus-visible,
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card:active{
+  padding:0!important;
+  border:0!important;
+  border-color:transparent!important;
+  border-radius:0!important;
+  outline:0!important;
+  background-color:transparent!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  appearance:none!important;
+  -webkit-appearance:none!important;
+  overflow:visible!important;
+
+  /* crop source margins a little more aggressively than v43 */
+  background-size:116% 116%!important;
+  background-position:50% 50%!important;
+
+  /* union: circular artwork + bottom plaque */
+  -webkit-mask-image:
+    radial-gradient(circle at 50% 42%,#000 0 43%,transparent 43.8%),
+    linear-gradient(#000 0 0);
+  -webkit-mask-size:100% 100%,88% 26%;
+  -webkit-mask-position:50% 50%,50% 91%;
+  -webkit-mask-repeat:no-repeat,no-repeat;
+  -webkit-mask-composite:source-over;
+  mask-image:
+    radial-gradient(circle at 50% 42%,#000 0 43%,transparent 43.8%),
+    linear-gradient(#000 0 0);
+  mask-size:100% 100%,88% 26%;
+  mask-position:50% 50%,50% 91%;
+  mask-repeat:no-repeat,no-repeat;
+  mask-composite:add;
+}
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card::before,
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card::after{
+  content:none!important;
+  display:none!important;
+  background:none!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card>.selection-icon,
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card>.card-copy,
+html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card>.difficulty-dots{
+  display:none!important;
+}
+
+/* --------------------------------------------------------------------------
+   GAMEPLAY HUD – exact master-coordinate registration.
+
+   Cinema master: 1672 × 941
+   Projection surface: x≈255, y≈197, w≈1163, h≈622
+   User target: HUD master x=293, y=220
+   Therefore inside #screen: left=38px, top=23px.
+
+   Applies to #game regardless of selected difficulty/genre/theme.
+   -------------------------------------------------------------------------- */
+html body.mq-noir-master #page #cinema #screen #game .hud{
+  position:absolute!important;
+  left:38px!important;
+  top:23px!important;
+  right:31px!important;
+  bottom:auto!important;
+  width:auto!important;
+  height:112px!important;
+  min-height:112px!important;
+  max-height:112px!important;
+  margin:0!important;
+  padding:12px 20px!important;
+  box-sizing:border-box!important;
+  display:grid!important;
+  grid-template-columns:minmax(235px,.90fr) minmax(330px,1.24fr) minmax(225px,.86fr)!important;
+  grid-template-rows:1fr!important;
+  align-items:center!important;
+  column-gap:18px!important;
+  transform:none!important;
+  z-index:25!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #game .hud-left{
+  grid-column:1!important;
+  grid-row:1!important;
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:15px!important;
+  margin:0!important;
+  transform:none!important;
+}
+html body.mq-noir-master #page #cinema #screen #game .hud-left .clapper-icon{
+  flex:0 0 auto!important;
+  margin:0!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #game .hud-center{
+  grid-column:2!important;
+  grid-row:1!important;
+  min-width:0!important;
+  height:100%!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  margin:0!important;
+  padding:0 8px!important;
+  transform:none!important;
+  text-align:center!important;
+}
+
+/* Difficulty + genre: intentionally different face, larger and visibly higher. */
+html body.mq-noir-master #page #cinema #screen #game .hud-center #themeLabel{
+  display:block!important;
+  position:relative!important;
+  top:-7px!important;
+  margin:0 0 2px!important;
+  padding:0!important;
+  color:#d9b86e!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:20px!important;
+  font-weight:700!important;
+  line-height:1!important;
+  letter-spacing:.095em!important;
+  text-transform:uppercase!important;
+  white-space:nowrap!important;
+  text-shadow:0 3px 13px rgba(0,0,0,.58)!important;
+}
+
+/* Question number gets its own display typography and much stronger hierarchy. */
+html body.mq-noir-master #page #cinema #screen #game .hud-center>.stat-value{
+  margin:0!important;
+  color:#f3dfb2!important;
+  font-family:var(--mq-display,"Arial Narrow","Helvetica Neue Condensed",sans-serif)!important;
+  font-size:36px!important;
+  font-weight:500!important;
+  line-height:.96!important;
+  letter-spacing:.055em!important;
+  text-transform:uppercase!important;
+  white-space:nowrap!important;
+  text-shadow:0 5px 18px rgba(0,0,0,.55)!important;
+}
+html body.mq-noir-master #page #cinema #screen #game .hud-center .progress-track{
+  width:min(78%,420px)!important;
+  margin:9px auto 0!important;
+  flex:0 0 auto!important;
+}
+
+/* Lives own the right-hand HUD column whenever game logic makes them visible. */
+html body.mq-noir-master #page #cinema #screen #game #filmLives{
+  grid-column:3!important;
+  grid-row:1!important;
+  justify-self:end!important;
+  align-self:center!important;
+  margin:0 8px 0 0!important;
+  transform:none!important;
+}
+
+/* Existing utility controls do not consume a grid column. */
+html body.mq-noir-master #page #cinema #screen #game .hud-actions{
+  position:absolute!important;
+  top:8px!important;
+  right:9px!important;
+  width:auto!important;
+  margin:0!important;
+  z-index:4!important;
+}
+
+/* The taller/repositioned HUD needs a clean content start below it. */
+html body.mq-noir-master #page #cinema #screen #game .question-wrap{
+  position:absolute!important;
+  inset:auto 0 0 0!important;
+  top:146px!important;
+  width:100%!important;
+  height:calc(100% - 146px)!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:10px 28px 44px!important;
+  box-sizing:border-box!important;
+  justify-content:center!important;
+}
+html body.mq-noir-master #page #cinema #screen #game .question-meta{
+  margin-top:0!important;
+}
+
+/* Compact fallback for genuinely narrow rendered projection surfaces. Geometry
+   remains tied to the same master anchors; only typography/gaps are softened. */
+@container mq-game-screen (max-width:900px){
+  html body.mq-noir-master #page #cinema #screen #game .hud{
+    grid-template-columns:minmax(180px,.9fr) minmax(260px,1.2fr) minmax(170px,.8fr)!important;
+    column-gap:10px!important;
+  }
+  html body.mq-noir-master #page #cinema #screen #game .hud-center #themeLabel{font-size:17px!important}
+  html body.mq-noir-master #page #cinema #screen #game .hud-center>.stat-value{font-size:31px!important}
+}
