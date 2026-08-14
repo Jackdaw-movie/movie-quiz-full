@@ -1,0 +1,64 @@
+/* Movie Quiz – canonical avatar alignment v46
+   MASTER: 1672 × 941.
+   IMPORTANT: all coordinates below are master pixels. The complete
+   .mq-avatar-dialog scales uniformly; individual positions never use vw/vh.
+
+   Circular asset wells (locked to artwork):
+   LEFT  x=264 y=387 w=234 h=234, centre=(381,504)
+   RIGHT x=1194 y=387 w=234 h=234, centre=(1311,504)
+
+   Side avatar artwork is 74.8% of the well (15% smaller than the former 88%).
+   LEFT artwork correction:  x=0,   y=-11px
+   RIGHT artwork correction: x=-14, y=-11px
+   The -14px right correction includes the user's final additional -5px shift.
+*/
+
+#mqAvatarModal .mq-avatar-carousel-choice.is-left-1,
+#mqAvatarModal .mq-avatar-carousel-choice.is-right-1{
+  top:387px!important;
+  width:234px!important;
+  height:234px!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:50%!important;
+  overflow:hidden!important;
+  transform:none!important;
+  box-sizing:border-box!important;
+}
+#mqAvatarModal .mq-avatar-carousel-choice.is-left-1{left:264px!important}
+#mqAvatarModal .mq-avatar-carousel-choice.is-right-1{left:1194px!important}
+
+#mqAvatarModal .mq-avatar-carousel-choice.is-left-1 .mq-avatar-frame,
+#mqAvatarModal .mq-avatar-carousel-choice.is-right-1 .mq-avatar-frame{
+  position:absolute!important;
+  inset:0!important;
+  display:grid!important;
+  place-items:center!important;
+  width:234px!important;
+  height:234px!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  border-radius:50%!important;
+  box-sizing:border-box!important;
+}
+
+#mqAvatarModal .mq-avatar-carousel-choice.is-left-1 .mq-avatar-img,
+#mqAvatarModal .mq-avatar-carousel-choice.is-right-1 .mq-avatar-img{
+  display:block!important;
+  width:74.8%!important;
+  height:74.8%!important;
+  max-width:none!important;
+  max-height:none!important;
+  margin:0!important;
+  object-fit:contain!important;
+  object-position:50% 50%!important;
+  transform-origin:50% 50%!important;
+}
+#mqAvatarModal .mq-avatar-carousel-choice.is-left-1 .mq-avatar-img{
+  transform:translate3d(0,-11px,0)!important;
+}
+#mqAvatarModal .mq-avatar-carousel-choice.is-right-1 .mq-avatar-img{
+  transform:translate3d(-14px,-11px,0)!important;
+}
