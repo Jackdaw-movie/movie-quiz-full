@@ -1,0 +1,508 @@
+/* Movie Quiz – Cinema UI v53.2
+   Second premium polish pass requested after v53/v53.1.
+   Visual/layout override only: no quiz logic, scoring or cinema-master geometry changes. */
+
+/* --------------------------------------------------------------------------
+   GENRE HEADER CONTROLS – master-coordinate registration + full redesign
+   Cinema master 1672x941; screen x≈255 y≈197 w≈1163 h≈622.
+   Requested button top-left: master x=350, y=200.
+   => screen-local x=(350-255)/1163=8.16853cqw
+      screen-local y=(200-197)/622=.48232cqh
+   -------------------------------------------------------------------------- */
+html body.mq-noir-master #page #cinema #screen #genres #difficultyBack,
+html body.mq-noir-master #page #cinema #screen #genres>#difficultyBack{
+  position:absolute!important;
+  left:8.16853cqw!important;
+  top:.48232cqh!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:auto!important;
+  min-width:166px!important;
+  min-height:42px!important;
+  margin:0!important;
+  padding:9px 17px 9px 42px!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+  isolation:isolate!important;
+  border:1px solid rgba(207,157,77,.72)!important;
+  border-radius:4px!important;
+  outline:0!important;
+  background:
+    radial-gradient(ellipse at 50% -30%,rgba(255,223,160,.12),transparent 58%),
+    linear-gradient(180deg,#392716 0%,#160e08 50%,#090605 100%)!important;
+  color:#f0d59c!important;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.76),
+    inset 0 0 0 3px rgba(224,178,94,.055),
+    inset 0 1px rgba(255,238,197,.10),
+    0 6px 15px rgba(0,0,0,.30)!important;
+  font-family:var(--mq-display,"Oswald","Arial Narrow",sans-serif)!important;
+  font-size:11px!important;
+  font-weight:600!important;
+  line-height:1!important;
+  letter-spacing:.085em!important;
+  text-transform:uppercase!important;
+  text-shadow:0 1px 1px rgba(0,0,0,.85)!important;
+  cursor:pointer!important;
+  z-index:90!important;
+  transform:none!important;
+  transition:transform .16s ease,border-color .16s ease,background .16s ease,color .16s ease,box-shadow .16s ease!important;
+}
+html body.mq-noir-master #page #cinema #screen #genres #difficultyBack::before{
+  content:""!important;
+  position:absolute!important;
+  left:31px!important;
+  top:7px!important;
+  bottom:7px!important;
+  width:1px!important;
+  background:linear-gradient(180deg,transparent,rgba(224,177,92,.58),transparent)!important;
+  box-shadow:1px 0 rgba(0,0,0,.65)!important;
+  pointer-events:none!important;
+}
+html body.mq-noir-master #page #cinema #screen #genres #difficultyBack::after{
+  content:""!important;
+  position:absolute!important;
+  inset:3px!important;
+  z-index:-1!important;
+  border:1px solid rgba(220,173,88,.10)!important;
+  border-radius:2px!important;
+  background:linear-gradient(108deg,transparent 18%,rgba(255,238,199,.08) 38%,transparent 55%) -160% 0/55% 100% no-repeat!important;
+  pointer-events:none!important;
+  transition:background-position .28s ease!important;
+}
+html body.mq-noir-master #page #cinema #screen #genres #difficultyBack svg{
+  position:absolute!important;
+  left:10px!important;
+  top:50%!important;
+  width:16px!important;
+  height:16px!important;
+  transform:translateY(-50%)!important;
+  fill:none!important;
+  stroke:#e7bd70!important;
+  stroke-width:2!important;
+  filter:drop-shadow(0 1px rgba(0,0,0,.8))!important;
+}
+html body.mq-noir-master #page #cinema #screen #genres #difficultyBack:hover,
+html body.mq-noir-master #page #cinema #screen #genres #difficultyBack:focus-visible{
+  border-color:rgba(244,207,135,.92)!important;
+  background:linear-gradient(180deg,#52371d 0%,#211309 52%,#0d0805 100%)!important;
+  color:#ffe8b6!important;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.72),inset 0 0 0 3px rgba(239,194,108,.075),0 8px 18px rgba(0,0,0,.34),0 0 14px rgba(220,165,72,.10)!important;
+  transform:translateY(-1px)!important;
+  outline:1px solid rgba(247,216,153,.72)!important;
+  outline-offset:2px!important;
+}
+html body.mq-noir-master #page #cinema #screen #genres #difficultyBack:hover::after,
+html body.mq-noir-master #page #cinema #screen #genres #difficultyBack:focus-visible::after{
+  background-position:190% 0!important;
+}
+
+/* Three tools: vertical move only. Existing right edge, gap and dimensions stay. */
+html body.mq-noir-master #page #cinema #screen #difficulty>.mq-selection-tools,
+html body.mq-noir-master #page #cinema #screen #genres>.mq-selection-tools{
+  top:.48232cqh!important;
+  bottom:auto!important;
+  transform:none!important;
+}
+
+/* --------------------------------------------------------------------------
+   SCORE HUD – period clapper + proper score instrument
+   -------------------------------------------------------------------------- */
+html body.mq-noir-master #page #cinema #screen #game .hud-left{
+  position:relative!important;
+  isolation:isolate!important;
+  min-height:76px!important;
+  padding:9px 13px 9px 10px!important;
+  gap:13px!important;
+  box-sizing:border-box!important;
+  border:1px solid rgba(181,132,64,.44)!important;
+  border-radius:5px!important;
+  background:
+    radial-gradient(ellipse at 32% 0,rgba(255,225,168,.07),transparent 52%),
+    linear-gradient(180deg,rgba(39,27,17,.92),rgba(10,7,5,.94))!important;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.68),inset 0 0 0 3px rgba(219,170,88,.035),0 6px 15px rgba(0,0,0,.20)!important;
+}
+html body.mq-noir-master #page #cinema #screen #game .hud-left::before{
+  content:""!important;
+  position:absolute!important;
+  left:9px!important;
+  right:9px!important;
+  top:5px!important;
+  height:1px!important;
+  background:linear-gradient(90deg,transparent,rgba(221,174,90,.30),transparent)!important;
+  pointer-events:none!important;
+}
+html body.mq-noir-master #page #cinema #screen #game .hud-left::after{
+  content:""!important;
+  position:absolute!important;
+  left:9px!important;
+  right:9px!important;
+  bottom:5px!important;
+  height:1px!important;
+  background:linear-gradient(90deg,transparent,rgba(221,174,90,.18),transparent)!important;
+  pointer-events:none!important;
+}
+html body.mq-noir-master #page #cinema #screen #game .hud-left>.clapper-icon{
+  position:relative!important;
+  flex:0 0 62px!important;
+  width:62px!important;
+  height:47px!important;
+  margin:5px 0 0!important;
+  overflow:visible!important;
+  border:1px solid #6e4d28!important;
+  border-radius:2px 2px 4px 4px!important;
+  background:
+    linear-gradient(90deg,transparent 0 9px,rgba(210,164,83,.20) 9px 10px,transparent 10px 100%),
+    linear-gradient(180deg,#20160e 0 55%,#090605 56% 100%)!important;
+  box-shadow:inset 0 0 0 1px #080504,inset 0 1px rgba(255,234,190,.08),0 4px 8px rgba(0,0,0,.34)!important;
+  transform:rotate(-1.5deg)!important;
+}
+html body.mq-noir-master #page #cinema #screen #game .hud-left>.clapper-icon::before{
+  content:""!important;
+  position:absolute!important;
+  left:-3px!important;
+  top:-13px!important;
+  width:66px!important;
+  height:15px!important;
+  box-sizing:border-box!important;
+  border:1px solid #684823!important;
+  border-radius:2px!important;
+  background:repeating-linear-gradient(135deg,#e3cf9e 0 10px,#1a130d 10px 20px)!important;
+  box-shadow:inset 0 1px rgba(255,244,211,.20),0 2px 4px rgba(0,0,0,.42)!important;
+  transform:rotate(-5deg)!important;
+  transform-origin:5px 100%!important;
+}
+html body.mq-noir-master #page #cinema #screen #game .hud-left>.clapper-icon::after{
+  content:"JACKDAW"!important;
+  position:absolute!important;
+  left:12px!important;
+  right:4px!important;
+  top:10px!important;
+  color:#d7b879!important;
+  font-family:var(--mq-display,"Oswald","Arial Narrow",sans-serif)!important;
+  font-size:8px!important;
+  font-weight:600!important;
+  line-height:1!important;
+  letter-spacing:.16em!important;
+  text-align:center!important;
+  text-shadow:0 1px #000!important;
+  pointer-events:none!important;
+}
+html body.mq-noir-master #page #cinema #screen #game .hud-left>.clapper-icon>i{
+  display:block!important;
+  position:absolute!important;
+  left:10px!important;
+  right:7px!important;
+  bottom:10px!important;
+  width:auto!important;
+  height:1px!important;
+  border:0!important;
+  background:rgba(210,168,91,.38)!important;
+  box-shadow:0 5px rgba(210,168,91,.20)!important;
+  transform:none!important;
+}
+html body.mq-noir-master #page #cinema #screen #game .hud-left>div:not(.clapper-icon){
+  position:relative!important;
+  min-width:110px!important;
+  padding:2px 3px 2px 0!important;
+  text-align:left!important;
+}
+html body.mq-noir-master #page #cinema #screen #game .hud-left .stat-label{
+  margin:0 0 4px!important;
+  color:#b99559!important;
+  font-family:var(--mq-display,"Oswald","Arial Narrow",sans-serif)!important;
+  font-size:10px!important;
+  font-weight:500!important;
+  line-height:1!important;
+  letter-spacing:.18em!important;
+  text-transform:uppercase!important;
+  text-shadow:0 1px #000!important;
+}
+html body.mq-noir-master #page #cinema #screen #game .hud-left .stat-value{
+  display:flex!important;
+  align-items:baseline!important;
+  gap:7px!important;
+  margin:0!important;
+  color:#d7bd85!important;
+  font-family:var(--mq-display,"Oswald","Arial Narrow",sans-serif)!important;
+  font-size:24px!important;
+  font-weight:400!important;
+  line-height:.92!important;
+  letter-spacing:.03em!important;
+  white-space:nowrap!important;
+  text-shadow:0 2px 8px rgba(0,0,0,.66)!important;
+}
+html body.mq-noir-master #page #cinema #screen #game .hud-left #score{
+  display:inline-block!important;
+  min-width:24px!important;
+  color:#f4d38d!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:39px!important;
+  font-weight:700!important;
+  line-height:.78!important;
+  letter-spacing:-.02em!important;
+  text-align:right!important;
+  text-shadow:0 2px 1px rgba(0,0,0,.75),0 0 12px rgba(224,168,70,.09)!important;
+}
+
+/* --------------------------------------------------------------------------
+   ANSWERS – letter and copy are one readable ticket; rows grow together
+   -------------------------------------------------------------------------- */
+html body.mq-noir-master #page #cinema #screen #game #answers.answers{
+  grid-auto-rows:auto!important;
+  align-items:stretch!important;
+  overflow:visible!important;
+}
+html body.mq-noir-master #page #cinema #screen #game #answers.answers>.answer{
+  position:relative!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:70px!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:12px 18px 12px 66px!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+  white-space:normal!important;
+  text-align:left!important;
+  text-overflow:clip!important;
+  overflow-wrap:break-word!important;
+  word-break:normal!important;
+  hyphens:auto!important;
+  line-height:1.18!important;
+}
+html body.mq-noir-master #page #cinema #screen #game #answers.answers>.answer::before{
+  left:14px!important;
+  top:50%!important;
+  width:38px!important;
+  height:38px!important;
+  transform:translateY(-50%)!important;
+}
+html body.mq-noir-master #page #cinema #screen #game #answers.answers>.answer>*{
+  position:relative!important;
+  z-index:2!important;
+  min-width:0!important;
+  max-width:100%!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  overflow-wrap:break-word!important;
+  word-break:normal!important;
+}
+
+/* --------------------------------------------------------------------------
+   FILM LIVES v53.2 – 1.5x wider, 3x taller, larger real-film frames
+   -------------------------------------------------------------------------- */
+html body.mq-noir-master #page #cinema #screen #game #filmLives.film-lives,
+html body.mq-noir-master #page #cinema #screen #game #filmLives{
+  position:relative!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex-wrap:nowrap!important;
+  width:261px!important;
+  min-width:261px!important;
+  max-width:261px!important;
+  height:120px!important;
+  min-height:120px!important;
+  max-height:120px!important;
+  padding:12px 8px!important;
+  gap:0!important;
+  overflow:visible!important;
+  box-sizing:border-box!important;
+  border:1px solid rgba(143,91,46,.92)!important;
+  border-radius:6px!important;
+  background:
+    repeating-linear-gradient(90deg,transparent 0 8px,#bd874b 8px 14px,transparent 14px 20px) top 4px left 7px/247px 7px no-repeat,
+    repeating-linear-gradient(90deg,transparent 0 8px,#a96f3e 8px 14px,transparent 14px 20px) bottom 4px left 7px/247px 7px no-repeat,
+    linear-gradient(112deg,rgba(255,226,168,.075),transparent 24%),
+    repeating-linear-gradient(96deg,rgba(255,238,196,.018) 0 1px,transparent 1px 4px),
+    linear-gradient(180deg,#1d130c 0%,#060403 48%,#170e09 100%)!important;
+  filter:drop-shadow(0 7px 10px rgba(0,0,0,.38))!important;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.82),inset 0 0 0 3px rgba(181,120,59,.055),inset 0 13px 18px rgba(128,70,30,.10),inset 0 -13px 18px rgba(112,57,26,.10)!important;
+}
+html body.mq-noir-master #page #cinema #screen #game #filmLives::before,
+html body.mq-noir-master #page #cinema #screen #game #filmLives::after{
+  content:""!important;
+  position:absolute!important;
+  left:9px!important;
+  right:9px!important;
+  height:1px!important;
+  pointer-events:none!important;
+  background:linear-gradient(90deg,transparent,rgba(245,201,121,.34),transparent)!important;
+}
+html body.mq-noir-master #page #cinema #screen #game #filmLives::before{top:13px!important}
+html body.mq-noir-master #page #cinema #screen #game #filmLives::after{bottom:13px!important}
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life{
+  position:relative!important;
+  flex:0 0 82px!important;
+  width:82px!important;
+  min-width:82px!important;
+  max-width:82px!important;
+  height:94px!important;
+  min-height:94px!important;
+  max-height:94px!important;
+  margin:0!important;
+  overflow:visible!important;
+  box-sizing:border-box!important;
+  border:1px solid rgba(116,70,37,.98)!important;
+  border-radius:0!important;
+  opacity:1!important;
+  transform:none!important;
+  transform-origin:50% 62%!important;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 20.2C10.8 19.1 4 14.8 4 9.25C4 6.55 5.88 4.8 8.35 4.8C9.95 4.8 11.18 5.58 12 6.82C12.82 5.58 14.05 4.8 15.65 4.8C18.12 4.8 20 6.55 20 9.25C20 14.8 13.2 19.1 12 20.2Z' fill='%23a84a3b' fill-opacity='.88' stroke='%2346120e' stroke-width='.75'/%3E%3C/svg%3E") center/39px 39px no-repeat,
+    radial-gradient(ellipse at 50% 48%,rgba(237,202,129,.90) 0 30%,rgba(151,94,43,.77) 48%,rgba(53,29,16,.34) 70%),
+    linear-gradient(112deg,transparent 8%,rgba(255,242,206,.16) 31%,transparent 48%),
+    repeating-linear-gradient(100deg,rgba(255,255,255,.014) 0 1px,rgba(0,0,0,.022) 1px 4px),
+    linear-gradient(180deg,#302014 0%,#100a07 66%,#24160e 100%)!important;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.80),inset 0 1px rgba(255,226,174,.09),0 0 12px rgba(214,153,69,.06)!important;
+  filter:saturate(.92) contrast(1.06)!important;
+}
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life+.life{margin-left:-1px!important}
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life:first-child{border-radius:3px 0 0 3px!important}
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life:last-child{border-radius:0 3px 3px 0!important}
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life::before,
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life::after{
+  content:""!important;
+  position:absolute!important;
+  pointer-events:none!important;
+  opacity:0!important;
+}
+
+/* Burn lasts for the same ~1.74 s as the existing JS state.
+   Flame field uses hot cores, orange bodies and dark red outer tongues. */
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning{
+  z-index:12!important;
+  animation:mq532BurnFrame 1.72s cubic-bezier(.15,.67,.25,1) both!important;
+}
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning::before{
+  inset:-58px -15px -10px!important;
+  z-index:5!important;
+  opacity:1!important;
+  transform-origin:50% 100%!important;
+  background:
+    radial-gradient(17% 71% at 3% 100%,#fffbd9 0 7%,#ffd66d 12%,#ff861f 27%,#e64308 43%,rgba(103,19,2,.82) 58%,transparent 73%),
+    radial-gradient(22% 91% at 14% 100%,#fffce0 0 7%,#ffdd73 12%,#ff8d20 27%,#ee4808 43%,rgba(117,20,1,.82) 59%,transparent 74%),
+    radial-gradient(19% 78% at 26% 100%,#fff8cc 0 7%,#ffcb59 13%,#ff7817 29%,#de3605 44%,rgba(96,15,1,.80) 59%,transparent 72%),
+    radial-gradient(23% 100% at 39% 100%,#fffde4 0 7%,#ffe37b 12%,#ff9625 27%,#f04d09 43%,rgba(119,22,1,.84) 60%,transparent 75%),
+    radial-gradient(21% 82% at 51% 100%,#fff9d1 0 7%,#ffd162 13%,#ff7c19 29%,#df3906 44%,rgba(102,16,1,.81) 60%,transparent 73%),
+    radial-gradient(24% 103% at 63% 100%,#fffde2 0 7%,#ffe179 12%,#ff9223 27%,#ec4808 43%,rgba(116,21,1,.84) 60%,transparent 75%),
+    radial-gradient(20% 80% at 75% 100%,#fff9cf 0 7%,#ffce5e 13%,#ff7a18 29%,#de3705 44%,rgba(99,15,1,.80) 59%,transparent 73%),
+    radial-gradient(23% 94% at 87% 100%,#fffde0 0 7%,#ffdc70 12%,#ff8b20 28%,#e94407 43%,rgba(111,19,1,.82) 60%,transparent 74%),
+    radial-gradient(18% 73% at 98% 100%,#fff9d1 0 7%,#ffd05f 13%,#ff7f19 29%,#df3905 44%,rgba(100,16,1,.80) 59%,transparent 72%),
+    radial-gradient(ellipse at 50% 103%,rgba(255,214,91,.72) 0 15%,rgba(255,82,10,.25) 48%,transparent 72%)!important;
+  filter:drop-shadow(0 -5px 7px rgba(255,91,10,.46)) drop-shadow(0 -16px 16px rgba(255,118,15,.14))!important;
+  animation:mq532FlameDance .13s steps(2,end) infinite alternate,mq532FlameEnvelope 1.72s ease-out both!important;
+}
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning::after{
+  inset:-2px!important;
+  z-index:4!important;
+  opacity:1!important;
+  border-radius:2px!important;
+  background:
+    radial-gradient(ellipse at 49% 49%,#030202 0 13%,#150503 20%,#561305 28%,#c83a07 34%,#ff7c19 38%,rgba(255,185,64,.76) 41%,transparent 47%),
+    radial-gradient(circle at 27% 30%,rgba(255,135,24,.60),rgba(142,37,4,.28) 18%,transparent 31%),
+    radial-gradient(circle at 73% 66%,rgba(255,98,14,.52),rgba(119,26,3,.24) 20%,transparent 34%),
+    repeating-radial-gradient(circle at 50% 50%,rgba(51,13,5,.20) 0 2px,transparent 2px 5px),
+    linear-gradient(180deg,rgba(58,13,5,.10),rgba(7,3,2,.88))!important;
+  box-shadow:inset 0 0 24px rgba(0,0,0,.92),0 0 18px rgba(255,80,8,.25)!important;
+  transform:scale(.10)!important;
+  animation:mq532CharHole 1.66s cubic-bezier(.16,.72,.27,1) both!important;
+}
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.dead,
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burned{
+  border-color:rgba(70,36,22,.96)!important;
+  background:
+    radial-gradient(ellipse at 48% 47%,#020202 0 29%,#0d0403 40%,#2c0a05 53%,#110604 69%,#070403 81%),
+    radial-gradient(circle at 22% 25%,rgba(121,39,10,.26),transparent 20%),
+    radial-gradient(circle at 78% 71%,rgba(95,28,8,.22),transparent 23%),
+    repeating-linear-gradient(113deg,rgba(143,58,21,.07) 0 1px,transparent 1px 5px),
+    linear-gradient(180deg,#130906,#030202)!important;
+  box-shadow:inset 0 0 26px rgba(0,0,0,.96),inset 0 0 0 1px rgba(118,45,20,.17)!important;
+  filter:saturate(.42) brightness(.66)!important;
+}
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.dead::before,
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burned::before{
+  inset:9px!important;
+  opacity:.50!important;
+  border:1px solid rgba(151,55,19,.30)!important;
+  border-radius:46% 54% 49% 56%!important;
+  background:radial-gradient(ellipse,#050202 0 55%,rgba(71,18,5,.34) 70%,transparent 78%)!important;
+  box-shadow:0 0 8px rgba(255,77,8,.07)!important;
+}
+
+@keyframes mq532BurnFrame{
+  0%{filter:saturate(.95) brightness(1);transform:translate3d(0,0,0) scale(1);box-shadow:inset 0 0 0 1px rgba(0,0,0,.8),0 0 0 rgba(255,90,8,0)}
+  8%{filter:saturate(1.45) brightness(1.34);transform:translate3d(-1px,0,0) scale(1.012);box-shadow:inset 0 0 0 1px rgba(0,0,0,.8),0 0 16px rgba(255,119,17,.22)}
+  22%{filter:saturate(1.85) brightness(1.22);transform:translate3d(1px,-.5px,0) scale(1.018);box-shadow:inset 0 0 10px rgba(255,92,10,.28),0 0 22px rgba(255,84,7,.20)}
+  46%{filter:saturate(1.55) brightness(.96);transform:translate3d(-.8px,.5px,0) scale(1.005);box-shadow:inset 0 0 18px rgba(30,5,2,.68),0 0 19px rgba(255,75,5,.16)}
+  72%{filter:saturate(.95) brightness(.78);transform:translate3d(.5px,0,0) scale(.99);box-shadow:inset 0 0 27px rgba(0,0,0,.86),0 0 10px rgba(255,61,4,.10)}
+  100%{filter:saturate(.48) brightness(.66);transform:translate3d(0,0,0) scale(.982);box-shadow:inset 0 0 30px rgba(0,0,0,.96),0 0 0 rgba(255,61,4,0)}
+}
+@keyframes mq532FlameDance{
+  from{transform:translate3d(-1px,2px,0) scaleX(.975) scaleY(.96) skewX(-1.2deg);filter:drop-shadow(0 -4px 7px rgba(255,91,10,.42)) drop-shadow(0 -14px 15px rgba(255,118,15,.12))}
+  to{transform:translate3d(1px,-4px,0) scaleX(1.035) scaleY(1.09) skewX(1.5deg);filter:drop-shadow(0 -7px 9px rgba(255,95,10,.52)) drop-shadow(0 -20px 18px rgba(255,121,16,.17))}
+}
+@keyframes mq532FlameEnvelope{
+  0%{opacity:0;clip-path:inset(92% 0 0 0)}
+  7%{opacity:1;clip-path:inset(35% 0 0 0)}
+  22%{opacity:1;clip-path:inset(0 0 0 0)}
+  72%{opacity:.96;clip-path:inset(8% 0 0 0)}
+  100%{opacity:.08;clip-path:inset(75% 0 0 0)}
+}
+@keyframes mq532CharHole{
+  0%{transform:scale(.08);opacity:.20;filter:brightness(1.45) saturate(1.5)}
+  16%{transform:scale(.30);opacity:.82;filter:brightness(1.25) saturate(1.65)}
+  42%{transform:scale(.68);opacity:1;filter:brightness(1.04) saturate(1.45)}
+  73%{transform:scale(.96);opacity:1;filter:brightness(.82) saturate(1.1)}
+  100%{transform:scale(1.04);opacity:1;filter:brightness(.68) saturate(.72)}
+}
+
+/* Keep the enlarged strip centered in HUD column and clear of the question. */
+html body.mq-noir-master #page #cinema #screen #game #filmLives{
+  align-self:center!important;
+  justify-self:end!important;
+  margin:0!important;
+  transform:none!important;
+}
+
+/* Accessible reduced-motion variant: keep clear burn-state feedback, no flicker. */
+@media (prefers-reduced-motion:reduce){
+  html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning,
+  html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning::before,
+  html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+  }
+}
+
+/* Preserve relative scaling on narrower screens instead of allowing overflow. */
+@container mq-game-screen (max-width:900px){
+  html body.mq-noir-master #page #cinema #screen #game #filmLives{
+    width:235px!important;
+    min-width:235px!important;
+    max-width:235px!important;
+    height:108px!important;
+    min-height:108px!important;
+    max-height:108px!important;
+  }
+  html body.mq-noir-master #page #cinema #screen #game #filmLives>.life{
+    flex-basis:73px!important;
+    width:73px!important;
+    min-width:73px!important;
+    max-width:73px!important;
+    height:84px!important;
+    min-height:84px!important;
+    max-height:84px!important;
+  }
+  html body.mq-noir-master #page #cinema #screen #game .hud-left>.clapper-icon{
+    flex-basis:54px!important;
+    width:54px!important;
+    height:43px!important;
+  }
+  html body.mq-noir-master #page #cinema #screen #game .hud-left>.clapper-icon::before{width:58px!important}
+}
