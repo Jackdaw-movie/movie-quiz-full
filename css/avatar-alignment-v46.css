@@ -1,4 +1,4 @@
-/* Movie Quiz – canonical avatar alignment v46
+/* Movie Quiz – canonical avatar alignment v47
    MASTER: 1672 × 941.
    IMPORTANT: all coordinates below are master pixels. The complete
    .mq-avatar-dialog scales uniformly; individual positions never use vw/vh.
@@ -9,8 +9,9 @@
 
    Side avatar artwork is 74.8% of the well (15% smaller than the former 88%).
    LEFT artwork correction:  x=0,   y=-11px
-   RIGHT artwork correction: x=-14, y=-11px
-   The -14px right correction includes the user's final additional -5px shift.
+   RIGHT artwork correction: x=-19, y=-11px
+   The -19px right correction is canonical as of 2026-08-14 and includes the
+   user's latest additional request to move the right avatar another 5px left.
 */
 
 #mqAvatarModal .mq-avatar-carousel-choice.is-left-1,
@@ -60,5 +61,5 @@
   transform:translate3d(0,-11px,0)!important;
 }
 #mqAvatarModal .mq-avatar-carousel-choice.is-right-1 .mq-avatar-img{
-  transform:translate3d(-14px,-11px,0)!important;
+  transform:translate3d(-19px,-11px,0)!important;
 }
