@@ -1,7 +1,6 @@
-/* Movie Quiz – approved difficulty buttons v47
-   Native design size: 300 × 300 master px each.
-   The uploaded artwork itself is the button. It must be rendered whole,
-   without masks, crops, clip-paths or replacement card backgrounds. */
+/* Movie Quiz – final approved difficulty buttons v48
+   Native source artwork: 300 × 300 px.
+   Artwork itself is the whole button, with transparent outer background. */
 
 html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-grid{
   grid-template-columns:repeat(3,25.79536cqw)!important;
@@ -52,16 +51,15 @@ html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card:acti
 }
 
 html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card[data-difficulty="easy"]{
-  background-image:url('../assets/difficulty/difficulty-easy.webp?v=42.0')!important;
+  background-image:url('../assets/difficulty/difficulty-easy.webp?v=48.0')!important;
 }
 html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card[data-difficulty="medium"]{
-  background-image:url('../assets/difficulty/difficulty-medium.webp?v=42.0')!important;
+  background-image:url('../assets/difficulty/difficulty-medium.webp?v=48.0')!important;
 }
 html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card[data-difficulty="hard"]{
-  background-image:url('../assets/difficulty/difficulty-hard.webp?v=42.0')!important;
+  background-image:url('../assets/difficulty/difficulty-hard.webp?v=48.0')!important;
 }
 
-/* Remove every leftover legacy layer from .selection-card. */
 html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card::before,
 html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card::after{
   content:none!important;
@@ -72,7 +70,6 @@ html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card::aft
   filter:none!important;
 }
 
-/* The approved image already contains the complete icon and label. */
 html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card>.selection-icon,
 html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card>.card-copy,
 html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card>.difficulty-dots{
