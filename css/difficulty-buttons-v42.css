@@ -1,7 +1,7 @@
-/* Movie Quiz – approved difficulty buttons v43
+/* Movie Quiz – approved difficulty buttons v47
    Native design size: 300 × 300 master px each.
-   This layer fully neutralizes the legacy .selection-card visual/hover rules so
-   the approved artwork itself is the button. */
+   The uploaded artwork itself is the button. It must be rendered whole,
+   without masks, crops, clip-paths or replacement card backgrounds. */
 
 html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-grid{
   grid-template-columns:repeat(3,25.79536cqw)!important;
@@ -33,9 +33,12 @@ html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card:acti
   outline:0!important;
   background-color:transparent!important;
   background-repeat:no-repeat!important;
-  background-position:center!important;
-  /* Slight crop removes the dark source-image margin around the actual plaque. */
-  background-size:109% 109%!important;
+  background-position:50% 50%!important;
+  background-size:contain!important;
+  -webkit-mask:none!important;
+  mask:none!important;
+  clip-path:none!important;
+  -webkit-clip-path:none!important;
   box-shadow:none!important;
   text-shadow:none!important;
   backdrop-filter:none!important;
@@ -69,15 +72,13 @@ html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card::aft
   filter:none!important;
 }
 
-/* Approved art already contains icon and label. */
+/* The approved image already contains the complete icon and label. */
 html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card>.selection-icon,
 html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card>.card-copy,
 html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card>.difficulty-dots{
   display:none!important;
 }
 
-/* One single hover system. No legacy background, border or box-shadow is allowed
-   to return on hover. The small lift avoids the three 300px cards colliding. */
 html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card{
   transform:translate3d(0,0,0) scale(1)!important;
   filter:brightness(1) saturate(1)!important;
