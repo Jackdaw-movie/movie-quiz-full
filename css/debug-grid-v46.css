@@ -1,0 +1,75 @@
+/* Movie Quiz – non-invasive master grid v46
+   This layer NEVER changes page/stage layout. It is a fixed viewport overlay
+   registered visually to the active master only. No body classes, no stage
+   children, no transform writes, no layout-affecting selectors. */
+
+#mqDebugGridOverlayV46{
+  position:fixed!important;
+  left:0!important;
+  top:0!important;
+  width:0!important;
+  height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  overflow:hidden!important;
+  display:none!important;
+  pointer-events:none!important;
+  z-index:2147483600!important;
+  box-sizing:border-box!important;
+  contain:strict!important;
+  isolation:isolate!important;
+}
+#mqDebugGridOverlayV46[data-active="1"]{display:block!important}
+#mqDebugGridCanvasV46{
+  position:absolute!important;
+  inset:0!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  pointer-events:none!important;
+}
+
+#mqDebugToggleV46{
+  position:fixed!important;
+  left:12px!important;
+  bottom:12px!important;
+  z-index:2147483647!important;
+  display:block!important;
+  width:auto!important;
+  height:auto!important;
+  margin:0!important;
+  padding:8px 10px!important;
+  border:1px solid rgba(255,210,70,.75)!important;
+  border-radius:7px!important;
+  background:rgba(12,10,7,.92)!important;
+  color:#ffd246!important;
+  font:700 12px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;
+  letter-spacing:0!important;
+  text-transform:none!important;
+  box-shadow:0 5px 18px rgba(0,0,0,.32)!important;
+  cursor:pointer!important;
+}
+#mqDebugToggleV46:hover{background:rgba(30,24,12,.96)!important}
+
+#mqDebugReadoutV46{
+  position:fixed!important;
+  z-index:2147483647!important;
+  display:none!important;
+  min-width:170px!important;
+  max-width:320px!important;
+  margin:0!important;
+  padding:6px 8px!important;
+  border:1px solid rgba(255,255,255,.28)!important;
+  border-radius:6px!important;
+  background:rgba(8,8,10,.90)!important;
+  color:#fff!important;
+  font:600 12px/1.35 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;
+  white-space:pre!important;
+  pointer-events:none!important;
+  box-shadow:0 5px 16px rgba(0,0,0,.3)!important;
+}
+#mqDebugReadoutV46[data-active="1"]{display:block!important}
