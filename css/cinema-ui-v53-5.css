@@ -1,0 +1,185 @@
+/* Movie Quiz – Cinema UI v53.5
+   Precision correction built directly against the actually loaded v53.3 state.
+
+   User-measured targets in the 1672×941 cinema master:
+   - left score/clapper box top: y=247
+   - film lives top: y=247
+   - film lives bottom: y=338 (height 91 px)
+
+   Important:
+   v53.5 deliberately DISABLES the experimental CSS flames from v53.3.
+   Fire is supplied only by the original right-to-left canvas burn algorithm,
+   enhanced in js/98-debug-grid.js.
+*/
+
+/* ==========================================================================
+   LEFT SCORE / CLAPPER BOX
+   Current measured top in v53.3 = y=276.
+   Required top = y=247.
+   v53.3 uses top:21px, therefore 21 - 29 = -8px.
+   No horizontal movement.
+   ========================================================================== */
+html body.mq-noir-master #page #cinema #screen #game .hud-left{
+  position:relative!important;
+  top:-8px!important;
+  transform:none!important;
+}
+
+/* Solid black clapper body. */
+html body.mq-noir-master #page #cinema #screen #game .hud-left>.clapper-icon{
+  opacity:1!important;
+  background:
+    linear-gradient(90deg,transparent 0 9px,rgba(255,255,255,.075) 9px 10px,transparent 10px 100%),
+    linear-gradient(180deg,#0b0b0b 0 54%,#020202 55% 100%)!important;
+  border-color:#29241f!important;
+  box-shadow:
+    inset 0 0 0 1px #000,
+    inset 0 1px rgba(255,255,255,.09),
+    0 4px 8px rgba(0,0,0,.42)!important;
+}
+
+/* Preserve the hinged white/black stripes. */
+html body.mq-noir-master #page #cinema #screen #game .hud-left>.clapper-icon::before{
+  content:""!important;
+  display:block!important;
+  background:
+    repeating-linear-gradient(
+      135deg,
+      #f2f0e9 0 10px,
+      #070707 10px 20px
+    )!important;
+  border-color:#29241f!important;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.24),
+    0 2px 4px rgba(0,0,0,.46)!important;
+}
+
+/* JACKDAW stays removed. */
+html body.mq-noir-master #page #cinema #screen #game .hud-left>.clapper-icon::after{
+  content:none!important;
+  display:none!important;
+}
+
+/* Keep the slate writing lines visible on the black body. */
+html body.mq-noir-master #page #cinema #screen #game .hud-left>.clapper-icon>i{
+  display:block!important;
+  background:rgba(255,255,255,.17)!important;
+  box-shadow:0 5px rgba(255,255,255,.09)!important;
+}
+
+
+/* ==========================================================================
+   FILM LIVES
+   v53.3 already places the top edge at the requested y=247.
+   Therefore we keep align-self:start and change ONLY the height to 91px.
+   247 + 91 = 338 exactly.
+   ========================================================================== */
+html body.mq-noir-master #page #cinema #screen #game #filmLives,
+html body.mq-noir-master #page #cinema #screen #game #filmLives.film-lives{
+  align-self:start!important;
+  width:261px!important;
+  min-width:261px!important;
+  max-width:261px!important;
+  height:91px!important;
+  min-height:91px!important;
+  max-height:91px!important;
+  margin:0 8px 0 0!important;
+  padding:8px 8px!important;
+  gap:0!important;
+  overflow:visible!important;
+  box-sizing:border-box!important;
+  transform:none!important;
+}
+
+/* Exact horizontal fit:
+   261 total - 16 horizontal padding = 245 usable.
+   82 + 82 + 82 - two 1px overlaps = 244px. */
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life,
+html body.mq-noir-master #page #cinema #screen #game #filmLives.film-lives>.life{
+  flex:0 0 82px!important;
+  width:82px!important;
+  min-width:82px!important;
+  max-width:82px!important;
+  height:75px!important;
+  min-height:75px!important;
+  max-height:75px!important;
+  margin:0!important;
+  overflow:visible!important;
+}
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life+.life{
+  margin-left:-1px!important;
+}
+
+/* Re-register perforation rails for the shorter strip. */
+html body.mq-noir-master #page #cinema #screen #game #filmLives{
+  background:
+    repeating-linear-gradient(90deg,transparent 0 8px,#bd874b 8px 14px,transparent 14px 20px) top 4px left 7px/247px 6px no-repeat,
+    repeating-linear-gradient(90deg,transparent 0 8px,#a96f3e 8px 14px,transparent 14px 20px) bottom 4px left 7px/247px 6px no-repeat,
+    linear-gradient(112deg,rgba(255,226,168,.075),transparent 24%),
+    repeating-linear-gradient(96deg,rgba(255,238,196,.018) 0 1px,transparent 1px 4px),
+    linear-gradient(180deg,#1d130c 0%,#060403 48%,#170e09 100%)!important;
+}
+
+/* Hearts sized to the corrected 75px frame height. */
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life{
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 20.2C10.8 19.1 4 14.8 4 9.25C4 6.55 5.88 4.8 8.35 4.8C9.95 4.8 11.18 5.58 12 6.82C12.82 5.58 14.05 4.8 15.65 4.8C18.12 4.8 20 6.55 20 9.25C20 14.8 13.2 19.1 12 20.2Z' fill='%23a84a3b' fill-opacity='.88' stroke='%2346120e' stroke-width='.75'/%3E%3C/svg%3E") center/35px 35px no-repeat,
+    radial-gradient(ellipse at 50% 48%,rgba(237,202,129,.90) 0 30%,rgba(151,94,43,.77) 48%,rgba(53,29,16,.34) 70%),
+    linear-gradient(112deg,transparent 8%,rgba(255,242,206,.16) 31%,transparent 48%),
+    repeating-linear-gradient(100deg,rgba(255,255,255,.014) 0 1px,rgba(0,0,0,.022) 1px 4px),
+    linear-gradient(180deg,#302014 0%,#100a07 66%,#24160e 100%)!important;
+}
+
+
+/* ==========================================================================
+   FIRE
+   Remove ALL CSS flame sheets introduced in v53/v53.2/v53.3.
+   The original canvas particle burn remains responsible for the visible fire.
+   v53.5 JS increases that exact right-to-left effect instead.
+   ========================================================================== */
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning{
+  z-index:12!important;
+  overflow:visible!important;
+  animation:none!important;
+  filter:saturate(1.08) brightness(.98)!important;
+}
+
+/* No fake CSS flames and no CSS smoke layer. */
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning::before,
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning::after{
+  content:none!important;
+  display:none!important;
+  opacity:0!important;
+  background:none!important;
+  box-shadow:none!important;
+  filter:none!important;
+  animation:none!important;
+  clip-path:none!important;
+}
+
+/* Keep only a restrained final charred frame after the particle sweep. */
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.dead,
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burned{
+  border-color:rgba(70,36,22,.96)!important;
+  background:
+    radial-gradient(ellipse at 48% 47%,#020202 0 27%,#0d0403 40%,#2c0a05 53%,#110604 69%,#070403 81%),
+    radial-gradient(circle at 22% 25%,rgba(121,39,10,.22),transparent 20%),
+    radial-gradient(circle at 78% 71%,rgba(95,28,8,.18),transparent 23%),
+    repeating-linear-gradient(113deg,rgba(143,58,21,.06) 0 1px,transparent 1px 5px),
+    linear-gradient(180deg,#130906,#030202)!important;
+  box-shadow:
+    inset 0 0 22px rgba(0,0,0,.94),
+    inset 0 0 0 1px rgba(118,45,20,.16)!important;
+  filter:saturate(.45) brightness(.69)!important;
+}
+
+/* The FX canvas must remain visibly above the life strip during the burn. */
+html body.mq-noir-master #page #cinema #screen #game:has(#filmLives>.life.burning) #fx{
+  z-index:80!important;
+  opacity:1!important;
+  pointer-events:none!important;
+  /* Slight visual reinforcement without changing direction or inventing flames. */
+  filter:
+    drop-shadow(1px 0 1px rgba(255,107,12,.24))
+    drop-shadow(-1px -1px 2px rgba(255,151,34,.18))!important;
+}

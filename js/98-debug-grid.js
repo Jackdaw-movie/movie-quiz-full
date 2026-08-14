@@ -36,7 +36,6 @@
   }
 
   function findStage(){
-    /* Overlay states always win over the screen beneath them. */
     let found=candidate(STAGES.AVATAR);
     if(found)return found;
     found=candidate(STAGES.TICKET);
@@ -44,8 +43,6 @@
     found=candidate(STAGES.LOADING);
     if(found)return found;
 
-    /* Exterior remains in the DOM after entry, so body state decides whether
-       it is still the active visual master. */
     if(document.body?.classList.contains('mq-exterior-active')){
       found=candidate(STAGES.EXTERIOR);
       if(found)return found;
@@ -65,8 +62,6 @@
       'mqAvatarDebugGridLocal'
     ]) document.getElementById(id)?.remove();
 
-    /* Earlier versions used these classes to control layout-adjacent debug UI.
-       They are not used by v47. */
     document.body?.classList.remove(
       'mq-debug-grid-on','mq-debug-grid-enabled','mq-debug-grid-cursor','mq-debug-avatar-local'
     );
@@ -260,4 +255,98 @@
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
   else boot();
+})();
+
+
+/* Movie Quiz – original burn density enhancement v53.5
+   This intentionally preserves the original burnLife() concept from 00-core:
+   - the front travels from right to left
+   - each step emits flame, smoke and ember canvas particles
+   - the cell becomes .dead at 1740 ms
+   Only particle density, size and vertical coverage are increased. */
+(()=>{
+  'use strict';
+
+  const install=()=>{
+    if(typeof burnLife!=='function' ||
+       typeof livesEl==='undefined' ||
+       typeof screen==='undefined' ||
+       typeof particles==='undefined' ||
+       typeof runFX!=='function'){
+      return false;
+    }
+
+    burnLife=function(index){
+      const cell=livesEl[index];
+      if(!cell)return;
+      cell.classList.add("burning");
+
+      const sr=screen.getBoundingClientRect();
+      const r=cell.getBoundingClientRect();
+      const right=r.right-sr.left;
+      const baseY=r.top-sr.top+r.height*.58;
+
+      /* Original: 19 steps × 25 particles.
+         v53.5: 23 steps × 3 closely stacked passes.
+         Direction and timing concept remain identical. */
+      const steps=23;
+      const lanes=[-.18,0,.18];
+
+      for(let step=0;step<steps;step++){
+        setTimeout(()=>{
+          const p=step/(steps-1);
+          const x=right-p*r.width;
+
+          for(const lane of lanes){
+            const y0=baseY+r.height*lane;
+
+            /* Same flame/smoke family as original, larger and denser. */
+            for(let i=0;i<14;i++){
+              particles.push({
+                kind:i%6===0?"smoke":"flame",
+                x:x+(Math.random()-.5)*22,
+                y:y0+(Math.random()-.5)*14,
+                vx:-.35+(Math.random()-.5)*2.0,
+                vy:-1.6-Math.random()*5.4,
+                life:54+Math.random()*72,
+                max:126,
+                size:5+Math.random()*14,
+                h:7+Math.random()*34
+              });
+            }
+
+            /* Same ember family as original, also slightly larger. */
+            for(let i=0;i<8;i++){
+              particles.push({
+                kind:"ember",
+                x:x+(Math.random()-.5)*25,
+                y:y0+(Math.random()-.5)*12,
+                vx:-1.6+Math.random()*4.2,
+                vy:-1.1-Math.random()*5.5,
+                life:40+Math.random()*68,
+                max:108,
+                size:1.1+Math.random()*3.1,
+                h:16+Math.random()*30
+              });
+            }
+          }
+
+          runFX();
+        },step*72);
+      }
+
+      /* Preserve the exact gameplay state timing. */
+      setTimeout(()=>{cell.className="life dead"},1740);
+    };
+
+    return true;
+  };
+
+  if(!install()){
+    if(document.readyState==='loading'){
+      document.addEventListener('DOMContentLoaded',install,{once:true});
+    }else{
+      setTimeout(install,0);
+    }
+  }
 })();

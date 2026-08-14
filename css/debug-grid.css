@@ -2,12 +2,11 @@
 @import url("cinema-ui-v53-1.css?v=53.1");
 @import url("cinema-ui-v53-2.css?v=53.2");
 @import url("cinema-ui-v53-3.css?v=53.3");
-@import url("cinema-ui-v53-4.css?v=53.4");
+@import url("cinema-ui-v53-5.css?v=53.5");
 
 /* Movie Quiz – debug grid v47
    Diagnostic layer only. This stylesheet must never alter game/page geometry.
-   The v53 cinema UI imports above are the final visual layers and do not alter
-   the diagnostic overlay geometry. */
+   v53.5 is intentionally loaded directly after the actually active v53.3. */
 
 #mqDebugGridOverlay{
   position:fixed!important;
@@ -79,7 +78,6 @@
 }
 #mqDebugToggle:hover{background:rgba(30,24,12,.96)!important}
 
-/* Legacy nodes from earlier debug-grid versions are permanently inert. */
 #mqDebugCrosshairX,
 #mqDebugCrosshairY,
 #mqDebugScreenBox,
