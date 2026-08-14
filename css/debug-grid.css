@@ -1,8 +1,9 @@
 @import url("cinema-ui-v53.css?v=53.0");
+@import url("cinema-ui-v53-1.css?v=53.1");
 
 /* Movie Quiz – debug grid v47
    Diagnostic layer only. This stylesheet must never alter game/page geometry.
-   The v53 cinema UI import above is the final visual layer and does not alter
+   The v53 cinema UI imports above are the final visual layers and do not alter
    the diagnostic overlay geometry. */
 
 #mqDebugGridOverlay{
