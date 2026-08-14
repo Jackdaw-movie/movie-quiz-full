@@ -135,14 +135,12 @@
 })();
 
 
-/* Movie Quiz – Film lives overlay upgrade v1
-   Replaces the visual rendering of the 3-life strip with film-frame assets
-   while preserving existing gameplay logic. */
+/* Movie Quiz – Film lives overlay upgrade v3 */
 (()=>{
   'use strict';
   const MAX_LIVES = 3;
-  const LOST_TOKEN = /(lost|used|dead|empty|off|burned?|gone|inactive)/i;
-  const STYLE_ID = 'mq-film-lives-style-v1';
+  const STYLE_ID = 'mq-film-lives-style-v3';
+  const LOST_TOKEN = /(lost|used|dead|empty|off|burned?|gone|inactive|disabled)/i;
 
   function injectStyles(){
     if(document.getElementById(STYLE_ID)) return;
@@ -150,21 +148,25 @@
     style.id = STYLE_ID;
     style.textContent = `
 #filmLives.mq-film-lives-upgraded{position:relative!important;isolation:isolate!important;display:flex!important;align-items:center!important;gap:0!important}
-#filmLives.mq-film-lives-upgraded>.life{opacity:0!important;pointer-events:none!important}
+#filmLives.mq-film-lives-upgraded>.life{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 #filmLives.mq-film-lives-upgraded .mq-film-lives-strip{position:absolute!important;inset:0!important;display:flex!important;align-items:stretch!important;justify-content:flex-start!important;gap:0!important;pointer-events:none!important}
-#filmLives.mq-film-lives-upgraded .mq-life-visual{position:relative!important;flex:1 1 0!important;min-width:0!important;height:100%!important;background-image:url('assets/lives/film-life-intact.webp');background-repeat:no-repeat!important;background-position:center center!important;background-size:contain!important;filter:drop-shadow(0 2px 3px rgba(0,0,0,.32));transform-origin:center center!important;overflow:visible!important}
+#filmLives.mq-film-lives-upgraded .mq-life-visual{position:relative!important;flex:1 1 0!important;min-width:0!important;height:100%!important;background:url('assets/lives/film-life-intact.webp') center/contain no-repeat!important;filter:drop-shadow(0 2px 3px rgba(0,0,0,.28));transform-origin:center center!important;overflow:visible!important}
 #filmLives.mq-film-lives-upgraded .mq-life-visual+.mq-life-visual{margin-left:-1px!important}
-#filmLives.mq-film-lives-upgraded .mq-life-visual::before,#filmLives.mq-film-lives-upgraded .mq-life-visual::after{content:'';position:absolute;inset:-8% -6%;opacity:0;pointer-events:none}
-#filmLives.mq-film-lives-upgraded .mq-life-visual::before{background:radial-gradient(circle at 38% 68%, rgba(255,240,170,0) 0 18%, rgba(255,196,76,.90) 24%, rgba(255,124,26,.95) 42%, rgba(160,28,0,.62) 63%, rgba(0,0,0,0) 78%),radial-gradient(circle at 50% 50%, rgba(255,199,92,0) 0 28%, rgba(255,176,48,.45) 34%, rgba(255,111,10,.62) 54%, rgba(0,0,0,0) 72%);mix-blend-mode:screen;filter:blur(1.8px)}
-#filmLives.mq-film-lives-upgraded .mq-life-visual::after{background:radial-gradient(circle at 46% 44%, rgba(255,234,160,.95) 0 3%, rgba(255,234,160,0) 6%),radial-gradient(circle at 56% 36%, rgba(255,208,110,.92) 0 2.6%, rgba(255,208,110,0) 5.6%),radial-gradient(circle at 62% 58%, rgba(255,165,58,.85) 0 2.4%, rgba(255,165,58,0) 5.2%),radial-gradient(circle at 42% 60%, rgba(255,121,38,.72) 0 2.2%, rgba(255,121,38,0) 5%);filter:blur(.3px)}
-#filmLives.mq-film-lives-upgraded .mq-life-visual.mq-burning{animation:mqLifePop .95s cubic-bezier(.22,.8,.22,1) both}
-#filmLives.mq-film-lives-upgraded .mq-life-visual.mq-burning::before{opacity:1;animation:mqLifeIgnite .95s cubic-bezier(.2,.8,.2,1) both}
-#filmLives.mq-film-lives-upgraded .mq-life-visual.mq-burning::after{opacity:1;animation:mqLifeEmbers .95s linear both}
-#filmLives.mq-film-lives-upgraded .mq-life-visual.mq-burned{background-image:url('assets/lives/film-life-burned.webp')!important;filter:drop-shadow(0 2px 3px rgba(0,0,0,.36))}
+#filmLives.mq-film-lives-upgraded .mq-life-visual::before,#filmLives.mq-film-lives-upgraded .mq-life-visual::after{content:'';position:absolute;inset:-6% -4%;opacity:0;pointer-events:none}
+#filmLives.mq-film-lives-upgraded .mq-life-visual::before{background:radial-gradient(ellipse at 10% 92%, rgba(255,250,204,.98) 0 5%, rgba(255,208,86,.98) 8%, rgba(255,140,34,.97) 16%, rgba(188,38,0,.74) 27%, rgba(0,0,0,0) 40%),radial-gradient(ellipse at 26% 88%, rgba(255,245,190,.98) 0 5%, rgba(255,194,68,.98) 8%, rgba(255,118,22,.97) 16%, rgba(188,38,0,.74) 27%, rgba(0,0,0,0) 40%),radial-gradient(ellipse at 42% 92%, rgba(255,250,204,.98) 0 5%, rgba(255,208,86,.98) 8%, rgba(255,140,34,.97) 16%, rgba(188,38,0,.74) 27%, rgba(0,0,0,0) 40%),radial-gradient(ellipse at 58% 88%, rgba(255,245,190,.98) 0 5%, rgba(255,194,68,.98) 8%, rgba(255,118,22,.97) 16%, rgba(188,38,0,.74) 27%, rgba(0,0,0,0) 40%),radial-gradient(ellipse at 74% 92%, rgba(255,250,204,.98) 0 5%, rgba(255,208,86,.98) 8%, rgba(255,140,34,.97) 16%, rgba(188,38,0,.74) 27%, rgba(0,0,0,0) 40%),radial-gradient(ellipse at 90% 88%, rgba(255,245,190,.98) 0 5%, rgba(255,194,68,.98) 8%, rgba(255,118,22,.97) 16%, rgba(188,38,0,.74) 27%, rgba(0,0,0,0) 40%),radial-gradient(ellipse at 50% 64%, rgba(255,244,176,.46) 0 10%, rgba(255,150,44,.30) 20%, rgba(0,0,0,0) 45%);mix-blend-mode:screen;filter:blur(2.3px) saturate(1.15) brightness(1.08)}
+#filmLives.mq-film-lives-upgraded .mq-life-visual::after{background:radial-gradient(circle at 15% 82%, rgba(255,236,158,.95) 0 1.2%, rgba(255,236,158,0) 2.6%),radial-gradient(circle at 24% 68%, rgba(255,214,114,.92) 0 1.1%, rgba(255,214,114,0) 2.5%),radial-gradient(circle at 35% 77%, rgba(255,174,76,.9) 0 1.15%, rgba(255,174,76,0) 2.8%),radial-gradient(circle at 46% 66%, rgba(255,236,158,.95) 0 1.2%, rgba(255,236,158,0) 2.6%),radial-gradient(circle at 57% 80%, rgba(255,214,114,.92) 0 1.1%, rgba(255,214,114,0) 2.5%),radial-gradient(circle at 68% 70%, rgba(255,174,76,.9) 0 1.15%, rgba(255,174,76,0) 2.8%),radial-gradient(circle at 80% 83%, rgba(255,236,158,.95) 0 1.2%, rgba(255,236,158,0) 2.6%),radial-gradient(circle at 90% 71%, rgba(255,174,76,.9) 0 1.15%, rgba(255,174,76,0) 2.8%),linear-gradient(to top, rgba(76,26,10,.52) 0%, rgba(36,16,12,.26) 40%, rgba(0,0,0,0) 78%);filter:blur(.6px)}
+#filmLives.mq-film-lives-upgraded .mq-life-visual .mq-charr{position:absolute;inset:0;opacity:0;pointer-events:none;background:radial-gradient(circle at 50% 52%, rgba(0,0,0,0) 28%, rgba(18,12,10,.22) 52%, rgba(10,10,10,.56) 100%)}
+#filmLives.mq-film-lives-upgraded .mq-life-visual.mq-burning{animation:mqLifePop 1.15s cubic-bezier(.22,.78,.22,1) both}
+#filmLives.mq-film-lives-upgraded .mq-life-visual.mq-burning::before{opacity:1;animation:mqLifeFlame 1.15s cubic-bezier(.22,.78,.22,1) both}
+#filmLives.mq-film-lives-upgraded .mq-life-visual.mq-burning::after{opacity:1;animation:mqLifeSpark 1.15s linear both}
+#filmLives.mq-film-lives-upgraded .mq-life-visual.mq-burning .mq-charr{opacity:1;animation:mqLifeChar 1.15s linear both}
+#filmLives.mq-film-lives-upgraded .mq-life-visual.mq-burned{background:url('assets/lives/film-life-burned.webp') center/contain no-repeat!important;filter:drop-shadow(0 2px 3px rgba(0,0,0,.34))}
 #filmLives.mq-film-lives-upgraded .mq-life-visual.mq-burned::before,#filmLives.mq-film-lives-upgraded .mq-life-visual.mq-burned::after{opacity:0}
-@keyframes mqLifeIgnite{0%{opacity:0;transform:scale(.88) translate3d(0,8%,0);filter:blur(3px) saturate(1.1)}18%{opacity:.82;transform:scale(1.03) translate3d(0,-1%,0);filter:blur(2px) saturate(1.2)}46%{opacity:1;transform:scale(1.08) translate3d(0,-4%,0);filter:blur(1.1px) saturate(1.25)}100%{opacity:0;transform:scale(1.2) translate3d(0,-14%,0);filter:blur(6px) saturate(1.35)}}
-@keyframes mqLifeEmbers{0%{opacity:0;transform:translate3d(0,8%,0) scale(.94)}25%{opacity:.95;transform:translate3d(0,0,0) scale(1)}65%{opacity:.72;transform:translate3d(1%,-10%,0) scale(1.06)}100%{opacity:0;transform:translate3d(3%,-24%,0) scale(1.16)}}
-@keyframes mqLifePop{0%{transform:scale(1)}28%{transform:scale(1.04)}54%{transform:scale(.98)}100%{transform:scale(1)}}
+#filmLives.mq-film-lives-upgraded .mq-life-visual.mq-burned .mq-charr{opacity:0}
+@keyframes mqLifeFlame{0%{opacity:0;transform:translateY(14%) scale(.92);filter:blur(4px) saturate(1.08)}16%{opacity:.9;transform:translateY(4%) scale(1.01);filter:blur(2.8px) saturate(1.16)}40%{opacity:1;transform:translateY(-4%) scale(1.05);filter:blur(2px) saturate(1.28)}68%{opacity:.95;transform:translateY(-9%) scale(1.12);filter:blur(2.4px) saturate(1.24)}100%{opacity:0;transform:translateY(-22%) scale(1.24);filter:blur(7px) saturate(1.1)}}
+@keyframes mqLifeSpark{0%{opacity:0;transform:translateY(6%) scale(.96)}18%{opacity:.95;transform:translateY(0) scale(1)}56%{opacity:.75;transform:translateY(-10%) scale(1.04)}100%{opacity:0;transform:translateY(-24%) scale(1.12)}}
+@keyframes mqLifeChar{0%{opacity:0;filter:blur(0)}35%{opacity:.16;filter:blur(.2px)}70%{opacity:.38;filter:blur(.35px)}100%{opacity:.62;filter:blur(.45px)}}
+@keyframes mqLifePop{0%{transform:scale(1)}28%{transform:scale(1.035)}55%{transform:scale(.985)}100%{transform:scale(1)}}
 `;
     document.head.appendChild(style);
   }
@@ -177,14 +179,14 @@
     if(!node) return true;
     if(node.hidden) return true;
     if(node.getAttribute('aria-hidden') === 'true') return true;
-    if(LOST_TOKEN.test(Array.from(node.classList).join(' '))) return true;
+    const cls = Array.from(node.classList).join(' ');
+    if(LOST_TOKEN.test(cls)) return true;
     const ds = `${node.dataset.state||''} ${node.dataset.status||''}`;
     if(LOST_TOKEN.test(ds)) return true;
     try{
       const s = getComputedStyle(node);
       if(s.display === 'none' || s.visibility === 'hidden') return true;
-      if(Number.parseFloat(s.opacity || '1') === 0) return true;
-      if(Number.parseFloat(s.width || '1') === 0 || Number.parseFloat(s.height || '1') === 0) return true;
+      if(parseFloat(s.width || '1') === 0 || parseFloat(s.height || '1') === 0) return true;
     }catch(_){ }
     return false;
   }
@@ -192,8 +194,7 @@
   function inferRemainingLives(container){
     const nodes = directLifeNodes(container);
     if(!nodes.length) return MAX_LIVES;
-    const visibleCount = nodes.filter(n => !isNodeLost(n)).length;
-    return Math.max(0, Math.min(MAX_LIVES, visibleCount));
+    return Math.max(0, Math.min(MAX_LIVES, nodes.filter(n => !isNodeLost(n)).length));
   }
 
   function ensureOverlay(container){
@@ -205,20 +206,23 @@
       const cell = document.createElement('div');
       cell.className = 'mq-life-visual';
       cell.dataset.slot = String(i);
+      const ch = document.createElement('div');
+      ch.className = 'mq-charr';
+      cell.appendChild(ch);
       strip.appendChild(cell);
     }
     container.appendChild(strip);
     return strip;
   }
 
-  function render(container, remaining, animateIndex){
+  function render(container, remaining, animateIndex = -1){
     const strip = ensureOverlay(container);
     const cells = Array.from(strip.children);
     cells.forEach((cell, index) => {
       cell.classList.remove('mq-burning','mq-burned');
       if(index >= remaining) cell.classList.add('mq-burned');
     });
-    if(Number.isInteger(animateIndex) && animateIndex >= 0 && animateIndex < cells.length){
+    if(animateIndex >= 0 && animateIndex < cells.length){
       const cell = cells[animateIndex];
       cell.classList.remove('mq-burned');
       void cell.offsetWidth;
@@ -226,7 +230,7 @@
       setTimeout(() => {
         cell.classList.remove('mq-burning');
         cell.classList.add('mq-burned');
-      }, 920);
+      }, 1120);
     }
     container.dataset.mqLivesRemaining = String(remaining);
   }
@@ -235,38 +239,46 @@
     const next = inferRemainingLives(container);
     const prev = Number.isFinite(container.__mqPrevLives) ? container.__mqPrevLives : MAX_LIVES;
     let animateIndex = -1;
-    if(next < prev) animateIndex = Math.max(0, Math.min(MAX_LIVES - 1, next));
+    if(next < prev) animateIndex = Math.max(0, Math.min(MAX_LIVES - 1, prev - 1));
     render(container, next, animateIndex);
     container.__mqPrevLives = next;
   }
 
-  function upgradeContainer(container){
+  function upgrade(container){
     if(!container || container.dataset.mqLivesUpgradeBound === '1') return;
     injectStyles();
+    const initial = inferRemainingLives(container);
+    container.__mqPrevLives = initial;
     container.dataset.mqLivesUpgradeBound = '1';
     container.classList.add('mq-film-lives-upgraded');
-    container.__mqPrevLives = inferRemainingLives(container);
-    render(container, container.__mqPrevLives, -1);
+    render(container, initial, -1);
     const observer = new MutationObserver(() => sync(container));
     observer.observe(container, {childList:true, subtree:false, attributes:true, attributeFilter:['class','style','hidden','aria-hidden','data-state','data-status']});
     container.__mqLivesSync = () => sync(container);
   }
 
-  function initFilmLivesUpgrade(){
+  function init(){
     const container = document.getElementById('filmLives');
-    if(container) upgradeContainer(container);
+    if(container) { upgrade(container); return true; }
+    return false;
   }
 
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initFilmLivesUpgrade, {once:true});
-  else initFilmLivesUpgrade();
-
-  window.MovieQuizLivesFX = {
-    sync(){ document.getElementById('filmLives')?.__mqLivesSync?.(); },
-    reset(){
-      const c = document.getElementById('filmLives');
-      if(!c) return;
-      c.__mqPrevLives = MAX_LIVES;
-      render(c, MAX_LIVES, -1);
+  if(document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      if(init()) return;
+      let tries = 0;
+      const t = setInterval(() => {
+        tries += 1;
+        if(init() || tries > 60) clearInterval(t);
+      }, 250);
+    }, {once:true});
+  } else {
+    if(!init()) {
+      let tries = 0;
+      const t = setInterval(() => {
+        tries += 1;
+        if(init() || tries > 60) clearInterval(t);
+      }, 250);
     }
-  };
+  }
 })();
