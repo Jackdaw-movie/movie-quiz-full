@@ -3,11 +3,11 @@
 @import url("cinema-ui-v53-2.css?v=53.2");
 @import url("cinema-ui-v53-3.css?v=53.3");
 @import url("cinema-ui-v53-5.css?v=53.5");
-@import url("cinema-ui-v53-6.css?v=53.6");
+@import url("cinema-ui-v53-6.css?v=53.6.1");
 
 /* Movie Quiz – debug grid v47
    Diagnostic layer only. This stylesheet must never alter game/page geometry.
-   v53.6 adds login, statistics and leaderboard redesign on top of v53.5. */
+   v53.6.1 targets the real ticket-login, statistics and scoreboard runtime DOM. */
 
 #mqDebugGridOverlay{
   position:fixed!important;
