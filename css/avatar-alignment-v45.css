@@ -1,0 +1,75 @@
+/* Movie Quiz – avatar alignment + avatar-master debug grid v45
+   Approved reference master: 1672 × 941.
+   IMPORTANT: the circular wells stay locked to the background asset. Only the
+   transparent avatar artwork inside each well is visually normalized. */
+
+/* Keep the side wells at the approved v44 master positions. */
+#mqAvatarModal .mq-avatar-carousel-choice.is-left-1,
+#mqAvatarModal .mq-avatar-carousel-choice.is-right-1{
+  top:387px!important;
+  width:234px!important;
+  height:234px!important;
+  border-radius:50%!important;
+  overflow:hidden!important;
+  transform:none!important;
+}
+#mqAvatarModal .mq-avatar-carousel-choice.is-left-1{left:264px!important}
+#mqAvatarModal .mq-avatar-carousel-choice.is-right-1{left:1194px!important}
+
+#mqAvatarModal .mq-avatar-carousel-choice.is-left-1 .mq-avatar-frame,
+#mqAvatarModal .mq-avatar-carousel-choice.is-right-1 .mq-avatar-frame{
+  display:grid!important;
+  place-items:center!important;
+  width:100%!important;
+  height:100%!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  border-radius:50%!important;
+}
+
+/* v45: 15% smaller than the previous 88% side-avatar size.
+   Both avatars are lifted slightly. The right one is additionally nudged left
+   to compensate for its transparent PNG visual mass, while the circular slot
+   itself remains untouched and therefore stays registered to the background. */
+#mqAvatarModal .mq-avatar-carousel-choice.is-left-1 .mq-avatar-img,
+#mqAvatarModal .mq-avatar-carousel-choice.is-right-1 .mq-avatar-img{
+  display:block!important;
+  width:74.8%!important;
+  height:74.8%!important;
+  margin:auto!important;
+  object-fit:contain!important;
+  object-position:50% 50%!important;
+  transform-origin:50% 50%!important;
+}
+#mqAvatarModal .mq-avatar-carousel-choice.is-left-1 .mq-avatar-img{
+  transform:translate3d(0,-11px,0)!important;
+}
+#mqAvatarModal .mq-avatar-carousel-choice.is-right-1 .mq-avatar-img{
+  transform:translate3d(-9px,-11px,0)!important;
+}
+
+/* Avatar-specific debug grid. It is mounted INSIDE .mq-avatar-dialog, so its
+   1672×941 coordinates are physically the same coordinates as the artwork. */
+#mqAvatarDebugGridLocal{
+  position:absolute!important;
+  inset:0!important;
+  width:1672px!important;
+  height:941px!important;
+  z-index:2147483000!important;
+  display:none!important;
+  pointer-events:none!important;
+  overflow:hidden!important;
+}
+#mqAvatarDebugGridLocal canvas{
+  display:block!important;
+  width:1672px!important;
+  height:941px!important;
+}
+body.mq-debug-grid-on #mqAvatarModal:not([hidden]) #mqAvatarDebugGridLocal{
+  display:block!important;
+}
+/* On the avatar page use only the local master grid, not the viewport overlay. */
+body.mq-debug-avatar-local #mqDebugGridOverlay{
+  display:none!important;
+}
