@@ -104,11 +104,15 @@ html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card:acti
   transition-duration:.06s!important;
 }
 
-/* v49 – gameplay header master registration.
-   Current center of the question-number title is approximately master
-   x=846.77, y=281.14. Move the complete center HUD group by the same delta so
-   the question-number title center lands at x=847, y=302. The difficulty/genre
-   heading above it keeps its existing spacing automatically. */
+/* v50 – gameplay header correction from measured master coordinates.
+   Measured after v49: question title center ≈ 1187,357.
+   Requested target: 847,302.
+   Reset the incorrect group transform, then move only the two headings by the
+   measured correction while keeping their mutual spacing unchanged. */
 html body.mq-noir-master #page #cinema #screen #game .hud-center{
-  transform:translate3d(.2333px,20.8605px,0)!important;
+  transform:none!important;
+}
+html body.mq-noir-master #page #cinema #screen #game .hud-center>.stat-value,
+html body.mq-noir-master #page #cinema #screen #game .hud-center>#themeLabel{
+  transform:translate3d(-339.7667px,-34.1395px,0)!important;
 }
