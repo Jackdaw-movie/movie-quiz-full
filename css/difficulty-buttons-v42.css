@@ -104,15 +104,25 @@ html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card:acti
   transition-duration:.06s!important;
 }
 
-/* v50 – gameplay header correction from measured master coordinates.
-   Measured after v49: question title center ≈ 1187,357.
-   Requested target: 847,302.
-   Reset the incorrect group transform, then move only the two headings by the
-   measured correction while keeping their mutual spacing unchanged. */
+/* v51 – gameplay text positioning, relative to the approved v50 state.
+   Only the requested axes move; all other geometry remains untouched. */
 html body.mq-noir-master #page #cinema #screen #game .hud-center{
   transform:none!important;
 }
+
+/* Both HUD headings: +50 px on X only. Y stays exactly as in v50. */
 html body.mq-noir-master #page #cinema #screen #game .hud-center>.stat-value,
 html body.mq-noir-master #page #cinema #screen #game .hud-center>#themeLabel{
-  transform:translate3d(-339.7667px,-34.1395px,0)!important;
+  transform:translate3d(-289.7667px,-34.1395px,0)!important;
+}
+
+/* Tags and question text: 50 px upward, preserving their X axis. */
+html body.mq-noir-master #page #cinema #screen #game .question-meta,
+html body.mq-noir-master #page #cinema #screen #game .question{
+  transform:translate3d(0,-50px,0)!important;
+}
+
+/* Answer choices: 20 px upward, preserving X. */
+html body.mq-noir-master #page #cinema #screen #game .answers{
+  transform:translate3d(0,-20px,0)!important;
 }
