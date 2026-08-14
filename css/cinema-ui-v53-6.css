@@ -1,0 +1,673 @@
+/* Movie Quiz – Cinema UI v53.6
+   Login / statistics / leaderboard redesign
+   Same noir / art-deco cinema language as gameplay polish.
+   This layer is intentionally additive and uses broad selector coverage so it
+   can style the current screens without forcing HTML changes.
+
+   Main goals:
+   - login buttons and auth panel match the game style
+   - statistics screen feels like an in-universe cinema dashboard
+   - leaderboard gives much more visual priority to avatar + player name
+   - Oscar + difficulty symbol (popcorn / clapper / camera) become dominant
+   - preserve and visually support at least one Back button on each page
+*/
+
+html body.mq-noir-master{
+  --mq-brass-1:#f0d18a;
+  --mq-brass-2:#c69241;
+  --mq-brass-3:#7c4e17;
+  --mq-panel-dark:#130c0a;
+  --mq-panel-darker:#090606;
+  --mq-panel-red:#381018;
+  --mq-cream:#f1e6cf;
+  --mq-ink:#130f0c;
+  --mq-shadow:0 10px 30px rgba(0,0,0,.32),0 0 0 1px rgba(255,224,157,.10);
+}
+
+/* ==========================================================================
+   AUTH / LOGIN / PLAYER SELECTION BUTTONS
+   ========================================================================== */
+html body.mq-noir-master #page #cinema #screen :is(
+  #authView,#loginView,#playerLoginView,#playerAuthView,#loginScreen,#authScreen,#profileView
+){
+  color:var(--mq-cream)!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #authView,#loginView,#playerLoginView,#playerAuthView,#loginScreen,#authScreen,#profileView
+) :is(.auth-card,.login-card,.player-auth-card,.mq-auth-card,.card){
+  max-width:min(820px,90%)!important;
+  margin-inline:auto!important;
+  border-radius:22px!important;
+  background:
+    linear-gradient(180deg,rgba(75,18,28,.88) 0%,rgba(22,11,11,.96) 18%,rgba(13,9,9,.98) 100%)!important;
+  border:1px solid rgba(222,178,95,.42)!important;
+  box-shadow:
+    0 18px 42px rgba(0,0,0,.42),
+    inset 0 1px 0 rgba(255,232,187,.16),
+    inset 0 0 0 1px rgba(255,255,255,.03)!important;
+  position:relative!important;
+  overflow:hidden!important;
+  padding:24px 24px 22px!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #authView,#loginView,#playerLoginView,#playerAuthView,#loginScreen,#authScreen,#profileView
+) :is(.auth-card,.login-card,.player-auth-card,.mq-auth-card,.card)::before{
+  content:""!important;
+  position:absolute!important;
+  inset:10px!important;
+  border-radius:16px!important;
+  border:1px solid rgba(221,176,91,.24)!important;
+  pointer-events:none!important;
+  background:
+    linear-gradient(135deg,rgba(255,232,187,.05),transparent 28%,transparent 72%,rgba(255,232,187,.03))!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #authView,#loginView,#playerLoginView,#playerAuthView,#loginScreen,#authScreen,#profileView
+) :is(h1,h2,h3,.title,.screen-title,.auth-title){
+  color:var(--mq-cream)!important;
+  text-shadow:0 2px 0 rgba(0,0,0,.4)!important;
+  letter-spacing:.06em!important;
+  text-transform:uppercase!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #authView,#loginView,#playerLoginView,#playerAuthView,#loginScreen,#authScreen,#profileView
+) :is(.auth-actions,.login-actions,.player-auth-actions,.button-row,.buttons){
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:14px!important;
+  margin-top:16px!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #authView,#loginView,#playerLoginView,#playerAuthView,#loginScreen,#authScreen,#profileView
+) :is(button,.btn,.auth-btn,.login-btn,.player-btn){
+  min-height:58px!important;
+  padding:14px 18px!important;
+  border-radius:16px!important;
+  border:1px solid rgba(220,173,86,.62)!important;
+  background:
+    linear-gradient(180deg,#2a1911 0%,#120b08 48%,#090606 100%)!important;
+  color:var(--mq-cream)!important;
+  box-shadow:
+    0 6px 18px rgba(0,0,0,.24),
+    inset 0 1px rgba(255,238,201,.14),
+    inset 0 -1px rgba(0,0,0,.56)!important;
+  text-transform:uppercase!important;
+  letter-spacing:.08em!important;
+  font-weight:800!important;
+  transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease, background .15s ease!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #authView,#loginView,#playerLoginView,#playerAuthView,#loginScreen,#authScreen,#profileView
+) :is(button,.btn,.auth-btn,.login-btn,.player-btn):hover{
+  transform:translateY(-1px)!important;
+  border-color:rgba(241,204,119,.88)!important;
+  background:
+    linear-gradient(180deg,#3a2417 0%,#18100b 52%,#0b0706 100%)!important;
+  box-shadow:
+    0 10px 22px rgba(0,0,0,.30),
+    0 0 22px rgba(212,152,46,.10),
+    inset 0 1px rgba(255,244,211,.18)!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #authView,#loginView,#playerLoginView,#playerAuthView,#loginScreen,#authScreen,#profileView
+) :is(button,.btn,.auth-btn,.login-btn,.player-btn).primary,
+html body.mq-noir-master #page #cinema #screen :is(
+  #authView,#loginView,#playerLoginView,#playerAuthView,#loginScreen,#authScreen,#profileView
+) :is(#loginBtn,#registerBtn,#enterBtn,#continueBtn,#mqGuestStart){
+  background:
+    linear-gradient(180deg,#6a331f 0%,#34150d 45%,#170a07 100%)!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #authView,#loginView,#playerLoginView,#playerAuthView,#loginScreen,#authScreen,#profileView
+) :is(input,textarea,select){
+  border-radius:14px!important;
+  border:1px solid rgba(210,167,87,.34)!important;
+  background:linear-gradient(180deg,rgba(15,10,9,.95),rgba(8,6,6,.98))!important;
+  color:var(--mq-cream)!important;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.48), inset 0 0 0 1px rgba(255,255,255,.03)!important;
+}
+
+/* Force one-button-per-row when the auth view is narrow or contains many actions. */
+@media (max-width:980px){
+  html body.mq-noir-master #page #cinema #screen :is(
+    #authView,#loginView,#playerLoginView,#playerAuthView,#loginScreen,#authScreen,#profileView
+  ) :is(.auth-actions,.login-actions,.player-auth-actions,.button-row,.buttons){
+    grid-template-columns:1fr!important;
+  }
+}
+
+/* ==========================================================================
+   STATISTICS SCREEN
+   ========================================================================== */
+html body.mq-noir-master #page #cinema #screen :is(
+  #statsView,#statisticsView,#playerStatsView,#myStatsView,.stats-view
+){
+  color:var(--mq-cream)!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #statsView,#statisticsView,#playerStatsView,#myStatsView,.stats-view
+) :is(.stats-shell,.stats-card,.statistics-card,.player-stats-card,.card,.panel){
+  position:relative!important;
+  width:min(92%,1320px)!important;
+  margin-inline:auto!important;
+  border-radius:22px!important;
+  padding:22px 24px 24px!important;
+  background:
+    linear-gradient(180deg,rgba(71,18,28,.88) 0%,rgba(20,11,11,.96) 14%,rgba(9,7,7,.985) 100%)!important;
+  border:1px solid rgba(218,173,89,.40)!important;
+  box-shadow:
+    0 18px 42px rgba(0,0,0,.42),
+    inset 0 1px rgba(255,232,187,.15),
+    inset 0 0 0 1px rgba(255,255,255,.03)!important;
+  overflow:hidden!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #statsView,#statisticsView,#playerStatsView,#myStatsView,.stats-view
+) :is(.stats-shell,.stats-card,.statistics-card,.player-stats-card,.card,.panel)::before{
+  content:""!important;
+  position:absolute!important;
+  inset:12px!important;
+  border-radius:16px!important;
+  border:1px solid rgba(221,176,91,.20)!important;
+  pointer-events:none!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #statsView,#statisticsView,#playerStatsView,#myStatsView,.stats-view
+) :is(.stats-header,.header,.screen-header){
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:16px!important;
+  margin-bottom:18px!important;
+  padding-bottom:14px!important;
+  border-bottom:1px solid rgba(223,180,98,.18)!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #statsView,#statisticsView,#playerStatsView,#myStatsView,.stats-view
+) :is(.stats-title,h1,h2,.screen-title){
+  color:var(--mq-cream)!important;
+  text-transform:uppercase!important;
+  letter-spacing:.08em!important;
+  font-weight:900!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #statsView,#statisticsView,#playerStatsView,#myStatsView,.stats-view
+) :is(.stats-grid,.statistics-grid,.player-stats-grid,.grid){
+  display:grid!important;
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  gap:16px!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #statsView,#statisticsView,#playerStatsView,#myStatsView,.stats-view
+) :is(.stat-card,.stats-box,.metric,.tile,.chart-card,.panel-card){
+  grid-column:span 4!important;
+  min-height:112px!important;
+  border-radius:18px!important;
+  padding:16px 16px 14px!important;
+  background:
+    linear-gradient(180deg,rgba(28,17,13,.96) 0%,rgba(12,8,7,.98) 100%)!important;
+  border:1px solid rgba(213,170,90,.28)!important;
+  box-shadow:
+    inset 0 1px rgba(255,238,201,.08),
+    0 8px 18px rgba(0,0,0,.20)!important;
+  position:relative!important;
+  overflow:hidden!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #statsView,#statisticsView,#playerStatsView,#myStatsView,.stats-view
+) :is(.stat-card,.stats-box,.metric,.tile,.chart-card,.panel-card)::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0 auto 0 0!important;
+  width:4px!important;
+  background:linear-gradient(180deg,#f0d18a,#aa6e2c)!important;
+  opacity:.9!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #statsView,#statisticsView,#playerStatsView,#myStatsView,.stats-view
+) :is(.stat-label,.label,.metric-label,.tile-label){
+  color:#d8c4a0!important;
+  text-transform:uppercase!important;
+  letter-spacing:.09em!important;
+  font-size:.82rem!important;
+  font-weight:800!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #statsView,#statisticsView,#playerStatsView,#myStatsView,.stats-view
+) :is(.stat-value,.value,.metric-value,.tile-value,.big-number){
+  color:#fff2d6!important;
+  font-size:clamp(1.65rem,2.1vw,2.4rem)!important;
+  font-weight:900!important;
+  line-height:1.05!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.35)!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #statsView,#statisticsView,#playerStatsView,#myStatsView,.stats-view
+) :is(.stat-subtext,.subtext,.meta,.detail){
+  color:#d9c7a9!important;
+  opacity:.9!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #statsView,#statisticsView,#playerStatsView,#myStatsView,.stats-view
+) :is(button,.btn,.back-btn,.refresh-btn,#statsBackBtn,#refreshStatsBtn){
+  min-height:52px!important;
+  padding:12px 18px!important;
+  border-radius:15px!important;
+  border:1px solid rgba(220,173,86,.60)!important;
+  background:
+    linear-gradient(180deg,#2a1911 0%,#120b08 48%,#090606 100%)!important;
+  color:var(--mq-cream)!important;
+  text-transform:uppercase!important;
+  letter-spacing:.08em!important;
+  font-weight:800!important;
+  box-shadow:
+    0 6px 16px rgba(0,0,0,.22),
+    inset 0 1px rgba(255,236,197,.14)!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #statsView,#statisticsView,#playerStatsView,#myStatsView,.stats-view
+) :is(.chart-card,.wide,.span-6,.span-8,.span-12){
+  grid-column:span 6!important;
+}
+html body.mq-noir-master #page #cinema #screen :is(
+  #statsView,#statisticsView,#playerStatsView,#myStatsView,.stats-view
+) :is(.full,.full-width,.span-12){
+  grid-column:1 / -1!important;
+}
+
+/* ==========================================================================
+   LEADERBOARD
+   ========================================================================== */
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+){
+  color:var(--mq-cream)!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) :is(.leaderboard-card,.ranking-card,.scoreboard-card,.card,.panel){
+  position:relative!important;
+  width:min(94%,1380px)!important;
+  margin-inline:auto!important;
+  padding:22px 24px 24px!important;
+  border-radius:22px!important;
+  background:
+    linear-gradient(180deg,rgba(72,18,28,.88) 0%,rgba(19,11,11,.965) 14%,rgba(9,7,7,.985) 100%)!important;
+  border:1px solid rgba(219,175,92,.42)!important;
+  box-shadow:
+    0 18px 42px rgba(0,0,0,.42),
+    inset 0 1px rgba(255,232,187,.15),
+    inset 0 0 0 1px rgba(255,255,255,.03)!important;
+  overflow:hidden!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) :is(.leaderboard-card,.ranking-card,.scoreboard-card,.card,.panel)::before{
+  content:""!important;
+  position:absolute!important;
+  inset:12px!important;
+  border-radius:16px!important;
+  border:1px solid rgba(221,176,91,.18)!important;
+  pointer-events:none!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) :is(.leaderboard-header,.header,.screen-header){
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:16px!important;
+  margin-bottom:16px!important;
+  padding-bottom:14px!important;
+  border-bottom:1px solid rgba(223,180,98,.18)!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) :is(.leaderboard-title,h1,h2,.screen-title){
+  text-transform:uppercase!important;
+  letter-spacing:.08em!important;
+  font-weight:900!important;
+  color:var(--mq-cream)!important;
+}
+
+/* Table / row system with more room for avatar + name. */
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) :is(table,.leaderboard-table,.ranking-table,.scoreboard-table){
+  width:100%!important;
+  border-collapse:separate!important;
+  border-spacing:0 10px!important;
+  table-layout:fixed!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) thead th{
+  color:#dbc6a1!important;
+  text-transform:uppercase!important;
+  letter-spacing:.09em!important;
+  font-size:.82rem!important;
+  font-weight:800!important;
+  padding:8px 12px 10px!important;
+  border-bottom:1px solid rgba(219,175,92,.18)!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) tbody tr,
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) :is(.leaderboard-row,.ranking-row,.scoreboard-row,.entry,.item){
+  background:
+    linear-gradient(180deg,rgba(27,16,12,.97) 0%,rgba(10,7,6,.985) 100%)!important;
+  border:1px solid rgba(213,170,90,.26)!important;
+  box-shadow:
+    inset 0 1px rgba(255,238,201,.07),
+    0 8px 18px rgba(0,0,0,.18)!important;
+  border-radius:18px!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) tbody td{
+  padding:14px 12px!important;
+  vertical-align:middle!important;
+  color:#f0e4cb!important;
+}
+
+/* Stronger layout priority for player area. */
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) th:nth-child(1),
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) td:nth-child(1){
+  width:8%!important;
+  text-align:center!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) th:nth-child(2),
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) td:nth-child(2){
+  width:44%!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) th:nth-child(3),
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) td:nth-child(3){
+  width:24%!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) th:nth-child(4),
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) td:nth-child(4){
+  width:12%!important;
+  text-align:center!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) th:nth-child(5),
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) td:nth-child(5){
+  width:12%!important;
+  text-align:right!important;
+}
+
+/* Player block: big avatar + bold name */
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) :is(.player-cell,.leaderboard-player,.ranking-player,.player,.name-cell){
+  display:flex!important;
+  align-items:center!important;
+  gap:14px!important;
+  min-width:0!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) :is(.player-cell,.leaderboard-player,.ranking-player,.player,.name-cell) :is(img,.avatar,.player-avatar,.mq-avatar-badge,.leaderboard-avatar){
+  width:58px!important;
+  height:58px!important;
+  min-width:58px!important;
+  border-radius:50%!important;
+  border:2px solid rgba(232,193,109,.75)!important;
+  background:
+    radial-gradient(circle at 32% 28%,rgba(255,236,191,.20),transparent 36%),
+    linear-gradient(180deg,#1b1411,#0b0808)!important;
+  box-shadow:
+    0 0 0 4px rgba(119,76,24,.24),
+    0 8px 18px rgba(0,0,0,.26)!important;
+  object-fit:cover!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) :is(.player-name,.leaderboard-name,.ranking-name,.name,.nickname){
+  color:#fff1d2!important;
+  font-size:clamp(1rem,1.15vw,1.22rem)!important;
+  font-weight:900!important;
+  line-height:1.1!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.35)!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) :is(.player-subtext,.meta,.subtitle){
+  color:#d6c3a0!important;
+  font-size:.84rem!important;
+}
+
+/* Rank number / podium feel */
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) :is(.rank,.position,.place,.leaderboard-rank){
+  font-size:1.18rem!important;
+  font-weight:900!important;
+  color:#f5d79a!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.35)!important;
+}
+
+/* Dominant Oscar + difficulty badge */
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) :is(.difficulty-cell,.leaderboard-difficulty,.rank-difficulty,.difficulty,.badge-cell){
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:12px!important;
+  min-width:0!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) :is(.difficulty-badge,.leaderboard-badge,.rank-badge,.difficulty-chip,.oscar-badge){
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:10px!important;
+  min-height:52px!important;
+  padding:8px 14px!important;
+  border-radius:999px!important;
+  background:
+    radial-gradient(circle at 20% 18%,rgba(255,237,184,.26),transparent 36%),
+    linear-gradient(180deg,#3a2414 0%,#140d09 58%,#090606 100%)!important;
+  border:1px solid rgba(234,191,107,.72)!important;
+  box-shadow:
+    inset 0 1px rgba(255,242,210,.18),
+    0 8px 18px rgba(0,0,0,.22),
+    0 0 20px rgba(203,145,43,.08)!important;
+  color:#fff0cd!important;
+  font-weight:900!important;
+  letter-spacing:.05em!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) :is(.difficulty-badge,.leaderboard-badge,.rank-badge,.difficulty-chip,.oscar-badge) :is(svg,img,.icon,.oscar,.difficulty-icon){
+  width:34px!important;
+  height:34px!important;
+  min-width:34px!important;
+  filter:
+    drop-shadow(0 2px 0 rgba(0,0,0,.30))
+    drop-shadow(0 0 8px rgba(235,193,111,.18))
+    saturate(1.1)!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) :is(.difficulty-badge,.leaderboard-badge,.rank-badge,.difficulty-chip,.oscar-badge)::before{
+  content:"★"!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:30px!important;
+  height:30px!important;
+  border-radius:50%!important;
+  background:
+    radial-gradient(circle at 35% 28%,#fff4d8 0 22%,#f0c96d 36%,#c18633 62%,#6d4316 100%)!important;
+  color:#2a1608!important;
+  font-size:1rem!important;
+  font-weight:900!important;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.26),
+    0 2px 6px rgba(0,0,0,.26)!important;
+}
+
+/* Make overall score column stronger but compact. */
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) :is(.score,.points,.wins,.value,.leaderboard-score){
+  color:#fff1cf!important;
+  font-size:clamp(1.1rem,1.25vw,1.35rem)!important;
+  font-weight:900!important;
+}
+
+/* Buttons including Back */
+html body.mq-noir-master #page #cinema #screen :is(
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+) :is(button,.btn,.back-btn,.refresh-btn,#leaderboardBackBtn,#refreshLeaderboardBtn){
+  min-height:52px!important;
+  padding:12px 18px!important;
+  border-radius:15px!important;
+  border:1px solid rgba(220,173,86,.60)!important;
+  background:
+    linear-gradient(180deg,#2a1911 0%,#120b08 48%,#090606 100%)!important;
+  color:var(--mq-cream)!important;
+  text-transform:uppercase!important;
+  letter-spacing:.08em!important;
+  font-weight:800!important;
+  box-shadow:
+    0 6px 16px rgba(0,0,0,.22),
+    inset 0 1px rgba(255,236,197,.14)!important;
+}
+
+/* ==========================================================================
+   BACK BUTTON SAFETY
+   Make sure Back remains visually obvious and never too small.
+   ========================================================================== */
+html body.mq-noir-master #page #cinema #screen :is(
+  #statsView,#statisticsView,#playerStatsView,#myStatsView,.stats-view,
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view,
+  #authView,#loginView,#playerLoginView,#playerAuthView,#loginScreen,#authScreen,#profileView
+) :is(.back-btn,#backBtn,#statsBackBtn,#leaderboardBackBtn,#authBackBtn,button.back){
+  min-width:132px!important;
+  position:relative!important;
+}
+
+html body.mq-noir-master #page #cinema #screen :is(
+  #statsView,#statisticsView,#playerStatsView,#myStatsView,.stats-view,
+  #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view,
+  #authView,#loginView,#playerLoginView,#playerAuthView,#loginScreen,#authScreen,#profileView
+) :is(.back-btn,#backBtn,#statsBackBtn,#leaderboardBackBtn,#authBackBtn,button.back)::before{
+  content:"←"!important;
+  margin-right:8px!important;
+}
+
+/* ==========================================================================
+   RESPONSIVE / KEEP INSIDE SCREEN MASTER
+   ========================================================================== */
+@media (max-width:1200px){
+  html body.mq-noir-master #page #cinema #screen :is(
+    #statsView,#statisticsView,#playerStatsView,#myStatsView,.stats-view
+  ) :is(.stat-card,.stats-box,.metric,.tile,.chart-card,.panel-card){
+    grid-column:span 6!important;
+  }
+
+  html body.mq-noir-master #page #cinema #screen :is(
+    #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+  ) th:nth-child(2),
+  html body.mq-noir-master #page #cinema #screen :is(
+    #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+  ) td:nth-child(2){
+    width:40%!important;
+  }
+}
+
+@media (max-width:880px){
+  html body.mq-noir-master #page #cinema #screen :is(
+    #statsView,#statisticsView,#playerStatsView,#myStatsView,.stats-view
+  ) :is(.stats-grid,.statistics-grid,.player-stats-grid,.grid){
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  }
+  html body.mq-noir-master #page #cinema #screen :is(
+    #statsView,#statisticsView,#playerStatsView,#myStatsView,.stats-view
+  ) :is(.stat-card,.stats-box,.metric,.tile,.chart-card,.panel-card){
+    grid-column:span 6!important;
+  }
+
+  html body.mq-noir-master #page #cinema #screen :is(
+    #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+  ) :is(table,.leaderboard-table,.ranking-table,.scoreboard-table){
+    table-layout:auto!important;
+  }
+  html body.mq-noir-master #page #cinema #screen :is(
+    #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+  ) tbody td{
+    padding:12px 10px!important;
+  }
+  html body.mq-noir-master #page #cinema #screen :is(
+    #leaderboardView,#rankingView,#scoreboardView,.leaderboard-view
+  ) :is(.player-cell,.leaderboard-player,.ranking-player,.player,.name-cell) :is(img,.avatar,.player-avatar,.mq-avatar-badge,.leaderboard-avatar){
+    width:50px!important;
+    height:50px!important;
+    min-width:50px!important;
+  }
+}
