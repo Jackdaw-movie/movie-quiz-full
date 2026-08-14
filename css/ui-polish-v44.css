@@ -1,15 +1,10 @@
-/* Movie Quiz – UI polish v44
-   Approved 14 Aug 2026 adjustments.
-   This file intentionally contains only high-specificity geometry/visual overrides.
-   Game logic and existing assets remain untouched. */
+/* Movie Quiz – UI polish v47
+   Approved gameplay geometry plus defensive visual resets.
+   Game logic and source assets remain untouched. */
 
 /* --------------------------------------------------------------------------
-   AVATAR SELECT – register the two side avatars to the circular window widgets
-   in the fixed 1672 × 941 avatar master stage.
-
-   Approved visual target centres:
-   left well  ≈ (381, 504)
-   right well ≈ (1311, 504)
+   AVATAR SELECT – canonical side-avatar registration in the 1672 × 941 master.
+   Circular wells themselves remain locked to the approved background artwork.
    -------------------------------------------------------------------------- */
 #mqAvatarModal .mq-avatar-carousel-choice.is-left-1,
 #mqAvatarModal .mq-avatar-carousel-choice.is-right-1{
@@ -25,84 +20,53 @@
 
 #mqAvatarModal .mq-avatar-carousel-choice.is-left-1 .mq-avatar-frame,
 #mqAvatarModal .mq-avatar-carousel-choice.is-right-1 .mq-avatar-frame{
+  position:absolute!important;
+  inset:0!important;
   display:grid!important;
   place-items:center!important;
-  align-items:center!important;
-  justify-content:center!important;
-  width:100%!important;
-  height:100%!important;
+  width:234px!important;
+  height:234px!important;
+  margin:0!important;
+  padding:0!important;
   overflow:hidden!important;
   border-radius:50%!important;
 }
 #mqAvatarModal .mq-avatar-carousel-choice.is-left-1 .mq-avatar-img,
 #mqAvatarModal .mq-avatar-carousel-choice.is-right-1 .mq-avatar-img{
   display:block!important;
-  width:88%!important;
-  height:88%!important;
-  margin:auto!important;
+  width:74.8%!important;
+  height:74.8%!important;
+  max-width:none!important;
+  max-height:none!important;
+  margin:0!important;
   object-fit:contain!important;
   object-position:50% 50%!important;
-  transform:none!important;
+  transform-origin:50% 50%!important;
+}
+#mqAvatarModal .mq-avatar-carousel-choice.is-left-1 .mq-avatar-img{
+  transform:translate3d(0,-11px,0)!important;
+}
+#mqAvatarModal .mq-avatar-carousel-choice.is-right-1 .mq-avatar-img{
+  transform:translate3d(-19px,-11px,0)!important;
 }
 
 /* --------------------------------------------------------------------------
-   DIFFICULTY – the artwork itself is the button. No legacy card, black square,
-   pseudo layer, border, shadow or backdrop may be visible around it.
-
-   The existing source artwork is square, so the mask keeps only the intended
-   circular icon zone plus the lower label/plaque zone. This preserves the dark
-   detail inside the artwork instead of blending all black pixels away.
+   DIFFICULTY – defensive reset only.
+   Never crop/mask the uploaded difficulty artwork. The complete 300×300 asset
+   is rendered as-is. The dedicated difficulty stylesheet owns the rest.
    -------------------------------------------------------------------------- */
 html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card,
 html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card:hover,
 html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card:focus,
 html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card:focus-visible,
 html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card:active{
-  padding:0!important;
-  border:0!important;
-  border-color:transparent!important;
-  border-radius:0!important;
-  outline:0!important;
-  background-color:transparent!important;
-  box-shadow:none!important;
-  backdrop-filter:none!important;
-  -webkit-backdrop-filter:none!important;
-  appearance:none!important;
-  -webkit-appearance:none!important;
-  overflow:visible!important;
-
-  /* crop source margins a little more aggressively than v43 */
-  background-size:116% 116%!important;
+  background-size:contain!important;
   background-position:50% 50%!important;
-
-  /* union: circular artwork + bottom plaque */
-  -webkit-mask-image:
-    radial-gradient(circle at 50% 42%,#000 0 43%,transparent 43.8%),
-    linear-gradient(#000 0 0);
-  -webkit-mask-size:100% 100%,88% 26%;
-  -webkit-mask-position:50% 50%,50% 91%;
-  -webkit-mask-repeat:no-repeat,no-repeat;
-  -webkit-mask-composite:source-over;
-  mask-image:
-    radial-gradient(circle at 50% 42%,#000 0 43%,transparent 43.8%),
-    linear-gradient(#000 0 0);
-  mask-size:100% 100%,88% 26%;
-  mask-position:50% 50%,50% 91%;
-  mask-repeat:no-repeat,no-repeat;
-  mask-composite:add;
-}
-html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card::before,
-html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card::after{
-  content:none!important;
-  display:none!important;
-  background:none!important;
-  border:0!important;
-  box-shadow:none!important;
-}
-html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card>.selection-icon,
-html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card>.card-copy,
-html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card>.difficulty-dots{
-  display:none!important;
+  background-repeat:no-repeat!important;
+  -webkit-mask:none!important;
+  mask:none!important;
+  clip-path:none!important;
+  -webkit-clip-path:none!important;
 }
 
 /* --------------------------------------------------------------------------
@@ -112,8 +76,6 @@ html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card>.dif
    Projection surface: x≈255, y≈197, w≈1163, h≈622
    User target: HUD master x=293, y=220
    Therefore inside #screen: left=38px, top=23px.
-
-   Applies to #game regardless of selected difficulty/genre/theme.
    -------------------------------------------------------------------------- */
 html body.mq-noir-master #page #cinema #screen #game .hud{
   position:absolute!important;
@@ -168,7 +130,6 @@ html body.mq-noir-master #page #cinema #screen #game .hud-center{
   text-align:center!important;
 }
 
-/* Difficulty + genre: intentionally different face, larger and visibly higher. */
 html body.mq-noir-master #page #cinema #screen #game .hud-center #themeLabel{
   display:block!important;
   position:relative!important;
@@ -186,7 +147,6 @@ html body.mq-noir-master #page #cinema #screen #game .hud-center #themeLabel{
   text-shadow:0 3px 13px rgba(0,0,0,.58)!important;
 }
 
-/* Question number gets its own display typography and much stronger hierarchy. */
 html body.mq-noir-master #page #cinema #screen #game .hud-center>.stat-value{
   margin:0!important;
   color:#f3dfb2!important;
@@ -205,7 +165,6 @@ html body.mq-noir-master #page #cinema #screen #game .hud-center .progress-track
   flex:0 0 auto!important;
 }
 
-/* Lives own the right-hand HUD column whenever game logic makes them visible. */
 html body.mq-noir-master #page #cinema #screen #game #filmLives{
   grid-column:3!important;
   grid-row:1!important;
@@ -215,7 +174,6 @@ html body.mq-noir-master #page #cinema #screen #game #filmLives{
   transform:none!important;
 }
 
-/* Existing utility controls do not consume a grid column. */
 html body.mq-noir-master #page #cinema #screen #game .hud-actions{
   position:absolute!important;
   top:8px!important;
@@ -225,7 +183,6 @@ html body.mq-noir-master #page #cinema #screen #game .hud-actions{
   z-index:4!important;
 }
 
-/* The taller/repositioned HUD needs a clean content start below it. */
 html body.mq-noir-master #page #cinema #screen #game .question-wrap{
   position:absolute!important;
   inset:auto 0 0 0!important;
@@ -242,8 +199,6 @@ html body.mq-noir-master #page #cinema #screen #game .question-meta{
   margin-top:0!important;
 }
 
-/* Compact fallback for genuinely narrow rendered projection surfaces. Geometry
-   remains tied to the same master anchors; only typography/gaps are softened. */
 @container mq-game-screen (max-width:900px){
   html body.mq-noir-master #page #cinema #screen #game .hud{
     grid-template-columns:minmax(180px,.9fr) minmax(260px,1.2fr) minmax(170px,.8fr)!important;
