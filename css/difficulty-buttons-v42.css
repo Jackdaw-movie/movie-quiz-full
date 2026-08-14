@@ -103,3 +103,12 @@ html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card:acti
   box-shadow:none!important;
   transition-duration:.06s!important;
 }
+
+/* v49 – gameplay header master registration.
+   Current center of the question-number title is approximately master
+   x=846.77, y=281.14. Move the complete center HUD group by the same delta so
+   the question-number title center lands at x=847, y=302. The difficulty/genre
+   heading above it keeps its existing spacing automatically. */
+html body.mq-noir-master #page #cinema #screen #game .hud-center{
+  transform:translate3d(.2333px,20.8605px,0)!important;
+}
