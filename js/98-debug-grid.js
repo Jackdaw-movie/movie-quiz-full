@@ -1,34 +1,26 @@
 (()=>{
   'use strict';
 
-  const VERSION='debug-grid-v46-inert-overlay';
-  const STAGES=[
-    {name:'AVATAR',selector:'#mqAvatarModal .mq-avatar-dialog',w:1672,h:941},
-    {name:'TICKET',selector:'.mq-ticket-master-stage',w:1672,h:941},
-    {name:'LOADING',selector:'.mq-preload-master-stage',w:1279,h:720},
-    {name:'EXTERIOR',selector:'.mq-v6-stage',w:1672,h:941},
-    {name:'CINEMA',selector:'#cinema',w:1672,h:941}
-  ];
+  const VERSION='debug-grid-v47-restored';
+  const STAGES={
+    AVATAR:{name:'AVATAR',selector:'#mqAvatarModal .mq-avatar-dialog',w:1672,h:941},
+    TICKET:{name:'TICKET',selector:'#mqTicketLayer',w:1672,h:941},
+    LOADING:{name:'LOADING',selector:'#mqPreloadGate',w:1279,h:720},
+    EXTERIOR:{name:'EXTERIOR',selector:'#mqExteriorStage',w:1672,h:941},
+    CINEMA:{name:'CINEMA',selector:'#cinema',w:1672,h:941}
+  };
 
   let enabled=false;
   let current=null;
   let overlay=null;
   let canvas=null;
+  let ctx=null;
   let toggle=null;
   let readout=null;
   let raf=0;
-  let paintedKey='';
+  let painted='';
 
   const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
-
-  function ensureStyle(id,href){
-    if(document.getElementById(id))return;
-    const link=document.createElement('link');
-    link.id=id;
-    link.rel='stylesheet';
-    link.href=href;
-    document.head.appendChild(link);
-  }
 
   function visible(el){
     if(!el||!el.isConnected||el.closest('[hidden]'))return false;
@@ -38,75 +30,89 @@
     return r.width>20&&r.height>20&&r.right>0&&r.bottom>0&&r.left<innerWidth&&r.top<innerHeight;
   }
 
-  function findStage(){
-    for(const spec of STAGES){
-      const nodes=document.querySelectorAll(spec.selector);
-      for(const el of nodes){
-        if(visible(el))return {...spec,el};
-      }
-    }
-    return null;
+  function candidate(spec){
+    const el=document.querySelector(spec.selector);
+    return visible(el)?{...spec,el}:null;
   }
 
-  function removeLegacyGridState(){
-    document.body?.classList.remove('mq-debug-grid-on','mq-debug-grid-enabled','mq-debug-grid-cursor','mq-debug-avatar-local');
-    for(const id of [
-      'mqDebugGridOverlay','mqDebugGridCanvas','mqDebugCrosshairX','mqDebugCrosshairY',
-      'mqDebugScreenBox','mqDebugElementBox','mqDebugReadout','mqDebugToggle','mqAvatarDebugGridLocal'
-    ]){
-      document.getElementById(id)?.remove();
+  function findStage(){
+    /* Overlay states always win over the screen beneath them. */
+    let found=candidate(STAGES.AVATAR);
+    if(found)return found;
+    found=candidate(STAGES.TICKET);
+    if(found)return found;
+    found=candidate(STAGES.LOADING);
+    if(found)return found;
+
+    /* Exterior remains in the DOM after entry, so body state decides whether
+       it is still the active visual master. */
+    if(document.body?.classList.contains('mq-exterior-active')){
+      found=candidate(STAGES.EXTERIOR);
+      if(found)return found;
     }
+
+    found=candidate(STAGES.CINEMA);
+    if(found)return found;
+
+    return candidate(STAGES.EXTERIOR);
+  }
+
+  function removeLegacyNodes(){
+    for(const id of [
+      'mqDebugGridOverlay','mqDebugGridCanvas','mqDebugReadout','mqDebugToggle',
+      'mqDebugCrosshairX','mqDebugCrosshairY','mqDebugScreenBox','mqDebugElementBox',
+      'mqDebugGridOverlayV46','mqDebugGridCanvasV46','mqDebugToggleV46','mqDebugReadoutV46',
+      'mqAvatarDebugGridLocal'
+    ]) document.getElementById(id)?.remove();
+
+    /* Earlier versions used these classes to control layout-adjacent debug UI.
+       They are not used by v47. */
+    document.body?.classList.remove(
+      'mq-debug-grid-on','mq-debug-grid-enabled','mq-debug-grid-cursor','mq-debug-avatar-local'
+    );
   }
 
   function ensureUI(){
     if(!document.body)return false;
-    ensureStyle('mq-debug-grid-v46-style','css/debug-grid-v46.css?v=46.0');
-    ensureStyle('mq-avatar-alignment-v46-style','css/avatar-alignment-v46.css?v=46.0');
 
-    overlay=document.getElementById('mqDebugGridOverlayV46');
     if(!overlay){
       overlay=document.createElement('div');
-      overlay.id='mqDebugGridOverlayV46';
+      overlay.id='mqDebugGridOverlay';
       overlay.setAttribute('aria-hidden','true');
       canvas=document.createElement('canvas');
-      canvas.id='mqDebugGridCanvasV46';
+      canvas.id='mqDebugGridCanvas';
       overlay.appendChild(canvas);
       document.body.appendChild(overlay);
-    }else{
-      canvas=document.getElementById('mqDebugGridCanvasV46');
+      ctx=canvas.getContext('2d');
     }
 
-    toggle=document.getElementById('mqDebugToggleV46');
     if(!toggle){
       toggle=document.createElement('button');
-      toggle.id='mqDebugToggleV46';
+      toggle.id='mqDebugToggle';
       toggle.type='button';
       toggle.title='Zapnout / vypnout master mřížku (G)';
       toggle.addEventListener('click',toggleGrid);
       document.body.appendChild(toggle);
     }
 
-    readout=document.getElementById('mqDebugReadoutV46');
     if(!readout){
       readout=document.createElement('div');
-      readout.id='mqDebugReadoutV46';
+      readout.id='mqDebugReadout';
       readout.setAttribute('aria-hidden','true');
       document.body.appendChild(readout);
     }
 
-    updateButton();
+    updateToggle();
     return true;
   }
 
-  function paintGrid(w,h){
-    if(!canvas)return;
+  function drawGrid(w,h){
+    if(!ctx||!canvas)return;
     const key=`${w}x${h}`;
-    if(key===paintedKey)return;
-    paintedKey=key;
+    if(key===painted)return;
+    painted=key;
     canvas.width=w;
     canvas.height=h;
-    const ctx=canvas.getContext('2d');
-    if(!ctx)return;
     ctx.clearRect(0,0,w,h);
     ctx.save();
 
@@ -131,7 +137,7 @@
       ctx.stroke();
     }
 
-    ctx.font='700 17px ui-monospace,SFMono-Regular,Menlo,monospace';
+    ctx.font='700 17px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace';
     ctx.textBaseline='top';
     for(let x=0;x<=w-20;x+=100){
       ctx.fillStyle='rgba(0,0,0,.74)';
@@ -155,73 +161,76 @@
     overlay.style.setProperty('top',`${r.top}px`,'important');
     overlay.style.setProperty('width',`${r.width}px`,'important');
     overlay.style.setProperty('height',`${r.height}px`,'important');
-    overlay.dataset.active='1';
-    paintGrid(spec.w,spec.h);
+    overlay.style.setProperty('display','block','important');
+    drawGrid(spec.w,spec.h);
+  }
+
+  function hideOverlay(){
+    if(overlay)overlay.style.setProperty('display','none','important');
+    if(readout)readout.style.setProperty('display','none','important');
+  }
+
+  function updateToggle(){
+    if(!toggle)return;
+    toggle.textContent=enabled
+      ?`GRID ON${current?.name?` · ${current.name}`:''} · G`
+      :'GRID OFF · G';
   }
 
   function sync(){
     if(!enabled)return;
     const found=findStage();
     current=found;
-    if(!found){
-      if(overlay)overlay.dataset.active='0';
-      updateButton();
-      return;
-    }
-    placeOverlay(found);
-    updateButton();
+    if(found)placeOverlay(found);
+    else hideOverlay();
+    updateToggle();
   }
 
-  function loop(){
+  function frameLoop(){
     if(!enabled)return;
     sync();
-    raf=requestAnimationFrame(loop);
+    raf=requestAnimationFrame(frameLoop);
   }
 
-  function updateButton(){
-    if(!toggle)return;
-    toggle.textContent=enabled?`GRID ON${current?.name?` · ${current.name}`:''} · G`:'GRID OFF · G';
-  }
-
-  function setEnabled(next){
-    enabled=Boolean(next);
+  function setEnabled(value){
+    enabled=Boolean(value);
     cancelAnimationFrame(raf);
     raf=0;
+
     if(enabled){
       sync();
-      raf=requestAnimationFrame(loop);
+      raf=requestAnimationFrame(frameLoop);
     }else{
       current=null;
-      if(overlay)overlay.dataset.active='0';
-      if(readout)readout.dataset.active='0';
+      hideOverlay();
     }
-    updateButton();
+    updateToggle();
   }
 
-  function toggleGrid(){
-    setEnabled(!enabled);
-  }
+  function toggleGrid(){setEnabled(!enabled)}
 
   function pointerMove(e){
     if(!enabled||!current||!readout)return;
     const r=current.el.getBoundingClientRect();
-    const inside=e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;
-    if(!inside||r.width<=0||r.height<=0){
-      readout.dataset.active='0';
+    const inside=e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom&&r.width>0&&r.height>0;
+    if(!inside){
+      readout.style.setProperty('display','none','important');
       return;
     }
+
     const x=clamp((e.clientX-r.left)/r.width*current.w,0,current.w);
     const y=clamp((e.clientY-r.top)/r.height*current.h,0,current.h);
-    readout.textContent=`${current.name}  x:${Math.round(x)}  y:${Math.round(y)}`;
-    readout.dataset.active='1';
-    let left=e.clientX+14;
-    let top=e.clientY+14;
-    const rw=readout.offsetWidth||180;
-    const rh=readout.offsetHeight||32;
-    if(left+rw>innerWidth-10)left=e.clientX-rw-14;
-    if(top+rh>innerHeight-10)top=e.clientY-rh-14;
-    readout.style.left=Math.max(10,left)+'px';
-    readout.style.top=Math.max(10,top)+'px';
+    readout.textContent=`${current.name} MASTER  x:${Math.round(x)}  y:${Math.round(y)}  /  ${current.w}×${current.h}`;
+    readout.style.setProperty('display','block','important');
+
+    let left=e.clientX+16;
+    let top=e.clientY+16;
+    const rw=readout.offsetWidth||260;
+    const rh=readout.offsetHeight||38;
+    if(left+rw>innerWidth-12)left=e.clientX-rw-16;
+    if(top+rh>innerHeight-12)top=e.clientY-rh-16;
+    readout.style.setProperty('left',`${Math.max(12,left)}px`,'important');
+    readout.style.setProperty('top',`${Math.max(12,top)}px`,'important');
   }
 
   function keyHandler(e){
@@ -234,13 +243,19 @@
   }
 
   function boot(){
-    removeLegacyGridState();
+    removeLegacyNodes();
     ensureUI();
     window.addEventListener('keydown',keyHandler,true);
     document.addEventListener('mousemove',pointerMove,{passive:true});
     const p=new URLSearchParams(location.search);
     if(p.get('mqGrid')==='1')setEnabled(true);
-    window.MovieQuizDebugGrid={version:VERSION,get enabled(){return enabled},toggle:toggleGrid,setEnabled};
+    window.MovieQuizDebugGrid={
+      version:VERSION,
+      get enabled(){return enabled},
+      toggle:toggleGrid,
+      setEnabled,
+      get stage(){return current?.name||null}
+    };
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
