@@ -1,0 +1,258 @@
+/* Movie Quiz – Cinema UI v53.3
+   Focused polish pass: film lives burn direction/smoke, HUD left score block,
+   and a richer comedy background. Visual-only overrides on top of v53-v53.2. */
+
+/* --------------------------------------------------------------------------
+   LEFT SCORE PANEL – keep x flow, place its top edge at master y=241.
+   Screen starts at master y≈197, HUD top at y≈220, so the block itself needs
+   ~21 px downward offset inside the HUD. Also remove the JACKDAW wordmark.
+   -------------------------------------------------------------------------- */
+html body.mq-noir-master #page #cinema #screen #game .hud-left{
+  position:relative!important;
+  top:21px!important;
+}
+html body.mq-noir-master #page #cinema #screen #game .hud-left .clapper-icon::after,
+html body.mq-noir-master #page #cinema #screen #game .hud-left .clapper-icon i::after,
+html body.mq-noir-master #page #cinema #screen #game .hud-left .clapper-icon > i::before{
+  content:none!important;
+}
+
+/* --------------------------------------------------------------------------
+   FILM LIVES – top stays visually aligned, lower edge extends to y=345.
+   Burn direction is now physically right-to-left, with a denser ember front,
+   richer colours and a smoke plume instead of the previous broad flame sheet.
+   -------------------------------------------------------------------------- */
+html body.mq-noir-master #page #cinema #screen #game #filmLives,
+html body.mq-noir-master #page #cinema #screen #filmLives.film-lives{
+  align-self:start!important;
+  width:261px!important;
+  min-width:261px!important;
+  max-width:261px!important;
+  height:122px!important;
+  min-height:122px!important;
+  max-height:122px!important;
+}
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life,
+html body.mq-noir-master #page #cinema #screen #filmLives.film-lives>.life{
+  width:87px!important;
+  flex-basis:87px!important;
+  height:86px!important;
+}
+
+/* Burning now progresses from right to left. */
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning,
+html body.mq-noir-master #page #cinema #screen #filmLives.film-lives>.life.burning{
+  animation:mq533BurnBody 1.55s cubic-bezier(.18,.72,.25,1) both!important;
+}
+
+/* Flame/ember front plus smoke. */
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning::before,
+html body.mq-noir-master #page #cinema #screen #filmLives.film-lives>.life.burning::before{
+  inset:-30px -20px -20px -22px!important;
+  z-index:4!important;
+  opacity:1!important;
+  border-radius:8px!important;
+  background:
+    radial-gradient(28px 82px at 99% 100%,rgba(255,252,221,.96) 0 10%,rgba(255,213,92,.98) 15%,rgba(255,129,24,.98) 30%,rgba(182,38,2,.82) 47%,transparent 65%),
+    radial-gradient(24px 67px at 94% 100%,rgba(255,248,204,.94) 0 9%,rgba(255,194,62,.97) 14%,rgba(255,101,15,.96) 29%,rgba(169,31,1,.78) 47%,transparent 64%),
+    radial-gradient(21px 52px at 88% 100%,rgba(255,245,194,.92) 0 8%,rgba(255,178,52,.95) 13%,rgba(255,88,12,.95) 28%,rgba(157,27,1,.73) 45%,transparent 62%),
+
+    /* Dense orange-red glowing burn front */
+    radial-gradient(34px 19px at 93% 64%,rgba(255,224,143,.72) 0 16%,rgba(255,130,30,.60) 30%,rgba(179,44,8,.40) 47%,transparent 70%),
+    radial-gradient(26px 16px at 89% 45%,rgba(255,205,114,.58) 0 13%,rgba(255,111,24,.46) 32%,transparent 68%),
+
+    /* Smoke */
+    radial-gradient(44px 25px at 92% 18%,rgba(94,92,90,.48) 0 18%,rgba(58,57,55,.30) 45%,transparent 74%),
+    radial-gradient(62px 33px at 83% 5%,rgba(80,78,76,.34) 0 20%,rgba(46,45,43,.20) 47%,transparent 75%),
+    radial-gradient(48px 25px at 72% -4%,rgba(68,67,65,.20) 0 20%,transparent 72%)!important;
+  mix-blend-mode:screen!important;
+  filter:
+    blur(.25px)
+    drop-shadow(-2px -2px 5px rgba(255,119,16,.28))
+    drop-shadow(-12px -16px 15px rgba(60,60,60,.16))!important;
+  clip-path:inset(0 0 0 88%)!important;
+  transform-origin:100% 100%!important;
+  animation:
+    mq533BurnFront 1.55s cubic-bezier(.2,.73,.22,1) both,
+    mq533FlameJitter .11s steps(2,end) infinite alternate!important;
+}
+
+/* Charring/hole trail following the right-to-left front. */
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning::after,
+html body.mq-noir-master #page #cinema #screen #filmLives.film-lives>.life.burning::after{
+  inset:0!important;
+  z-index:3!important;
+  opacity:1!important;
+  border-radius:2px!important;
+  background:
+    linear-gradient(90deg,
+      rgba(4,3,2,0) 0%,
+      rgba(4,3,2,0) 50%,
+      rgba(24,11,7,.18) 60%,
+      rgba(54,18,8,.40) 68%,
+      rgba(110,31,8,.58) 75%,
+      rgba(181,53,10,.72) 81%,
+      rgba(255,116,25,.76) 87%,
+      rgba(255,197,101,.50) 92%,
+      rgba(255,240,186,.10) 100%),
+    radial-gradient(30px 25px at 91% 48%,rgba(2,2,2,.88) 0 33%,rgba(45,15,7,.82) 44%,rgba(128,40,9,.60) 53%,rgba(255,112,23,.24) 62%,transparent 71%),
+    radial-gradient(20px 17px at 76% 52%,rgba(3,3,3,.78) 0 33%,rgba(53,16,7,.65) 46%,rgba(194,55,11,.22) 58%,transparent 69%),
+    radial-gradient(14px 13px at 64% 36%,rgba(3,3,3,.68) 0 34%,rgba(67,19,7,.50) 48%,transparent 68%)!important;
+  box-shadow:
+    inset 0 0 16px rgba(0,0,0,.80),
+    -8px 0 14px rgba(255,116,18,.13),
+    -16px -10px 24px rgba(48,48,48,.08)!important;
+  clip-path:inset(0 0 0 96%)!important;
+  animation:mq533BurnTrail 1.55s cubic-bezier(.22,.78,.28,1) both!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.dead,
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burned{
+  background:
+    radial-gradient(ellipse at 38% 48%,#020202 0 24%,#120706 40%,#351107 55%,#100705 76%),
+    radial-gradient(ellipse at 76% 50%,rgba(98,27,8,.34),transparent 40%),
+    repeating-linear-gradient(113deg,rgba(130,54,20,.08) 0 1px,transparent 1px 4px),
+    linear-gradient(180deg,#140a06,#050302)!important;
+  box-shadow:
+    inset 0 0 18px rgba(0,0,0,.94),
+    inset 0 0 0 1px rgba(119,43,18,.20)!important;
+}
+
+@keyframes mq533BurnBody{
+  0%{filter:saturate(.96) brightness(1)}
+  16%{filter:saturate(1.24) brightness(1.12)}
+  42%{filter:saturate(1.15) brightness(.98)}
+  72%{filter:saturate(.86) brightness(.84)}
+  100%{filter:saturate(.58) brightness(.72)}
+}
+@keyframes mq533BurnFront{
+  0%{clip-path:inset(0 0 0 91%);opacity:.08;transform:translate3d(1px,0,0)}
+  10%{clip-path:inset(0 0 0 86%);opacity:.78}
+  22%{clip-path:inset(0 0 0 72%);opacity:1}
+  38%{clip-path:inset(0 0 0 56%);opacity:.98}
+  55%{clip-path:inset(0 0 0 40%);opacity:.96}
+  72%{clip-path:inset(0 0 0 24%);opacity:.90}
+  88%{clip-path:inset(0 0 0 9%);opacity:.84}
+  100%{clip-path:inset(0 0 0 0);opacity:.72;transform:translate3d(-3px,-2px,0)}
+}
+@keyframes mq533BurnTrail{
+  0%{clip-path:inset(0 0 0 98%);opacity:.12}
+  15%{clip-path:inset(0 0 0 88%);opacity:.44}
+  32%{clip-path:inset(0 0 0 68%);opacity:.66}
+  52%{clip-path:inset(0 0 0 47%);opacity:.82}
+  72%{clip-path:inset(0 0 0 26%);opacity:.92}
+  88%{clip-path:inset(0 0 0 10%);opacity:.98}
+  100%{clip-path:inset(0 0 0 0);opacity:1}
+}
+@keyframes mq533FlameJitter{
+  from{transform:translate3d(1px,1px,0) scaleX(.985) scaleY(.985)}
+  to{transform:translate3d(-2px,-2px,0) scaleX(1.028) scaleY(1.045)}
+}
+
+/* --------------------------------------------------------------------------
+   COMEDY THEME – richer 1930s vaudeville / cabaret atmosphere.
+   This replaces the sparse spotlight + floating bubble feeling with layered
+   marquee bulbs, velvet tones, stage glow, footlights and controlled dust.
+   Multiple selectors are supported to catch the runtime comedy state.
+   -------------------------------------------------------------------------- */
+html body.mq-noir-master #page #cinema #screen #game:is([data-theme="comedy"],[data-genre="comedy"],.theme-comedy,.genre-comedy,.is-comedy) .theme-scene,
+html body.mq-noir-master:is([data-theme="comedy"],[data-genre="comedy"],.theme-comedy,.genre-comedy,.is-comedy) #page #cinema #screen #game .theme-scene,
+html body.mq-noir-master #page #cinema #screen #game .theme-scene.theme-comedy,
+html body.mq-noir-master #page #cinema #screen #game .theme-scene[data-theme="comedy"]{
+  opacity:1!important;
+  background:
+    radial-gradient(ellipse at 50% 9%,rgba(255,224,153,.20),transparent 38%),
+    radial-gradient(circle at 17% 23%,rgba(255,205,112,.16),transparent 18%),
+    radial-gradient(circle at 83% 23%,rgba(255,205,112,.16),transparent 18%),
+    linear-gradient(180deg,rgba(92,22,28,.90) 0%,rgba(55,14,21,.74) 30%,rgba(29,10,15,.46) 53%,rgba(11,8,10,.20) 100%)!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #game:is([data-theme="comedy"],[data-genre="comedy"],.theme-comedy,.genre-comedy,.is-comedy) .theme-scene .scene-a,
+html body.mq-noir-master:is([data-theme="comedy"],[data-genre="comedy"],.theme-comedy,.genre-comedy,.is-comedy) #page #cinema #screen #game .theme-scene .scene-a,
+html body.mq-noir-master #page #cinema #screen #game .theme-scene.theme-comedy .scene-a,
+html body.mq-noir-master #page #cinema #screen #game .theme-scene[data-theme="comedy"] .scene-a{
+  inset:0!important;
+  opacity:.95!important;
+  background:
+    /* Top marquee / warm bulbs */
+    repeating-radial-gradient(circle at 50% 10%,rgba(255,238,194,.98) 0 3px,rgba(215,147,50,.95) 3px 6px,transparent 6px 28px),
+    radial-gradient(ellipse at 50% -7%,rgba(255,218,132,.25),transparent 40%),
+    radial-gradient(circle at 18% 27%,rgba(255,213,132,.21),transparent 14%),
+    radial-gradient(circle at 82% 27%,rgba(255,213,132,.21),transparent 14%)!important;
+  background-size:100% 30%,100% 100%,100% 100%,100% 100%!important;
+  background-repeat:no-repeat!important;
+  animation:mq533ComedyGlow 7.5s ease-in-out infinite alternate!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #game:is([data-theme="comedy"],[data-genre="comedy"],.theme-comedy,.genre-comedy,.is-comedy) .theme-scene .scene-b,
+html body.mq-noir-master:is([data-theme="comedy"],[data-genre="comedy"],.theme-comedy,.genre-comedy,.is-comedy) #page #cinema #screen #game .theme-scene .scene-b,
+html body.mq-noir-master #page #cinema #screen #game .theme-scene.theme-comedy .scene-b,
+html body.mq-noir-master #page #cinema #screen #game .theme-scene[data-theme="comedy"] .scene-b{
+  inset:0!important;
+  opacity:.88!important;
+  background:
+    /* Velvet curtain folds */
+    repeating-linear-gradient(90deg,
+      rgba(84,13,22,.18) 0 5.5%,
+      rgba(170,41,53,.16) 5.5% 7.5%,
+      rgba(79,12,20,.18) 7.5% 14%),
+    /* Gentle crossed stage beams */
+    linear-gradient(63deg,transparent 0 28%,rgba(255,223,167,.10) 31%,rgba(255,223,167,.02) 38%,transparent 43%),
+    linear-gradient(117deg,transparent 0 28%,rgba(255,216,155,.10) 31%,rgba(255,216,155,.02) 38%,transparent 43%),
+    linear-gradient(180deg,rgba(149,35,45,.20) 0%,rgba(89,17,24,.12) 45%,rgba(0,0,0,0) 76%)!important;
+  mix-blend-mode:screen!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #game:is([data-theme="comedy"],[data-genre="comedy"],.theme-comedy,.genre-comedy,.is-comedy) .theme-scene .scene-c,
+html body.mq-noir-master:is([data-theme="comedy"],[data-genre="comedy"],.theme-comedy,.genre-comedy,.is-comedy) #page #cinema #screen #game .theme-scene .scene-c,
+html body.mq-noir-master #page #cinema #screen #game .theme-scene.theme-comedy .scene-c,
+html body.mq-noir-master #page #cinema #screen #game .theme-scene[data-theme="comedy"] .scene-c{
+  inset:0!important;
+  opacity:.66!important;
+  background:
+    /* Controlled film dust / sparkle, much subtler than bubbles */
+    radial-gradient(circle at 20% 64%,rgba(255,236,198,.25) 0 1px,transparent 1.4px),
+    radial-gradient(circle at 32% 48%,rgba(255,215,153,.22) 0 1px,transparent 1.4px),
+    radial-gradient(circle at 46% 69%,rgba(255,225,165,.20) 0 1px,transparent 1.4px),
+    radial-gradient(circle at 59% 46%,rgba(255,238,200,.20) 0 1px,transparent 1.4px),
+    radial-gradient(circle at 71% 65%,rgba(255,208,129,.22) 0 1px,transparent 1.4px),
+    radial-gradient(circle at 84% 55%,rgba(255,235,194,.19) 0 1px,transparent 1.4px)!important;
+  animation:mq533ComedyDust 13s linear infinite!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #game:is([data-theme="comedy"],[data-genre="comedy"],.theme-comedy,.genre-comedy,.is-comedy) .theme-scene .scene-d,
+html body.mq-noir-master:is([data-theme="comedy"],[data-genre="comedy"],.theme-comedy,.genre-comedy,.is-comedy) #page #cinema #screen #game .theme-scene .scene-d,
+html body.mq-noir-master #page #cinema #screen #game .theme-scene.theme-comedy .scene-d,
+html body.mq-noir-master #page #cinema #screen #game .theme-scene[data-theme="comedy"] .scene-d{
+  inset:auto 0 0 0!important;
+  height:43%!important;
+  opacity:.92!important;
+  background:
+    /* Footlights */
+    repeating-radial-gradient(circle at 50% 94%,rgba(255,238,190,.96) 0 3px,rgba(203,132,39,.92) 3px 6px,transparent 6px 30px),
+    radial-gradient(ellipse at 50% 80%,rgba(255,197,102,.15),transparent 42%),
+    linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(28,10,12,.20) 23%,rgba(16,9,10,.55) 62%,rgba(8,7,8,.88) 100%)!important;
+  background-size:100% 100%,100% 100%,100% 100%!important;
+  background-repeat:no-repeat!important;
+}
+
+@keyframes mq533ComedyGlow{
+  from{filter:brightness(.98) saturate(1);opacity:.90}
+  to{filter:brightness(1.07) saturate(1.05);opacity:1}
+}
+@keyframes mq533ComedyDust{
+  from{transform:translate3d(0,0,0)}
+  50%{transform:translate3d(-8px,-5px,0)}
+  to{transform:translate3d(0,-10px,0)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning::before,
+  html body.mq-noir-master #page #cinema #screen #filmLives.film-lives>.life.burning::before{
+    animation:mq533BurnFront 1.55s linear both!important;
+  }
+  html body.mq-noir-master #page #cinema #screen #game .theme-scene .scene-a,
+  html body.mq-noir-master #page #cinema #screen #game .theme-scene .scene-c{
+    animation:none!important;
+  }
+}
