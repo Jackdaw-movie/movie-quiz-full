@@ -1,0 +1,393 @@
+/* Movie Quiz – Cinema UI v53.4
+   Corrective polish after v53.3.
+   Goals:
+   - correct film-strip geometry and bottom edge
+   - restore original burn language, only larger/denser
+   - place left score/clapper box correctly
+   - opaque black clapper with preserved white stripes
+   - replace comedy circles with a proper 1930s theatre / vaudeville environment
+*/
+
+/* ==========================================================================
+   SCORE / CLAPPER
+   Baseline from v53.2:
+   HUD master top y=220, 112px high, padding 12px.
+   .hud-left is 76px high and vertically centered => visual top ~y=238.
+   Requested top is y=241, therefore only +3px is needed.
+   ========================================================================== */
+html body.mq-noir-master #page #cinema #screen #game .hud-left{
+  position:relative!important;
+  top:3px!important;
+}
+
+/* Opaque black clapper body. */
+html body.mq-noir-master #page #cinema #screen #game .hud-left>.clapper-icon{
+  opacity:1!important;
+  border-color:#2a241e!important;
+  background:
+    linear-gradient(90deg,transparent 0 9px,rgba(255,255,255,.08) 9px 10px,transparent 10px 100%),
+    linear-gradient(180deg,#090909 0 55%,#020202 56% 100%)!important;
+  box-shadow:
+    inset 0 0 0 1px #000,
+    inset 0 1px rgba(255,255,255,.08),
+    0 4px 8px rgba(0,0,0,.42)!important;
+}
+
+/* Keep the classic black/white striped hinged top. */
+html body.mq-noir-master #page #cinema #screen #game .hud-left>.clapper-icon::before{
+  background:
+    repeating-linear-gradient(
+      135deg,
+      #f2efe7 0 10px,
+      #070707 10px 20px
+    )!important;
+  border-color:#28231e!important;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.24),
+    0 2px 4px rgba(0,0,0,.46)!important;
+}
+
+/* Remove only the JACKDAW wordmark. */
+html body.mq-noir-master #page #cinema #screen #game .hud-left>.clapper-icon::after{
+  content:none!important;
+  display:none!important;
+}
+
+/* Retain subtle slate lines on the black body. */
+html body.mq-noir-master #page #cinema #screen #game .hud-left>.clapper-icon>i{
+  display:block!important;
+  background:rgba(255,255,255,.16)!important;
+  box-shadow:0 5px rgba(255,255,255,.09)!important;
+}
+
+
+/* ==========================================================================
+   FILM LIVES
+   Fix v53.3 overflow:
+   261px strip - 16px horizontal padding = 245px usable width.
+   82 + 82 + 82 with the two -1px seams = 244px, so it fits exactly.
+
+   v53.2 strip height was 120px. Its centered top is preserved by increasing
+   height to 129px and translating down 4.5px. That keeps the upper edge in
+   the same place and extends only the lower edge by 9px, targeting y=345.
+   ========================================================================== */
+html body.mq-noir-master #page #cinema #screen #game #filmLives,
+html body.mq-noir-master #page #cinema #screen #game #filmLives.film-lives{
+  align-self:center!important;
+  width:261px!important;
+  min-width:261px!important;
+  max-width:261px!important;
+  height:129px!important;
+  min-height:129px!important;
+  max-height:129px!important;
+  padding:12px 8px!important;
+  overflow:visible!important;
+  transform:translateY(4.5px)!important;
+}
+
+/* Fill the taller strip correctly without breaking horizontal geometry. */
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life,
+html body.mq-noir-master #page #cinema #screen #game #filmLives.film-lives>.life{
+  flex:0 0 82px!important;
+  width:82px!important;
+  min-width:82px!important;
+  max-width:82px!important;
+  height:103px!important;
+  min-height:103px!important;
+  max-height:103px!important;
+  overflow:visible!important;
+}
+
+/* Slightly enlarge the heart to suit the taller frame. */
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life{
+  background-size:43px 43px,auto,auto,auto,auto!important;
+}
+
+
+/* ==========================================================================
+   BURN
+   v53.3 directional smoke/burn front is fully cancelled.
+   We return to the original v53.2 flame language and simply make the flame
+   field larger, denser and brighter. No smoke, no side clipping, no broken
+   right-to-left mask.
+   ========================================================================== */
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning{
+  z-index:30!important;
+  overflow:visible!important;
+  animation:mq532BurnFrame 1.72s cubic-bezier(.15,.67,.25,1) both!important;
+}
+
+/* Larger and denser version of the original flame sheet. */
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning::before{
+  inset:-76px -27px -18px!important;
+  z-index:40!important;
+  opacity:1!important;
+  mix-blend-mode:normal!important;
+  transform-origin:50% 100%!important;
+  background:
+    radial-gradient(14% 70% at 1% 100%,#fffbd9 0 7%,#ffd66d 12%,#ff861f 27%,#e64308 43%,rgba(103,19,2,.82) 58%,transparent 73%),
+    radial-gradient(17% 88% at 8% 100%,#fffce0 0 7%,#ffdd73 12%,#ff8d20 27%,#ee4808 43%,rgba(117,20,1,.82) 59%,transparent 74%),
+    radial-gradient(15% 77% at 16% 100%,#fff8cc 0 7%,#ffcb59 13%,#ff7817 29%,#de3605 44%,rgba(96,15,1,.80) 59%,transparent 72%),
+    radial-gradient(18% 98% at 24% 100%,#fffde4 0 7%,#ffe37b 12%,#ff9625 27%,#f04d09 43%,rgba(119,22,1,.84) 60%,transparent 75%),
+    radial-gradient(16% 82% at 32% 100%,#fff9d1 0 7%,#ffd162 13%,#ff7c19 29%,#df3906 44%,rgba(102,16,1,.81) 60%,transparent 73%),
+    radial-gradient(19% 104% at 40% 100%,#fffde2 0 7%,#ffe179 12%,#ff9223 27%,#ec4808 43%,rgba(116,21,1,.84) 60%,transparent 75%),
+    radial-gradient(16% 80% at 48% 100%,#fff9cf 0 7%,#ffce5e 13%,#ff7a18 29%,#de3705 44%,rgba(99,15,1,.80) 59%,transparent 73%),
+    radial-gradient(20% 105% at 56% 100%,#fffde0 0 7%,#ffdc70 12%,#ff8b20 28%,#e94407 43%,rgba(111,19,1,.82) 60%,transparent 74%),
+    radial-gradient(16% 82% at 64% 100%,#fff9d1 0 7%,#ffd05f 13%,#ff7f19 29%,#df3905 44%,rgba(100,16,1,.80) 59%,transparent 72%),
+    radial-gradient(19% 100% at 72% 100%,#fffde2 0 7%,#ffe178 12%,#ff9022 27%,#e94708 43%,rgba(113,20,1,.83) 60%,transparent 74%),
+    radial-gradient(16% 78% at 80% 100%,#fff9cd 0 7%,#ffcd5d 13%,#ff7817 29%,#dc3505 44%,rgba(97,15,1,.80) 59%,transparent 72%),
+    radial-gradient(18% 91% at 89% 100%,#fffddd 0 7%,#ffdb70 12%,#ff891f 28%,#e64207 43%,rgba(109,18,1,.82) 60%,transparent 74%),
+    radial-gradient(14% 70% at 98% 100%,#fff9d1 0 7%,#ffd05f 13%,#ff7f19 29%,#df3905 44%,rgba(100,16,1,.80) 59%,transparent 72%),
+    radial-gradient(ellipse at 50% 103%,rgba(255,218,99,.82) 0 15%,rgba(255,92,12,.34) 47%,transparent 74%)!important;
+  filter:
+    drop-shadow(0 -7px 9px rgba(255,91,10,.56))
+    drop-shadow(0 -20px 20px rgba(255,118,15,.20))!important;
+  clip-path:none!important;
+  animation:
+    mq534DenseFlameDance .115s steps(2,end) infinite alternate,
+    mq534DenseFlameEnvelope 1.72s ease-out both!important;
+}
+
+/* Restore the original central char/hole effect, just scaled to the larger cell. */
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning::after{
+  inset:-5px!important;
+  z-index:35!important;
+  opacity:1!important;
+  mix-blend-mode:normal!important;
+  border-radius:2px!important;
+  background:
+    radial-gradient(ellipse at 49% 49%,#030202 0 13%,#150503 20%,#561305 28%,#c83a07 34%,#ff7c19 38%,rgba(255,185,64,.76) 41%,transparent 47%),
+    radial-gradient(circle at 27% 30%,rgba(255,135,24,.60),rgba(142,37,4,.28) 18%,transparent 31%),
+    radial-gradient(circle at 73% 66%,rgba(255,98,14,.52),rgba(119,26,3,.24) 20%,transparent 34%),
+    repeating-radial-gradient(circle at 50% 50%,rgba(51,13,5,.20) 0 2px,transparent 2px 5px),
+    linear-gradient(180deg,rgba(58,13,5,.10),rgba(7,3,2,.88))!important;
+  box-shadow:
+    inset 0 0 29px rgba(0,0,0,.92),
+    0 0 25px rgba(255,80,8,.31)!important;
+  clip-path:none!important;
+  transform:scale(.10)!important;
+  animation:mq532CharHole 1.66s cubic-bezier(.16,.72,.27,1) both!important;
+}
+
+/* Restore v53.2 burned frame rather than the v53.3 directional trail result. */
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.dead,
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burned{
+  border-color:rgba(70,36,22,.96)!important;
+  background:
+    radial-gradient(ellipse at 48% 47%,#020202 0 29%,#0d0403 40%,#2c0a05 53%,#110604 69%,#070403 81%),
+    radial-gradient(circle at 22% 25%,rgba(121,39,10,.26),transparent 20%),
+    radial-gradient(circle at 78% 71%,rgba(95,28,8,.22),transparent 23%),
+    repeating-linear-gradient(113deg,rgba(143,58,21,.07) 0 1px,transparent 1px 5px),
+    linear-gradient(180deg,#130906,#030202)!important;
+  box-shadow:
+    inset 0 0 26px rgba(0,0,0,.96),
+    inset 0 0 0 1px rgba(118,45,20,.17)!important;
+  filter:saturate(.42) brightness(.66)!important;
+}
+
+@keyframes mq534DenseFlameDance{
+  from{
+    transform:translate3d(-2px,3px,0) scaleX(.985) scaleY(.96) skewX(-1deg);
+    filter:
+      drop-shadow(0 -6px 9px rgba(255,91,10,.50))
+      drop-shadow(0 -18px 18px rgba(255,118,15,.17));
+  }
+  to{
+    transform:translate3d(2px,-6px,0) scaleX(1.045) scaleY(1.10) skewX(1.4deg);
+    filter:
+      drop-shadow(0 -9px 11px rgba(255,95,10,.62))
+      drop-shadow(0 -25px 23px rgba(255,121,16,.22));
+  }
+}
+
+@keyframes mq534DenseFlameEnvelope{
+  0%{opacity:0;transform:scaleY(.65)}
+  6%{opacity:1;transform:scaleY(.92)}
+  18%{opacity:1;transform:scaleY(1.03)}
+  72%{opacity:.98;transform:scaleY(1)}
+  92%{opacity:.72;transform:scaleY(.96)}
+  100%{opacity:.10;transform:scaleY(.88)}
+}
+
+
+/* ==========================================================================
+   COMEDY BACKGROUND
+   v53.3 circle/bubble treatment is replaced by a proper 1930s theatre set:
+   burgundy velvet side curtains, stepped art-deco proscenium lines, warm
+   central stage wash and rectangular footlights. No decorative circles.
+   ========================================================================== */
+
+/* Common comedy selector set. */
+html body.mq-noir-master #page #cinema #screen #game:is([data-theme="comedy"],[data-genre="comedy"],.theme-comedy,.genre-comedy,.is-comedy) .theme-scene,
+html body.mq-noir-master:is([data-theme="comedy"],[data-genre="comedy"],.theme-comedy,.genre-comedy,.is-comedy) #page #cinema #screen #game .theme-scene,
+html body.mq-noir-master #page #cinema #screen #game .theme-scene.theme-comedy,
+html body.mq-noir-master #page #cinema #screen #game .theme-scene[data-theme="comedy"]{
+  opacity:1!important;
+  overflow:hidden!important;
+  background:
+    /* central warm stage wash */
+    linear-gradient(90deg,rgba(28,7,10,.72),rgba(76,18,24,.40) 20%,rgba(88,31,30,.18) 50%,rgba(76,18,24,.40) 80%,rgba(28,7,10,.72)),
+    /* art-deco vertical stage panels */
+    repeating-linear-gradient(90deg,
+      rgba(214,163,78,.00) 0 9%,
+      rgba(214,163,78,.035) 9% 9.25%,
+      rgba(214,163,78,.00) 9.25% 18%),
+    linear-gradient(180deg,#47121d 0%,#2b0c13 31%,#16090d 66%,#090708 100%)!important;
+}
+
+/* Left velvet curtain. */
+html body.mq-noir-master #page #cinema #screen #game:is([data-theme="comedy"],[data-genre="comedy"],.theme-comedy,.genre-comedy,.is-comedy) .theme-scene .scene-a,
+html body.mq-noir-master:is([data-theme="comedy"],[data-genre="comedy"],.theme-comedy,.genre-comedy,.is-comedy) #page #cinema #screen #game .theme-scene .scene-a,
+html body.mq-noir-master #page #cinema #screen #game .theme-scene.theme-comedy .scene-a,
+html body.mq-noir-master #page #cinema #screen #game .theme-scene[data-theme="comedy"] .scene-a{
+  position:absolute!important;
+  left:-2%!important;
+  right:auto!important;
+  top:-3%!important;
+  bottom:-4%!important;
+  width:25%!important;
+  height:auto!important;
+  opacity:.94!important;
+  border:0!important;
+  border-radius:0!important;
+  background:
+    linear-gradient(90deg,
+      #1a070c 0%,
+      #6f1625 16%,
+      #2a0910 31%,
+      #861c2c 48%,
+      #310a12 65%,
+      #6d1523 81%,
+      #19070b 100%)!important;
+  box-shadow:
+    inset -18px 0 30px rgba(0,0,0,.34),
+    14px 0 26px rgba(0,0,0,.18)!important;
+  clip-path:polygon(0 0,100% 0,83% 13%,91% 31%,78% 49%,87% 69%,72% 100%,0 100%)!important;
+  transform:none!important;
+  animation:mq534CurtainLeft 9s ease-in-out infinite alternate!important;
+}
+
+/* Right velvet curtain. */
+html body.mq-noir-master #page #cinema #screen #game:is([data-theme="comedy"],[data-genre="comedy"],.theme-comedy,.genre-comedy,.is-comedy) .theme-scene .scene-b,
+html body.mq-noir-master:is([data-theme="comedy"],[data-genre="comedy"],.theme-comedy,.genre-comedy,.is-comedy) #page #cinema #screen #game .theme-scene .scene-b,
+html body.mq-noir-master #page #cinema #screen #game .theme-scene.theme-comedy .scene-b,
+html body.mq-noir-master #page #cinema #screen #game .theme-scene[data-theme="comedy"] .scene-b{
+  position:absolute!important;
+  right:-2%!important;
+  left:auto!important;
+  top:-3%!important;
+  bottom:-4%!important;
+  width:25%!important;
+  height:auto!important;
+  opacity:.94!important;
+  border:0!important;
+  border-radius:0!important;
+  background:
+    linear-gradient(90deg,
+      #19070b 0%,
+      #6d1523 19%,
+      #310a12 35%,
+      #861c2c 52%,
+      #2a0910 69%,
+      #6f1625 84%,
+      #1a070c 100%)!important;
+  box-shadow:
+    inset 18px 0 30px rgba(0,0,0,.34),
+    -14px 0 26px rgba(0,0,0,.18)!important;
+  clip-path:polygon(0 0,100% 0,100% 100%,28% 100%,13% 69%,22% 49%,9% 31%,17% 13%)!important;
+  transform:none!important;
+  animation:mq534CurtainRight 9.5s ease-in-out infinite alternate!important;
+}
+
+/* Stepped art-deco proscenium / marquee geometry, no circles. */
+html body.mq-noir-master #page #cinema #screen #game:is([data-theme="comedy"],[data-genre="comedy"],.theme-comedy,.genre-comedy,.is-comedy) .theme-scene .scene-c,
+html body.mq-noir-master:is([data-theme="comedy"],[data-genre="comedy"],.theme-comedy,.genre-comedy,.is-comedy) #page #cinema #screen #game .theme-scene .scene-c,
+html body.mq-noir-master #page #cinema #screen #game .theme-scene.theme-comedy .scene-c,
+html body.mq-noir-master #page #cinema #screen #game .theme-scene[data-theme="comedy"] .scene-c{
+  position:absolute!important;
+  left:15%!important;
+  right:15%!important;
+  top:4%!important;
+  bottom:16%!important;
+  width:auto!important;
+  height:auto!important;
+  opacity:.70!important;
+  border:0!important;
+  border-radius:0!important;
+  background:
+    /* top stepped gold lines */
+    linear-gradient(90deg,transparent 0 7%,rgba(225,183,103,.44) 7% 93%,transparent 93%) top 0 left/100% 2px no-repeat,
+    linear-gradient(90deg,transparent 0 13%,rgba(225,183,103,.30) 13% 87%,transparent 87%) top 9px left/100% 1px no-repeat,
+    linear-gradient(90deg,transparent 0 19%,rgba(225,183,103,.18) 19% 81%,transparent 81%) top 17px left/100% 1px no-repeat,
+
+    /* side stepped lines */
+    linear-gradient(180deg,rgba(222,175,92,.30),rgba(222,175,92,.06) 72%,transparent) left 7% top 0/2px 100% no-repeat,
+    linear-gradient(180deg,rgba(222,175,92,.30),rgba(222,175,92,.06) 72%,transparent) right 7% top 0/2px 100% no-repeat,
+    linear-gradient(180deg,rgba(222,175,92,.18),rgba(222,175,92,.03) 68%,transparent) left 13% top 9px/1px calc(100% - 9px) no-repeat,
+    linear-gradient(180deg,rgba(222,175,92,.18),rgba(222,175,92,.03) 68%,transparent) right 13% top 9px/1px calc(100% - 9px) no-repeat,
+
+    /* soft vertical stage glow, deliberately geometric */
+    linear-gradient(90deg,transparent 0 38%,rgba(255,216,146,.045) 38% 42%,transparent 42% 58%,rgba(255,216,146,.045) 58% 62%,transparent 62%)!important;
+  box-shadow:none!important;
+  filter:none!important;
+  clip-path:none!important;
+  transform:none!important;
+  animation:mq534ProsceniumGlow 6.8s ease-in-out infinite alternate!important;
+}
+
+/* Rectangular footlights and dark stage apron. */
+html body.mq-noir-master #page #cinema #screen #game:is([data-theme="comedy"],[data-genre="comedy"],.theme-comedy,.genre-comedy,.is-comedy) .theme-scene .scene-d,
+html body.mq-noir-master:is([data-theme="comedy"],[data-genre="comedy"],.theme-comedy,.genre-comedy,.is-comedy) #page #cinema #screen #game .theme-scene .scene-d,
+html body.mq-noir-master #page #cinema #screen #game .theme-scene.theme-comedy .scene-d,
+html body.mq-noir-master #page #cinema #screen #game .theme-scene[data-theme="comedy"] .scene-d{
+  position:absolute!important;
+  left:10%!important;
+  right:10%!important;
+  top:auto!important;
+  bottom:0!important;
+  width:auto!important;
+  height:23%!important;
+  opacity:.92!important;
+  border:0!important;
+  border-radius:0!important;
+  background:
+    /* warm rectangular footlights */
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 5.2%,
+      rgba(255,225,157,.86) 5.2% 7.0%,
+      rgba(145,86,29,.72) 7.0% 7.5%,
+      transparent 7.5% 12.5%
+    ) bottom 13% left/100% 11px no-repeat,
+    /* thin brass edge */
+    linear-gradient(90deg,transparent 0 4%,rgba(195,139,62,.43) 4% 96%,transparent 96%) bottom 28% left/100% 1px no-repeat,
+    /* stage apron */
+    linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(13,8,9,.40) 32%,rgba(7,6,7,.90) 100%)!important;
+  box-shadow:none!important;
+  filter:none!important;
+  clip-path:none!important;
+  transform:none!important;
+  animation:none!important;
+}
+
+@keyframes mq534CurtainLeft{
+  from{transform:translateX(0)}
+  to{transform:translateX(-3px)}
+}
+@keyframes mq534CurtainRight{
+  from{transform:translateX(0)}
+  to{transform:translateX(3px)}
+}
+@keyframes mq534ProsceniumGlow{
+  from{opacity:.58;filter:brightness(.96)}
+  to{opacity:.78;filter:brightness(1.08)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning::before,
+  html body.mq-noir-master #page #cinema #screen #game .theme-scene .scene-a,
+  html body.mq-noir-master #page #cinema #screen #game .theme-scene .scene-b,
+  html body.mq-noir-master #page #cinema #screen #game .theme-scene .scene-c{
+    animation:none!important;
+  }
+}
