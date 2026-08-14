@@ -207,3 +207,162 @@ html body.mq-noir-master #page #cinema #screen #game .question-meta{
   html body.mq-noir-master #page #cinema #screen #game .hud-center #themeLabel{font-size:17px!important}
   html body.mq-noir-master #page #cinema #screen #game .hud-center>.stat-value{font-size:31px!important}
 }
+
+/* --------------------------------------------------------------------------
+   v52 – PREMIUM ORIGINAL FILM LIVES
+   Pure visual upgrade of the existing .life / .burning / .dead system.
+   Original gameplay logic, burn order and canvas particle effect stay untouched.
+   -------------------------------------------------------------------------- */
+html body.mq-noir-master #page #cinema #screen #game #filmLives{
+  display:flex!important;
+  width:156px!important;
+  min-width:156px!important;
+  height:30px!important;
+  gap:0!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  overflow:visible!important;
+  filter:drop-shadow(0 3px 5px rgba(0,0,0,.32))!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life{
+  position:relative!important;
+  flex:0 0 52px!important;
+  width:52px!important;
+  height:30px!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+  overflow:visible!important;
+  border:1px solid rgba(116,76,46,.84)!important;
+  border-radius:0!important;
+  opacity:1!important;
+  transform:none!important;
+  transform-origin:50% 50%!important;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 20.2C10.8 19.1 4 14.8 4 9.25C4 6.55 5.88 4.8 8.35 4.8C9.95 4.8 11.18 5.58 12 6.82C12.82 5.58 14.05 4.8 15.65 4.8C18.12 4.8 20 6.55 20 9.25C20 14.8 13.2 19.1 12 20.2Z' fill='%239b302e' fill-opacity='.52' stroke='%23340c0b' stroke-opacity='.82' stroke-width='.75'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at center,rgba(218,183,116,.82) 0 37%,rgba(68,42,26,.96) 42% 57%,rgba(5,5,5,0) 63%),
+    radial-gradient(ellipse at center,rgba(190,155,93,.72) 0 37%,rgba(57,34,22,.96) 42% 57%,rgba(5,5,5,0) 63%),
+    linear-gradient(112deg,transparent 0 18%,rgba(255,235,192,.055) 29%,rgba(255,255,255,.105) 38%,transparent 52% 100%),
+    repeating-linear-gradient(98deg,rgba(255,255,255,.016) 0 1px,rgba(0,0,0,.025) 1px 3px),
+    linear-gradient(180deg,#17120f 0%,#080706 28%,#030303 52%,#090706 74%,#18110c 100%)!important;
+  background-size:15px 15px,9px 5px,9px 5px,100% 100%,100% 100%,100% 100%!important;
+  background-position:50% 50%,2px 2px,2px calc(100% - 2px),0 0,0 0,0 0!important;
+  background-repeat:no-repeat,repeat-x,repeat-x,no-repeat,repeat,no-repeat!important;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.92),
+    inset 0 7px 9px rgba(128,78,42,.10),
+    inset 0 -6px 8px rgba(148,82,37,.08),
+    inset 0 1px 0 rgba(255,224,169,.07),
+    0 0 0 1px rgba(18,10,7,.62)!important;
+  filter:saturate(.94) contrast(1.05)!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life:first-child{
+  border-radius:3px 0 0 3px!important;
+}
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life:last-child{
+  border-radius:0 3px 3px 0!important;
+}
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life+.life{
+  margin-left:-1px!important;
+}
+
+/* Reserve both pseudo-elements entirely for the burn phase. */
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life::before,
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life::after{
+  content:""!important;
+  position:absolute!important;
+  pointer-events:none!important;
+  opacity:0!important;
+}
+
+/* Whole-frame ignition: seven overlapping flame tongues span the complete cell. */
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning{
+  z-index:8!important;
+  animation:mqPremiumFilmBurnBody .76s cubic-bezier(.18,.72,.2,1) both!important;
+}
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning::before{
+  inset:-14px -6px -5px!important;
+  z-index:3!important;
+  opacity:1!important;
+  background:
+    radial-gradient(28% 66% at 5% 100%,rgba(255,252,211,.98) 0 9%,rgba(255,205,78,.98) 15%,rgba(255,112,17,.96) 30%,rgba(174,32,0,.78) 46%,transparent 67%),
+    radial-gradient(28% 78% at 20% 100%,rgba(255,246,184,.98) 0 9%,rgba(255,188,57,.98) 16%,rgba(255,88,12,.96) 31%,rgba(155,24,0,.74) 49%,transparent 68%),
+    radial-gradient(30% 70% at 35% 100%,rgba(255,252,211,.98) 0 9%,rgba(255,205,78,.98) 15%,rgba(255,112,17,.96) 30%,rgba(174,32,0,.78) 46%,transparent 67%),
+    radial-gradient(32% 84% at 50% 100%,rgba(255,249,196,.99) 0 9%,rgba(255,198,66,.99) 16%,rgba(255,94,12,.97) 31%,rgba(166,27,0,.77) 49%,transparent 69%),
+    radial-gradient(30% 70% at 65% 100%,rgba(255,252,211,.98) 0 9%,rgba(255,205,78,.98) 15%,rgba(255,112,17,.96) 30%,rgba(174,32,0,.78) 46%,transparent 67%),
+    radial-gradient(28% 78% at 80% 100%,rgba(255,246,184,.98) 0 9%,rgba(255,188,57,.98) 16%,rgba(255,88,12,.96) 31%,rgba(155,24,0,.74) 49%,transparent 68%),
+    radial-gradient(28% 66% at 95% 100%,rgba(255,252,211,.98) 0 9%,rgba(255,205,78,.98) 15%,rgba(255,112,17,.96) 30%,rgba(174,32,0,.78) 46%,transparent 67%),
+    linear-gradient(to top,rgba(255,147,37,.42) 0 28%,rgba(255,93,13,.12) 49%,transparent 72%)!important;
+  mix-blend-mode:screen!important;
+  filter:blur(.65px) saturate(1.18) brightness(1.04)!important;
+  transform-origin:50% 100%!important;
+  animation:mqPremiumFilmFlames .76s cubic-bezier(.18,.74,.2,1) both!important;
+}
+
+/* Heat bloom, moving embers and a darkening char layer across the complete frame. */
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning::after{
+  inset:-5px!important;
+  z-index:4!important;
+  opacity:1!important;
+  background:
+    radial-gradient(circle at 8% 70%,rgba(255,240,158,.98) 0 1.2%,transparent 2.7%),
+    radial-gradient(circle at 19% 52%,rgba(255,186,65,.94) 0 1.1%,transparent 2.6%),
+    radial-gradient(circle at 31% 73%,rgba(255,229,132,.95) 0 1.2%,transparent 2.8%),
+    radial-gradient(circle at 43% 47%,rgba(255,149,39,.91) 0 1.15%,transparent 2.7%),
+    radial-gradient(circle at 55% 68%,rgba(255,239,157,.96) 0 1.25%,transparent 2.8%),
+    radial-gradient(circle at 68% 49%,rgba(255,177,59,.92) 0 1.1%,transparent 2.6%),
+    radial-gradient(circle at 79% 72%,rgba(255,230,132,.95) 0 1.2%,transparent 2.8%),
+    radial-gradient(circle at 91% 55%,rgba(255,144,34,.90) 0 1.1%,transparent 2.6%),
+    linear-gradient(to top,rgba(12,8,7,.86) 0%,rgba(79,24,7,.38) 31%,rgba(255,105,19,.16) 49%,transparent 78%)!important;
+  filter:blur(.25px)!important;
+  animation:mqPremiumFilmEmbers .76s linear both!important;
+}
+
+@keyframes mqPremiumFilmBurnBody{
+  0%{opacity:1;transform:scale(1);filter:saturate(.94) contrast(1.05) brightness(1)}
+  17%{opacity:1;transform:scale(1.018);filter:brightness(1.42) saturate(1.22) contrast(1.08)}
+  40%{opacity:1;transform:scale(1.028);filter:brightness(1.88) sepia(.28) saturate(1.72) contrast(1.12);box-shadow:inset 0 0 0 1px rgba(0,0,0,.86),0 0 13px rgba(255,121,26,.76),0 0 25px rgba(255,72,5,.30)}
+  65%{opacity:.92;transform:scale(.992);filter:brightness(.82) sepia(.54) saturate(.78) contrast(1.22)}
+  84%{opacity:.58;transform:scale(.95);filter:brightness(.46) sepia(.38) saturate(.36) contrast(1.32)}
+  100%{opacity:.22;transform:scale(.88);filter:brightness(.24) saturate(.18) contrast(1.4)}
+}
+
+@keyframes mqPremiumFilmFlames{
+  0%{opacity:0;transform:translate3d(0,10px,0) scale(.92,.72);filter:blur(2.8px) saturate(1.04)}
+  14%{opacity:.82;transform:translate3d(0,4px,0) scale(.98,.94);filter:blur(1.3px) saturate(1.12)}
+  34%{opacity:1;transform:translate3d(-1px,-1px,0) scale(1.04,1.05);filter:blur(.65px) saturate(1.2)}
+  55%{opacity:.98;transform:translate3d(1px,-5px,0) scale(1.07,1.12);filter:blur(.8px) saturate(1.25)}
+  76%{opacity:.76;transform:translate3d(-1px,-9px,0) scale(1.1,1.18);filter:blur(1.4px) saturate(1.18)}
+  100%{opacity:0;transform:translate3d(1px,-15px,0) scale(1.16,1.29);filter:blur(4.5px) saturate(1.04)}
+}
+
+@keyframes mqPremiumFilmEmbers{
+  0%{opacity:0;transform:translate3d(0,4px,0) scale(.96)}
+  18%{opacity:.92;transform:translate3d(0,0,0) scale(1)}
+  48%{opacity:1;transform:translate3d(1px,-3px,0) scale(1.025)}
+  75%{opacity:.66;transform:translate3d(-1px,-8px,0) scale(1.055)}
+  100%{opacity:0;transform:translate3d(1px,-15px,0) scale(1.1)}
+}
+
+/* The core switches burning -> dead after the original burn timer. Keep the
+   empty slot so the HUD never shifts while a life disappears. */
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.dead{
+  opacity:0!important;
+  transform:scale(.78)!important;
+  filter:brightness(.16) saturate(.14) contrast(1.35)!important;
+  box-shadow:none!important;
+  pointer-events:none!important;
+}
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.dead::before,
+html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.dead::after{
+  display:none!important;
+}
+
+@media (prefers-reduced-motion:reduce){
+  html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning,
+  html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning::before,
+  html body.mq-noir-master #page #cinema #screen #game #filmLives>.life.burning::after{
+    animation-duration:.18s!important;
+  }
+}
