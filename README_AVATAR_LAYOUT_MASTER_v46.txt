@@ -1,4 +1,4 @@
-MOVIE QUIZ – AVATAR LAYOUT MASTER v46
+MOVIE QUIZ – AVATAR LAYOUT MASTER v47
 Date: 2026-08-14
 Status: CANONICAL / DO NOT REPOSITION BY EYE
 
@@ -43,12 +43,13 @@ LEFT AVATAR VISUAL CORRECTION
 - transform Y = -11 px
 
 RIGHT AVATAR VISUAL CORRECTION
-- transform X = -14 px
+- transform X = -19 px
 - transform Y = -11 px
-- IMPORTANT: -14 px is the final approved correction and includes the user's
-  additional request on 2026-08-14 to move the right avatar another 5 px left.
+- IMPORTANT: -19 px is the final canonical correction as of 2026-08-14.
+- It includes BOTH successive user requests to move the right avatar 5 px
+  further left after the earlier -9 px correction.
 
-CENTRE AVATAR / OTHER LOCKED v34 MASTER ITEMS
+CENTRE AVATAR / OTHER LOCKED MASTER ITEMS
 These stay in the same 1672 × 941 master unless the user explicitly changes them:
 - centre avatar: x=670 y=271 w=311 h=378
 - left arrow: x=553 y=453 w=89 h=87
@@ -61,8 +62,11 @@ At every viewport size the relationship between background artwork, circular
 wells, avatars, arrows and buttons must remain pixel-identical in master space.
 Only the parent master stage is allowed to scale uniformly.
 
-DEBUG GRID
-Grid v46 is deliberately NOT inserted into the master DOM and does not change
-body classes, stage transforms or stage geometry. It is a fixed pointer-events:none
-viewport overlay whose rectangle merely follows the currently visible master.
-Turning the grid on/off must therefore produce zero layout change.
+GRID INVARIANT
+The debug grid is a diagnostic overlay only. Turning it on/off must never:
+- add a child that participates in the master layout,
+- change a master transform,
+- change body/page layout classes,
+- resize or reposition a stage,
+- intercept pointer events.
+It may only READ the visible stage rectangle and paint a fixed overlay above it.
