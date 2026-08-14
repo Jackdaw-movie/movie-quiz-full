@@ -1,27 +1,16 @@
 Movie Quiz – Avatar Master Stage v34
 
-NEW PROJECT STANDARD
-All visually fixed screens use one internal master coordinate system. Functional
-elements are positioned in master pixels and the whole master is uniformly scaled
-as one object. Never scale the artwork and HTML controls independently.
+DEPRECATED FOR POSITIONING.
 
-AVATAR SCREEN
-- Internal master is permanently 1672 × 941 px.
-- Background, side avatars, center avatar, arrows, Continue and Back all live in
-  this same coordinate plane.
-- A single JS scale = min(viewportWidth/1672, viewportHeight/941) is applied to
-  the whole .mq-avatar-dialog.
-- Resizing/changing monitors therefore cannot move avatars relative to the
-  circles painted in the background.
-- Existing v29 visual positions are preserved, converted to master pixels.
-- Existing v28 audio and arrow-only interaction guards are untouched.
-- Cinema v33 remains untouched.
+The master-stage principle from this file remains valid: the avatar screen uses
+one internal 1672 × 941 coordinate system and the complete .mq-avatar-dialog is
+scaled uniformly as one object.
 
-MASTER COORDINATES
-LEFT AVATAR   x467 y361 w234 h233
-CENTER AVATAR x670 y271 w311 h378
-RIGHT AVATAR  x966 y361 w234 h233
-LEFT ARROW    x553 y453 w89 h87
-RIGHT ARROW   x1030 y453 w89 h87
-CONTINUE      x573 y812 w528 h107
-BACK          x1138 y826 w194 h78
+However, the side-avatar positioning values previously stored here are obsolete.
+The canonical responsive layout is now:
+
+README_AVATAR_LAYOUT_MASTER_v46.txt
+
+Do not use the old v34 side-avatar coordinates for future responsive work.
+The v46 file contains the locked circular-well coordinates, final side-avatar
+size and transparent-PNG visual corrections approved on 2026-08-14.
