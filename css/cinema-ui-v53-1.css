@@ -1,0 +1,73 @@
+/* Movie Quiz – Cinema UI v53.1
+   Compatibility tail for dynamically generated selection controls. */
+
+/* Online layer creates leaderboard/change-player as plain buttons inside
+   .mq-selection-tools, while statistics uses .mq-selection-tool. Treat every
+   direct button as one physical theatre control so all three always match. */
+body.mq-noir-master .mq-selection-tools > button,
+body.mq-noir-master #mqIntroScoreboard.mq-intro-scoreboard{
+  position:relative!important;
+  min-height:34px!important;
+  margin:0!important;
+  padding:7px 12px 7px 22px!important;
+  border:1px solid rgba(169,122,58,.28)!important;
+  border-radius:3px!important;
+  background:linear-gradient(180deg,rgba(49,35,22,.84),rgba(15,10,7,.92))!important;
+  color:#dfc696!important;
+  box-shadow:inset 0 1px rgba(255,232,184,.04),0 2px 5px rgba(0,0,0,.13)!important;
+  font-family:var(--mq-display,"Oswald",sans-serif)!important;
+  font-size:10px!important;
+  font-weight:500!important;
+  line-height:1.1!important;
+  letter-spacing:.075em!important;
+  text-transform:uppercase!important;
+  text-shadow:0 1px rgba(0,0,0,.72)!important;
+  cursor:pointer!important;
+  transition:transform .16s ease,border-color .16s ease,background .16s ease,color .16s ease,box-shadow .16s ease!important;
+}
+body.mq-noir-master .mq-selection-tools > button::before,
+body.mq-noir-master #mqIntroScoreboard.mq-intro-scoreboard::before{
+  content:""!important;
+  position:absolute!important;
+  left:9px!important;
+  top:50%!important;
+  width:5px!important;
+  height:5px!important;
+  transform:translateY(-50%)!important;
+  border-radius:50%!important;
+  background:#9d7135!important;
+  box-shadow:0 0 0 1px #3f2a14,0 0 5px rgba(208,156,70,.10)!important;
+}
+body.mq-noir-master .mq-selection-tools > button:hover,
+body.mq-noir-master .mq-selection-tools > button:focus-visible,
+body.mq-noir-master #mqIntroScoreboard.mq-intro-scoreboard:hover,
+body.mq-noir-master #mqIntroScoreboard.mq-intro-scoreboard:focus-visible{
+  border-color:rgba(224,181,103,.72)!important;
+  background:linear-gradient(180deg,#45301c,#160e08)!important;
+  color:#ffe0a0!important;
+  box-shadow:inset 0 1px rgba(255,241,205,.07),0 4px 10px rgba(0,0,0,.22),0 0 9px rgba(206,151,59,.06)!important;
+  transform:translateY(-1px)!important;
+  outline:1px solid #f2cf87!important;
+  outline-offset:2px!important;
+}
+body.mq-noir-master .mq-selection-tools > button:hover::before,
+body.mq-noir-master .mq-selection-tools > button:focus-visible::before,
+body.mq-noir-master #mqIntroScoreboard.mq-intro-scoreboard:hover::before,
+body.mq-noir-master #mqIntroScoreboard.mq-intro-scoreboard:focus-visible::before{
+  background:#e2b765!important;
+  box-shadow:0 0 0 1px #5b3916,0 0 7px rgba(232,184,90,.34)!important;
+}
+
+/* The standalone intro leaderboard gets its own lacquer frame but keeps the
+   same button face. No positioning is changed here. */
+body.mq-noir-master #mqIntroScoreboard.mq-intro-scoreboard{
+  border-color:rgba(204,158,80,.52)!important;
+  box-shadow:inset 0 1px rgba(255,236,193,.055),0 7px 16px rgba(0,0,0,.22)!important;
+}
+
+@media(max-width:700px){
+  body.mq-noir-master .mq-selection-tools > button{
+    min-height:36px!important;
+    padding-inline:20px 11px!important;
+  }
+}
