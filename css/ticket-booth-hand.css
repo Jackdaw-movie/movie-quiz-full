@@ -1,77 +1,87 @@
-/* Movie Quiz – Ticket booth hand loop
-   Stage coordinates requested by user:
-   invisible portal at x=1020 on 1672x941 stage
-   wrist entry around y=610..660 (centered to y≈635)
+/* Movie Quiz – ticket booth single-hand animation v2
+   Uses the real exterior stage (#mqExteriorStage, 1672×941).
+   Invisible portal starts exactly at x=1020.
+   The wrist crosses the portal around y=610..660.
+   One transparent hand asset only.
 */
-.mq-ticket-hand-overlay{
+
+/* We intentionally use a stage pseudo-element so no JavaScript or extra DOM mount is required.
+   The old v1 script was not referenced by index.html and also searched for selectors that do not
+   exist in the current exterior. */
+#mqExteriorStage::after{
+  content:"";
   position:absolute;
-  inset:0;
+  z-index:14;
   pointer-events:none;
-  z-index:6;
-  overflow:hidden;
+
+  /* Fixed invisible wall / portal. Anything left of this x coordinate is not painted. */
+  left:1020px;
+  top:450px;
+  width:652px;   /* 1672 - 1020 */
+  height:390px;
+
+  background-image:url("../assets/exterior-v6-9/production/ticket-booth-hand.png?v=2.0");
+  background-repeat:no-repeat;
+  background-size:430px auto;
+
+  /* Horizontal base pose. The actual PNG is already rotated ~45° clockwise. */
+  background-position:-500px 50%;
+
+  will-change:background-position;
+  animation:mqTicketBoothSingleHand 9s cubic-bezier(.42,0,.58,1) infinite;
 }
 
-/* The invisible wall begins exactly at x=1020.
-   Everything to the left stays hidden; the hand emerges to the right. */
-.mq-ticket-hand-portal{
-  position:absolute;
-  left:61.005%; /* 1020 / 1672 */
-  top:0;
-  width:38.995%;
-  height:100%;
-  overflow:hidden;
-  pointer-events:none;
-}
+/*
+  0–44.44%  = full motion (~4 s)
+  44.44–100 = fully hidden cooldown (5 s)
 
-.mq-ticket-hand-sprite{
-  position:absolute;
-  left:0;
-  top:67.48%; /* approx y=635 / 941 */
-  width:46%;
-  max-width:none;
-  height:auto;
-  transform-origin:18% 73%;
-  will-change:transform, opacity;
-  filter:drop-shadow(0 2px 2px rgba(0,0,0,.18));
-  animation:mq-ticket-hand-wave 8.8s linear infinite;
-}
-
-/* Hidden -> extend -> wave up/down/up/down -> straighten -> retract -> 5s cooldown */
-@keyframes mq-ticket-hand-wave{
-  0%, 6%{
-    transform:translate(-86%, -50%) rotate(43deg);
-    opacity:1;
+  The fixed ::after rectangle itself is the clipping portal:
+  background pixels can only exist at x >= 1020.
+*/
+@keyframes mqTicketBoothSingleHand{
+  0%,5%{
+    background-position:-500px 50%;
   }
-  14%, 22%{
-    transform:translate(-6%, -50%) rotate(43deg);
-    opacity:1;
+
+  /* smoothly extend from behind x=1020 */
+  15%,18%{
+    background-position:-92px 50%;
   }
+
+  /* wave UP */
+  23%{
+    background-position:-84px 37%;
+  }
+
+  /* wave DOWN */
   28%{
-    transform:translate(-2%, -52%) rotate(28deg);
-    opacity:1;
+    background-position:-96px 63%;
   }
-  34%{
-    transform:translate(-7%, -47%) rotate(58deg);
-    opacity:1;
+
+  /* UP again */
+  33%{
+    background-position:-84px 37%;
   }
+
+  /* DOWN again */
+  38%{
+    background-position:-96px 63%;
+  }
+
+  /* return to horizontal */
   40%{
-    transform:translate(-2%, -52%) rotate(28deg);
-    opacity:1;
+    background-position:-92px 50%;
   }
-  46%{
-    transform:translate(-7%, -47%) rotate(58deg);
-    opacity:1;
+
+  /* retract behind the invisible wall */
+  44.44%,100%{
+    background-position:-500px 50%;
   }
-  52%, 56%{
-    transform:translate(-6%, -50%) rotate(43deg);
-    opacity:1;
-  }
-  64%, 68%{
-    transform:translate(-86%, -50%) rotate(43deg);
-    opacity:1;
-  }
-  100%{
-    transform:translate(-86%, -50%) rotate(43deg);
-    opacity:1;
-  }
+}
+
+/* Do not show the hand after the exterior has left the screen. */
+body:not(.mq-exterior-active) #mqExteriorStage::after,
+body.mq-ticket-open #mqExteriorStage::after{
+  animation-play-state:paused;
+  background-position:-500px 50%;
 }
