@@ -5,10 +5,12 @@
 @import url("cinema-ui-v53-5.css?v=53.5");
 @import url("cinema-ui-v53-6.css?v=53.6");
 @import url("cinema-ui-v53-7.css?v=53.7");
+@import url("cinema-ui-v53-8.css?v=53.8");
 
 /* Movie Quiz – debug grid v47
    Diagnostic layer only. This stylesheet must never alter game/page geometry.
-   v53.7 adds the dedicated Statistics and Hall of Fame backgrounds + UI layout. */
+   v53.7 supplies the approved Statistics / Hall of Fame artwork;
+   v53.8 owns the final layout and UX for those screens. */
 
 #mqDebugGridOverlay{
   position:fixed!important;
