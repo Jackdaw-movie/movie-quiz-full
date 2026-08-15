@@ -109,3 +109,14 @@ Tahle verze záměrně nahrazuje původní statistické soubory přímo.
 
 Po deployi:
 Cmd + Shift + R
+
+
+V55.1 – READABILITY + SCROLL
+----------------------------
+- výrazně zvětšené všechny nadpisy, hodnoty a popisky
+- text je nyní primárně černý / velmi tmavě hnědý
+- mosazná zůstává hlavně na předělovacích liniích a akcentech
+- hlavní datová část má vlastní vertikální scroll
+- jednotlivé sloupce už nemají overflow:hidden, takže budoucí statistiky
+  se nebudou ořezávat ani mačkat
+- horní nadpis, 4 hlavní KPI a spodní souhrn zůstávají při scrollování stabilní

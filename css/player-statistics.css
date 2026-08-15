@@ -10,7 +10,7 @@
   width:100%!important;
   height:100%!important;
   overflow:hidden!important;
-  background:#b78045 url("../assets/ui-pages/production/statistics.webp?v=55.0") center/100% 100% no-repeat!important;
+  background:#b78045 url("../assets/ui-pages/production/statistics.webp?v=55.1") center/100% 100% no-repeat!important;
   color:#2d1a0f!important;
   font-family:var(--mq-ui,"Oswald",Arial,sans-serif)!important;
   box-sizing:border-box!important;
@@ -233,4 +233,353 @@ body.mq-statistics-open #homeBtn{display:none!important}
   .mq-stat-layout{left:5%!important;top:9%!important;width:90%!important;height:82%!important;grid-template-rows:68px 96px minmax(0,1fr) 36px!important}
   .mq-stat-main{grid-template-columns:1fr 1fr!important;overflow:auto!important;padding-right:5px!important}
   .mq-stat-column:nth-child(3){grid-column:1 / -1!important;padding-left:0!important;border-left:0!important;border-top:1px solid rgba(116,68,24,.28)!important;padding-top:12px!important}
+}
+
+
+/* ==========================================================================
+   v55.1 – READABILITY + GROWTH POLISH
+   The v55.0 scene/layout stays intact. This block only improves typography,
+   contrast and long-term scrolling behavior.
+   ========================================================================== */
+
+/* More vertical room for larger typography. */
+.mq-stat-layout{
+  grid-template-rows:84px 132px minmax(0,1fr) 46px!important;
+  gap:12px!important;
+}
+
+/* Header */
+.mq-stat-title .mq-stat-kicker{
+  color:#24150c!important;
+  font-size:13px!important;
+  font-weight:800!important;
+  letter-spacing:.18em!important;
+}
+.mq-stat-title h1{
+  color:#140d09!important;
+  font-size:50px!important;
+  font-weight:700!important;
+  line-height:.88!important;
+  text-shadow:none!important;
+}
+.mq-stat-title p{
+  margin-top:8px!important;
+  color:#342317!important;
+  font-size:12px!important;
+  font-weight:500!important;
+  line-height:1.4!important;
+}
+
+/* Header buttons stay compact but much more legible. */
+.mq-stat-action{
+  min-width:132px!important;
+  height:42px!important;
+  color:#1a100a!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  letter-spacing:.10em!important;
+  border-color:rgba(64,39,19,.52)!important;
+  background:rgba(246,221,180,.24)!important;
+}
+.mq-stat-action svg{
+  width:18px!important;
+  height:18px!important;
+}
+.mq-stat-action:hover,
+.mq-stat-action:focus-visible{
+  color:#080503!important;
+  border-color:#57351a!important;
+  background:rgba(245,216,170,.40)!important;
+}
+
+/* Main metrics */
+.mq-stat-metric{
+  padding:12px 14px 12px 20px!important;
+  border-left-color:rgba(70,41,18,.62)!important;
+  border-bottom-color:rgba(66,39,18,.28)!important;
+}
+.mq-stat-metric span{
+  color:#2b1a10!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  letter-spacing:.14em!important;
+}
+.mq-stat-metric strong{
+  margin:8px 0 7px!important;
+  color:#110b07!important;
+  font-size:44px!important;
+  line-height:.92!important;
+}
+.mq-stat-metric small{
+  color:#3d2b1d!important;
+  font-size:11px!important;
+  font-weight:500!important;
+  line-height:1.38!important;
+}
+.mq-stat-metric.is-oscar strong{
+  color:#27170b!important;
+}
+
+/* Long-term growth:
+   only the main data area scrolls. Header, KPIs and footer remain stable.
+   The columns themselves are allowed to grow naturally. */
+.mq-stat-main{
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  align-items:start!important;
+  align-content:start!important;
+  padding-right:10px!important;
+  scrollbar-gutter:stable!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:#65401f rgba(52,30,13,.10)!important;
+}
+.mq-stat-main::-webkit-scrollbar{
+  width:9px!important;
+}
+.mq-stat-main::-webkit-scrollbar-track{
+  background:rgba(52,30,13,.08)!important;
+}
+.mq-stat-main::-webkit-scrollbar-thumb{
+  border-radius:999px!important;
+  background:#65401f!important;
+}
+.mq-stat-main::-webkit-scrollbar-thumb:hover{
+  background:#432914!important;
+}
+.mq-stat-column{
+  min-height:max-content!important;
+  overflow:visible!important;
+}
+
+/* Section typography */
+.mq-stat-section-head{
+  height:auto!important;
+  min-height:66px!important;
+  margin-bottom:12px!important;
+  padding-bottom:11px!important;
+  border-bottom-color:rgba(59,35,17,.34)!important;
+}
+.mq-stat-section-head span{
+  color:#28180f!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  letter-spacing:.15em!important;
+}
+.mq-stat-section-head h2{
+  color:#120c08!important;
+  font-size:30px!important;
+  line-height:.96!important;
+}
+.mq-stat-section-head small{
+  margin-top:6px!important;
+  color:#3b2a1c!important;
+  font-size:10px!important;
+  font-weight:500!important;
+  line-height:1.35!important;
+}
+
+/* Genres */
+.mq-stat-genres{
+  gap:13px 20px!important;
+}
+.mq-stat-genre{
+  padding:7px 0 11px!important;
+  border-bottom-color:rgba(58,34,16,.25)!important;
+}
+.mq-stat-genre-head strong{
+  color:#120c08!important;
+  font-size:14px!important;
+  font-weight:700!important;
+}
+.mq-stat-genre-head span{
+  color:#3d2a1a!important;
+  font-size:10px!important;
+  font-weight:500!important;
+}
+.mq-stat-bar{
+  height:7px!important;
+  margin:9px 0 8px!important;
+  background:rgba(40,24,12,.14)!important;
+}
+.mq-stat-bar i{
+  background:linear-gradient(90deg,#3a2110,#8c5625)!important;
+}
+.mq-stat-genre-foot{
+  color:#332217!important;
+  font-size:10px!important;
+  font-weight:500!important;
+  line-height:1.3!important;
+}
+.mq-stat-genre-note{
+  margin-top:5px!important;
+  color:#473321!important;
+  font-size:9px!important;
+  font-weight:500!important;
+  line-height:1.35!important;
+}
+
+/* Awards / difficulty */
+.mq-stat-difficulties{
+  gap:8px!important;
+}
+.mq-stat-difficulty{
+  grid-template-columns:50px minmax(0,1fr)!important;
+  gap:12px!important;
+  min-height:76px!important;
+  padding:8px 0 10px!important;
+  border-bottom-color:rgba(58,34,16,.25)!important;
+}
+.mq-stat-difficulty-icon{
+  width:46px!important;
+  height:46px!important;
+  color:#3b2411!important;
+}
+.mq-stat-difficulty-icon svg{
+  width:43px!important;
+  height:43px!important;
+  stroke-width:2.2!important;
+}
+.mq-stat-difficulty-copy span{
+  color:#352216!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  letter-spacing:.11em!important;
+}
+.mq-stat-difficulty-copy strong{
+  margin:4px 0 3px!important;
+  color:#120c08!important;
+  font-size:23px!important;
+  line-height:1!important;
+}
+.mq-stat-difficulty-copy small{
+  color:#443020!important;
+  font-size:9.5px!important;
+  font-weight:500!important;
+  line-height:1.35!important;
+}
+
+/* Highlights */
+.mq-stat-highlights{
+  gap:6px!important;
+  margin-top:12px!important;
+  padding-top:10px!important;
+  border-top-color:rgba(58,34,16,.27)!important;
+}
+.mq-stat-highlight{
+  grid-template-columns:105px minmax(0,1fr)!important;
+  gap:10px!important;
+  padding:5px 0!important;
+}
+.mq-stat-highlight span{
+  color:#332116!important;
+  font-size:9px!important;
+  font-weight:800!important;
+  letter-spacing:.07em!important;
+}
+.mq-stat-highlight strong{
+  color:#100a07!important;
+  font-size:13px!important;
+  font-weight:700!important;
+}
+.mq-stat-highlight small{
+  color:#493522!important;
+  font-size:9px!important;
+  font-weight:500!important;
+}
+
+/* Recent games */
+.mq-stat-recent{
+  gap:6px!important;
+}
+.mq-stat-game{
+  grid-template-columns:62px minmax(0,1fr) 54px!important;
+  grid-template-rows:30px 18px!important;
+  column-gap:10px!important;
+  min-height:55px!important;
+  padding:6px 0 8px!important;
+  border-bottom-color:rgba(58,34,16,.25)!important;
+}
+.mq-stat-game-result{
+  width:58px!important;
+  height:27px!important;
+  color:#25170e!important;
+  border-color:rgba(65,39,18,.40)!important;
+  font-size:8.5px!important;
+  font-weight:800!important;
+}
+.mq-stat-game.is-win .mq-stat-game-result{
+  border-color:rgba(53,69,25,.55)!important;
+  color:#26320f!important;
+}
+.mq-stat-game-main strong{
+  color:#100a07!important;
+  font-size:13px!important;
+  font-weight:700!important;
+}
+.mq-stat-game-main span{
+  margin-top:2px!important;
+  color:#423020!important;
+  font-size:9px!important;
+  font-weight:500!important;
+}
+.mq-stat-game-score strong{
+  color:#231309!important;
+  font-size:24px!important;
+}
+.mq-stat-game-score span{
+  color:#493521!important;
+  font-size:9px!important;
+}
+.mq-stat-game-meta{
+  color:#4b3826!important;
+  font-size:8.5px!important;
+  font-weight:500!important;
+}
+
+/* Footer */
+.mq-stat-footer{
+  padding-top:9px!important;
+  border-top-color:rgba(58,34,16,.35)!important;
+  color:#342418!important;
+  font-size:10px!important;
+  font-weight:500!important;
+}
+.mq-stat-footer strong{
+  color:#100a07!important;
+  font-weight:800!important;
+}
+
+/* Loading / empty / error */
+.mq-stat-state{
+  color:#21150d!important;
+}
+.mq-stat-state h2,
+.mq-stat-state strong{
+  color:#100a07!important;
+  font-size:31px!important;
+}
+.mq-stat-state p,
+.mq-stat-state small{
+  color:#392719!important;
+  font-size:12px!important;
+}
+
+/* Keep expanded typography usable on smaller displays. */
+@media(max-width:1100px){
+  .mq-stat-layout{
+    grid-template-rows:78px 120px minmax(0,1fr) 44px!important;
+  }
+  .mq-stat-title h1{font-size:44px!important}
+  .mq-stat-metric strong{font-size:38px!important}
+  .mq-stat-section-head h2{font-size:26px!important}
+  .mq-stat-main{gap:20px!important}
+  .mq-stat-column + .mq-stat-column{padding-left:19px!important}
+}
+
+@media(max-width:900px){
+  .mq-stat-main{
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+  }
 }

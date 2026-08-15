@@ -9,3 +9,8 @@ VALIDATION v55.0
 [OK] žádný hlavní UI panel nemá neprůhledné pozadí
 [OK] player dock je v režimu statistik skrytý
 [OK] gear a home jsou samostatná čtvercová tlačítka
+
+[OK] v55.1: main data area has overflow-y:auto
+[OK] v55.1: statistic columns use overflow:visible
+[OK] v55.1: typography enlarged throughout
+[OK] v55.1: primary typography changed to near-black/dark brown
