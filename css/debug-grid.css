@@ -32,3 +32,13 @@
     top:10px!important;
   }
 }
+
+/* v55.8 – history score font + remove misleading archive metric */
+#mqStatisticsScene .mq-stat-history-wide .mq-stat-game-score strong,
+#mqStatisticsScene .mq-stat-history-wide .mq-stat-game-score span{
+  font-family:var(--mq-ui,"Oswald","Arial Narrow",sans-serif)!important;
+  font-weight:600!important;
+}
+#mqStatisticsScene .mq-stat-highlights .mq-stat-highlight:nth-child(3){
+  display:none!important;
+}
