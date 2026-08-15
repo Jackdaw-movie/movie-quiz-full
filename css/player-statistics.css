@@ -10,7 +10,7 @@
   width:100%!important;
   height:100%!important;
   overflow:hidden!important;
-  background:#b78045 url("../assets/ui-pages/production/statistics.webp?v=55.2") center/100% 100% no-repeat!important;
+  background:#b78045 url("../assets/ui-pages/production/statistics.webp?v=55.3") center/100% 100% no-repeat!important;
   color:#2d1a0f!important;
   font-family:var(--mq-ui,"Oswald",Arial,sans-serif)!important;
   box-sizing:border-box!important;
@@ -827,4 +827,405 @@ body.mq-statistics-open #homeBtn{display:none!important}
   .mq-stat-title .mq-stat-kicker{font-size:13px!important}
   .mq-stat-title p{font-size:12px!important}
   .mq-stat-action{min-width:132px!important;height:42px!important;font-size:10.5px!important}
+}
+
+
+/* ==========================================================================
+   v55.3 – FINAL READABILITY PASS
+   Strong typography, true Movie Quiz display font, gold action buttons,
+   and lowered first divider/content start.
+   ========================================================================== */
+
+/* Give the title/subtitle more room.
+   This moves the first divider line and EVERYTHING below it down. */
+.mq-stat-layout{
+  grid-template-rows:116px 148px minmax(0,1fr) 52px!important;
+  gap:14px!important;
+}
+
+.mq-stat-header{
+  min-height:116px!important;
+  padding:0 0 18px!important;
+  align-items:flex-start!important;
+  border-bottom:1px solid rgba(0,0,0,.42)!important;
+}
+
+/* Main title area */
+.mq-stat-title .mq-stat-kicker{
+  margin:0 0 6px!important;
+  color:#000!important;
+  font-size:16px!important;
+  font-weight:700!important;
+  letter-spacing:.16em!important;
+  line-height:1!important;
+}
+
+.mq-stat-title h1{
+  margin:0!important;
+  color:#000!important;
+  font-family:var(--mq-display,"Limelight","Copperplate",serif)!important;
+  font-size:57px!important;
+  font-weight:400!important;
+  line-height:.94!important;
+  letter-spacing:.015em!important;
+  text-shadow:none!important;
+}
+
+.mq-stat-title p{
+  margin:10px 0 0!important;
+  color:#000!important;
+  font-size:15px!important;
+  font-weight:600!important;
+  line-height:1.35!important;
+}
+
+/* Real Movie Quiz display font on the main section headings. */
+.mq-stat-section-head h2{
+  color:#000!important;
+  font-family:var(--mq-display,"Limelight","Copperplate",serif)!important;
+  font-size:26px!important;
+  font-weight:400!important;
+  line-height:1.08!important;
+  letter-spacing:.01em!important;
+  text-shadow:none!important;
+}
+
+/* Four primary values */
+.mq-stat-metric{
+  padding:16px 16px 15px 21px!important;
+  border-left-color:rgba(0,0,0,.52)!important;
+  border-bottom-color:rgba(0,0,0,.28)!important;
+}
+
+.mq-stat-metric span{
+  color:#000!important;
+  font-size:14px!important;
+  font-weight:800!important;
+  letter-spacing:.12em!important;
+  line-height:1.15!important;
+}
+
+.mq-stat-metric strong{
+  margin:10px 0 8px!important;
+  color:#000!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:49px!important;
+  font-weight:700!important;
+  line-height:.92!important;
+  text-shadow:none!important;
+}
+
+.mq-stat-metric.is-oscar strong{
+  color:#000!important;
+}
+
+.mq-stat-metric small{
+  color:#000!important;
+  font-size:14px!important;
+  font-weight:600!important;
+  line-height:1.35!important;
+}
+
+/* Section descriptors */
+.mq-stat-section-head{
+  min-height:82px!important;
+  height:auto!important;
+  margin:0 0 14px!important;
+  padding:0 0 12px!important;
+  border-bottom:1px solid rgba(0,0,0,.34)!important;
+}
+
+.mq-stat-section-head span{
+  margin-bottom:5px!important;
+  color:#000!important;
+  font-size:13px!important;
+  font-weight:800!important;
+  letter-spacing:.14em!important;
+}
+
+.mq-stat-section-head small{
+  margin-top:7px!important;
+  color:#000!important;
+  font-size:13px!important;
+  font-weight:600!important;
+  line-height:1.4!important;
+}
+
+/* Genres */
+.mq-stat-genres{
+  gap:15px 22px!important;
+}
+
+.mq-stat-genre{
+  padding:8px 0 13px!important;
+  border-bottom-color:rgba(0,0,0,.24)!important;
+}
+
+.mq-stat-genre-head strong{
+  color:#000!important;
+  font-size:16px!important;
+  font-weight:800!important;
+}
+
+.mq-stat-genre-head span{
+  color:#000!important;
+  font-size:13px!important;
+  font-weight:600!important;
+}
+
+.mq-stat-bar{
+  height:8px!important;
+  margin:10px 0 9px!important;
+}
+
+.mq-stat-genre-foot{
+  color:#000!important;
+  font-size:13px!important;
+  font-weight:600!important;
+  line-height:1.35!important;
+}
+
+.mq-stat-genre-note{
+  margin-top:6px!important;
+  color:#000!important;
+  font-size:12px!important;
+  font-weight:600!important;
+  line-height:1.4!important;
+}
+
+/* Difficulty / Oscars */
+.mq-stat-difficulty{
+  grid-template-columns:54px minmax(0,1fr)!important;
+  gap:14px!important;
+  min-height:84px!important;
+  padding:9px 0 12px!important;
+  border-bottom-color:rgba(0,0,0,.24)!important;
+}
+
+.mq-stat-difficulty-icon{
+  width:50px!important;
+  height:50px!important;
+  color:#000!important;
+}
+
+.mq-stat-difficulty-icon svg{
+  width:46px!important;
+  height:46px!important;
+  stroke:#000!important;
+  stroke-width:2.2!important;
+}
+
+.mq-stat-difficulty-copy span{
+  color:#000!important;
+  font-size:13px!important;
+  font-weight:800!important;
+  letter-spacing:.09em!important;
+}
+
+.mq-stat-difficulty-copy strong{
+  margin:5px 0 4px!important;
+  color:#000!important;
+  font-size:25px!important;
+}
+
+.mq-stat-difficulty-copy small{
+  color:#000!important;
+  font-size:12.5px!important;
+  font-weight:600!important;
+  line-height:1.4!important;
+}
+
+/* Highlights */
+.mq-stat-highlights{
+  gap:8px!important;
+  margin-top:14px!important;
+  padding-top:12px!important;
+  border-top-color:rgba(0,0,0,.28)!important;
+}
+
+.mq-stat-highlight{
+  grid-template-columns:116px minmax(0,1fr)!important;
+  gap:12px!important;
+  padding:6px 0!important;
+}
+
+.mq-stat-highlight span{
+  color:#000!important;
+  font-size:12px!important;
+  font-weight:800!important;
+}
+
+.mq-stat-highlight strong{
+  color:#000!important;
+  font-size:16px!important;
+  font-weight:800!important;
+}
+
+.mq-stat-highlight small{
+  color:#000!important;
+  font-size:12px!important;
+  font-weight:600!important;
+}
+
+/* Recent games */
+.mq-stat-recent{
+  gap:8px!important;
+}
+
+.mq-stat-game{
+  grid-template-columns:68px minmax(0,1fr) 58px!important;
+  grid-template-rows:34px 20px!important;
+  column-gap:12px!important;
+  min-height:64px!important;
+  padding:7px 0 10px!important;
+  border-bottom-color:rgba(0,0,0,.24)!important;
+}
+
+.mq-stat-game-result{
+  width:64px!important;
+  height:30px!important;
+  color:#000!important;
+  font-size:10px!important;
+  font-weight:800!important;
+}
+
+.mq-stat-game-main strong{
+  color:#000!important;
+  font-size:15px!important;
+  font-weight:800!important;
+}
+
+.mq-stat-game-main span{
+  margin-top:3px!important;
+  color:#000!important;
+  font-size:12px!important;
+  font-weight:600!important;
+}
+
+.mq-stat-game-score strong{
+  color:#000!important;
+  font-size:27px!important;
+}
+
+.mq-stat-game-score span{
+  color:#000!important;
+  font-size:11px!important;
+  font-weight:600!important;
+}
+
+.mq-stat-game-meta{
+  color:#000!important;
+  font-size:11px!important;
+  font-weight:600!important;
+}
+
+/* Footer */
+.mq-stat-footer{
+  padding-top:11px!important;
+  border-top-color:rgba(0,0,0,.34)!important;
+  color:#000!important;
+  font-size:12.5px!important;
+  font-weight:600!important;
+}
+
+.mq-stat-footer strong{
+  color:#000!important;
+  font-weight:800!important;
+}
+
+/* Loading / empty / errors */
+.mq-stat-state h2,
+.mq-stat-state strong{
+  color:#000!important;
+  font-family:var(--mq-display,"Limelight","Copperplate",serif)!important;
+  font-size:31px!important;
+  font-weight:400!important;
+}
+
+.mq-stat-state p,
+.mq-stat-state small{
+  color:#000!important;
+  font-size:14px!important;
+  font-weight:600!important;
+}
+
+/* --------------------------------------------------------------------------
+   BACK / REFRESH
+   Movie Quiz lacquer button with explicitly GOLD typography/icons.
+   More specific rules intentionally override the global black text reset.
+   -------------------------------------------------------------------------- */
+#mqStatisticsScene .mq-stat-action,
+#mqStatisticsScene .mq-stat-action span{
+  color:var(--mq-gold2,#efd38a)!important;
+}
+
+#mqStatisticsScene .mq-stat-action{
+  min-width:148px!important;
+  height:46px!important;
+  padding:0 18px!important;
+  gap:10px!important;
+  border:1px solid #a6752f!important;
+  border-radius:5px!important;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.055) 0 17%,transparent 17% 100%),
+    linear-gradient(180deg,#1c130d 0%,#0b0705 58%,#030201 100%)!important;
+  font-family:var(--mq-ui,"Oswald","Arial Narrow",sans-serif)!important;
+  font-size:12px!important;
+  font-weight:600!important;
+  line-height:1!important;
+  letter-spacing:.13em!important;
+  text-transform:uppercase!important;
+  text-shadow:0 1px 0 #000!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,241,197,.13),
+    inset 0 0 0 1px rgba(0,0,0,.82),
+    0 6px 14px rgba(0,0,0,.20)!important;
+}
+
+#mqStatisticsScene .mq-stat-action::after{
+  inset:4px!important;
+  border-color:rgba(218,171,82,.22)!important;
+}
+
+#mqStatisticsScene .mq-stat-action svg{
+  width:19px!important;
+  height:19px!important;
+  stroke:var(--mq-gold2,#efd38a)!important;
+  color:var(--mq-gold2,#efd38a)!important;
+}
+
+#mqStatisticsScene .mq-stat-action:hover,
+#mqStatisticsScene .mq-stat-action:focus-visible,
+#mqStatisticsScene .mq-stat-action:hover span,
+#mqStatisticsScene .mq-stat-action:focus-visible span{
+  color:#fff0bf!important;
+}
+
+#mqStatisticsScene .mq-stat-action:hover svg,
+#mqStatisticsScene .mq-stat-action:focus-visible svg{
+  stroke:#fff0bf!important;
+}
+
+/* Larger copy means content should be expected to scroll. */
+.mq-stat-main{
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  scrollbar-gutter:stable!important;
+}
+
+/* Keep columns natural-height inside the scroll container. */
+.mq-stat-column{
+  min-height:max-content!important;
+  overflow:visible!important;
+}
+
+@media(max-width:1100px){
+  .mq-stat-layout{
+    grid-template-rows:108px 138px minmax(0,1fr) 48px!important;
+  }
+  .mq-stat-title h1{font-size:50px!important}
+  .mq-stat-title p{font-size:14px!important}
+  .mq-stat-title .mq-stat-kicker{font-size:15px!important}
+  .mq-stat-section-head h2{font-size:23px!important}
+  #mqStatisticsScene .mq-stat-action{min-width:138px!important;height:44px!important;font-size:11.5px!important}
 }
