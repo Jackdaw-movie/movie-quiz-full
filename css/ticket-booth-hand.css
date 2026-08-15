@@ -1,87 +1,90 @@
-/* Movie Quiz – ticket booth single-hand animation v2
-   Uses the real exterior stage (#mqExteriorStage, 1672×941).
-   Invisible portal starts exactly at x=1020.
-   The wrist crosses the portal around y=610..660.
-   One transparent hand asset only.
+/* Movie Quiz – ticket booth single-hand animation v3
+   Fixes requested by user:
+   - hand much smaller
+   - real rotational waving (naklápění nahoru / dolů)
+   - still emerges from invisible wall at x=1020
+   - cooldown 5 seconds
+
+   Implementation note:
+   We use the real exterior stage (#mqExteriorStage, 1672x941).
+   The hand is a single transparent asset already rotated into a mostly horizontal pose.
 */
 
-/* We intentionally use a stage pseudo-element so no JavaScript or extra DOM mount is required.
-   The old v1 script was not referenced by index.html and also searched for selectors that do not
-   exist in the current exterior. */
 #mqExteriorStage::after{
   content:"";
   position:absolute;
   z-index:14;
   pointer-events:none;
 
-  /* Fixed invisible wall / portal. Anything left of this x coordinate is not painted. */
-  left:1020px;
-  top:450px;
-  width:652px;   /* 1672 - 1020 */
-  height:390px;
+  /* Place the sprite slightly before the portal and clip the left part inside its own box.
+     Portal edge: x = 1020. With left = 936 and left clip = 84, the visible start edge is 1020. */
+  left:936px;
+  top:594px;
+  width:118px;
+  height:102px;
 
-  background-image:url("../assets/exterior-v6-9/production/ticket-booth-hand.png?v=2.0");
+  background-image:url("../assets/exterior-v6-9/production/ticket-booth-hand.png?v=3.0");
   background-repeat:no-repeat;
-  background-size:430px auto;
+  background-size:118px 102px;
+  background-position:center center;
 
-  /* Horizontal base pose. The actual PNG is already rotated ~45° clockwise. */
-  background-position:-500px 50%;
+  /* hide the left part behind the invisible wall */
+  clip-path:inset(0 0 0 84px);
 
-  will-change:background-position;
-  animation:mqTicketBoothSingleHand 9s cubic-bezier(.42,0,.58,1) infinite;
+  /* rotate around the cuff / wrist area */
+  transform-origin:20% 54%;
+  will-change:transform;
+  filter:drop-shadow(0 1px 1px rgba(0,0,0,.16));
+
+  animation:mqTicketBoothSingleHandV3 9s cubic-bezier(.42,0,.58,1) infinite;
 }
 
-/*
-  0–44.44%  = full motion (~4 s)
-  44.44–100 = fully hidden cooldown (5 s)
-
-  The fixed ::after rectangle itself is the clipping portal:
-  background pixels can only exist at x >= 1020.
-*/
-@keyframes mqTicketBoothSingleHand{
+@keyframes mqTicketBoothSingleHandV3{
+  /* hidden */
   0%,5%{
-    background-position:-500px 50%;
+    transform:translateX(-78px) rotate(0deg);
+    opacity:1;
   }
 
-  /* smoothly extend from behind x=1020 */
+  /* extend */
   15%,18%{
-    background-position:-92px 50%;
+    transform:translateX(0px) rotate(0deg);
+    opacity:1;
   }
 
-  /* wave UP */
+  /* wave: up, down, up, down */
   23%{
-    background-position:-84px 37%;
+    transform:translateX(0px) rotate(-18deg);
+    opacity:1;
   }
-
-  /* wave DOWN */
   28%{
-    background-position:-96px 63%;
+    transform:translateX(0px) rotate(18deg);
+    opacity:1;
   }
-
-  /* UP again */
   33%{
-    background-position:-84px 37%;
+    transform:translateX(0px) rotate(-18deg);
+    opacity:1;
   }
-
-  /* DOWN again */
   38%{
-    background-position:-96px 63%;
+    transform:translateX(0px) rotate(18deg);
+    opacity:1;
   }
 
-  /* return to horizontal */
-  40%{
-    background-position:-92px 50%;
+  /* straighten */
+  42%{
+    transform:translateX(0px) rotate(0deg);
+    opacity:1;
   }
 
-  /* retract behind the invisible wall */
+  /* retract */
   44.44%,100%{
-    background-position:-500px 50%;
+    transform:translateX(-78px) rotate(0deg);
+    opacity:1;
   }
 }
 
-/* Do not show the hand after the exterior has left the screen. */
 body:not(.mq-exterior-active) #mqExteriorStage::after,
 body.mq-ticket-open #mqExteriorStage::after{
   animation-play-state:paused;
-  background-position:-500px 50%;
+  transform:translateX(-78px) rotate(0deg);
 }
