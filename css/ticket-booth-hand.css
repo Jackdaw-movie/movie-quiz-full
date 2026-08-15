@@ -1,0 +1,77 @@
+/* Movie Quiz – Ticket booth hand loop
+   Stage coordinates requested by user:
+   invisible portal at x=1020 on 1672x941 stage
+   wrist entry around y=610..660 (centered to y≈635)
+*/
+.mq-ticket-hand-overlay{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:6;
+  overflow:hidden;
+}
+
+/* The invisible wall begins exactly at x=1020.
+   Everything to the left stays hidden; the hand emerges to the right. */
+.mq-ticket-hand-portal{
+  position:absolute;
+  left:61.005%; /* 1020 / 1672 */
+  top:0;
+  width:38.995%;
+  height:100%;
+  overflow:hidden;
+  pointer-events:none;
+}
+
+.mq-ticket-hand-sprite{
+  position:absolute;
+  left:0;
+  top:67.48%; /* approx y=635 / 941 */
+  width:46%;
+  max-width:none;
+  height:auto;
+  transform-origin:18% 73%;
+  will-change:transform, opacity;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.18));
+  animation:mq-ticket-hand-wave 8.8s linear infinite;
+}
+
+/* Hidden -> extend -> wave up/down/up/down -> straighten -> retract -> 5s cooldown */
+@keyframes mq-ticket-hand-wave{
+  0%, 6%{
+    transform:translate(-86%, -50%) rotate(43deg);
+    opacity:1;
+  }
+  14%, 22%{
+    transform:translate(-6%, -50%) rotate(43deg);
+    opacity:1;
+  }
+  28%{
+    transform:translate(-2%, -52%) rotate(28deg);
+    opacity:1;
+  }
+  34%{
+    transform:translate(-7%, -47%) rotate(58deg);
+    opacity:1;
+  }
+  40%{
+    transform:translate(-2%, -52%) rotate(28deg);
+    opacity:1;
+  }
+  46%{
+    transform:translate(-7%, -47%) rotate(58deg);
+    opacity:1;
+  }
+  52%, 56%{
+    transform:translate(-6%, -50%) rotate(43deg);
+    opacity:1;
+  }
+  64%, 68%{
+    transform:translate(-86%, -50%) rotate(43deg);
+    opacity:1;
+  }
+  100%{
+    transform:translate(-86%, -50%) rotate(43deg);
+    opacity:1;
+  }
+}

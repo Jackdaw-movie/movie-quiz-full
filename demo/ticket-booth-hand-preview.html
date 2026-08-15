@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ticket booth hand preview</title>
+  <link rel="stylesheet" href="../css/ticket-booth-hand.css">
+  <style>
+    html,body{margin:0;min-height:100%;background:#090705;font-family:Arial,Helvetica,sans-serif;color:#e8d2a2}
+    body{display:flex;justify-content:center;align-items:flex-start;padding:20px}
+    .wrap{max-width:1700px;width:100%}
+    .note{text-align:center;font-size:13px;color:#bca57b;margin-bottom:12px}
+    #exteriorScene{
+      position:relative;
+      width:1672px;
+      height:941px;
+      margin:0 auto;
+      overflow:hidden;
+      border-radius:14px;
+      background:radial-gradient(circle at 40% 30%, #2b1c11 0, #130d08 56%, #070605 100%);
+      box-shadow:0 15px 50px rgba(0,0,0,.45);
+    }
+    #exteriorScene img.bg{
+      position:absolute;
+      left:165px;
+      top:28px;
+      width:603px;
+      height:886px;
+      object-fit:contain;
+      pointer-events:none;
+      user-select:none;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="note">Preview: ruka vyjede z neviditelné stěny na x=1020, zamává, vrátí se a 5 sekund čeká.</div>
+    <div id="exteriorScene">
+      <img class="bg" src="../assets/exterior-v6-9/production/booth-preview.png" alt="">
+    </div>
+  </div>
+  <script src="../js/24-ticket-booth-hand.js"></script>
+</body>
+</html>
