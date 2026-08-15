@@ -1,0 +1,791 @@
+/* Movie Quiz – Cinema UI v53.12
+   AUTHORITATIVE STATISTICS REBUILD
+
+   Master canvas: 1672×941
+   Statistics UI zone requested by user:
+     x = 187 .. 1500  => left 11.1842%, width 78.5287%
+     y = 140 .. 788   => top 14.8778%, height 68.8629%
+
+   Principles:
+   - approved statistics.webp remains the full-cinema background from v53.10
+   - no player profile on this page; only the global settings gear remains
+   - no card/panel backgrounds behind statistics
+   - dark noir typography + brass dividers directly on the warm canvas
+*/
+
+/* ========================================================================== 
+   PLAYER DOCK: KEEP ONLY SETTINGS GEAR ON STATISTICS
+   The dock is moved to document.body by player-settings.js, so it must be
+   targeted globally, not as a child of #statisticsView.
+   ========================================================================== */
+body:has(#statisticsView.active) #mqPlayerBadge.mq-player-dock{
+  position:fixed!important;
+  left:clamp(14px,1.8vw,26px)!important;
+  top:clamp(14px,1.8vw,26px)!important;
+  z-index:2147482000!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:38px!important;
+  height:38px!important;
+  min-width:38px!important;
+  max-width:38px!important;
+  min-height:38px!important;
+  max-height:38px!important;
+  margin:0!important;
+  padding:0!important;
+  gap:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  overflow:visible!important;
+}
+body:has(#statisticsView.active) #mqPlayerBadge.mq-player-dock::before,
+body:has(#statisticsView.active) #mqPlayerBadge.mq-player-dock::after{
+  display:none!important;
+  content:none!important;
+}
+body:has(#statisticsView.active) #mqPlayerBadge.mq-player-dock > :not(.mq-settings-gear){
+  display:none!important;
+}
+body:has(#statisticsView.active) #mqPlayerBadge.mq-player-dock .mq-settings-gear{
+  display:grid!important;
+  width:38px!important;
+  height:38px!important;
+  min-width:38px!important;
+  flex:0 0 38px!important;
+  margin:0!important;
+  padding:0!important;
+  border:1px solid rgba(78,42,15,.62)!important;
+  border-radius:50%!important;
+  background:rgba(58,31,15,.08)!important;
+  color:#5b3215!important;
+  box-shadow:0 2px 8px rgba(68,35,13,.10)!important;
+}
+body:has(#statisticsView.active) #mqPlayerBadge.mq-player-dock .mq-settings-gear:hover,
+body:has(#statisticsView.active) #mqPlayerBadge.mq-player-dock .mq-settings-gear:focus-visible,
+body:has(#statisticsView.active) #mqPlayerBadge.mq-player-dock .mq-settings-gear[aria-expanded="true"]{
+  background:rgba(91,49,20,.12)!important;
+  border-color:#8b5525!important;
+  color:#3d210f!important;
+}
+
+/* ========================================================================== 
+   EXACT PAGE ZONE
+   ========================================================================== */
+html body.mq-noir-master #statisticsView.active .mq-stats-shell{
+  position:absolute!important;
+  left:11.1842%!important;
+  top:14.8778%!important;
+  width:78.5287%!important;
+  height:68.8629%!important;
+  margin:0!important;
+  padding:0!important;
+  display:grid!important;
+  grid-template-rows:72px minmax(0,1fr)!important;
+  gap:12px!important;
+  overflow:hidden!important;
+  color:#311b0e!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-shell::before,
+html body.mq-noir-master #statisticsView.active .mq-stats-shell::after{
+  display:none!important;
+  content:none!important;
+}
+
+/* ========================================================================== 
+   TOPBAR: TITLE LEFT, BACK/REFRESH RIGHT
+   ========================================================================== */
+html body.mq-noir-master #statisticsView.active .mq-stats-topbar{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:24px!important;
+  min-width:0!important;
+  padding:0 0 11px!important;
+  margin:0!important;
+  border:0!important;
+  border-bottom:1px solid rgba(103,57,21,.36)!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-topbar::after{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  bottom:-1px!important;
+  width:178px!important;
+  height:2px!important;
+  background:linear-gradient(90deg,#6e3b18,#b87730,transparent)!important;
+  pointer-events:none!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-heading{
+  min-width:0!important;
+  padding:0!important;
+  margin:0!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-heading .eyebrow{
+  margin:0 0 2px!important;
+  color:#7a461f!important;
+  font-family:var(--mq-ui,"Oswald",sans-serif)!important;
+  font-size:8px!important;
+  font-weight:750!important;
+  line-height:1!important;
+  letter-spacing:.22em!important;
+  text-transform:uppercase!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-heading h1{
+  margin:0!important;
+  color:#2c180c!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:34px!important;
+  font-weight:700!important;
+  line-height:.98!important;
+  letter-spacing:.01em!important;
+  text-shadow:0 1px rgba(255,229,181,.28)!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-heading p{
+  margin:4px 0 0!important;
+  color:#76583e!important;
+  font-size:8.5px!important;
+  line-height:1.35!important;
+}
+
+html body.mq-noir-master #statisticsView.active .mq-stats-toolbar{
+  position:relative!important;
+  inset:auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  border:0!important;
+  backdrop-filter:none!important;
+}
+html body.mq-noir-master #statisticsView.active :is(.mq-stats-back,.mq-stats-refresh){
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  min-width:108px!important;
+  min-height:36px!important;
+  padding:8px 13px!important;
+  border:1px solid rgba(90,48,18,.48)!important;
+  border-radius:2px!important;
+  background:rgba(54,29,13,.045)!important;
+  color:#4b2913!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  font-family:var(--mq-ui,"Oswald",sans-serif)!important;
+  font-size:8.5px!important;
+  font-weight:700!important;
+  line-height:1!important;
+  letter-spacing:.13em!important;
+  text-transform:uppercase!important;
+}
+html body.mq-noir-master #statisticsView.active :is(.mq-stats-back,.mq-stats-refresh) svg{
+  width:14px!important;
+  height:14px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.8!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+html body.mq-noir-master #statisticsView.active :is(.mq-stats-back,.mq-stats-refresh):hover,
+html body.mq-noir-master #statisticsView.active :is(.mq-stats-back,.mq-stats-refresh):focus-visible{
+  border-color:#70401c!important;
+  background:rgba(71,38,16,.09)!important;
+  color:#2e180b!important;
+  transform:translateY(-1px)!important;
+  outline:none!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-refresh:disabled{
+  opacity:.46!important;
+  transform:none!important;
+}
+
+/* ========================================================================== 
+   SCROLL CONTENT
+   ========================================================================== */
+html body.mq-noir-master #statisticsView.active .mq-stats-content{
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  scrollbar-gutter:stable!important;
+  padding:0 7px 4px 0!important;
+  margin:0!important;
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:15px!important;
+  align-content:start!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:rgba(92,51,20,.58) transparent!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-content::-webkit-scrollbar{width:7px!important}
+html body.mq-noir-master #statisticsView.active .mq-stats-content::-webkit-scrollbar-track{background:transparent!important}
+html body.mq-noir-master #statisticsView.active .mq-stats-content::-webkit-scrollbar-thumb{background:rgba(92,51,20,.52)!important;border-radius:8px!important}
+
+/* Eliminate old dashboard surfaces. */
+html body.mq-noir-master #statisticsView.active :is(
+  .mq-stats-summary,.mq-stat-card,.mq-stats-dashboard,.mq-stats-pane,
+  .mq-difficulty-stat,.mq-stats-mini-highlights,.mq-stats-mini-highlights>div,
+  .mq-genre-stat,.mq-recent-game,.mq-stats-footer,
+  .mq-stats-loading,.mq-stats-error,.mq-stats-empty
+){
+  background:transparent!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+}
+
+/* ========================================================================== 
+   4 PRIMARY METRICS
+   ========================================================================== */
+html body.mq-noir-master #statisticsView.active .mq-stats-summary{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:0!important;
+  margin:0!important;
+  padding:0 0 13px!important;
+  border:0!important;
+  border-bottom:1px solid rgba(106,59,22,.25)!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stat-card{
+  position:relative!important;
+  min-width:0!important;
+  min-height:86px!important;
+  margin:0!important;
+  padding:8px 20px 8px 18px!important;
+  border:0!important;
+  border-radius:0!important;
+  color:#321b0e!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stat-card:first-child{padding-left:0!important}
+html body.mq-noir-master #statisticsView.active .mq-stat-card:not(:first-child)::before{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  top:8px!important;
+  bottom:8px!important;
+  width:1px!important;
+  background:linear-gradient(180deg,transparent,rgba(106,59,22,.45) 22%,rgba(145,86,34,.58) 50%,rgba(106,59,22,.45) 78%,transparent)!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stat-card::after{display:none!important;content:none!important}
+html body.mq-noir-master #statisticsView.active .mq-stat-card>span{
+  display:block!important;
+  color:#76502f!important;
+  font-family:var(--mq-ui,"Oswald",sans-serif)!important;
+  font-size:7.5px!important;
+  font-weight:750!important;
+  line-height:1!important;
+  letter-spacing:.16em!important;
+  text-transform:uppercase!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stat-card>strong{
+  display:block!important;
+  margin:7px 0 5px!important;
+  color:#2b160a!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:32px!important;
+  font-weight:700!important;
+  line-height:.96!important;
+  font-variant-numeric:tabular-nums!important;
+  text-shadow:0 1px rgba(255,226,174,.30)!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stat-card.is-oscar>strong{color:#6b3c16!important;text-shadow:none!important}
+html body.mq-noir-master #statisticsView.active .mq-stat-card>small{
+  display:block!important;
+  color:#82684f!important;
+  font-size:8px!important;
+  line-height:1.35!important;
+}
+
+/* ========================================================================== 
+   THREE-COLUMN LOWER DASHBOARD
+   ========================================================================== */
+html body.mq-noir-master #statisticsView.active .mq-stats-dashboard{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.36fr) minmax(0,.86fr) minmax(0,1.08fr)!important;
+  gap:22px!important;
+  align-items:start!important;
+  min-width:0!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-pane{
+  position:relative!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0 0 0 16px!important;
+  border:0!important;
+  border-radius:0!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-pane:first-child{padding-left:0!important}
+html body.mq-noir-master #statisticsView.active .mq-stats-pane:not(:first-child)::before{
+  content:""!important;
+  position:absolute!important;
+  left:-4px!important;
+  top:0!important;
+  bottom:0!important;
+  width:1px!important;
+  background:linear-gradient(180deg,rgba(99,54,20,.10),rgba(99,54,20,.34) 12%,rgba(99,54,20,.34) 88%,rgba(99,54,20,.08))!important;
+}
+
+html body.mq-noir-master #statisticsView.active .mq-stats-section-title{
+  display:block!important;
+  margin:0 0 10px!important;
+  padding:0 0 8px!important;
+  border:0!important;
+  border-bottom:1px solid rgba(105,58,22,.24)!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-section-title>div{min-width:0!important}
+html body.mq-noir-master #statisticsView.active .mq-stats-section-title span{
+  display:block!important;
+  margin:0 0 3px!important;
+  color:#7d522d!important;
+  font-family:var(--mq-ui,"Oswald",sans-serif)!important;
+  font-size:7.5px!important;
+  font-weight:750!important;
+  line-height:1!important;
+  letter-spacing:.17em!important;
+  text-transform:uppercase!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-section-title h2{
+  margin:0!important;
+  color:#341c0e!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:19px!important;
+  font-weight:700!important;
+  line-height:1.02!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-section-title>small{
+  display:block!important;
+  max-width:none!important;
+  margin:4px 0 0!important;
+  color:#8a7056!important;
+  font-size:7.6px!important;
+  line-height:1.35!important;
+  text-align:left!important;
+}
+
+/* Genres */
+html body.mq-noir-master #statisticsView.active .mq-genre-stats{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:9px 14px!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-genre-stat{
+  min-width:0!important;
+  padding:3px 0 8px!important;
+  border:0!important;
+  border-radius:0!important;
+  border-bottom:1px solid rgba(105,58,22,.18)!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-genre-stat-head,
+html body.mq-noir-master #statisticsView.active .mq-genre-stat-foot{
+  display:flex!important;
+  align-items:baseline!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-genre-stat-head strong{
+  color:#3b2111!important;
+  font-size:9.5px!important;
+  font-weight:750!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-genre-stat-head>span,
+html body.mq-noir-master #statisticsView.active .mq-genre-stat-foot span,
+html body.mq-noir-master #statisticsView.active .mq-genre-stat-explain{
+  color:#80664c!important;
+  font-size:7.2px!important;
+  line-height:1.3!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stat-bar{
+  height:4px!important;
+  margin:6px 0 5px!important;
+  border:0!important;
+  border-radius:0!important;
+  overflow:hidden!important;
+  background:rgba(81,44,17,.13)!important;
+  box-shadow:none!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stat-bar i{
+  display:block!important;
+  height:100%!important;
+  border-radius:0!important;
+  background:linear-gradient(90deg,#6f3d18,#ad7130)!important;
+  box-shadow:none!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-genre-stat-foot strong{color:#573016!important}
+html body.mq-noir-master #statisticsView.active .mq-genre-stat-explain{margin-top:4px!important}
+
+/* Difficulty / Oscars */
+html body.mq-noir-master #statisticsView.active .mq-difficulty-stats{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:5px!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-difficulty-stat{
+  display:grid!important;
+  grid-template-columns:42px minmax(0,1fr)!important;
+  align-items:center!important;
+  gap:10px!important;
+  min-width:0!important;
+  padding:5px 0 7px!important;
+  border:0!important;
+  border-radius:0!important;
+  border-bottom:1px solid rgba(105,58,22,.18)!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-difficulty-icon{
+  display:grid!important;
+  place-items:center!important;
+  width:38px!important;
+  height:38px!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#6c3d19!important;
+  filter:none!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-difficulty-icon svg{
+  width:35px!important;
+  height:35px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.65!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-difficulty-copy span{
+  display:block!important;
+  color:#7d6248!important;
+  font-family:var(--mq-ui,"Oswald",sans-serif)!important;
+  font-size:7px!important;
+  font-weight:750!important;
+  line-height:1!important;
+  letter-spacing:.13em!important;
+  text-transform:uppercase!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-difficulty-copy strong{
+  display:block!important;
+  margin:3px 0 2px!important;
+  color:#4b2812!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:16px!important;
+  font-weight:700!important;
+  line-height:1!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-difficulty-copy small{
+  display:block!important;
+  color:#82684f!important;
+  font-size:7.2px!important;
+  line-height:1.3!important;
+}
+
+/* Small highlights under Oscar section */
+html body.mq-noir-master #statisticsView.active .mq-stats-mini-highlights{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:0!important;
+  margin:9px 0 0!important;
+  padding:0!important;
+  border:0!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-mini-highlights>div{
+  position:relative!important;
+  padding:7px 0 7px 10px!important;
+  border:0!important;
+  border-bottom:1px solid rgba(105,58,22,.16)!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-mini-highlights>div::before{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  top:9px!important;
+  width:3px!important;
+  height:18px!important;
+  background:#8d5725!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-mini-highlights span{
+  display:block!important;
+  color:#7e644a!important;
+  font-size:6.8px!important;
+  font-weight:750!important;
+  letter-spacing:.12em!important;
+  text-transform:uppercase!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-mini-highlights strong{
+  display:block!important;
+  margin:2px 0!important;
+  color:#3a1f0f!important;
+  font-size:10.5px!important;
+  line-height:1.1!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-mini-highlights small{
+  display:block!important;
+  color:#876d53!important;
+  font-size:7px!important;
+  line-height:1.3!important;
+}
+
+/* Recent games */
+html body.mq-noir-master #statisticsView.active .mq-recent-games{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:0!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-recent-game{
+  display:grid!important;
+  grid-template-columns:46px minmax(0,1fr) 45px!important;
+  grid-template-rows:auto auto!important;
+  align-items:center!important;
+  gap:1px 9px!important;
+  min-width:0!important;
+  padding:5px 0 6px!important;
+  border:0!important;
+  border-radius:0!important;
+  border-bottom:1px solid rgba(105,58,22,.18)!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-recent-result{
+  grid-column:1!important;
+  grid-row:1 / 3!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  width:auto!important;
+  min-width:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#6a3d1b!important;
+  font-family:var(--mq-ui,"Oswald",sans-serif)!important;
+  font-size:6.8px!important;
+  font-weight:800!important;
+  line-height:1!important;
+  letter-spacing:.08em!important;
+  text-align:left!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-recent-game.is-loss .mq-recent-result{color:#82513a!important}
+html body.mq-noir-master #statisticsView.active .mq-recent-main{
+  grid-column:2!important;
+  grid-row:1!important;
+  min-width:0!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-recent-main strong{
+  display:block!important;
+  overflow:hidden!important;
+  color:#3a2010!important;
+  font-size:9px!important;
+  font-weight:750!important;
+  line-height:1.15!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-recent-main span{
+  display:block!important;
+  margin:1px 0 0!important;
+  color:#82684f!important;
+  font-size:7px!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-recent-score{
+  grid-column:3!important;
+  grid-row:1 / 3!important;
+  display:flex!important;
+  align-items:baseline!important;
+  justify-content:flex-end!important;
+  gap:2px!important;
+  text-align:right!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-recent-score strong{
+  color:#4b2812!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:17px!important;
+  line-height:1!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-recent-score span{
+  color:#8a7057!important;
+  font-size:7px!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-recent-meta{
+  grid-column:2!important;
+  grid-row:2!important;
+  display:flex!important;
+  justify-content:flex-start!important;
+  gap:8px!important;
+  color:#8b7259!important;
+  font-size:6.8px!important;
+  line-height:1.2!important;
+  text-align:left!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-inline-empty{
+  padding:12px 0!important;
+  color:#7e654c!important;
+  font-size:8px!important;
+  text-align:left!important;
+}
+
+/* Footer */
+html body.mq-noir-master #statisticsView.active .mq-stats-footer{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  flex-wrap:nowrap!important;
+  margin:0!important;
+  padding:9px 0 0!important;
+  border:0!important;
+  border-top:1px solid rgba(105,58,22,.24)!important;
+  border-radius:0!important;
+  color:#755a42!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-footer span{
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#755a42!important;
+  font-size:7.4px!important;
+  white-space:nowrap!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-footer strong{
+  color:#3c2110!important;
+  font-weight:800!important;
+}
+
+/* Loading / empty / error */
+html body.mq-noir-master #statisticsView.active :is(.mq-stats-loading,.mq-stats-error,.mq-stats-empty){
+  min-height:260px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:30px!important;
+  border:0!important;
+  border-radius:0!important;
+  text-align:center!important;
+  color:#3a2111!important;
+}
+html body.mq-noir-master #statisticsView.active :is(.mq-stats-loading strong,.mq-stats-error h2,.mq-stats-empty h2){
+  margin:12px 0 5px!important;
+  color:#34200f!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:22px!important;
+}
+html body.mq-noir-master #statisticsView.active :is(.mq-stats-loading small,.mq-stats-error p,.mq-stats-empty p){
+  max-width:560px!important;
+  margin:0!important;
+  color:#755e46!important;
+  font-size:8.5px!important;
+  line-height:1.5!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-spinner{
+  width:31px!important;
+  height:31px!important;
+  border:2px solid rgba(83,45,17,.16)!important;
+  border-top-color:#70401b!important;
+  border-radius:50%!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-error-icon,
+html body.mq-noir-master #statisticsView.active .mq-stats-empty-icon{
+  display:grid!important;
+  place-items:center!important;
+  width:38px!important;
+  height:38px!important;
+  border:1px solid rgba(95,52,20,.32)!important;
+  border-radius:50%!important;
+  background:transparent!important;
+  color:#70401b!important;
+  font-size:19px!important;
+}
+html body.mq-noir-master #statisticsView.active :is(.mq-stats-error,.mq-stats-empty) .mq-primary{
+  margin-top:13px!important;
+  padding:9px 15px!important;
+  border:1px solid rgba(90,48,18,.50)!important;
+  border-radius:2px!important;
+  background:rgba(54,29,13,.05)!important;
+  color:#4b2913!important;
+  box-shadow:none!important;
+}
+
+/* ========================================================================== 
+   SAFETY AGAINST LEGACY STATISTICS CSS
+   ========================================================================== */
+html body.mq-noir-master #statisticsView.active{
+  padding:0!important;
+  overflow:hidden!important;
+  background:transparent!important;
+}
+html body.mq-noir-master #statisticsView.active :is(.mq-stats-section,.mq-stats-highlights){
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+
+/* ========================================================================== 
+   RESPONSIVE FALLBACK
+   ========================================================================== */
+@media(max-width:980px){
+  html body.mq-noir-master #statisticsView.active .mq-stats-shell{
+    left:5%!important;
+    top:8%!important;
+    width:90%!important;
+    height:84%!important;
+  }
+  html body.mq-noir-master #statisticsView.active .mq-stats-dashboard{
+    grid-template-columns:1fr 1fr!important;
+  }
+  html body.mq-noir-master #statisticsView.active .mq-stats-pane-recent{
+    grid-column:1 / -1!important;
+    padding-left:0!important;
+  }
+  html body.mq-noir-master #statisticsView.active .mq-stats-pane-recent::before{display:none!important}
+}
+
+@media(max-width:680px){
+  html body.mq-noir-master #statisticsView.active .mq-stats-shell{
+    left:3%!important;
+    top:5%!important;
+    width:94%!important;
+    height:90%!important;
+    grid-template-rows:70px minmax(0,1fr)!important;
+  }
+  html body.mq-noir-master #statisticsView.active .mq-stats-topbar{
+    gap:10px!important;
+  }
+  html body.mq-noir-master #statisticsView.active .mq-stats-heading h1{font-size:27px!important}
+  html body.mq-noir-master #statisticsView.active .mq-stats-heading p{display:none!important}
+  html body.mq-noir-master #statisticsView.active :is(.mq-stats-back,.mq-stats-refresh){
+    width:34px!important;
+    min-width:34px!important;
+    height:34px!important;
+    min-height:34px!important;
+    padding:0!important;
+  }
+  html body.mq-noir-master #statisticsView.active :is(.mq-stats-back,.mq-stats-refresh) span{display:none!important}
+  html body.mq-noir-master #statisticsView.active .mq-stats-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  html body.mq-noir-master #statisticsView.active .mq-stat-card:nth-child(3)::before{display:none!important}
+  html body.mq-noir-master #statisticsView.active .mq-stats-dashboard{grid-template-columns:1fr!important}
+  html body.mq-noir-master #statisticsView.active .mq-stats-pane{padding-left:0!important}
+  html body.mq-noir-master #statisticsView.active .mq-stats-pane::before{display:none!important}
+  html body.mq-noir-master #statisticsView.active .mq-genre-stats{grid-template-columns:1fr!important}
+  html body.mq-noir-master #statisticsView.active .mq-stats-footer{flex-wrap:wrap!important;justify-content:flex-start!important}
+}
