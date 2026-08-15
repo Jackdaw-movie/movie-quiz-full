@@ -1,0 +1,11 @@
+VALIDATION v55.0
+
+[OK] js/23-player-statistics.js prošel: node --check
+[OK] nový JS odstraňuje případný legacy #statisticsView
+[OK] nový JS vytváří #mqStatisticsScene přímo v #cinema
+[OK] css/player-statistics.css už neobsahuje starý dashboard CSS
+[OK] background je přímo na #mqStatisticsScene, inset:0, 100% × 100%
+[OK] UI zóna odpovídá x187..1500 / y140..788
+[OK] žádný hlavní UI panel nemá neprůhledné pozadí
+[OK] player dock je v režimu statistik skrytý
+[OK] gear a home jsou samostatná čtvercová tlačítka
