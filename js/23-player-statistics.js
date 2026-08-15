@@ -411,14 +411,13 @@
 (()=>{
   'use strict';
 
-  const VERSION='hall-of-fame-v1.0';
+  const VERSION='hall-of-fame-v1.1-safe-routing';
   const SCENE_ID='mqHallOfFameScene';
   const FALLBACK_AVATAR='assets/avatars/guest_unknown.svg';
 
   let previousView='difficulty';
   let loading=false;
   let latest=null;
-  let originalShowView=null;
 
   const onlineApi=()=>window.MovieQuizOnline;
   const activeViewId=()=>document.querySelector('.view.active')?.id||'intro';
@@ -537,7 +536,8 @@
   };
 
   function installScene(){
-    document.getElementById('scoreboardView')?.remove();
+    /* Keep legacy scoreboardView in DOM because the online/player module owns
+       the global view system. Hall of Fame only intercepts leaderboard clicks. */
     document.getElementById(SCENE_ID)?.remove();
 
     const cinema=document.getElementById('cinema');
@@ -782,20 +782,10 @@
   }
 
   function installRouting(){
-    originalShowView=window.showView;
-    if(typeof originalShowView==='function' && !originalShowView.__mqHallWrapped){
-      const wrapped=function(id,...args){
-        if(id==='scoreboardView'){
-          openHall(activeViewId());
-          return;
-        }
-        return originalShowView.call(this,id,...args);
-      };
-      wrapped.__mqHallWrapped=true;
-      wrapped.__mqHallOriginal=originalShowView;
-      window.showView=wrapped;
-    }
-
+    /* IMPORTANT: never wrap/replace window.showView here.
+       js/20-online-supabase.js extends showView so opening playerView calls
+       preparePlayerView(), which is required by the ticket login facade.
+       Hall of Fame therefore owns only leaderboard click routing. */
     document.addEventListener('click',event=>{
       const target=event.target.closest?.('[data-open-scoreboard],#mqIntroScoreboard');
       if(!target)return;
