@@ -1,0 +1,261 @@
+/* Movie Quiz – Cinema UI v53.10
+   CRITICAL SCENE-HIERARCHY FIX
+
+   Statistics and Hall of Fame backgrounds now replace the ENTIRE 1672×941
+   cinema master, not only the projection screen.
+
+   When either dynamic page is active:
+   - original cinema master artwork is hidden
+   - hall / ceiling / walls / seats / stage / proscenium decoration is hidden
+   - the proscenium + screen containers are expanded to the full cinema master
+   - the approved full-screen asset becomes the cinema background
+   - UI coordinates from v53.9 are therefore measured against the correct
+     1672×941 canvas.
+*/
+
+/* ==========================================================================
+   FULL-CINEMA PAGE MODE
+   ========================================================================== */
+html body.mq-noir-master #cinema:has(#statisticsView.active),
+html body.mq-noir-master #cinema:has(#scoreboardView.active){
+  position:relative!important;
+  overflow:hidden!important;
+  background-color:#130d09!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+  background-size:100% 100%!important;
+  isolation:isolate!important;
+}
+
+/* Real full-canvas assets. */
+html body.mq-noir-master #cinema:has(#statisticsView.active){
+  background-image:url("../assets/ui-pages/production/statistics.webp?v=53.10")!important;
+}
+html body.mq-noir-master #cinema:has(#scoreboardView.active){
+  background-image:url("../assets/ui-pages/production/hall-of-fame.webp?v=53.10")!important;
+}
+
+/* Hide the original cinema environment completely while these pages are open. */
+html body.mq-noir-master #cinema:has(#statisticsView.active) > :is(
+  #mqCinemaMasterArt,
+  .hall-bg,
+  .ceiling,
+  .ceiling-lights,
+  .wall,
+  .ambient-rib,
+  .stage-floor,
+  .aisle-glow,
+  .seats
+),
+html body.mq-noir-master #cinema:has(#scoreboardView.active) > :is(
+  #mqCinemaMasterArt,
+  .hall-bg,
+  .ceiling,
+  .ceiling-lights,
+  .wall,
+  .ambient-rib,
+  .stage-floor,
+  .aisle-glow,
+  .seats
+){
+  display:none!important;
+  visibility:hidden!important;
+}
+
+/* The old proscenium becomes only a transparent full-canvas host. */
+html body.mq-noir-master #cinema:has(#statisticsView.active) > .proscenium,
+html body.mq-noir-master #cinema:has(#scoreboardView.active) > .proscenium{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:none!important;
+  box-shadow:none!important;
+  clip-path:none!important;
+  transform:none!important;
+  overflow:visible!important;
+  z-index:2!important;
+}
+
+/* Remove marquee and decorative proscenium pseudo-layers. */
+html body.mq-noir-master #cinema:has(#statisticsView.active) > .proscenium > .marquee,
+html body.mq-noir-master #cinema:has(#scoreboardView.active) > .proscenium > .marquee{
+  display:none!important;
+}
+html body.mq-noir-master #cinema:has(#statisticsView.active) > .proscenium::before,
+html body.mq-noir-master #cinema:has(#statisticsView.active) > .proscenium::after,
+html body.mq-noir-master #cinema:has(#scoreboardView.active) > .proscenium::before,
+html body.mq-noir-master #cinema:has(#scoreboardView.active) > .proscenium::after{
+  display:none!important;
+  content:none!important;
+}
+
+/* Screen frame must no longer constrain the dynamic pages. */
+html body.mq-noir-master #cinema:has(#statisticsView.active) .screen-frame,
+html body.mq-noir-master #cinema:has(#scoreboardView.active) .screen-frame{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:none!important;
+  box-shadow:none!important;
+  clip-path:none!important;
+  transform:none!important;
+  overflow:visible!important;
+}
+
+/* #screen now IS the 1672×941 page canvas. */
+html body.mq-noir-master #cinema:has(#statisticsView.active) #screen,
+html body.mq-noir-master #cinema:has(#scoreboardView.active) #screen{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  clip-path:none!important;
+  transform:none!important;
+  overflow:hidden!important;
+}
+
+/* Hide old projection / curtain effects on these page screens. */
+html body.mq-noir-master #cinema:has(#statisticsView.active) #screen > :is(
+  .projection-grain,.curtain,.valance,#dust,#fx,.feedback
+),
+html body.mq-noir-master #cinema:has(#scoreboardView.active) #screen > :is(
+  .projection-grain,.curtain,.valance,#dust,#fx,.feedback
+){
+  display:none!important;
+}
+
+/* v53.9 previously painted the asset on each view itself.
+   Disable that duplicate image layer: the asset now belongs to #cinema. */
+html body.mq-noir-master #page #cinema #screen #statisticsView.active::before,
+html body.mq-noir-master #page #cinema #screen #scoreboardView.active::before{
+  display:none!important;
+  content:none!important;
+  background-image:none!important;
+}
+
+/* Keep routing fix authoritative. */
+html body.mq-noir-master #page #cinema #screen #statisticsView:not(.active),
+html body.mq-noir-master #page #cinema #screen #scoreboardView:not(.active){
+  display:none!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #statisticsView.active,
+html body.mq-noir-master #page #cinema #screen #scoreboardView.active{
+  display:block!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  background:transparent!important;
+  z-index:10!important;
+}
+
+/* ==========================================================================
+   STATISTICS – full-master layout
+   v53.9 coordinates now finally map to the actual 1672×941 canvas.
+   ========================================================================== */
+html body.mq-noir-master #statisticsView.active .mq-stats-shell{
+  position:absolute!important;
+  left:7.48%!important;     /* x≈125 */
+  top:7.44%!important;      /* y≈70 */
+  width:85.05%!important;   /* x≈125..1547 */
+  height:85.12%!important;  /* y≈70..871 */
+  margin:0!important;
+  padding:0!important;
+  display:grid!important;
+  grid-template-rows:48px 96px minmax(0,1fr)!important;
+  gap:10px!important;
+  overflow:hidden!important;
+}
+
+/* Toolbar stays in normal document flow at the top. */
+html body.mq-noir-master #statisticsView.active .mq-stats-toolbar{
+  position:relative!important;
+  inset:auto!important;
+  margin:0!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:10px!important;
+  z-index:3!important;
+  background:none!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+}
+
+/* Only the data content scrolls. */
+html body.mq-noir-master #statisticsView.active .mq-stats-content{
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+}
+
+/* ==========================================================================
+   HALL OF FAME – exact approved safe zone on the full master
+   x=300..1500, y=100..800
+   ========================================================================== */
+html body.mq-noir-master #scoreboardView.active .mq-scoreboard-panel{
+  position:absolute!important;
+  left:17.94%!important;    /* x≈300 */
+  top:10.63%!important;     /* y≈100 */
+  width:71.77%!important;   /* 1200px */
+  height:74.39%!important;  /* 700px */
+  margin:0!important;
+}
+
+/* Preserve v53.9 top actions + internal scrolling. */
+html body.mq-noir-master #scoreboardView.active .mq-scoreboard-actions{
+  grid-row:1!important;
+  position:relative!important;
+  inset:auto!important;
+}
+html body.mq-noir-master #scoreboardView.active .mq-score-table{
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+}
+
+/* ==========================================================================
+   SAFETY: other game modes return to the original cinema automatically
+   because every override above is scoped by :has(active dynamic page).
+   ========================================================================== */
+
+@media(max-width:760px){
+  html body.mq-noir-master #statisticsView.active .mq-stats-shell{
+    left:3%!important;
+    top:4%!important;
+    width:94%!important;
+    height:92%!important;
+  }
+  html body.mq-noir-master #scoreboardView.active .mq-scoreboard-panel{
+    left:3%!important;
+    top:5%!important;
+    width:94%!important;
+    height:90%!important;
+  }
+}
