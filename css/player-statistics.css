@@ -3020,3 +3020,55 @@ body.mq-hall-open #homeBtn.mq-home-dock{
   #mqHallOfFameScene .mq-hall-row-player strong{font-size:14px!important}
   #mqHallOfFameScene .mq-hall-row-avatar{width:31px!important;height:31px!important}
 }
+
+
+/* ==========================================================================
+   HALL OF FAME v1.4 – APPROVED PALACE BACKGROUND + TOP3 FRAME ADJUSTMENTS
+   ========================================================================= */
+#mqHallOfFameScene{
+  background:
+    #b78045
+    url("../assets/ui-pages/production/hall-of-fame.webp?v=1.4")
+    center / 100% 100% no-repeat!important;
+}
+
+#mqHallOfFameScene .mq-hall-podium-card,
+#mqHallOfFameScene .mq-hall-podium-card::before,
+#mqHallOfFameScene .mq-hall-avatar,
+#mqHallOfFameScene .mq-hall-row-avatar{
+  border-radius:0!important;
+}
+
+#mqHallOfFameScene .mq-hall-podium-rank{
+  top:-24px!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  width:auto!important;
+  height:auto!important;
+  min-width:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:#000!important;
+  font-family:var(--mq-ui,"Oswald","Arial Narrow",sans-serif)!important;
+  font-size:13px!important;
+  font-weight:700!important;
+  line-height:1!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+}
+#mqHallOfFameScene .is-rank-1 .mq-hall-podium-rank{
+  top:-27px!important;
+  font-size:14px!important;
+}
+#mqHallOfFameScene .mq-hall-podium-card{
+  border-radius:0!important;
+}
+#mqHallOfFameScene .mq-hall-podium-card::before{
+  inset:6px!important;
+}
+#mqHallOfFameScene .mq-hall-podium{
+  padding-top:14px!important;
+}
