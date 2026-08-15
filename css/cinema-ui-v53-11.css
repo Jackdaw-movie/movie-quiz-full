@@ -1,0 +1,452 @@
+/* Movie Quiz – Cinema UI v53.11
+   Statistics page redesign only.
+
+   User request:
+   1) Remove the player profile in the upper-left area.
+      Keep only the settings gear button.
+   2) Use the statistics content zone exactly within:
+      x = 187 .. 1500
+      y = 140 .. 788
+      on the 1672×941 master.
+   3) Rebuild the statistics presentation in noir style.
+   4) UI should be transparent over the approved background;
+      only typography, symbols and divider elements should remain visible.
+
+   Hall of Fame stays on v53.10.
+*/
+
+/* ==========================================================================
+   EXACT STATISTICS CONTENT ZONE
+   ========================================================================== */
+html body.mq-noir-master #statisticsView.active .mq-stats-shell{
+  position:absolute!important;
+  left:11.1842%!important;   /* x=187 */
+  top:14.8778%!important;    /* y=140 */
+  width:78.5287%!important;  /* 1313 px */
+  height:68.8629%!important; /* 648 px */
+  margin:0!important;
+  padding:0!important;
+  display:grid!important;
+  grid-template-rows:42px 62px minmax(0,1fr)!important;
+  gap:10px!important;
+  overflow:hidden!important;
+  background:none!important;
+  box-shadow:none!important;
+  border:0!important;
+}
+
+/* Remove any panel/backplate that v53.9 / v53.10 may have introduced. */
+html body.mq-noir-master #statisticsView.active .mq-stats-shell::before,
+html body.mq-noir-master #statisticsView.active .mq-stats-shell::after{
+  display:none!important;
+  content:none!important;
+}
+
+/* ========================================================================== 
+   TOP TOOLBAR
+   Preserve the settings gear. Keep controls light and non-blocky.
+   ========================================================================== */
+html body.mq-noir-master #statisticsView.active .mq-stats-toolbar{
+  position:relative!important;
+  inset:auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:10px!important;
+  margin:0!important;
+  padding:0 0 8px!important;
+  background:none!important;
+  box-shadow:none!important;
+  border:0!important;
+  border-bottom:1px solid rgba(167,111,42,.28)!important;
+  backdrop-filter:none!important;
+  overflow:visible!important;
+}
+
+html body.mq-noir-master #statisticsView.active .mq-stats-toolbar :is(button,.btn,.mq-stats-back,.mq-stats-refresh,.mq-settings-btn,.mq-gear-btn){
+  min-width:124px!important;
+  min-height:38px!important;
+  padding:8px 14px!important;
+  border:1px solid rgba(168,110,40,.58)!important;
+  border-radius:3px!important;
+  background:rgba(19,12,8,.18)!important;
+  color:#f0d9aa!important;
+  font-family:var(--mq-ui,"Oswald",sans-serif)!important;
+  font-size:9px!important;
+  font-weight:650!important;
+  letter-spacing:.12em!important;
+  text-transform:uppercase!important;
+  box-shadow:none!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-toolbar :is(button,.btn,.mq-stats-back,.mq-stats-refresh,.mq-settings-btn,.mq-gear-btn):hover{
+  border-color:#d29a49!important;
+  background:rgba(30,18,10,.28)!important;
+  color:#fff0c9!important;
+}
+
+/* If there is a dedicated settings button, float it right. If not, nothing breaks. */
+html body.mq-noir-master #statisticsView.active .mq-stats-toolbar :is(.mq-settings-btn,.mq-gear-btn,[aria-label*="Nastaven" i],[title*="Nastaven" i]){
+  margin-left:auto!important;
+  min-width:44px!important;
+  width:44px!important;
+  padding:0!important;
+  font-size:15px!important;
+  letter-spacing:0!important;
+}
+
+/* ========================================================================== 
+   HEADER – remove player profile, keep only title copy.
+   ========================================================================== */
+html body.mq-noir-master #statisticsView.active .mq-stats-header{
+  position:relative!important;
+  margin:0!important;
+  padding:8px 0 10px!important;
+  min-height:0!important;
+  background:none!important;
+  border:0!important;
+  box-shadow:none!important;
+  text-align:left!important;
+  overflow:visible!important;
+}
+
+/* Remove the upper-left player profile block entirely. */
+html body.mq-noir-master #statisticsView.active .mq-stats-profile-avatar,
+html body.mq-noir-master #statisticsView.active .mq-stats-profile-avatar *,
+html body.mq-noir-master #statisticsView.active .mq-stats-header .mq-avatar-frame{
+  display:none!important;
+}
+
+/* Remove any compensating left indent made for the old avatar. */
+html body.mq-noir-master #statisticsView.active .mq-stats-header{
+  padding-left:0!important;
+}
+
+html body.mq-noir-master #statisticsView.active .mq-stats-header .eyebrow{
+  margin:0 0 4px!important;
+  color:#c49346!important;
+  font-family:var(--mq-ui,"Oswald",sans-serif)!important;
+  font-size:8px!important;
+  font-weight:700!important;
+  letter-spacing:.21em!important;
+  text-transform:uppercase!important;
+}
+
+html body.mq-noir-master #statisticsView.active .mq-stats-header h1{
+  margin:0 0 4px!important;
+  color:#f3e1ba!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:33px!important;
+  font-weight:700!important;
+  line-height:1!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.24)!important;
+}
+
+html body.mq-noir-master #statisticsView.active .mq-stats-header p{
+  margin:0!important;
+  max-width:760px!important;
+  color:#b09b7e!important;
+  font-size:8.8px!important;
+  line-height:1.45!important;
+}
+
+/* ========================================================================== 
+   CONTENT AREA – all UI must feel printed directly on the background.
+   ========================================================================== */
+html body.mq-noir-master #statisticsView.active .mq-stats-content{
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  scrollbar-gutter:stable!important;
+  padding:2px 8px 4px 0!important;
+  display:grid!important;
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  grid-auto-rows:minmax(80px,auto)!important;
+  gap:14px 18px!important;
+  align-content:start!important;
+  background:none!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:#835324 rgba(58,34,17,.12)!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-content::-webkit-scrollbar{width:8px!important}
+html body.mq-noir-master #statisticsView.active .mq-stats-content::-webkit-scrollbar-track{background:rgba(58,34,17,.10)!important}
+html body.mq-noir-master #statisticsView.active .mq-stats-content::-webkit-scrollbar-thumb{background:#835324!important;border-radius:8px!important}
+
+/* General transparent item reset. */
+html body.mq-noir-master #statisticsView.active .mq-stats-content > *,
+html body.mq-noir-master #statisticsView.active .mq-stat-card,
+html body.mq-noir-master #statisticsView.active .mq-stats-section,
+html body.mq-noir-master #statisticsView.active .mq-difficulty-stat,
+html body.mq-noir-master #statisticsView.active .mq-genre-stat,
+html body.mq-noir-master #statisticsView.active .mq-recent-game,
+html body.mq-noir-master #statisticsView.active .mq-stats-highlights article{
+  background:none!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+}
+
+/* Summary strip across the whole width. */
+html body.mq-noir-master #statisticsView.active .mq-stats-summary{
+  grid-column:1 / -1!important;
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:16px!important;
+  margin:0 0 6px!important;
+}
+
+html body.mq-noir-master #statisticsView.active .mq-stat-card{
+  position:relative!important;
+  min-height:96px!important;
+  padding:10px 14px 10px 0!important;
+  border:0!important;
+  border-radius:0!important;
+  overflow:visible!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stat-card::before{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  top:4px!important;
+  bottom:4px!important;
+  width:1px!important;
+  background:linear-gradient(180deg,transparent,#8c5927 18%,#d1a04e 50%,#8c5927 82%,transparent)!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stat-card::after{
+  content:""!important;
+  position:absolute!important;
+  left:14px!important;
+  right:0!important;
+  bottom:0!important;
+  height:1px!important;
+  background:linear-gradient(90deg,rgba(177,118,46,.46),rgba(177,118,46,.12),transparent)!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stat-card > span{
+  color:#b2956d!important;
+  font-family:var(--mq-ui,"Oswald",sans-serif)!important;
+  font-size:8px!important;
+  font-weight:700!important;
+  letter-spacing:.14em!important;
+  text-transform:uppercase!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stat-card > strong{
+  display:block!important;
+  margin:7px 0 6px!important;
+  color:#f0daab!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:34px!important;
+  font-weight:700!important;
+  line-height:1!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.28)!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stat-card > small{
+  color:#8f7d68!important;
+  font-size:8.5px!important;
+  line-height:1.42!important;
+}
+
+/* Section layout using the new open composition. */
+html body.mq-noir-master #statisticsView.active .mq-stats-content > :nth-child(2){grid-column:1 / span 4!important}
+html body.mq-noir-master #statisticsView.active .mq-stats-content > :nth-child(3){grid-column:5 / -1!important}
+html body.mq-noir-master #statisticsView.active .mq-stats-content > :nth-child(4){grid-column:1 / span 6!important}
+html body.mq-noir-master #statisticsView.active .mq-stats-content > :nth-child(5){grid-column:7 / -1!important}
+html body.mq-noir-master #statisticsView.active .mq-stats-content > :nth-child(6){grid-column:1 / -1!important}
+
+html body.mq-noir-master #statisticsView.active .mq-stats-section{
+  position:relative!important;
+  padding:4px 0 0!important;
+  border:0!important;
+  border-radius:0!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-section::before{
+  content:""!important;
+  display:block!important;
+  width:100%!important;
+  height:1px!important;
+  margin:0 0 12px!important;
+  background:linear-gradient(90deg,#9e6931,#d3a252 48%,rgba(158,105,49,.0))!important;
+}
+
+html body.mq-noir-master #statisticsView.active .mq-stats-section-title{
+  display:flex!important;
+  justify-content:space-between!important;
+  align-items:flex-end!important;
+  gap:16px!important;
+  margin:0 0 12px!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-section-title span{
+  color:#b19063!important;
+  font-family:var(--mq-ui,"Oswald",sans-serif)!important;
+  font-size:8px!important;
+  font-weight:700!important;
+  letter-spacing:.18em!important;
+  text-transform:uppercase!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-section-title h2{
+  margin:3px 0 0!important;
+  color:#f0dfbe!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:22px!important;
+  font-weight:700!important;
+  line-height:1!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-section-title > small{
+  max-width:300px!important;
+  color:#957f62!important;
+  font-size:8px!important;
+  line-height:1.45!important;
+  text-align:right!important;
+}
+
+/* Difficulty block – no panels, only rows and icons. */
+html body.mq-noir-master #statisticsView.active .mq-difficulty-stats{
+  display:grid!important;
+  gap:8px!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-difficulty-stat{
+  display:grid!important;
+  grid-template-columns:52px minmax(0,1fr)!important;
+  align-items:center!important;
+  gap:12px!important;
+  padding:6px 0 9px!important;
+  border:0!important;
+  border-bottom:1px solid rgba(173,115,44,.22)!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-difficulty-icon{
+  width:46px!important;
+  height:46px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid rgba(186,131,59,.32)!important;
+  border-radius:3px!important;
+  background:rgba(25,15,10,.08)!important;
+  color:#f0d48b!important;
+  font-size:22px!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-difficulty-stat span{color:#aa9067!important;font-size:8px!important}
+html body.mq-noir-master #statisticsView.active .mq-difficulty-stat strong{display:block!important;color:#efd293!important;font-size:18px!important;line-height:1.1!important}
+html body.mq-noir-master #statisticsView.active .mq-difficulty-stat small{color:#8f7c63!important;font-size:8px!important}
+
+/* Highlights column. */
+html body.mq-noir-master #statisticsView.active .mq-stats-highlights{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px 16px!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-highlights article{
+  position:relative!important;
+  padding:6px 0 10px 14px!important;
+  border:0!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-highlights article::before{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  top:4px!important;
+  bottom:6px!important;
+  width:2px!important;
+  background:linear-gradient(180deg,#ad7434,#d7a552)!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-highlights span{color:#ac9063!important;font-size:8px!important;letter-spacing:.14em!important}
+html body.mq-noir-master #statisticsView.active .mq-stats-highlights strong{display:block!important;margin:5px 0 4px!important;color:#f0dfbf!important;font-size:18px!important;line-height:1.12!important}
+html body.mq-noir-master #statisticsView.active .mq-stats-highlights small{color:#8f7c65!important;font-size:8.5px!important;line-height:1.42!important}
+
+/* Genres – open two-column rows. */
+html body.mq-noir-master #statisticsView.active .mq-genre-stats{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px 18px!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-genre-stat{
+  padding:4px 0 8px!important;
+  border:0!important;
+  border-bottom:1px solid rgba(170,113,43,.22)!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-genre-stat-head{
+  display:flex!important;align-items:baseline!important;justify-content:space-between!important;gap:8px!important
+}
+html body.mq-noir-master #statisticsView.active .mq-genre-stat-head strong{color:#efdfbe!important;font-size:11px!important;font-weight:700!important}
+html body.mq-noir-master #statisticsView.active .mq-genre-stat-head > span,
+html body.mq-noir-master #statisticsView.active .mq-genre-stat-foot span,
+html body.mq-noir-master #statisticsView.active .mq-genre-stat-explain{color:#937f65!important;font-size:7.8px!important;line-height:1.4!important}
+html body.mq-noir-master #statisticsView.active .mq-stat-bar{height:6px!important;margin:7px 0 6px!important;background:rgba(24,14,10,.18)!important;border:1px solid rgba(162,107,41,.12)!important}
+html body.mq-noir-master #statisticsView.active .mq-stat-bar i{background:linear-gradient(90deg,#9b6529,#e1b65e)!important}
+
+/* Recent games – table-like, open on canvas. */
+html body.mq-noir-master #statisticsView.active .mq-recent-games{
+  display:grid!important;
+  gap:8px!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-recent-game{
+  display:grid!important;
+  grid-template-columns:70px minmax(140px,1fr) 88px!important;
+  align-items:center!important;
+  gap:12px!important;
+  padding:6px 0 8px!important;
+  border:0!important;
+  border-bottom:1px solid rgba(170,113,43,.22)!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-recent-badge{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  width:58px!important;height:24px!important;border:1px solid rgba(180,126,53,.28)!important;
+  color:#d7b77d!important;background:rgba(25,15,10,.08)!important;font-size:8px!important;letter-spacing:.12em!important;text-transform:uppercase!important
+}
+html body.mq-noir-master #statisticsView.active .mq-recent-main strong{display:block!important;color:#f0dfbf!important;font-size:11px!important;line-height:1.2!important}
+html body.mq-noir-master #statisticsView.active .mq-recent-main span{display:block!important;color:#8f7d66!important;font-size:8px!important;line-height:1.38!important}
+html body.mq-noir-master #statisticsView.active .mq-recent-meta{grid-column:2 / 4!important;justify-content:flex-start!important;text-align:left!important;color:#8f7d66!important;font-size:7.8px!important}
+html body.mq-noir-master #statisticsView.active .mq-recent-score{display:flex!important;flex-direction:column!important;align-items:flex-end!important;justify-content:center!important;gap:2px!important}
+html body.mq-noir-master #statisticsView.active .mq-recent-score strong{color:#e7c676!important;font-size:20px!important;line-height:1!important}
+html body.mq-noir-master #statisticsView.active .mq-recent-score span{color:#9a866b!important;font-size:7.8px!important}
+
+/* Footer notes directly on the canvas. */
+html body.mq-noir-master #statisticsView.active .mq-stats-footer{
+  display:flex!important;
+  justify-content:flex-start!important;
+  align-items:center!important;
+  flex-wrap:wrap!important;
+  gap:7px!important;
+  margin-top:4px!important;
+  padding-top:2px!important;
+  border-top:1px solid rgba(170,113,43,.18)!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-footer span{
+  padding:0!important;
+  border:0!important;
+  background:none!important;
+  color:#795d45!important;
+  font-size:8px!important;
+}
+html body.mq-noir-master #statisticsView.active .mq-stats-footer strong{color:#a57b43!important}
+
+/* Loading / empty / error – still transparent. */
+html body.mq-noir-master #statisticsView.active :is(.mq-stats-loading,.mq-stats-empty,.mq-stats-error){
+  grid-column:1 / -1!important;
+  min-height:200px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px dashed rgba(166,109,41,.28)!important;
+  background:none!important;
+  color:#f0dfbf!important;
+  text-align:center!important;
+}
+
+/* ========================================================================== 
+   RESPONSIVE SAFETY
+   ========================================================================== */
+@media(max-width:980px){
+  html body.mq-noir-master #statisticsView.active .mq-stats-shell{
+    left:4%!important;top:8%!important;width:92%!important;height:84%!important
+  }
+  html body.mq-noir-master #statisticsView.active .mq-stats-content{
+    grid-template-columns:repeat(6,minmax(0,1fr))!important
+  }
+  html body.mq-noir-master #statisticsView.active .mq-stats-summary{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important
+  }
+  html body.mq-noir-master #statisticsView.active .mq-stats-content > :nth-child(2),
+  html body.mq-noir-master #statisticsView.active .mq-stats-content > :nth-child(3),
+  html body.mq-noir-master #statisticsView.active .mq-stats-content > :nth-child(4),
+  html body.mq-noir-master #statisticsView.active .mq-stats-content > :nth-child(5),
+  html body.mq-noir-master #statisticsView.active .mq-stats-content > :nth-child(6){grid-column:1 / -1!important}
+  html body.mq-noir-master #statisticsView.active .mq-stats-highlights{grid-template-columns:1fr!important}
+  html body.mq-noir-master #statisticsView.active .mq-genre-stats{grid-template-columns:1fr!important}
+}
