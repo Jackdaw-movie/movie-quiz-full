@@ -401,3 +401,423 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
   else boot();
 })();
+
+
+/* ==========================================================================
+   MOVIE QUIZ – HALL OF FAME v1.0
+   Completely new full-cinema leaderboard scene.
+   The legacy #scoreboardView is removed and never used for rendering.
+   ========================================================================== */
+(()=>{
+  'use strict';
+
+  const VERSION='hall-of-fame-v1.0';
+  const SCENE_ID='mqHallOfFameScene';
+  const FALLBACK_AVATAR='assets/avatars/guest_unknown.svg';
+
+  let previousView='difficulty';
+  let loading=false;
+  let latest=null;
+  let originalShowView=null;
+
+  const onlineApi=()=>window.MovieQuizOnline;
+  const activeViewId=()=>document.querySelector('.view.active')?.id||'intro';
+  const num=value=>Number.isFinite(Number(value))?Number(value):0;
+  const int=value=>Math.max(0,Math.round(num(value)));
+
+  function escapeHtml(value){
+    return String(value??'').replace(/[&<>'"]/g,char=>({
+      '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'
+    })[char]);
+  }
+
+  function normalizeObject(data){
+    let value=Array.isArray(data)?data[0]:data;
+    if(typeof value==='string'){
+      try{value=JSON.parse(value)}catch(_){return null}
+    }
+    return value&&typeof value==='object'?value:null;
+  }
+
+  function normalizeRows(data){
+    if(Array.isArray(data))return data;
+    if(typeof data==='string'){
+      try{
+        const parsed=JSON.parse(data);
+        return Array.isArray(parsed)?parsed:[];
+      }catch(_){return []}
+    }
+    return [];
+  }
+
+  function oscarWord(value){
+    const n=int(value);
+    return n===1?'Oscar':n>=2&&n<=4?'Oscary':'Oscarů';
+  }
+
+  function safeAvatarPath(path){
+    const value=String(path||'').trim();
+    if(/^assets\/avatars\/[A-Za-z0-9._/-]+$/.test(value))return value;
+    if(/^\/?assets\/avatars\/[A-Za-z0-9._/-]+$/.test(value))return value.replace(/^\//,'');
+    return '';
+  }
+
+  function avatarFromId(value){
+    const match=String(value||'').match(/(\d{1,2})$/);
+    if(!match)return '';
+    const id=Number(match[1]);
+    if(id<1||id>20)return '';
+    return `assets/avatars/Avatar_${String(id).padStart(2,'0')}.png`;
+  }
+
+  function playerName(row){
+    return String(
+      row?.player_nickname ??
+      row?.nickname ??
+      row?.playerName ??
+      row?.name ??
+      'Hráč'
+    ).trim()||'Hráč';
+  }
+
+  function playerRank(row,index=0){
+    return int(row?.leaderboard_rank ?? row?.rank ?? row?.position ?? (index+1)) || (index+1);
+  }
+
+  function easyOscars(row){return int(row?.easy_oscars ?? row?.easyOscars)}
+  function mediumOscars(row){return int(row?.medium_oscars ?? row?.mediumOscars)}
+  function hardOscars(row){return int(row?.hard_oscars ?? row?.hardOscars)}
+
+  function totalOscars(row){
+    const explicit=num(row?.total_oscars ?? row?.totalOscars ?? row?.oscars_total);
+    return explicit>0?int(explicit):easyOscars(row)+mediumOscars(row)+hardOscars(row);
+  }
+
+  function avatarPath(row){
+    const currentName=String(onlineApi()?.getPlayerName?.()||'').trim();
+    const name=playerName(row);
+
+    if(currentName && name===currentName){
+      const profile=onlineApi()?.getProfile?.()||null;
+      const current=
+        safeAvatarPath(profile?.avatarPath) ||
+        safeAvatarPath(window.MovieQuizAvatars?.current?.()?.path) ||
+        safeAvatarPath(window.MovieQuizAvatars?.current?.()?.avatarPath);
+      if(current)return current;
+    }
+
+    const direct=[
+      row?.avatar_path,
+      row?.avatarPath,
+      row?.player_avatar_path,
+      row?.playerAvatarPath,
+      row?.avatar_url,
+      row?.avatarUrl,
+      row?.avatar
+    ].map(safeAvatarPath).find(Boolean);
+    if(direct)return direct;
+
+    return avatarFromId(
+      row?.avatar_id ??
+      row?.avatarId ??
+      row?.player_avatar_id ??
+      row?.playerAvatarId
+    ) || FALLBACK_AVATAR;
+  }
+
+  const homeSvg=()=>'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5L12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-6h5v6"/></svg>';
+  const gearSvg=()=>'<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M13.5 4.2h5l.8 3a10 10 0 0 1 2.2.9l2.7-1.5 3.5 3.5-1.5 2.7c.4.7.7 1.4.9 2.2l3 .8v5l-3 .8a10 10 0 0 1-.9 2.2l1.5 2.7-3.5 3.5-2.7-1.5a10 10 0 0 1-2.2.9l-.8 3h-5l-.8-3a10 10 0 0 1-2.2-.9L7.8 30l-3.5-3.5 1.5-2.7a10 10 0 0 1-.9-2.2l-3-.8v-5l3-.8c.2-.8.5-1.5.9-2.2l-1.5-2.7 3.5-3.5 2.7 1.5a10 10 0 0 1 2.2-.9z"/><circle cx="16" cy="18.3" r="4.6"/></svg>';
+  const backSvg=()=>'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>';
+  const refreshSvg=()=>'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6v5h-5M4 18v-5h5M18.5 10A7 7 0 0 0 6.2 7.2L4 11M5.5 14A7 7 0 0 0 17.8 16.8L20 13"/></svg>';
+
+  const difficultyIcon=key=>{
+    if(key==='easy')return '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M18 25h28l-3 29H21z"/><path d="M21 25c-5-2-5-9 1-11 1-6 9-7 12-2 4-5 12-2 12 4 6 1 7 7 2 10"/><path d="M25 31l2 18M36 31l-1 18"/></svg>';
+    if(key==='medium')return '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M13 25h38v28H13z"/><path d="M13 14h38v12H13z"/><path d="M17 14l8 12M29 14l8 12M41 14l8 12"/><path d="M21 36h22M21 44h14"/></svg>';
+    return '<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="24" cy="23" r="10"/><circle cx="43" cy="25" r="7"/><circle cx="24" cy="23" r="2.3"/><circle cx="43" cy="25" r="1.7"/><path d="M17 34h31v19H17z"/><path d="M48 38l9-5v21l-9-5z"/><path d="M23 53v6M42 53v6"/></svg>';
+  };
+
+  function installScene(){
+    document.getElementById('scoreboardView')?.remove();
+    document.getElementById(SCENE_ID)?.remove();
+
+    const cinema=document.getElementById('cinema');
+    if(!cinema)return;
+
+    const scene=document.createElement('section');
+    scene.id=SCENE_ID;
+    scene.hidden=true;
+    scene.setAttribute('aria-label','Síň slávy Movie Quiz');
+    scene.innerHTML=`
+      <button class="mq-hall-corner" id="mqHallGear" type="button" aria-label="Nastavení" title="Nastavení">${gearSvg()}</button>
+      <button class="mq-hall-corner" id="mqHallHome" type="button" aria-label="Hlavní menu" title="Hlavní menu">${homeSvg()}</button>
+
+      <div class="mq-hall-layout">
+        <header class="mq-hall-header">
+          <div class="mq-hall-title">
+            <span>Jackdaw's Cinema</span>
+            <h1>Síň slávy</h1>
+            <p>Nejlepší hráči Movie Quiz</p>
+          </div>
+
+          <div class="mq-hall-current" id="mqHallCurrent"></div>
+
+          <div class="mq-hall-actions">
+            <button class="mq-hall-action" id="mqHallBack" type="button">${backSvg()}<span>Zpět</span></button>
+            <button class="mq-hall-action" id="mqHallRefresh" type="button">${refreshSvg()}<span>Obnovit</span></button>
+          </div>
+        </header>
+
+        <section class="mq-hall-podium" id="mqHallPodium" aria-label="Tři nejlepší hráči">
+          <div class="mq-hall-loading">Načítám Síň slávy…</div>
+        </section>
+
+        <section class="mq-hall-ranking">
+          <div class="mq-hall-ranking-head">
+            <span>Pořadí</span>
+            <span>Hráč</span>
+            <span>Celkem</span>
+            <span title="Lehká obtížnost">${difficultyIcon('easy')}</span>
+            <span title="Střední obtížnost">${difficultyIcon('medium')}</span>
+            <span title="Těžká obtížnost">${difficultyIcon('hard')}</span>
+          </div>
+          <div class="mq-hall-ranking-list" id="mqHallRankingList">
+            <div class="mq-hall-loading">Připravuji žebříček…</div>
+          </div>
+        </section>
+      </div>`;
+    cinema.appendChild(scene);
+
+    scene.querySelector('#mqHallBack')?.addEventListener('click',closeHall);
+    scene.querySelector('#mqHallRefresh')?.addEventListener('click',()=>renderHall(true));
+    scene.querySelector('#mqHallGear')?.addEventListener('click',openSettings);
+    scene.querySelector('#mqHallHome')?.addEventListener('click',goHome);
+  }
+
+  function openSettings(){
+    const existing=document.querySelector('#mqPlayerBadge .mq-settings-gear')||document.querySelector('.mq-settings-gear');
+    if(existing){existing.click();return;}
+    const menu=document.getElementById('mqSettingsMenu');
+    if(menu){menu.hidden=false;menu.classList.add('is-open');}
+  }
+
+  function goHome(){
+    closeHall(false);
+    const home=document.getElementById('homeBtn');
+    if(home){setTimeout(()=>home.click(),0);return;}
+    if(originalShowView)originalShowView('intro');
+  }
+
+  async function fetchHallData(){
+    const api=onlineApi();
+    if(!api?.ensureBackend)throw new Error('Online archiv není připravený.');
+    const {client:db}=await api.ensureBackend();
+
+    const leaderboardPromise=db.rpc('get_leaderboard',{limit_count:10});
+    const ownPromise=db.rpc('get_my_player_statistics');
+
+    const [leaderboardResult,ownResult]=await Promise.all([
+      leaderboardPromise,
+      ownPromise.catch?ownPromise.catch(()=>({data:null,error:null})):ownPromise
+    ]);
+
+    if(leaderboardResult?.error)throw leaderboardResult.error;
+
+    const rows=normalizeRows(leaderboardResult?.data);
+    let own=null;
+    if(ownResult && !ownResult.error)own=normalizeObject(ownResult.data);
+
+    return {rows,own};
+  }
+
+  function currentSummary(own){
+    const el=document.getElementById('mqHallCurrent');
+    if(!el)return;
+
+    const name=String(onlineApi()?.getPlayerName?.()||'').trim();
+    const rank=int(own?.leaderboard?.rank);
+    const totalPlayers=int(own?.leaderboard?.totalPlayers);
+    const oscars=int(own?.oscars?.total);
+
+    if(!name){
+      el.innerHTML='<span>Společný žebříček hráčů</span>';
+      return;
+    }
+
+    el.innerHTML=`
+      <span>Aktuální hráč</span>
+      <strong>${escapeHtml(name)}</strong>
+      <small>${rank?`#${rank}${totalPlayers?` z ${totalPlayers}`:''}`:'bez pořadí'} · ${oscars} ${oscarWord(oscars)}</small>`;
+  }
+
+  function podiumCard(row,index,slot){
+    if(!row){
+      return `<article class="mq-hall-podium-card is-empty is-rank-${slot}">
+        <div class="mq-hall-podium-rank">${slot}</div>
+        <div class="mq-hall-avatar"><img src="${FALLBACK_AVATAR}" alt="" decoding="async"></div>
+        <strong>Volné místo</strong>
+        <small>Čeká na filmového šampiona</small>
+      </article>`;
+    }
+
+    const name=playerName(row);
+    const total=totalOscars(row);
+    const current=name===String(onlineApi()?.getPlayerName?.()||'').trim();
+
+    return `<article class="mq-hall-podium-card is-rank-${slot}${current?' is-current':''}">
+      <div class="mq-hall-podium-rank">${playerRank(row,index)}</div>
+      <div class="mq-hall-avatar">
+        <img src="${escapeHtml(avatarPath(row))}" alt="Avatar hráče ${escapeHtml(name)}" decoding="async">
+      </div>
+      <strong>${escapeHtml(name)}</strong>
+      <div class="mq-hall-total"><b>${total}</b><span>${oscarWord(total)}</span></div>
+      <div class="mq-hall-podium-breakdown">
+        <span>${difficultyIcon('easy')}<b>${easyOscars(row)}</b></span>
+        <span>${difficultyIcon('medium')}<b>${mediumOscars(row)}</b></span>
+        <span>${difficultyIcon('hard')}<b>${hardOscars(row)}</b></span>
+      </div>
+      ${current?'<em>TY</em>':''}
+    </article>`;
+  }
+
+  function rankingRow(row,index){
+    const rank=playerRank(row,index);
+    const name=playerName(row);
+    const current=name===String(onlineApi()?.getPlayerName?.()||'').trim();
+    const total=totalOscars(row);
+
+    return `<article class="mq-hall-row${current?' is-current':''}">
+      <span class="mq-hall-row-rank">${rank}</span>
+      <span class="mq-hall-row-player">
+        <span class="mq-hall-row-avatar"><img src="${escapeHtml(avatarPath(row))}" alt="" decoding="async"></span>
+        <strong>${escapeHtml(name)}</strong>
+        ${current?'<em>TY</em>':''}
+      </span>
+      <span class="mq-hall-row-total"><strong>${total}</strong><small>${oscarWord(total)}</small></span>
+      <span class="mq-hall-row-oscar">${easyOscars(row)}</span>
+      <span class="mq-hall-row-oscar">${mediumOscars(row)}</span>
+      <span class="mq-hall-row-oscar">${hardOscars(row)}</span>
+    </article>`;
+  }
+
+  function renderData(payload){
+    latest=payload;
+    const rows=Array.isArray(payload?.rows)?payload.rows.slice(0,10):[];
+    const podium=document.getElementById('mqHallPodium');
+    const list=document.getElementById('mqHallRankingList');
+    if(!podium||!list)return;
+
+    currentSummary(payload?.own);
+
+    const top1=rows.find((row,index)=>playerRank(row,index)===1)||rows[0]||null;
+    const top2=rows.find((row,index)=>playerRank(row,index)===2)||rows[1]||null;
+    const top3=rows.find((row,index)=>playerRank(row,index)===3)||rows[2]||null;
+
+    podium.innerHTML=`
+      ${podiumCard(top2,1,2)}
+      ${podiumCard(top1,0,1)}
+      ${podiumCard(top3,2,3)}
+    `;
+
+    const rest=rows.filter((row,index)=>playerRank(row,index)>=4);
+    list.innerHTML=rest.length
+      ? rest.map((row,index)=>rankingRow(row,index+3)).join('')
+      : '<div class="mq-hall-empty">Další místa zatím čekají na své hráče.</div>';
+  }
+
+  function renderError(error){
+    const podium=document.getElementById('mqHallPodium');
+    const list=document.getElementById('mqHallRankingList');
+    const message=escapeHtml(error?.message||String(error||'Žebříček se nepodařilo načíst.'));
+    if(podium)podium.innerHTML=`<div class="mq-hall-error"><strong>Síň slávy není dostupná</strong><small>${message}</small></div>`;
+    if(list)list.innerHTML='';
+  }
+
+  async function renderHall(force=false){
+    if(loading)return;
+    if(latest&&!force){renderData(latest);return;}
+
+    const podium=document.getElementById('mqHallPodium');
+    const list=document.getElementById('mqHallRankingList');
+    if(podium)podium.innerHTML='<div class="mq-hall-loading">Načítám nejlepší hráče…</div>';
+    if(list)list.innerHTML='<div class="mq-hall-loading">Připravuji pořadí…</div>';
+
+    loading=true;
+    const refresh=document.getElementById('mqHallRefresh');
+    if(refresh)refresh.disabled=true;
+
+    try{
+      renderData(await fetchHallData());
+    }catch(error){
+      console.error('Movie Quiz: Síň slávy se nepodařila načíst.',error);
+      renderError(error);
+    }finally{
+      loading=false;
+      if(refresh)refresh.disabled=false;
+    }
+  }
+
+  function openHall(from){
+    previousView=from||activeViewId();
+    if(previousView==='scoreboardView')previousView='difficulty';
+
+    const stats=document.getElementById('mqStatisticsScene');
+    if(stats&&!stats.hidden){
+      stats.hidden=true;
+      document.body.classList.remove('mq-statistics-open');
+    }
+
+    const scene=document.getElementById(SCENE_ID);
+    if(!scene)return;
+    scene.hidden=false;
+    document.body.classList.add('mq-hall-open');
+    renderHall(false);
+    try{window.sound?.('soft')}catch(_){}
+  }
+
+  function closeHall(playSound=true){
+    const scene=document.getElementById(SCENE_ID);
+    if(scene)scene.hidden=true;
+    document.body.classList.remove('mq-hall-open');
+    if(playSound){try{window.sound?.('soft')}catch(_){}}
+  }
+
+  function installRouting(){
+    originalShowView=window.showView;
+    if(typeof originalShowView==='function' && !originalShowView.__mqHallWrapped){
+      const wrapped=function(id,...args){
+        if(id==='scoreboardView'){
+          openHall(activeViewId());
+          return;
+        }
+        return originalShowView.call(this,id,...args);
+      };
+      wrapped.__mqHallWrapped=true;
+      wrapped.__mqHallOriginal=originalShowView;
+      window.showView=wrapped;
+    }
+
+    document.addEventListener('click',event=>{
+      const target=event.target.closest?.('[data-open-scoreboard],#mqIntroScoreboard');
+      if(!target)return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      openHall(activeViewId());
+    },true);
+  }
+
+  function boot(){
+    installScene();
+    installRouting();
+
+    window.MovieQuizHallOfFame=Object.freeze({
+      version:VERSION,
+      open:()=>openHall(activeViewId()),
+      close:()=>closeHall(false),
+      refresh:()=>renderHall(true),
+      getLatest:()=>latest?JSON.parse(JSON.stringify(latest)):null
+    });
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
+})();
