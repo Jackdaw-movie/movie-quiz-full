@@ -3072,3 +3072,67 @@ body.mq-hall-open #homeBtn.mq-home-dock{
 #mqHallOfFameScene .mq-hall-podium{
   padding-top:14px!important;
 }
+
+
+/* ==========================================================================
+   HALL OF FAME v1.5 – NEW UI ZONE + PODIUM LABEL REFINEMENT
+   UI zone on 1672×941:
+   x = 314..1333  => left 18.7799%, width 60.9449%
+   y = 123..798   => top 13.0712%, height 71.7322%
+   ========================================================================= */
+
+#mqHallOfFameScene .mq-hall-layout{
+  left:18.7799%!important;
+  top:13.0712%!important;
+  width:60.9449%!important;
+  height:71.7322%!important;
+  grid-template-rows:86px 236px minmax(0,1fr)!important;
+  gap:10px!important;
+}
+
+/* Top 3 labels: only number + period, in display font */
+#mqHallOfFameScene .mq-hall-podium-rank{
+  top:-22px!important;
+  font-family:var(--mq-display,"Limelight","Copperplate",serif)!important;
+  font-size:22px!important;
+  font-weight:400!important;
+  letter-spacing:.01em!important;
+  text-transform:none!important;
+}
+#mqHallOfFameScene .is-rank-1 .mq-hall-podium-rank{
+  top:-26px!important;
+  font-size:25px!important;
+}
+
+/* Whole top-3 card frame must be square / rectangular */
+#mqHallOfFameScene .mq-hall-podium-card,
+#mqHallOfFameScene .mq-hall-podium-card::before{
+  border-radius:0!important;
+}
+
+#mqHallOfFameScene .mq-hall-podium{
+  padding-top:16px!important;
+  gap:16px!important;
+}
+
+#mqHallOfFameScene .mq-hall-podium-card{
+  height:184px!important;
+  border-radius:0!important;
+}
+#mqHallOfFameScene .mq-hall-podium-card.is-rank-1{height:218px!important}
+#mqHallOfFameScene .mq-hall-podium-card.is-rank-2{height:193px!important}
+#mqHallOfFameScene .mq-hall-podium-card.is-rank-3{height:179px!important}
+#mqHallOfFameScene .mq-hall-podium-card::before{inset:7px!important}
+
+/* Slightly rebalance remaining list in the narrower zone */
+#mqHallOfFameScene .mq-hall-ranking-head,
+#mqHallOfFameScene .mq-hall-row{
+  grid-template-columns:62px minmax(220px,1fr) 100px 62px 62px 62px!important;
+  gap:8px!important;
+}
+#mqHallOfFameScene .mq-hall-row{
+  min-height:41px!important;
+  height:41px!important;
+}
+#mqHallOfFameScene .mq-hall-row-player strong{font-size:15px!important}
+#mqHallOfFameScene .mq-hall-row-avatar{width:33px!important;height:33px!important}

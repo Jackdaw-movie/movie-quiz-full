@@ -411,7 +411,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='hall-of-fame-v1.4-newbg-top3-square';
+  const VERSION='hall-of-fame-v1.5-zone-314-1333';
   const SCENE_ID='mqHallOfFameScene';
   const FALLBACK_AVATAR='assets/avatars/guest_unknown.svg';
 
@@ -652,7 +652,7 @@
   function podiumCard(row,index,slot){
     if(!row){
       return `<article class="mq-hall-podium-card is-empty is-rank-${slot}">
-        <div class="mq-hall-podium-rank">${slot}. místo</div>
+        <div class="mq-hall-podium-rank">${slot}.</div>
         <div class="mq-hall-avatar"><img src="${FALLBACK_AVATAR}" alt="" decoding="async"></div>
         <strong>Volné místo</strong>
         <small>Čeká na filmového šampiona</small>
@@ -664,7 +664,7 @@
     const current=name===String(onlineApi()?.getPlayerName?.()||'').trim();
 
     return `<article class="mq-hall-podium-card is-rank-${slot}${current?' is-current':''}">
-      <div class="mq-hall-podium-rank">${slot}. místo</div>
+      <div class="mq-hall-podium-rank">${slot}.</div>
       <div class="mq-hall-avatar">
         <img src="${escapeHtml(avatarPath(row))}" alt="Avatar hráče ${escapeHtml(name)}" decoding="async">
       </div>
