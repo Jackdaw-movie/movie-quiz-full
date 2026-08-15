@@ -1,90 +1,46 @@
-/* Movie Quiz – ticket booth single-hand animation v3
-   Fixes requested by user:
-   - hand much smaller
-   - real rotational waving (naklápění nahoru / dolů)
-   - still emerges from invisible wall at x=1020
-   - cooldown 5 seconds
-
-   Implementation note:
-   We use the real exterior stage (#mqExteriorStage, 1672x941).
-   The hand is a single transparent asset already rotated into a mostly horizontal pose.
+/* Movie Quiz – Ticket Booth Hand v4
+   1) restores full booth hover/click area
+   2) uses ONE pre-rendered transparent animated WebP
+   3) portal/wall is fixed at x=1020
+   4) hand itself is shifted ~50 px further right than v3
 */
 
+/* Full rectangular booth hit area.
+   Existing 26-exterior-scene.js already listens to pointerenter/pointermove/click
+   on #mqTicketBoothHotspot, so removing the polygon clip makes the ENTIRE booth
+   trigger the shoe cursor and ticket entrance. */
+#mqTicketBoothHotspot.mq-booth-button{
+  clip-path:none!important;
+  -webkit-clip-path:none!important;
+  left:820px!important;
+  top:452px!important;
+  width:250px!important;
+  height:367px!important;
+  z-index:15!important;
+  pointer-events:auto!important;
+  cursor:none!important;
+}
+
+/* Fixed portal canvas. The element itself NEVER moves.
+   Its left edge is the invisible wall at exact master x=1020.
+   All translation + rotation is already baked into the transparent animated WebP,
+   so the clipping wall remains absolutely stationary during the whole animation. */
 #mqExteriorStage::after{
   content:"";
   position:absolute;
+  left:1020px;
+  top:540px;
+  width:260px;
+  height:200px;
   z-index:14;
   pointer-events:none;
-
-  /* Place the sprite slightly before the portal and clip the left part inside its own box.
-     Portal edge: x = 1020. With left = 936 and left clip = 84, the visible start edge is 1020. */
-  left:936px;
-  top:594px;
-  width:118px;
-  height:102px;
-
-  background-image:url("../assets/exterior-v6-9/production/ticket-booth-hand.png?v=3.0");
-  background-repeat:no-repeat;
-  background-size:118px 102px;
-  background-position:center center;
-
-  /* hide the left part behind the invisible wall */
-  clip-path:inset(0 0 0 84px);
-
-  /* rotate around the cuff / wrist area */
-  transform-origin:20% 54%;
-  will-change:transform;
-  filter:drop-shadow(0 1px 1px rgba(0,0,0,.16));
-
-  animation:mqTicketBoothSingleHandV3 9s cubic-bezier(.42,0,.58,1) infinite;
+  background:url("../assets/exterior-v6-9/production/ticket-booth-hand-wave.webp?v=4.0") 0 0 / 260px 200px no-repeat;
+  image-rendering:auto;
+  transform:none!important;
 }
 
-@keyframes mqTicketBoothSingleHandV3{
-  /* hidden */
-  0%,5%{
-    transform:translateX(-78px) rotate(0deg);
-    opacity:1;
-  }
-
-  /* extend */
-  15%,18%{
-    transform:translateX(0px) rotate(0deg);
-    opacity:1;
-  }
-
-  /* wave: up, down, up, down */
-  23%{
-    transform:translateX(0px) rotate(-18deg);
-    opacity:1;
-  }
-  28%{
-    transform:translateX(0px) rotate(18deg);
-    opacity:1;
-  }
-  33%{
-    transform:translateX(0px) rotate(-18deg);
-    opacity:1;
-  }
-  38%{
-    transform:translateX(0px) rotate(18deg);
-    opacity:1;
-  }
-
-  /* straighten */
-  42%{
-    transform:translateX(0px) rotate(0deg);
-    opacity:1;
-  }
-
-  /* retract */
-  44.44%,100%{
-    transform:translateX(-78px) rotate(0deg);
-    opacity:1;
-  }
-}
-
+/* Hide the overlay once the exterior is no longer the active scene. */
 body:not(.mq-exterior-active) #mqExteriorStage::after,
 body.mq-ticket-open #mqExteriorStage::after{
-  animation-play-state:paused;
-  transform:translateX(-78px) rotate(0deg);
+  display:none!important;
 }
