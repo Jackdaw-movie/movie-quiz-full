@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='v55.0-statistics-scene';
+  const VERSION='v55.4-statistics-profile-history';
   const SCENE_ID='mqStatisticsScene';
   const GENRE_ORDER=['fantasy','horror','scifi','crime','animation','comedy'];
   const DIFFICULTY_ORDER=['easy','medium','hard'];
@@ -14,6 +14,29 @@
   const activeViewId=()=>document.querySelector('.view.active')?.id||'intro';
   const number=value=>Number.isFinite(Number(value))?Number(value):0;
   const integer=value=>Math.max(0,Math.round(number(value)));
+
+  function safeAvatarPath(value){
+    const path=String(value||'');
+    return /^assets\/avatars\/[A-Za-z0-9._/-]+$/.test(path)
+      ? path
+      : 'assets/avatars/Avatar_01.png';
+  }
+
+  function syncPlayerIdentity(){
+    const api=onlineApi();
+    const profile=api?.getProfile?.()||null;
+    const name=String(api?.getPlayerName?.()||profile?.nickname||'Hráč').trim()||'Hráč';
+    const path=safeAvatarPath(profile?.avatarPath);
+
+    const img=document.getElementById('mqStatPlayerAvatar');
+    const label=document.getElementById('mqStatPlayerName');
+
+    if(label)label.textContent=name;
+    if(img&&img.getAttribute('src')!==path){
+      img.src=path;
+      img.alt=`Avatar hráče ${name}`;
+    }
+  }
 
   function percent(value){
     const parsed=Math.max(0,Math.min(100,number(value)));
@@ -97,6 +120,14 @@
             <h1>Statistiky</h1>
             <p id="mqStatSubtitle">Přehled výsledků ze všech dokončených projekcí.</p>
           </div>
+
+          <div class="mq-stat-player" aria-label="Aktuální hráč">
+            <span class="mq-stat-player-frame">
+              <img id="mqStatPlayerAvatar" src="assets/avatars/Avatar_01.png" alt="Avatar hráče" decoding="async">
+            </span>
+            <strong id="mqStatPlayerName">Hráč</strong>
+          </div>
+
           <div class="mq-stat-actions">
             <button class="mq-stat-action" id="mqStatBack" type="button">${backSvg()}<span>Zpět</span></button>
             <button class="mq-stat-action" id="mqStatRefresh" type="button">${refreshSvg()}<span>Obnovit</span></button>
@@ -197,6 +228,24 @@
     return `<article class="mq-stat-game ${won?'is-win':'is-loss'}"><div class="mq-stat-game-result">${won?'Výhra':'Prohra'}</div><div class="mq-stat-game-main"><strong>${escapeHtml(item?.genreLabel||item?.genre||'Film')}</strong><span>${escapeHtml(item?.difficultyLabel||item?.difficulty||'')}</span></div><div class="mq-stat-game-score"><strong>${score}</strong><span>/ ${max}</span></div><div class="mq-stat-game-meta">${shortDate(item?.finishedAt||item?.startedAt)} · ${duration(item?.durationMs)}</div></article>`;
   }
 
+  function playedGenre(item,index,maxGames){
+    const games=integer(item?.games);
+    const wins=integer(item?.wins);
+    const width=Math.max(4,Math.min(100,maxGames?games/maxGames*100:0));
+    const winRate=number(item?.win_rate_percent)||(games?wins/games*100:0);
+    return `<article class="mq-stat-played-genre">
+      <div class="mq-stat-played-rank">${index+1}</div>
+      <div class="mq-stat-played-copy">
+        <div class="mq-stat-played-head">
+          <strong>${escapeHtml(item?.label||item?.genre||'Žánr')}</strong>
+          <span>${games} ${games===1?'hra':games>=2&&games<=4?'hry':'her'}</span>
+        </div>
+        <div class="mq-stat-played-bar"><i style="width:${width}%"></i></div>
+        <small>${wins} výher · ${percent(winRate)} výhernost</small>
+      </div>
+    </article>`;
+  }
+
   function sectionHead(kicker,title,note=''){
     return `<div class="mq-stat-section-head"><span>${escapeHtml(kicker)}</span><h2>${escapeHtml(title)}</h2>${note?`<small>${escapeHtml(note)}</small>`:''}</div>`;
   }
@@ -209,6 +258,9 @@
     latestData=data;
     const body=document.getElementById('mqStatBody');
     if(!body)return;
+
+    syncPlayerIdentity();
+
     const summary=data.summary||{}, oscars=data.oscars||{}, leaderboard=data.leaderboard||{};
     const totalGames=integer(summary.totalGames), totalPlayers=integer(leaderboard.totalPlayers), rank=leaderboard.rank?integer(leaderboard.rank):null;
 
@@ -218,9 +270,23 @@
       return;
     }
 
-    const genres=[...(Array.isArray(data.byGenre)?data.byGenre:[])].sort((a,b)=>GENRE_ORDER.indexOf(a.genre)-GENRE_ORDER.indexOf(b.genre)).slice(0,6);
-    const difficulties=[...(Array.isArray(data.byDifficulty)?data.byDifficulty:[])].sort((a,b)=>DIFFICULTY_ORDER.indexOf(a.difficulty)-DIFFICULTY_ORDER.indexOf(b.difficulty)).slice(0,3);
-    const recentGames=(Array.isArray(data.recentGames)?data.recentGames:[]).slice(0,6);
+    const allGenres=[...(Array.isArray(data.byGenre)?data.byGenre:[])];
+    const genres=[...allGenres]
+      .sort((a,b)=>GENRE_ORDER.indexOf(a.genre)-GENRE_ORDER.indexOf(b.genre))
+      .slice(0,6);
+
+    const playedGenres=[...allGenres]
+      .filter(item=>integer(item?.games)>0)
+      .sort((a,b)=>integer(b?.games)-integer(a?.games)||integer(b?.wins)-integer(a?.wins))
+      .slice(0,6);
+
+    const maxPlayedGames=Math.max(1,...playedGenres.map(item=>integer(item?.games)));
+
+    const difficulties=[...(Array.isArray(data.byDifficulty)?data.byDifficulty:[])]
+      .sort((a,b)=>DIFFICULTY_ORDER.indexOf(a.difficulty)-DIFFICULTY_ORDER.indexOf(b.difficulty))
+      .slice(0,3);
+
+    const recentGames=(Array.isArray(data.recentGames)?data.recentGames:[]).slice(0,8);
     const best=data.bestGenre||null, most=data.mostPlayedGenre||null;
 
     body.innerHTML=`
@@ -232,23 +298,40 @@
       </section>
 
       <section class="mq-stat-main">
-        <div class="mq-stat-column">
-          ${sectionHead('Žánrový profil','Výsledky podle žánrů','Správné odpovědi a počet výher')}
-          <div class="mq-stat-genres">${genres.map(genre).join('')}</div>
-        </div>
-        <div class="mq-stat-column">
-          ${sectionHead('Trofeje','Oscary podle obtížnosti')}
-          <div class="mq-stat-difficulties">${difficulties.map(difficulty).join('')}</div>
-          <div class="mq-stat-highlights">
-            <div class="mq-stat-highlight"><span>Nejlepší žánr</span><strong>${escapeHtml(best?.label||'—')}</strong><small>${best?`${percent(best.accuracy_percent)} · ${integer(best.wins)} výher`:'Zatím neurčeno'}</small></div>
-            <div class="mq-stat-highlight"><span>Nejhranější</span><strong>${escapeHtml(most?.label||'—')}</strong><small>${most?`${integer(most.games)} her · ${percent(most.win_rate_percent)} výher`:'Zatím neurčeno'}</small></div>
-            <div class="mq-stat-highlight"><span>Filmový archiv</span><strong>${integer(summary.uniqueMoviesSeen)} filmů</strong><small>${integer(summary.uniqueQuestionsSeen)} unikátních otázek</small></div>
+        <div class="mq-stat-columns">
+          <div class="mq-stat-column">
+            ${sectionHead('Žánrový profil','Výsledky podle žánrů','Správné odpovědi a počet výher')}
+            <div class="mq-stat-genres">${genres.map(genre).join('')}</div>
+          </div>
+
+          <div class="mq-stat-column">
+            ${sectionHead('Trofeje','Oscary podle obtížnosti')}
+            <div class="mq-stat-difficulties">${difficulties.map(difficulty).join('')}</div>
+            <div class="mq-stat-highlights">
+              <div class="mq-stat-highlight"><span>Nejlepší žánr</span><strong>${escapeHtml(best?.label||'—')}</strong><small>${best?`${percent(best.accuracy_percent)} · ${integer(best.wins)} výher`:'Zatím neurčeno'}</small></div>
+              <div class="mq-stat-highlight"><span>Nejhranější</span><strong>${escapeHtml(most?.label||'—')}</strong><small>${most?`${integer(most.games)} her · ${percent(most.win_rate_percent)} výher`:'Zatím neurčeno'}</small></div>
+              <div class="mq-stat-highlight"><span>Filmový archiv</span><strong>${integer(summary.uniqueMoviesSeen)} filmů</strong><small>${integer(summary.uniqueQuestionsSeen)} unikátních otázek</small></div>
+            </div>
+          </div>
+
+          <div class="mq-stat-column">
+            ${sectionHead('Preference','Nejhranější žánry','Podle počtu dokončených projekcí')}
+            <div class="mq-stat-played-genres">
+              ${playedGenres.length
+                ? playedGenres.map((item,index)=>playedGenre(item,index,maxPlayedGames)).join('')
+                : '<div class="mq-stat-state"><small>Zatím bez odehraných žánrů.</small></div>'}
+            </div>
           </div>
         </div>
-        <div class="mq-stat-column">
-          ${sectionHead('Historie','Poslední projekce')}
-          <div class="mq-stat-recent">${recentGames.length?recentGames.map(recent).join(''):'<div class="mq-stat-state"><small>Zatím bez dokončených her.</small></div>'}</div>
-        </div>
+
+        <section class="mq-stat-history-wide">
+          ${sectionHead('Historie','Poslední projekce','Nejnovější dokončené hry')}
+          <div class="mq-stat-history-list">
+            ${recentGames.length
+              ? recentGames.map(recent).join('')
+              : '<div class="mq-stat-state"><small>Zatím bez dokončených her.</small></div>'}
+          </div>
+        </section>
       </section>
 
       <footer class="mq-stat-footer">
@@ -285,6 +368,7 @@
     if(!scene)return;
     scene.hidden=false;
     document.body.classList.add('mq-statistics-open');
+    syncPlayerIdentity();
     renderStatistics(false);
     try{window.sound?.('soft')}catch(_){}
   }
@@ -304,6 +388,10 @@
 
     document.addEventListener('click',event=>{
       if(event.target.closest?.('[data-open-statistics]')){event.preventDefault();openStatistics();}
+      if(event.target.closest?.('[data-avatar-confirm]')){
+        setTimeout(syncPlayerIdentity,250);
+        setTimeout(syncPlayerIdentity,900);
+      }
     });
 
     window.addEventListener('mq:server-question-cleared',()=>{latestData=null;});

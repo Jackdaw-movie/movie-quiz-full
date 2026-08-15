@@ -10,7 +10,7 @@
   width:100%!important;
   height:100%!important;
   overflow:hidden!important;
-  background:#b78045 url("../assets/ui-pages/production/statistics.webp?v=55.3") center/100% 100% no-repeat!important;
+  background:#b78045 url("../assets/ui-pages/production/statistics.webp?v=55.4") center/100% 100% no-repeat!important;
   color:#2d1a0f!important;
   font-family:var(--mq-ui,"Oswald",Arial,sans-serif)!important;
   box-sizing:border-box!important;
@@ -1228,4 +1228,359 @@ body.mq-statistics-open #homeBtn{display:none!important}
   .mq-stat-title .mq-stat-kicker{font-size:15px!important}
   .mq-stat-section-head h2{font-size:23px!important}
   #mqStatisticsScene .mq-stat-action{min-width:138px!important;height:44px!important;font-size:11.5px!important}
+}
+
+
+/* ==========================================================================
+   v55.4 – PLAYER IDENTITY + MOST PLAYED + FULL-WIDTH HISTORY
+   ========================================================================== */
+
+/* Corner navigation/settings icons: explicitly gold.
+   This overrides the global black SVG rule used by statistics copy. */
+#mqStatisticsScene #mqStatGear,
+#mqStatisticsScene #mqStatHome{
+  color:var(--mq-gold2,#efd38a)!important;
+  border-color:#a6752f!important;
+}
+#mqStatisticsScene #mqStatGear svg,
+#mqStatisticsScene #mqStatHome svg{
+  color:var(--mq-gold2,#efd38a)!important;
+  stroke:var(--mq-gold2,#efd38a)!important;
+}
+#mqStatisticsScene #mqStatGear:hover,
+#mqStatisticsScene #mqStatHome:hover,
+#mqStatisticsScene #mqStatGear:focus-visible,
+#mqStatisticsScene #mqStatHome:focus-visible{
+  color:#fff0bf!important;
+  border-color:#d0a052!important;
+}
+#mqStatisticsScene #mqStatGear:hover svg,
+#mqStatisticsScene #mqStatHome:hover svg,
+#mqStatisticsScene #mqStatGear:focus-visible svg,
+#mqStatisticsScene #mqStatHome:focus-visible svg{
+  stroke:#fff0bf!important;
+}
+
+/* Player identity centered above the first divider. */
+.mq-stat-header{
+  position:relative!important;
+}
+
+.mq-stat-player{
+  position:absolute!important;
+  left:50%!important;
+  top:-7px!important;
+  z-index:3!important;
+  width:190px!important;
+  transform:translateX(-50%)!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:5px!important;
+  pointer-events:none!important;
+}
+
+.mq-stat-player-frame{
+  position:relative!important;
+  display:grid!important;
+  place-items:center!important;
+  width:76px!important;
+  height:76px!important;
+  overflow:hidden!important;
+  border:2px solid #9e6b2d!important;
+  border-radius:50%!important;
+  background:
+    radial-gradient(circle at 35% 25%,rgba(255,230,167,.18),transparent 42%),
+    linear-gradient(180deg,#24170e,#070504)!important;
+  box-shadow:
+    0 0 0 3px rgba(0,0,0,.55),
+    0 0 0 4px rgba(198,147,59,.45),
+    0 7px 17px rgba(0,0,0,.24),
+    inset 0 1px rgba(255,255,255,.10)!important;
+}
+
+.mq-stat-player-frame::after{
+  content:""!important;
+  position:absolute!important;
+  inset:4px!important;
+  border:1px solid rgba(239,211,138,.30)!important;
+  border-radius:50%!important;
+  pointer-events:none!important;
+}
+
+.mq-stat-player-frame img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  user-select:none!important;
+  pointer-events:none!important;
+}
+
+.mq-stat-player > strong{
+  display:block!important;
+  max-width:190px!important;
+  overflow:hidden!important;
+  color:#000!important;
+  font-family:var(--mq-ui,"Oswald","Arial Narrow",sans-serif)!important;
+  font-size:14px!important;
+  font-weight:700!important;
+  line-height:1.1!important;
+  letter-spacing:.06em!important;
+  white-space:nowrap!important;
+  text-overflow:ellipsis!important;
+  text-align:center!important;
+  text-shadow:none!important;
+}
+
+/* Header sides remain clear around the centered avatar. */
+.mq-stat-title{
+  max-width:39%!important;
+}
+.mq-stat-actions{
+  position:relative!important;
+  z-index:4!important;
+}
+
+/* Main scrolling area now contains:
+   1) three editorial columns
+   2) one full-width history section below them */
+.mq-stat-main{
+  display:block!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding-right:11px!important;
+  scrollbar-gutter:stable!important;
+}
+
+.mq-stat-columns{
+  display:grid!important;
+  grid-template-columns:1.25fr .96fr 1.06fr!important;
+  gap:26px!important;
+  align-items:start!important;
+  min-width:0!important;
+}
+
+.mq-stat-column{
+  min-height:auto!important;
+  overflow:visible!important;
+}
+
+/* Most-played genres */
+.mq-stat-played-genres{
+  display:grid!important;
+  gap:7px!important;
+}
+
+.mq-stat-played-genre{
+  display:grid!important;
+  grid-template-columns:30px minmax(0,1fr)!important;
+  gap:10px!important;
+  align-items:center!important;
+  min-width:0!important;
+  padding:7px 0 10px!important;
+  border-bottom:1px solid rgba(0,0,0,.24)!important;
+  background:transparent!important;
+}
+
+.mq-stat-played-rank{
+  display:grid!important;
+  place-items:center!important;
+  width:27px!important;
+  height:27px!important;
+  border:1px solid rgba(0,0,0,.52)!important;
+  border-radius:50%!important;
+  color:#000!important;
+  font-family:var(--mq-question,"Cormorant Garamond",serif)!important;
+  font-size:17px!important;
+  font-weight:700!important;
+  line-height:1!important;
+}
+
+.mq-stat-played-copy{
+  min-width:0!important;
+}
+
+.mq-stat-played-head{
+  display:flex!important;
+  align-items:baseline!important;
+  justify-content:space-between!important;
+  gap:9px!important;
+}
+
+.mq-stat-played-head strong{
+  min-width:0!important;
+  overflow:hidden!important;
+  color:#000!important;
+  font-size:15px!important;
+  font-weight:800!important;
+  white-space:nowrap!important;
+  text-overflow:ellipsis!important;
+}
+
+.mq-stat-played-head span{
+  flex:0 0 auto!important;
+  color:#000!important;
+  font-size:12px!important;
+  font-weight:700!important;
+}
+
+.mq-stat-played-bar{
+  height:7px!important;
+  margin:7px 0 5px!important;
+  overflow:hidden!important;
+  background:rgba(0,0,0,.15)!important;
+}
+
+.mq-stat-played-bar i{
+  display:block!important;
+  height:100%!important;
+  background:linear-gradient(90deg,#1c120a,#815122)!important;
+}
+
+.mq-stat-played-copy small{
+  display:block!important;
+  color:#000!important;
+  font-size:11.5px!important;
+  font-weight:600!important;
+  line-height:1.3!important;
+}
+
+/* History is a complete full-width row below all three main columns. */
+.mq-stat-history-wide{
+  width:100%!important;
+  margin-top:28px!important;
+  padding-top:20px!important;
+  border-top:1px solid rgba(0,0,0,.38)!important;
+  background:transparent!important;
+}
+
+.mq-stat-history-wide .mq-stat-section-head{
+  min-height:auto!important;
+  margin-bottom:8px!important;
+}
+
+.mq-stat-history-list{
+  display:grid!important;
+  gap:0!important;
+  width:100%!important;
+}
+
+.mq-stat-history-wide .mq-stat-game{
+  display:grid!important;
+  grid-template-columns:88px minmax(220px,1fr) 92px minmax(230px,.72fr)!important;
+  grid-template-rows:auto!important;
+  column-gap:18px!important;
+  align-items:center!important;
+  min-height:58px!important;
+  padding:10px 4px!important;
+  border-bottom:1px solid rgba(0,0,0,.22)!important;
+}
+
+.mq-stat-history-wide .mq-stat-game-result{
+  grid-row:auto!important;
+  grid-column:auto!important;
+  width:72px!important;
+  height:31px!important;
+  font-size:10px!important;
+}
+
+.mq-stat-history-wide .mq-stat-game-main{
+  grid-row:auto!important;
+  grid-column:auto!important;
+}
+
+.mq-stat-history-wide .mq-stat-game-main strong{
+  font-size:16px!important;
+}
+
+.mq-stat-history-wide .mq-stat-game-main span{
+  font-size:12px!important;
+}
+
+.mq-stat-history-wide .mq-stat-game-score{
+  grid-row:auto!important;
+  grid-column:auto!important;
+  text-align:center!important;
+}
+
+.mq-stat-history-wide .mq-stat-game-score strong{
+  font-size:28px!important;
+}
+
+.mq-stat-history-wide .mq-stat-game-score span{
+  font-size:12px!important;
+}
+
+.mq-stat-history-wide .mq-stat-game-meta{
+  grid-row:auto!important;
+  grid-column:auto!important;
+  color:#000!important;
+  font-size:12px!important;
+  font-weight:600!important;
+  text-align:right!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+}
+
+/* Keep enough breathing room at the end of the scroll. */
+.mq-stat-history-wide{
+  padding-bottom:12px!important;
+}
+
+@media(max-width:1100px){
+  .mq-stat-player{
+    top:-5px!important;
+    width:160px!important;
+  }
+  .mq-stat-player-frame{
+    width:68px!important;
+    height:68px!important;
+  }
+  .mq-stat-player > strong{
+    max-width:160px!important;
+    font-size:13px!important;
+  }
+  .mq-stat-title{
+    max-width:36%!important;
+  }
+  .mq-stat-columns{
+    grid-template-columns:1fr 1fr!important;
+  }
+  .mq-stat-columns .mq-stat-column:nth-child(3){
+    grid-column:1 / -1!important;
+    padding-left:0!important;
+    padding-top:18px!important;
+    border-left:0!important;
+    border-top:1px solid rgba(0,0,0,.25)!important;
+  }
+}
+
+@media(max-width:900px){
+  .mq-stat-player{
+    display:none!important;
+  }
+  .mq-stat-title{
+    max-width:55%!important;
+  }
+  .mq-stat-columns{
+    grid-template-columns:1fr!important;
+  }
+  .mq-stat-column + .mq-stat-column{
+    padding-left:0!important;
+    padding-top:18px!important;
+    border-left:0!important;
+    border-top:1px solid rgba(0,0,0,.25)!important;
+  }
+  .mq-stat-history-wide .mq-stat-game{
+    grid-template-columns:72px minmax(0,1fr) 70px!important;
+  }
+  .mq-stat-history-wide .mq-stat-game-meta{
+    grid-column:2 / 4!important;
+    text-align:left!important;
+  }
 }
