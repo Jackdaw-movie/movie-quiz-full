@@ -1616,3 +1616,25 @@ body.mq-statistics-open #homeBtn{display:none!important}
     font-size:15px!important;
   }
 }
+
+
+/* ==========================================================================
+   v55.6 – KPI BAND HEIGHT -20PX
+   More vertical space for the statistics below.
+   ========================================================================== */
+
+.mq-stat-layout{
+  grid-template-rows:116px 128px minmax(0,1fr) 52px!important;
+}
+
+/* Keep the KPI content comfortably inside the shorter band. */
+.mq-stat-metric{
+  padding-top:12px!important;
+  padding-bottom:10px!important;
+}
+
+@media(max-width:1100px){
+  .mq-stat-layout{
+    grid-template-rows:108px 118px minmax(0,1fr) 48px!important;
+  }
+}
