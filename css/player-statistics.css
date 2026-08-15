@@ -2392,3 +2392,243 @@ body.mq-hall-open #homeBtn.mq-home-dock{
     min-height:250px!important;
   }
 }
+
+
+/* ==========================================================================
+   HALL OF FAME v1.2 – EXACT BACKGROUND SAFE ZONE
+   Master 1672×941
+   x: 412..1258  => left 24.6411%, width 50.5981%
+   y: 186..700   => top 19.7662%, height 54.6227%
+   ========================================================================== */
+
+#mqHallOfFameScene .mq-hall-layout{
+  left:24.6411%!important;
+  top:19.7662%!important;
+  width:50.5981%!important;
+  height:54.6227%!important;
+
+  grid-template-rows:72px 206px minmax(0,1fr)!important;
+  gap:8px!important;
+}
+
+/* Compact header, still readable */
+#mqHallOfFameScene .mq-hall-header{
+  grid-template-columns:minmax(210px,1fr) minmax(145px,.62fr) auto!important;
+  gap:12px!important;
+  padding:0 0 8px!important;
+}
+
+#mqHallOfFameScene .mq-hall-title > span{
+  margin-bottom:3px!important;
+  font-size:9px!important;
+}
+
+#mqHallOfFameScene .mq-hall-title h1{
+  font-size:34px!important;
+  line-height:.95!important;
+}
+
+#mqHallOfFameScene .mq-hall-title p{
+  margin-top:4px!important;
+  font-size:11px!important;
+}
+
+#mqHallOfFameScene .mq-hall-current{
+  min-width:0!important;
+  max-width:none!important;
+  padding:2px 10px 4px!important;
+}
+
+#mqHallOfFameScene .mq-hall-current span{
+  font-size:7.5px!important;
+}
+#mqHallOfFameScene .mq-hall-current strong{
+  margin:1px 0!important;
+  font-size:17px!important;
+}
+#mqHallOfFameScene .mq-hall-current small{
+  font-size:8.5px!important;
+}
+
+#mqHallOfFameScene .mq-hall-actions{
+  gap:6px!important;
+}
+
+#mqHallOfFameScene .mq-hall-action{
+  min-width:88px!important;
+  height:32px!important;
+  padding:0 10px!important;
+  gap:5px!important;
+  font-size:8.5px!important;
+}
+
+#mqHallOfFameScene .mq-hall-action svg{
+  width:14px!important;
+  height:14px!important;
+}
+
+/* Top 3 compressed vertically to preserve space for places 4–10 */
+#mqHallOfFameScene .mq-hall-podium{
+  grid-template-columns:1fr 1.10fr 1fr!important;
+  gap:10px!important;
+  padding:5px 10px 6px!important;
+}
+
+#mqHallOfFameScene .mq-hall-podium-card{
+  height:158px!important;
+  padding:9px 8px 8px!important;
+}
+
+#mqHallOfFameScene .mq-hall-podium-card.is-rank-1{
+  height:188px!important;
+}
+
+#mqHallOfFameScene .mq-hall-podium-card.is-rank-2{
+  height:164px!important;
+}
+
+#mqHallOfFameScene .mq-hall-podium-card.is-rank-3{
+  height:154px!important;
+}
+
+#mqHallOfFameScene .mq-hall-podium-rank{
+  top:-14px!important;
+  width:30px!important;
+  height:30px!important;
+  font-size:15px!important;
+}
+
+#mqHallOfFameScene .is-rank-1 .mq-hall-podium-rank{
+  top:-17px!important;
+  width:35px!important;
+  height:35px!important;
+  font-size:18px!important;
+}
+
+#mqHallOfFameScene .mq-hall-avatar{
+  width:60px!important;
+  height:60px!important;
+  margin-bottom:5px!important;
+}
+
+#mqHallOfFameScene .is-rank-1 .mq-hall-avatar{
+  width:76px!important;
+  height:76px!important;
+}
+
+#mqHallOfFameScene .is-rank-3 .mq-hall-avatar{
+  width:56px!important;
+  height:56px!important;
+}
+
+#mqHallOfFameScene .mq-hall-podium-card > strong{
+  font-size:15px!important;
+}
+
+#mqHallOfFameScene .is-rank-1.mq-hall-podium-card > strong{
+  font-size:18px!important;
+}
+
+#mqHallOfFameScene .mq-hall-total{
+  margin:3px 0 4px!important;
+}
+
+#mqHallOfFameScene .mq-hall-total b{
+  font-size:21px!important;
+}
+
+#mqHallOfFameScene .is-rank-1 .mq-hall-total b{
+  font-size:25px!important;
+}
+
+#mqHallOfFameScene .mq-hall-total span{
+  font-size:7.5px!important;
+}
+
+#mqHallOfFameScene .mq-hall-podium-breakdown{
+  gap:7px!important;
+  padding-top:4px!important;
+}
+
+#mqHallOfFameScene .mq-hall-podium-breakdown > span{
+  gap:2px!important;
+  font-size:9px!important;
+}
+
+#mqHallOfFameScene .mq-hall-podium-breakdown svg{
+  width:15px!important;
+  height:15px!important;
+}
+
+#mqHallOfFameScene .mq-hall-podium-breakdown b{
+  font-size:10px!important;
+}
+
+/* 4–10 all fit in the remaining vertical area without needing heavy scrolling */
+#mqHallOfFameScene .mq-hall-ranking{
+  grid-template-rows:24px minmax(0,1fr)!important;
+}
+
+#mqHallOfFameScene .mq-hall-ranking-head,
+#mqHallOfFameScene .mq-hall-row{
+  grid-template-columns:44px minmax(160px,1fr) 72px 44px 44px 44px!important;
+  gap:5px!important;
+}
+
+#mqHallOfFameScene .mq-hall-ranking-head{
+  padding:0 5px!important;
+  font-size:7px!important;
+}
+
+#mqHallOfFameScene .mq-hall-ranking-head svg{
+  width:14px!important;
+  height:14px!important;
+}
+
+#mqHallOfFameScene .mq-hall-ranking-list{
+  overflow-y:auto!important;
+  scrollbar-width:thin!important;
+}
+
+#mqHallOfFameScene .mq-hall-row{
+  min-height:28px!important;
+  height:28px!important;
+  padding:2px 5px!important;
+}
+
+#mqHallOfFameScene .mq-hall-row-rank{
+  font-size:16px!important;
+}
+
+#mqHallOfFameScene .mq-hall-row-avatar{
+  width:23px!important;
+  height:23px!important;
+}
+
+#mqHallOfFameScene .mq-hall-row-player{
+  gap:6px!important;
+}
+
+#mqHallOfFameScene .mq-hall-row-player strong{
+  font-size:12px!important;
+}
+
+#mqHallOfFameScene .mq-hall-row-player em{
+  padding:1px 4px!important;
+  font-size:6px!important;
+}
+
+#mqHallOfFameScene .mq-hall-row-total strong{
+  font-size:15px!important;
+}
+
+#mqHallOfFameScene .mq-hall-row-total small{
+  display:none!important;
+}
+
+#mqHallOfFameScene .mq-hall-row-oscar{
+  font-size:14px!important;
+}
+
+/* Corner controls remain outside the constrained artwork-safe UI area by design,
+   matching the statistics scene. */

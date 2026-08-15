@@ -411,7 +411,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='hall-of-fame-v1.1-safe-routing';
+  const VERSION='hall-of-fame-v1.2-safe-zone-412-1258';
   const SCENE_ID='mqHallOfFameScene';
   const FALLBACK_AVATAR='assets/avatars/guest_unknown.svg';
 
