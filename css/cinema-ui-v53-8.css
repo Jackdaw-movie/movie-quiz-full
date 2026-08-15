@@ -1,0 +1,648 @@
+/* Movie Quiz – Cinema UI v53.8
+   Rebuild of Statistics + Hall of Fame around the APPROVED v53.7 background artwork.
+   v53.7 remains loaded only as the image-underlay source. This file owns layout/UX.
+*/
+
+:root{
+  --mq58-cream:#f4e4c2;
+  --mq58-muted:#bfa886;
+  --mq58-gold:#e4bd69;
+  --mq58-gold2:#b97d31;
+  --mq58-line:rgba(207,153,66,.34);
+  --mq58-dark:rgba(10,7,6,.90);
+  --mq58-dark2:rgba(25,15,11,.90);
+  --mq58-wine:rgba(72,18,28,.88);
+}
+
+/* ==========================================================================
+   APPROVED BACKGROUNDS – make the v53.7 image layer truly visible
+   ========================================================================== */
+html body.mq-noir-master #page #cinema #screen #statisticsView,
+html body.mq-noir-master #page #cinema #screen #scoreboardView{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  padding:0!important;
+  margin:0!important;
+  overflow:hidden!important;
+  display:block!important;
+  isolation:isolate!important;
+  background:transparent!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #statisticsView::before,
+html body.mq-noir-master #page #cinema #screen #scoreboardView::before{
+  display:block!important;
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  opacity:1!important;
+  z-index:0!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+  background-size:100% 100%!important;
+  filter:none!important;
+  transform:none!important;
+  pointer-events:none!important;
+}
+
+/* Remove the heavy dark veil v53.7 used over the artwork. */
+html body.mq-noir-master #page #cinema #screen #statisticsView::after,
+html body.mq-noir-master #page #cinema #screen #scoreboardView::after{
+  display:none!important;
+  content:none!important;
+}
+
+html body.mq-noir-master #statisticsView > *,
+html body.mq-noir-master #scoreboardView > *{
+  position:relative!important;
+  z-index:2!important;
+}
+
+/* ==========================================================================
+   SHARED TOP ACTION BUTTONS
+   ========================================================================== */
+html body.mq-noir-master :is(#statisticsView,#scoreboardView) :is(
+  .mq-stats-back,.mq-stats-refresh,.mq-scoreboard-actions .mq-secondary
+){
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  min-width:132px!important;
+  min-height:43px!important;
+  padding:9px 16px!important;
+  border:1px solid rgba(196,139,55,.70)!important;
+  border-radius:3px!important;
+  background:
+    linear-gradient(115deg,rgba(255,240,202,.05),transparent 34%),
+    linear-gradient(180deg,#2b1a10,#0e0906)!important;
+  color:#efd7a3!important;
+  font-family:var(--mq-ui,"Oswald",sans-serif)!important;
+  font-size:10px!important;
+  font-weight:600!important;
+  letter-spacing:.10em!important;
+  text-transform:uppercase!important;
+  box-shadow:
+    inset 0 0 0 1px #050302,
+    inset 0 0 0 3px rgba(205,153,66,.06),
+    0 5px 11px rgba(0,0,0,.23)!important;
+  cursor:pointer!important;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease,color .15s ease!important;
+}
+html body.mq-noir-master :is(#statisticsView,#scoreboardView) :is(
+  .mq-stats-back,.mq-stats-refresh,.mq-scoreboard-actions .mq-secondary
+):hover,
+html body.mq-noir-master :is(#statisticsView,#scoreboardView) :is(
+  .mq-stats-back,.mq-stats-refresh,.mq-scoreboard-actions .mq-secondary
+):focus-visible{
+  transform:translateY(-1px)!important;
+  border-color:rgba(237,195,104,.92)!important;
+  background:linear-gradient(180deg,#3b2717,#140d08)!important;
+  color:#fff0c8!important;
+  outline:none!important;
+}
+
+/* ==========================================================================
+   STATISTICS – fixed page frame, only data area scrolls
+   Useful area deliberately occupies almost the whole approved background.
+   ========================================================================== */
+html body.mq-noir-master #statisticsView .mq-stats-shell{
+  position:absolute!important;
+  left:7.2%!important;
+  top:5.2%!important;
+  width:85.6%!important;
+  height:89.0%!important;
+  margin:0!important;
+  padding:0!important;
+  display:grid!important;
+  grid-template-rows:48px 102px minmax(0,1fr)!important;
+  gap:10px!important;
+  color:#20140d!important;
+  overflow:hidden!important;
+}
+
+/* toolbar is a normal first row – NEVER sticky and never overlays content */
+html body.mq-noir-master #statisticsView .mq-stats-toolbar{
+  position:relative!important;
+  inset:auto!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  z-index:3!important;
+  width:100%!important;
+  min-height:48px!important;
+  margin:0!important;
+  padding:0 4px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:10px!important;
+  background:none!important;
+  backdrop-filter:none!important;
+  box-shadow:none!important;
+}
+html body.mq-noir-master #statisticsView .mq-stats-back svg,
+html body.mq-noir-master #statisticsView .mq-stats-refresh svg{
+  width:17px!important;
+  height:17px!important;
+  stroke:#d7a951!important;
+}
+
+/* compact profile/header row, visually separate from the scroll area */
+html body.mq-noir-master #statisticsView .mq-stats-header{
+  position:relative!important;
+  inset:auto!important;
+  z-index:2!important;
+  width:100%!important;
+  min-height:102px!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:17px 22px 15px 124px!important;
+  overflow:hidden!important;
+  text-align:left!important;
+  border:1px solid rgba(116,68,24,.46)!important;
+  border-radius:5px!important;
+  background:
+    linear-gradient(90deg,rgba(255,246,222,.88),rgba(235,210,169,.79) 54%,rgba(224,190,141,.70))!important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.34),
+    inset 0 0 0 4px rgba(103,58,18,.045),
+    0 7px 16px rgba(62,34,13,.13)!important;
+}
+html body.mq-noir-master #statisticsView .mq-stats-header::after{
+  content:""!important;
+  position:absolute!important;
+  left:108px!important;
+  top:13px!important;
+  bottom:13px!important;
+  width:1px!important;
+  background:linear-gradient(180deg,transparent,rgba(126,74,25,.38),transparent)!important;
+}
+html body.mq-noir-master #statisticsView .mq-stats-profile-avatar{
+  position:absolute!important;
+  left:20px!important;
+  top:50%!important;
+  width:74px!important;
+  height:74px!important;
+  margin:0!important;
+  transform:translateY(-50%)!important;
+}
+html body.mq-noir-master #statisticsView .mq-stats-profile-avatar .mq-avatar-frame{
+  width:74px!important;
+  height:74px!important;
+  border:2px solid rgba(126,76,27,.66)!important;
+  border-radius:50%!important;
+  background:#160e09!important;
+  box-shadow:0 0 0 4px rgba(183,127,49,.20),0 7px 15px rgba(68,36,12,.20)!important;
+}
+html body.mq-noir-master #statisticsView .mq-stats-header .eyebrow{
+  margin:0 0 3px!important;
+  color:#8c571f!important;
+  font-size:9px!important;
+  letter-spacing:.18em!important;
+}
+html body.mq-noir-master #statisticsView .mq-stats-header h1{
+  margin:0 0 5px!important;
+  color:#28170d!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:34px!important;
+  font-weight:700!important;
+  line-height:.98!important;
+  letter-spacing:.01em!important;
+}
+html body.mq-noir-master #statisticsView .mq-stats-header p{
+  margin:0!important;
+  color:#765b3c!important;
+  font-size:10px!important;
+}
+
+/* only this region scrolls */
+html body.mq-noir-master #statisticsView .mq-stats-content{
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding:2px 8px 18px 4px!important;
+  display:grid!important;
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  gap:12px!important;
+  align-content:start!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:#9a6527 rgba(75,43,18,.12)!important;
+}
+html body.mq-noir-master #statisticsView .mq-stats-content::-webkit-scrollbar{width:7px!important}
+html body.mq-noir-master #statisticsView .mq-stats-content::-webkit-scrollbar-track{background:rgba(75,43,18,.10)!important}
+html body.mq-noir-master #statisticsView .mq-stats-content::-webkit-scrollbar-thumb{background:#9a6527!important;border-radius:6px!important}
+
+/* Summary occupies full width. */
+html body.mq-noir-master #statisticsView .mq-stats-summary{
+  grid-column:1/-1!important;
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:10px!important;
+}
+html body.mq-noir-master #statisticsView .mq-stat-card{
+  min-height:100px!important;
+  padding:14px 15px 12px 18px!important;
+  border:1px solid rgba(110,66,25,.36)!important;
+  border-radius:5px!important;
+  background:
+    linear-gradient(115deg,rgba(255,245,213,.05),transparent 34%),
+    linear-gradient(180deg,rgba(38,23,15,.95),rgba(12,8,6,.97))!important;
+  box-shadow:inset 0 1px rgba(255,238,201,.06),0 6px 13px rgba(74,39,13,.13)!important;
+}
+html body.mq-noir-master #statisticsView .mq-stat-card::before{
+  width:3px!important;
+  background:linear-gradient(180deg,#e1b45e,#704313)!important;
+}
+html body.mq-noir-master #statisticsView .mq-stat-card>span{color:#bba582!important}
+html body.mq-noir-master #statisticsView .mq-stat-card>strong{
+  color:#f3dfb5!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:31px!important;
+}
+html body.mq-noir-master #statisticsView .mq-stat-card>small{color:#ad9a7c!important}
+html body.mq-noir-master #statisticsView .mq-stat-card.is-oscar>strong{color:#f0ca74!important}
+
+/* Main statistics become a deliberate 7 / 5 column editorial layout. */
+html body.mq-noir-master #statisticsView .mq-stats-content > .mq-stats-section:nth-of-type(2){grid-column:1/8!important}
+html body.mq-noir-master #statisticsView .mq-stats-content > .mq-stats-highlights{grid-column:8/-1!important}
+html body.mq-noir-master #statisticsView .mq-stats-content > .mq-stats-section:nth-of-type(4){grid-column:1/8!important}
+html body.mq-noir-master #statisticsView .mq-stats-content > .mq-stats-section:nth-of-type(5){grid-column:8/-1!important}
+html body.mq-noir-master #statisticsView .mq-stats-content > .mq-stats-footer{grid-column:1/-1!important}
+
+html body.mq-noir-master #statisticsView .mq-stats-section,
+html body.mq-noir-master #statisticsView .mq-stats-highlights article{
+  border:1px solid rgba(109,65,25,.35)!important;
+  border-radius:5px!important;
+  background:rgba(246,226,191,.82)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.27),0 6px 14px rgba(68,35,12,.11)!important;
+}
+html body.mq-noir-master #statisticsView .mq-stats-section{padding:15px!important}
+html body.mq-noir-master #statisticsView .mq-stats-section-title{margin-bottom:11px!important}
+html body.mq-noir-master #statisticsView .mq-stats-section-title span{color:#915c21!important}
+html body.mq-noir-master #statisticsView .mq-stats-section-title h2{
+  color:#2b190e!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:23px!important;
+}
+html body.mq-noir-master #statisticsView .mq-stats-section-title>small{color:#80694b!important}
+
+/* Oscar difficulty blocks are readable now; icon redesign remains intentionally untouched for later. */
+html body.mq-noir-master #statisticsView .mq-difficulty-stats{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:9px!important;
+}
+html body.mq-noir-master #statisticsView .mq-difficulty-stat{
+  grid-template-columns:48px minmax(0,1fr)!important;
+  gap:10px!important;
+  min-height:86px!important;
+  padding:11px!important;
+  border:1px solid rgba(116,69,26,.28)!important;
+  border-radius:4px!important;
+  background:rgba(35,21,14,.94)!important;
+}
+html body.mq-noir-master #statisticsView .mq-difficulty-icon{
+  width:46px!important;height:46px!important;border-radius:4px!important;
+  background:rgba(215,168,79,.10)!important;border-color:rgba(219,176,88,.25)!important;
+}
+html body.mq-noir-master #statisticsView .mq-difficulty-stat span{color:#bba785!important}
+html body.mq-noir-master #statisticsView .mq-difficulty-stat strong{color:#f1cc78!important}
+html body.mq-noir-master #statisticsView .mq-difficulty-stat small{color:#a89578!important}
+
+/* Highlights stack instead of three tiny squeezed columns. */
+html body.mq-noir-master #statisticsView .mq-stats-highlights{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:9px!important;
+  align-content:start!important;
+}
+html body.mq-noir-master #statisticsView .mq-stats-highlights article{padding:14px 15px!important}
+html body.mq-noir-master #statisticsView .mq-stats-highlights span{color:#896038!important}
+html body.mq-noir-master #statisticsView .mq-stats-highlights strong{
+  color:#2a190e!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+}
+html body.mq-noir-master #statisticsView .mq-stats-highlights small{color:#796247!important}
+
+html body.mq-noir-master #statisticsView .mq-genre-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+html body.mq-noir-master #statisticsView .mq-genre-stat{
+  padding:11px 12px!important;
+  border:1px solid rgba(116,69,26,.24)!important;
+  border-radius:4px!important;
+  background:rgba(255,248,229,.42)!important;
+}
+html body.mq-noir-master #statisticsView .mq-genre-stat-head strong{color:#2b190e!important}
+html body.mq-noir-master #statisticsView .mq-genre-stat-head>span,
+html body.mq-noir-master #statisticsView .mq-genre-stat-foot span,
+html body.mq-noir-master #statisticsView .mq-genre-stat-explain{color:#7c6547!important}
+html body.mq-noir-master #statisticsView .mq-genre-stat-foot strong{color:#3d2917!important}
+html body.mq-noir-master #statisticsView .mq-stat-bar{background:rgba(83,50,20,.16)!important}
+
+/* Recent games use a compact vertical list in the narrow right column. */
+html body.mq-noir-master #statisticsView .mq-recent-games{gap:7px!important}
+html body.mq-noir-master #statisticsView .mq-recent-game{
+  grid-template-columns:64px minmax(0,1fr) 58px!important;
+  gap:8px!important;
+  padding:9px 10px!important;
+  border:1px solid rgba(116,69,26,.23)!important;
+  border-radius:4px!important;
+  background:rgba(255,248,229,.40)!important;
+}
+html body.mq-noir-master #statisticsView .mq-recent-main strong{color:#2b190e!important}
+html body.mq-noir-master #statisticsView .mq-recent-main span{color:#7c6547!important}
+html body.mq-noir-master #statisticsView .mq-recent-score strong{color:#8f5b20!important}
+html body.mq-noir-master #statisticsView .mq-recent-score span{color:#8b7657!important}
+html body.mq-noir-master #statisticsView .mq-recent-meta{
+  grid-column:2/4!important;
+  justify-content:flex-start!important;
+  gap:10px!important;
+  color:#7c6547!important;
+  text-align:left!important;
+}
+html body.mq-noir-master #statisticsView .mq-stats-footer span{
+  border-color:rgba(115,69,27,.23)!important;
+  background:rgba(244,223,188,.56)!important;
+  color:#725b3d!important;
+}
+html body.mq-noir-master #statisticsView .mq-stats-footer strong{color:#352114!important}
+
+/* ==========================================================================
+   HALL OF FAME / SCOREBOARD
+   Exact user-approved safe UI zone: approx x=300..1500, y=100..800 on 1672x941.
+   ========================================================================== */
+html body.mq-noir-master #scoreboardView .mq-scoreboard-panel{
+  position:absolute!important;
+  left:17.94%!important;
+  top:10.63%!important;
+  width:71.77%!important;
+  height:74.39%!important;
+  max-width:none!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  display:grid!important;
+  grid-template-rows:46px 86px minmax(0,1fr)!important;
+  gap:9px!important;
+  overflow:hidden!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+html body.mq-noir-master #scoreboardView .mq-scoreboard-panel::before{display:none!important;content:none!important}
+
+/* Move the existing bottom actions to the TOP without changing JS/DOM. */
+html body.mq-noir-master #scoreboardView .mq-scoreboard-actions{
+  grid-row:1!important;
+  grid-column:1!important;
+  position:relative!important;
+  inset:auto!important;
+  min-height:46px!important;
+  margin:0!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:9px!important;
+  border:0!important;
+  background:none!important;
+}
+html body.mq-noir-master #scoreboardView .mq-scoreboard-actions .mq-secondary{min-width:126px!important;min-height:42px!important}
+
+html body.mq-noir-master #scoreboardView .mq-scoreboard-head{
+  grid-row:2!important;
+  grid-column:1!important;
+  position:relative!important;
+  min-height:86px!important;
+  margin:0!important;
+  padding:11px 15px 10px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  grid-template-areas:"eye player" "title player" "note player"!important;
+  align-items:center!important;
+  column-gap:18px!important;
+  overflow:hidden!important;
+  border:1px solid rgba(103,60,21,.32)!important;
+  border-radius:4px!important;
+  background:rgba(244,221,180,.76)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.30),0 5px 12px rgba(73,37,11,.10)!important;
+  text-align:left!important;
+}
+html body.mq-noir-master #scoreboardView .mq-scoreboard-head .eyebrow{color:#8b571e!important}
+html body.mq-noir-master #scoreboardView .mq-scoreboard-title{
+  color:#28170d!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:31px!important;
+  line-height:.96!important;
+}
+html body.mq-noir-master #scoreboardView .mq-scoreboard-note{color:#765d3d!important}
+html body.mq-noir-master #scoreboardView .mq-scoreboard-player{
+  min-width:210px!important;
+  padding:9px 12px!important;
+  border:1px solid rgba(105,60,21,.34)!important;
+  border-radius:3px!important;
+  background:rgba(40,23,14,.91)!important;
+  color:#e7cf9f!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.025)!important;
+}
+
+html body.mq-noir-master #scoreboardView .mq-score-table{
+  grid-row:3!important;
+  grid-column:1!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0 5px 8px 0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:#9a6527 rgba(75,43,18,.12)!important;
+}
+html body.mq-noir-master #scoreboardView .mq-score-table::-webkit-scrollbar{width:7px!important}
+html body.mq-noir-master #scoreboardView .mq-score-table::-webkit-scrollbar-track{background:rgba(75,43,18,.10)!important}
+html body.mq-noir-master #scoreboardView .mq-score-table::-webkit-scrollbar-thumb{background:#9a6527!important;border-radius:6px!important}
+
+/* no sticky overlay inside Hall of Fame */
+html body.mq-noir-master #scoreboardView .mq-score-header{
+  position:relative!important;
+  top:auto!important;
+  z-index:1!important;
+  min-height:70px!important;
+  margin-bottom:8px!important;
+}
+
+/* Player gets the dominant column. Award columns remain secondary until their icon pass. */
+html body.mq-noir-master #scoreboardView .mq-score-row{
+  display:grid!important;
+  grid-template-columns:minmax(530px,1.72fr) repeat(3,minmax(145px,.55fr))!important;
+  gap:7px!important;
+  align-items:stretch!important;
+  min-height:128px!important;
+  margin:0 0 8px!important;
+  padding:0!important;
+  overflow:hidden!important;
+  border:1px solid rgba(104,60,21,.34)!important;
+  border-radius:5px!important;
+  background:rgba(244,222,184,.82)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.26),0 5px 12px rgba(75,39,13,.10)!important;
+}
+html body.mq-noir-master #scoreboardView .mq-score-row.mq-score-current{
+  border-color:rgba(154,96,30,.72)!important;
+  background:rgba(250,229,188,.91)!important;
+  box-shadow:inset 4px 0 #b5792e,inset 0 0 0 1px rgba(255,255,255,.31),0 6px 14px rgba(78,40,12,.13)!important;
+}
+html body.mq-noir-master #scoreboardView .mq-score-cell{
+  border-left:1px solid rgba(110,65,24,.17)!important;
+  color:#362114!important;
+}
+html body.mq-noir-master #scoreboardView .mq-score-cell:first-child{
+  border-left:0!important;
+  padding:8px 15px!important;
+}
+
+/* Header is shorter than data rows. */
+html body.mq-noir-master #scoreboardView .mq-score-row.mq-score-header{
+  min-height:70px!important;
+  background:rgba(42,24,14,.93)!important;
+  border-color:rgba(166,111,38,.45)!important;
+  color:#efd8a7!important;
+}
+html body.mq-noir-master #scoreboardView .mq-score-header .mq-score-cell:first-child::after{color:#d7bd8b!important}
+
+/* Exact player cell layout: RANK | 112px AVATAR | NAME + TOTAL */
+html body.mq-noir-master #scoreboardView .mq-avatar-score-cell{
+  display:grid!important;
+  grid-template-columns:58px 112px minmax(0,1fr)!important;
+  grid-template-rows:1fr 1fr!important;
+  align-items:center!important;
+  column-gap:15px!important;
+  row-gap:0!important;
+}
+html body.mq-noir-master #scoreboardView .mq-avatar-scoreboard{
+  grid-column:2!important;
+  grid-row:1/3!important;
+  width:112px!important;
+  height:112px!important;
+  min-width:112px!important;
+  margin:0!important;
+  border:3px solid rgba(126,76,27,.72)!important;
+  border-radius:50%!important;
+  background:#170f0a!important;
+  box-shadow:0 0 0 5px rgba(182,126,48,.20),0 8px 16px rgba(71,37,12,.20)!important;
+  overflow:hidden!important;
+}
+html body.mq-noir-master #scoreboardView .mq-avatar-scoreboard .mq-avatar-img{transform:scale(.98)!important}
+
+/* display:contents allows the rank/name/total inside the runtime wrapper to occupy our parent grid */
+html body.mq-noir-master #scoreboardView .mq-avatar-score-copy{display:contents!important}
+
+/* first value from the left – large period numeral, no circle/badge */
+html body.mq-noir-master #scoreboardView .mq-player-rank{
+  grid-column:1!important;
+  grid-row:1/3!important;
+  align-self:center!important;
+  justify-self:stretch!important;
+  display:block!important;
+  width:auto!important;
+  height:auto!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0 13px 0 0!important;
+  border:0!important;
+  border-right:1px solid rgba(124,74,26,.30)!important;
+  border-radius:0!important;
+  background:none!important;
+  box-shadow:none!important;
+  color:#9a6123!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:36px!important;
+  font-weight:700!important;
+  line-height:1!important;
+  text-align:center!important;
+}
+html body.mq-noir-master #scoreboardView .mq-player-rank::before,
+html body.mq-noir-master #scoreboardView .mq-player-rank::after{display:none!important;content:none!important}
+
+html body.mq-noir-master #scoreboardView .mq-score-name{
+  grid-column:3!important;
+  grid-row:1!important;
+  align-self:end!important;
+  min-width:0!important;
+  padding-bottom:4px!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+  text-overflow:ellipsis!important;
+  color:#28170d!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:25px!important;
+  font-weight:700!important;
+  line-height:1.02!important;
+}
+html body.mq-noir-master #scoreboardView .mq-score-total{
+  grid-column:3!important;
+  grid-row:2!important;
+  align-self:start!important;
+  margin:0!important;
+  padding-top:3px!important;
+  color:#765d3e!important;
+  font-size:10px!important;
+  letter-spacing:.04em!important;
+}
+
+/* Award counts remain deliberately simple until the dedicated icon redesign. */
+html body.mq-noir-master #scoreboardView .mq-score-row:not(.mq-score-header) .mq-score-cell:nth-child(n+2){
+  grid-template-columns:52px auto!important;
+  column-gap:7px!important;
+  color:#70451a!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:31px!important;
+  font-weight:700!important;
+  text-shadow:none!important;
+  background:rgba(255,248,229,.18)!important;
+}
+html body.mq-noir-master #scoreboardView .mq-score-row:not(.mq-score-header) .mq-score-cell:nth-child(n+2)::before{
+  width:50px!important;
+  height:46px!important;
+  opacity:.86!important;
+  filter:drop-shadow(0 3px 3px rgba(74,37,10,.17))!important;
+}
+
+/* ==========================================================================
+   Responsive fallback – desktop master is primary, but keep it usable smaller.
+   ========================================================================== */
+@media(max-width:1100px){
+  html body.mq-noir-master #statisticsView .mq-stats-shell{left:5%!important;width:90%!important}
+  html body.mq-noir-master #statisticsView .mq-stats-content > .mq-stats-section:nth-of-type(2),
+  html body.mq-noir-master #statisticsView .mq-stats-content > .mq-stats-highlights,
+  html body.mq-noir-master #statisticsView .mq-stats-content > .mq-stats-section:nth-of-type(4),
+  html body.mq-noir-master #statisticsView .mq-stats-content > .mq-stats-section:nth-of-type(5){grid-column:1/-1!important}
+  html body.mq-noir-master #statisticsView .mq-stats-highlights{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+
+  html body.mq-noir-master #scoreboardView .mq-scoreboard-panel{left:8%!important;width:84%!important}
+  html body.mq-noir-master #scoreboardView .mq-score-row{grid-template-columns:minmax(430px,1.6fr) repeat(3,minmax(118px,.55fr))!important}
+  html body.mq-noir-master #scoreboardView .mq-avatar-score-cell{grid-template-columns:50px 96px minmax(0,1fr)!important;column-gap:11px!important}
+  html body.mq-noir-master #scoreboardView .mq-avatar-scoreboard{width:96px!important;height:96px!important;min-width:96px!important}
+  html body.mq-noir-master #scoreboardView .mq-score-name{font-size:21px!important}
+  html body.mq-noir-master #scoreboardView .mq-player-rank{font-size:31px!important}
+}
+
+@media(max-width:760px){
+  html body.mq-noir-master #statisticsView .mq-stats-shell{top:3%!important;height:94%!important;grid-template-rows:44px 92px minmax(0,1fr)!important}
+  html body.mq-noir-master #statisticsView .mq-stats-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  html body.mq-noir-master #statisticsView .mq-difficulty-stats{grid-template-columns:1fr!important}
+  html body.mq-noir-master #statisticsView .mq-stats-highlights{grid-template-columns:1fr!important}
+  html body.mq-noir-master #statisticsView .mq-genre-stats{grid-template-columns:1fr!important}
+  html body.mq-noir-master #statisticsView .mq-stats-header{padding-left:102px!important}
+  html body.mq-noir-master #statisticsView .mq-stats-profile-avatar{left:15px!important}
+
+  html body.mq-noir-master #scoreboardView .mq-scoreboard-panel{left:3%!important;top:4%!important;width:94%!important;height:92%!important}
+  html body.mq-noir-master #scoreboardView .mq-score-row{grid-template-columns:minmax(330px,1.5fr) repeat(3,minmax(98px,.5fr))!important}
+  html body.mq-noir-master #scoreboardView .mq-avatar-score-cell{grid-template-columns:42px 82px minmax(0,1fr)!important;column-gap:9px!important}
+  html body.mq-noir-master #scoreboardView .mq-avatar-scoreboard{width:82px!important;height:82px!important;min-width:82px!important}
+  html body.mq-noir-master #scoreboardView .mq-score-name{font-size:18px!important}
+  html body.mq-noir-master #scoreboardView .mq-player-rank{font-size:27px!important;padding-right:9px!important}
+}
