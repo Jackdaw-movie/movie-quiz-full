@@ -3136,3 +3136,35 @@ body.mq-hall-open #homeBtn.mq-home-dock{
 }
 #mqHallOfFameScene .mq-hall-row-player strong{font-size:15px!important}
 #mqHallOfFameScene .mq-hall-row-avatar{width:33px!important;height:33px!important}
+
+
+/* ==========================================================================
+   Statistics avatar +20%
+   Keep player name at the same readable size and ensure it still fits below.
+   ========================================================================== */
+#mqStatisticsScene .mq-stat-player{
+  width:220px!important;
+  gap:6px!important;
+}
+
+#mqStatisticsScene .mq-stat-player-frame{
+  width:91px!important;
+  height:91px!important;
+}
+
+#mqStatisticsScene .mq-stat-player > strong{
+  max-width:220px!important;
+}
+
+@media(max-width:1100px){
+  #mqStatisticsScene .mq-stat-player{
+    width:200px!important;
+  }
+  #mqStatisticsScene .mq-stat-player-frame{
+    width:82px!important;
+    height:82px!important;
+  }
+  #mqStatisticsScene .mq-stat-player > strong{
+    max-width:200px!important;
+  }
+}
