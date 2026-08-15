@@ -14,3 +14,9 @@ VALIDATION v55.0
 [OK] v55.1: statistic columns use overflow:visible
 [OK] v55.1: typography enlarged throughout
 [OK] v55.1: primary typography changed to near-black/dark brown
+
+[OK] v55.2: 3 smallest text tiers enlarged ~20%
+[OK] v55.2: normal statistics text forced to solid black
+[OK] v55.2: headings use Cormorant Garamond
+[OK] v55.2: Back/Refresh use noir redesign button style
+[OK] v55.2: main statistics scroll remains enabled

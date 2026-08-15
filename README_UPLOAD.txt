@@ -120,3 +120,13 @@ V55.1 – READABILITY + SCROLL
 - jednotlivé sloupce už nemají overflow:hidden, takže budoucí statistiky
   se nebudou ořezávat ani mačkat
 - horní nadpis, 4 hlavní KPI a spodní souhrn zůstávají při scrollování stabilní
+
+
+V55.2 – TYPOGRAPHY + BUTTON POLISH
+----------------------------------
+- tři nejmenší textové úrovně zvětšeny přibližně o 20 %
+- všechny běžné texty Statistik jsou nyní sytě černé
+- hlavní nadpisy a hodnoty používají Cormorant Garamond
+- tlačítka Zpět / Obnovit převedena do Movie Quiz noir redesign stylu:
+  černý lak, mosazná linka, Art Deco vnitřní rámeček
+- vertikální scroll hlavní datové oblasti zůstává zachovaný

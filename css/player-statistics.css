@@ -10,7 +10,7 @@
   width:100%!important;
   height:100%!important;
   overflow:hidden!important;
-  background:#b78045 url("../assets/ui-pages/production/statistics.webp?v=55.1") center/100% 100% no-repeat!important;
+  background:#b78045 url("../assets/ui-pages/production/statistics.webp?v=55.2") center/100% 100% no-repeat!important;
   color:#2d1a0f!important;
   font-family:var(--mq-ui,"Oswald",Arial,sans-serif)!important;
   box-sizing:border-box!important;
@@ -582,4 +582,249 @@ body.mq-statistics-open #homeBtn{display:none!important}
     overflow-y:auto!important;
     overflow-x:hidden!important;
   }
+}
+
+
+/* ==========================================================================
+   v55.2 – TYPOGRAPHY + BUTTON POLISH
+   Keeps the approved v55.1 layout and scrolling.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   GLOBAL TEXT CONTRAST
+   All statistics-page copy is now solid black / near-black.
+   Brass remains only for ornamental lines and selected icon strokes.
+   -------------------------------------------------------------------------- */
+#mqStatisticsScene,
+#mqStatisticsScene *{
+  color:#000!important;
+}
+
+/* SVG/icon strokes stay dark rather than inheriting old brown/gold text tones. */
+#mqStatisticsScene svg{
+  stroke:#000!important;
+}
+
+/* --------------------------------------------------------------------------
+   HEADINGS – Movie Quiz cinematic display font
+   Use the project's existing Cormorant Garamond display family.
+   -------------------------------------------------------------------------- */
+.mq-stat-title h1,
+.mq-stat-section-head h2,
+.mq-stat-metric strong,
+.mq-stat-difficulty-copy strong,
+.mq-stat-game-score strong,
+.mq-stat-highlight strong,
+.mq-stat-state h2,
+.mq-stat-state strong{
+  font-family:"Cormorant Garamond",Georgia,serif!important;
+  color:#000!important;
+}
+
+/* Slightly stronger headings for readability on the warm wall. */
+.mq-stat-title h1{
+  font-size:52px!important;
+  font-weight:700!important;
+}
+.mq-stat-section-head h2{
+  font-size:31px!important;
+  font-weight:700!important;
+}
+
+/* --------------------------------------------------------------------------
+   THREE SMALLEST TEXT LEVELS: + ~20%
+   Previous practical tiers were around 8.5 / 9 / 10 px.
+   New tiers are approximately 10.2 / 10.8 / 12 px.
+   -------------------------------------------------------------------------- */
+
+/* Tier 1: ~8.5px -> ~10.2px */
+.mq-stat-game-meta,
+.mq-stat-genre-note{
+  font-size:10.2px!important;
+  line-height:1.35!important;
+}
+
+/* Tier 2: ~9px -> ~10.8px */
+.mq-stat-difficulty-copy small,
+.mq-stat-highlight span,
+.mq-stat-highlight small,
+.mq-stat-game-main span,
+.mq-stat-game-score span{
+  font-size:10.8px!important;
+  line-height:1.35!important;
+}
+
+/* Tier 3: ~10px -> ~12px */
+.mq-stat-section-head span,
+.mq-stat-section-head small,
+.mq-stat-genre-head span,
+.mq-stat-genre-foot,
+.mq-stat-difficulty-copy span,
+.mq-stat-footer{
+  font-size:12px!important;
+  line-height:1.35!important;
+}
+
+/* Supporting small text that was already 11–12px gets a modest lift too,
+   so visual hierarchy stays consistent after enlarging the three lowest tiers. */
+.mq-stat-metric span{
+  font-size:12px!important;
+}
+.mq-stat-metric small{
+  font-size:12.5px!important;
+}
+.mq-stat-title p{
+  font-size:13px!important;
+}
+.mq-stat-title .mq-stat-kicker{
+  font-size:14px!important;
+}
+
+/* --------------------------------------------------------------------------
+   CONTENT TEXT – force saturated black
+   -------------------------------------------------------------------------- */
+.mq-stat-title .mq-stat-kicker,
+.mq-stat-title p,
+.mq-stat-metric span,
+.mq-stat-metric strong,
+.mq-stat-metric small,
+.mq-stat-section-head span,
+.mq-stat-section-head h2,
+.mq-stat-section-head small,
+.mq-stat-genre-head strong,
+.mq-stat-genre-head span,
+.mq-stat-genre-foot,
+.mq-stat-genre-note,
+.mq-stat-difficulty-copy span,
+.mq-stat-difficulty-copy strong,
+.mq-stat-difficulty-copy small,
+.mq-stat-highlight span,
+.mq-stat-highlight strong,
+.mq-stat-highlight small,
+.mq-stat-game-result,
+.mq-stat-game-main strong,
+.mq-stat-game-main span,
+.mq-stat-game-score strong,
+.mq-stat-game-score span,
+.mq-stat-game-meta,
+.mq-stat-footer,
+.mq-stat-footer strong,
+.mq-stat-state,
+.mq-stat-state h2,
+.mq-stat-state strong,
+.mq-stat-state p,
+.mq-stat-state small{
+  color:#000!important;
+  text-shadow:none!important;
+}
+
+/* Progress bars and ornament can retain subtle noir brass. */
+.mq-stat-bar{
+  background:rgba(0,0,0,.16)!important;
+}
+.mq-stat-bar i{
+  background:linear-gradient(90deg,#1c120a,#815122)!important;
+}
+
+/* --------------------------------------------------------------------------
+   BACK / REFRESH – unified Movie Quiz redesign buttons
+   Dark lacquer, brass keyline, squared Art-Deco geometry.
+   -------------------------------------------------------------------------- */
+.mq-stat-action{
+  position:relative!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:9px!important;
+
+  min-width:142px!important;
+  height:44px!important;
+  padding:0 17px!important;
+
+  border:1px solid #8b5c22!important;
+  border-radius:6px!important;
+
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.055) 0 18%,transparent 18% 100%),
+    linear-gradient(180deg,#17100c 0%,#090604 58%,#030201 100%)!important;
+
+  color:#f1d58f!important;
+  font-family:"Oswald","Arial Narrow",sans-serif!important;
+  font-size:11px!important;
+  font-weight:600!important;
+  line-height:1!important;
+  letter-spacing:.13em!important;
+  text-transform:uppercase!important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,241,197,.12),
+    inset 0 0 0 1px rgba(0,0,0,.82),
+    0 5px 12px rgba(0,0,0,.18)!important;
+
+  cursor:pointer!important;
+  overflow:hidden!important;
+  transition:
+    transform .15s ease,
+    border-color .15s ease,
+    color .15s ease,
+    background .15s ease,
+    box-shadow .15s ease!important;
+}
+
+/* Thin inner Art-Deco rule. */
+.mq-stat-action::after{
+  content:""!important;
+  position:absolute!important;
+  inset:4px!important;
+  pointer-events:none!important;
+  border:1px solid rgba(209,160,72,.18)!important;
+  border-radius:3px!important;
+}
+
+/* Buttons intentionally keep cream/gold text against the black lacquer.
+   This exception is part of the global Movie Quiz button language. */
+#mqStatisticsScene .mq-stat-action{
+  color:#f1d58f!important;
+}
+#mqStatisticsScene .mq-stat-action svg{
+  width:18px!important;
+  height:18px!important;
+  stroke:#f1d58f!important;
+  stroke-width:2!important;
+}
+
+.mq-stat-action:hover,
+.mq-stat-action:focus-visible{
+  transform:translateY(-1px)!important;
+  border-color:#d0a052!important;
+  color:#fff0c4!important;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.075) 0 18%,transparent 18% 100%),
+    linear-gradient(180deg,#26190f 0%,#0d0805 58%,#050302 100%)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,245,211,.16),
+    inset 0 0 0 1px rgba(0,0,0,.85),
+    0 7px 16px rgba(0,0,0,.22),
+    0 0 14px rgba(181,125,39,.08)!important;
+  outline:none!important;
+}
+#mqStatisticsScene .mq-stat-action:hover svg,
+#mqStatisticsScene .mq-stat-action:focus-visible svg{
+  stroke:#fff0c4!important;
+}
+
+/* Keep scroll behavior from v55.1 authoritative after typography growth. */
+.mq-stat-main{
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  scrollbar-gutter:stable!important;
+}
+
+/* Small screen compensation after enlarging copy. */
+@media(max-width:1100px){
+  .mq-stat-title h1{font-size:46px!important}
+  .mq-stat-section-head h2{font-size:28px!important}
+  .mq-stat-title .mq-stat-kicker{font-size:13px!important}
+  .mq-stat-title p{font-size:12px!important}
+  .mq-stat-action{min-width:132px!important;height:42px!important;font-size:10.5px!important}
 }
