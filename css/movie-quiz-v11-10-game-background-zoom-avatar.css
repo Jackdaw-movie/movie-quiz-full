@@ -1,0 +1,171 @@
+/* Movie Quiz v11.10 — ROOT FIX
+   - true single-colour gameplay backgrounds
+   - exact gameplay background geometry: 3px left, 4px right, 20px down
+   - hard isolation of inactive screen views during gameplay/browser zoom
+   - avatar saved status has final size/position from its first visible frame
+*/
+
+/* ========================================================================== 
+   1) FLAT GAMEPLAY BACKGROUND — ACTUAL LIVE LAYERS
+   ========================================================================== */
+
+/* startGame() writes data-genre to BOTH #game and #screen. Keep one variable on
+   the screen so the backdrop and the expanded genre field always use the same
+   exact colour. */
+html body #page #cinema #screen[data-genre="comedy"]{--mq-game-flat:#967137}
+html body #page #cinema #screen[data-genre="fantasy"]{--mq-game-flat:#5d4967}
+html body #page #cinema #screen[data-genre="scifi"]{--mq-game-flat:#355f64}
+html body #page #cinema #screen[data-genre="horror"]{--mq-game-flat:#5a3034}
+html body #page #cinema #screen[data-genre="crime"]{--mq-game-flat:#51483f}
+html body #page #cinema #screen[data-genre="animation"]{--mq-game-flat:#506b7b}
+html body #page #cinema #screen[data-genre="all"],
+html body #page #cinema #screen[data-genre="random"]{--mq-game-flat:#6d5b49}
+
+/* The previous patch hid non-existent .scene-img/.theme-overlay nodes. The live
+   game actually contains #mq-cinematic-fx plus .theme-scene > i.scene-*.
+   Suppress those visual layers only while the game itself is active. */
+html body #page #cinema #screen #game.active > #mq-cinematic-fx,
+html body #page #cinema #screen #game.active > .theme-scene > i,
+html body #page #cinema #screen #game.active > .theme-scene > .scene-a,
+html body #page #cinema #screen #game.active > .theme-scene > .scene-b,
+html body #page #cinema #screen #game.active > .theme-scene > .scene-c,
+html body #page #cinema #screen #game.active > .theme-scene > .scene-d{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  animation:none!important;
+  background:none!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  filter:none!important;
+}
+
+/* Also remove the generic projector grain and dust while a question screen is
+   active. They are texture overlays, so leaving them visible would no longer be
+   a genuinely one-colour background. FX canvas/feedback stay untouched. */
+html body:has(#game.active) #page #cinema #screen > .projection-grain,
+html body:has(#game.active) #page #cinema #screen > #dust{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+}
+
+/* The existing .theme-scene is the actual genre field. Give it only a solid
+   colour and the exact requested geometry relative to the game canvas:
+   - left edge 3 px farther left
+   - right edge 4 px farther right
+   - bottom edge 20 px lower
+   - top stays unchanged. */
+html body #page #cinema #screen #game.active > .theme-scene{
+  display:block!important;
+  position:absolute!important;
+  inset:auto!important;
+  left:-3px!important;
+  top:0!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:calc(100% + 7px)!important;
+  height:calc(100% + 20px)!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  opacity:1!important;
+  visibility:visible!important;
+  background:var(--mq-game-flat,#51483f)!important;
+  background-color:var(--mq-game-flat,#51483f)!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+  transform:none!important;
+  pointer-events:none!important;
+  overflow:hidden!important;
+  z-index:0!important;
+}
+
+/* Opaque safety base in exactly the same colour. If Chrome repaints layers in a
+   different order during browser zoom, there is no auditorium/old genre art to
+   reveal underneath the gameplay UI. */
+html body:has(#game.active) #page #cinema #screen{
+  background:var(--mq-game-flat,#51483f)!important;
+  background-color:var(--mq-game-flat,#51483f)!important;
+  background-image:none!important;
+  overflow:hidden!important;
+  isolation:isolate!important;
+  contain:paint!important;
+}
+
+html body #page #cinema #screen #game.active{
+  position:absolute!important;
+  inset:0!important;
+  left:0!important;
+  top:0!important;
+  right:0!important;
+  bottom:0!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+  overflow:visible!important;
+  isolation:isolate!important;
+  backface-visibility:hidden!important;
+}
+
+/* Keep the approved gameplay UI above the single-colour field. Do not lift the
+   whole #game above #fx; answer effects and feedback remain able to paint. */
+html body #page #cinema #screen #game.active > .hud,
+html body #page #cinema #screen #game.active > .question-wrap{
+  position:relative!important;
+  z-index:6!important;
+}
+
+/* ========================================================================== 
+   2) BROWSER-ZOOM LAYER ISOLATION
+   ========================================================================== */
+
+/* showView() only toggles .active. During Chrome zoom/repaint an inactive view
+   that still exists in the same screen stacking context can briefly become
+   visible. While GAME is active, remove every other view from painting entirely. */
+html body #page #cinema #screen:has(> #game.active) > .view:not(#game){
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+  content-visibility:hidden!important;
+}
+
+/* Active gameplay itself is always one complete opaque paint plane. */
+html body #page #cinema #screen:has(> #game.active) > #game.active{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+}
+
+/* The physical projection mask owns all clipping. This prevents zoom/repaint
+   from exposing layers beyond the painted screen edge. */
+html body #page #cinema > .proscenium > .screen-frame{
+  overflow:hidden!important;
+  isolation:isolate!important;
+  contain:paint!important;
+}
+
+/* ========================================================================== 
+   3) AVATAR SAVED MESSAGE — NO SMALL FIRST FRAME
+   ========================================================================== */
+
+/* v11.8 enlarged/moved the status only AFTER MutationObserver added
+   .is-avatar-saved-v118. That created one visible small frame first. Make the
+   base status use the already-approved final geometry too, so adding the class
+   changes nothing visually and there is no jump/flicker. */
+#mqAvatarModal #mqAvatarStatus,
+#mqAvatarModal #mqAvatarStatus.is-avatar-saved-v118{
+  bottom:142px!important;
+  font-size:19.5px!important;
+  line-height:1.15!important;
+}
