@@ -1,0 +1,103 @@
+/* Movie Quiz v11.9 — PIN offset, flat genre gameplay fields, zoom-layer isolation.
+   This patch is deliberately scoped to the ticket error and active gameplay only. */
+
+/* 1) PIN mismatch: another 30px left from v11.8; vertical position stays -30px. */
+#mqTicketError.mq-pin-mismatch-offset-v118{
+  transform:translate(-50px,-30px)!important;
+}
+
+/* 2) Gameplay backgrounds: keep the existing image elements/assets in the DOM,
+      but do not render them. Each genre now uses one flat, genre-coded colour. */
+body:has(#game.active) #game.active > .theme-scene .scene-img{
+  opacity:0!important;
+  visibility:hidden!important;
+}
+body:has(#game.active) #game.active > .theme-scene .theme-overlay{
+  display:none!important;
+  opacity:0!important;
+}
+
+/* Extend only the background field: 3px left, 4px right, 20px lower. */
+body:has(#game.active) #game.active{
+  overflow:visible!important;
+}
+body:has(#game.active) #game.active > .theme-scene{
+  left:-3px!important;
+  right:-4px!important;
+  top:0!important;
+  bottom:-20px!important;
+  width:auto!important;
+  height:auto!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0!important;
+  transform:none!important;
+  z-index:0!important;
+}
+
+/* One solid colour per genre — no gradients, textures or image tinting. */
+body:has(#game.active[data-genre="comedy"]) #screen,
+#game.active[data-genre="comedy"] > .theme-scene{
+  background:#967137!important;
+}
+body:has(#game.active[data-genre="fantasy"]) #screen,
+#game.active[data-genre="fantasy"] > .theme-scene{
+  background:#5d4967!important;
+}
+body:has(#game.active[data-genre="scifi"]) #screen,
+#game.active[data-genre="scifi"] > .theme-scene{
+  background:#355f64!important;
+}
+body:has(#game.active[data-genre="horror"]) #screen,
+#game.active[data-genre="horror"] > .theme-scene{
+  background:#5a3034!important;
+}
+body:has(#game.active[data-genre="crime"]) #screen,
+#game.active[data-genre="crime"] > .theme-scene{
+  background:#51483f!important;
+}
+body:has(#game.active[data-genre="animation"]) #screen,
+#game.active[data-genre="animation"] > .theme-scene{
+  background:#506b7b!important;
+}
+body:has(#game.active[data-genre="all"]) #screen,
+body:has(#game.active[data-genre="random"]) #screen,
+#game.active[data-genre="all"] > .theme-scene,
+#game.active[data-genre="random"] > .theme-scene{
+  background:#6d5b49!important;
+}
+
+/* Keep the screen frame as the hard visual boundary. This lets the background
+   bleed by the requested pixels inside the projection field without escaping
+   into the cinema around it. */
+body:has(#game.active) #screen{
+  overflow:hidden!important;
+  isolation:isolate!important;
+}
+
+/* 3) Browser zoom/repaint isolation during gameplay.
+      The inactive sibling views are fully suppressed while #game is active, so
+      zoom cannot expose difficulty/genre/intro layers underneath the game UI. */
+body:has(#game.active) #screen > .view:not(#game){
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+body:has(#game.active) #screen > #game.active{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  z-index:30!important;
+  isolation:isolate!important;
+  backface-visibility:hidden!important;
+}
+
+/* Keep every gameplay control/effect above the flat background on repaints. */
+body:has(#game.active) #game.active > *:not(.theme-scene){
+  z-index:2!important;
+}
+body:has(#game.active) #game.active > .theme-scene{
+  pointer-events:none!important;
+  backface-visibility:hidden!important;
+}

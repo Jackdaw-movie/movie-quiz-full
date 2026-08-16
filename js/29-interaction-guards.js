@@ -336,7 +336,7 @@
 
       text=document.createElement('div');
       text.className='mq-ticket-bubble-text';
-      text.innerHTML='Pojďte sem,<br>máme poslední<br>volná místa!';
+      text.innerHTML='Přistupte.<br>máme poslední<br>volná místa!';
       bubble.append(frameWrap,text);
     }else{
       frames.forEach((img,index)=>{
