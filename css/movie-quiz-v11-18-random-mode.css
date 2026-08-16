@@ -25,22 +25,20 @@ html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="r
   color:#decff1!important;
 }
 
-/* v11.18.5 — screenshot-calibrated question-mark icon.
-   Keep the exact shared 108px genre-icon box and card layout. The question mark
-   itself is 15% smaller than v11.18.4 and the whole icon box is optically moved
-   20px upward. Because transform does not participate in flex layout, the
-   Náhodné label stays registered exactly where it was. */
+/* v11.18.6 — final question-mark alignment + clean icon hover.
+   The question mark is another 5% smaller than v11.18.5 and moved 15px lower,
+   from translateY(-20px) to translateY(-5px). The label/card layout stays fixed. */
 html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"] .genre-icon{
   color:#c6b7db!important;
   font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
-  font-size:clamp(66.3px,5.3125cqw,81.6px)!important;
+  font-size:clamp(62.985px,5.046875cqw,77.52px)!important;
   font-weight:700!important;
   font-style:normal!important;
   line-height:1!important;
   letter-spacing:0!important;
   text-align:center!important;
   text-indent:0!important;
-  transform:translateY(-20px)!important;
+  transform:translateY(-5px)!important;
   text-shadow:0 2px 1px rgba(0,0,0,.64),0 0 7px rgba(198,183,219,.10)!important;
 }
 html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"] .genre-icon::before{
@@ -60,6 +58,21 @@ html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="r
 html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"]:focus-visible .genre-icon{
   color:#d9c9f0!important;
   text-shadow:0 2px 1px rgba(0,0,0,.60),0 0 9px rgba(217,201,240,.18)!important;
+}
+
+/* All genre symbols stay visually frameless on hover/focus.
+   v11.4 had a more-specific hover rule that reintroduced an inner border and
+   dark icon background. The whole genre card still keeps its normal hover. */
+html body.mq-noir-master #page #cinema #screen #genres .genre-card:hover .genre-icon,
+html body.mq-noir-master #page #cinema #screen #genres .genre-card:focus-visible .genre-icon{
+  border:0!important;
+  border-color:transparent!important;
+  border-radius:0!important;
+  background:none!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  clip-path:none!important;
+  outline:none!important;
 }
 
 /* Dedicated mixed-mode screen colour. */
