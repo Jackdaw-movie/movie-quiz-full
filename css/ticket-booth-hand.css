@@ -1,14 +1,14 @@
-/* Movie Quiz – exterior booth hand + bubble v10.8
+/* Movie Quiz – exterior booth hand + bubble v10.9
    Direct DOM-timed rebuild over the current working exterior.
 
    Fixes in this version:
    - old baked hand+bubble WebP overlay is disabled
    - hand uses the approved single transparent asset in a FIXED clipping portal
-   - hand is 4 px higher than the previous version
-   - bubble uses the existing ordered frame assets 1→2→3→4→5 and back
-   - reveal/hide is deliberately fast (timed by js/29-interaction-guards.js v30)
+   - hand remains 4 px higher than the earlier version
+   - bubble uses the existing final bubble asset
+   - reveal/hide timing is controlled by js/29-interaction-guards.js v30.2
    - text is physically inside the bubble UI container, so it stays locked to the bubble
-   - text timing is controlled by the same JS loop, avoiding CSS drift
+   - text is moved 10 px higher
 */
 
 /* =========================================================
@@ -135,7 +135,7 @@ body.mq-exterior-active #mqDebugToggle:hover{
 .mq-ticket-bubble-text{
   position:absolute;
   left:62px;
-  top:45px;
+  top:35px;
   width:165px;
   height:85px;
   z-index:2;
