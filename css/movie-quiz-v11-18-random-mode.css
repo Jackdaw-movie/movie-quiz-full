@@ -25,13 +25,11 @@ html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="r
   color:#decff1!important;
 }
 
-/* v11.18.6 — final question-mark alignment + clean icon hover.
-   The question mark is another 5% smaller than v11.18.5 and moved 15px lower,
-   from translateY(-20px) to translateY(-5px). The label/card layout stays fixed. */
+/* v11.18.7 — Thriller label/icon refinement + smaller Random question mark. */
 html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"] .genre-icon{
   color:#c6b7db!important;
   font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
-  font-size:clamp(62.985px,5.046875cqw,77.52px)!important;
+  font-size:clamp(59.83575px,4.79453125cqw,73.644px)!important;
   font-weight:700!important;
   font-style:normal!important;
   line-height:1!important;
@@ -58,6 +56,22 @@ html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="r
 html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"]:focus-visible .genre-icon{
   color:#d9c9f0!important;
   text-shadow:0 2px 1px rgba(0,0,0,.60),0 0 9px rgba(217,201,240,.18)!important;
+}
+
+/* The old Crime/Thriller card is presented simply as Thriller. Keep the same
+   typography while replacing only the visible label. */
+html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="crime"] .card-copy strong{
+  font-size:0!important;
+}
+html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="crime"] .card-copy strong::after{
+  content:"Thriller"!important;
+  font-size:clamp(18px,1.55vw,24px)!important;
+  line-height:1.08!important;
+}
+
+/* Lower only the Thriller pictogram by 20px; the text and card stay fixed. */
+html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="crime"] .genre-icon{
+  transform:translateY(20px)!important;
 }
 
 /* All genre symbols stay visually frameless on hover/focus.
