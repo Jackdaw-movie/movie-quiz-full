@@ -138,18 +138,18 @@
   window.MovieQuizExteriorZoom=Object.freeze({version:'29.0-zoom-safe',updateNow:applyZoomSafeExteriorFit});
 })();
 
-/* Movie Quiz – ticket booth hand + bubble controller v30.1
+/* Movie Quiz – ticket booth hand + bubble controller v30.2
    Uses the approved static hand and the unclipped final bubble asset. */
 (()=>{
   'use strict';
 
   const HAND_SRC='assets/exterior-v6-9/production/ticket-booth-hand.png';
   const BUBBLE_SRC='assets/exterior-v6-9/production/ticket-booth-bubble-final.png';
-  const BUBBLE_TRANSITION_MS=140;
-  const HAND_MS=2600;
-  const BUBBLE_START_IN_HAND_MS=2050;
+  const BUBBLE_TRANSITION_MS=154;
+  const HAND_MS=3120;
+  const BUBBLE_START_IN_HAND_MS=2460;
   const BUBBLE_HOLD_MS=7000;
-  const TEXT_DELAY_MS=2000;
+  const TEXT_DELAY_MS=800;
   const SECOND_HAND_DELAY_MS=1200;
   const HIDDEN_TO_NEXT_HAND_MS=2950;
 
@@ -324,5 +324,5 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
   else init();
 
-  window.MovieQuizTicketBoothAnimation=Object.freeze({version:'30.1-dom-sync',restart:start});
+  window.MovieQuizTicketBoothAnimation=Object.freeze({version:'30.2-dom-sync',restart:start});
 })();
