@@ -1,18 +1,25 @@
-/* Movie Quiz – exterior booth hand + bubble v10
-   - keeps the approved hand animation / hover / home button fixes
-   - replaces the old CSS-drawn bubble with an animated asset-based bubble loop
-   - bubble grows from the lower-left tail corner, holds 5 s with text, shrinks back,
-     then waits 3 s and repeats
+/* Movie Quiz – exterior booth hand + bubble v10.2
+   Fixes:
+   - removes the broad hover reset that broke exterior layout/positioning
+   - keeps only the approved ticket-booth hotspot as the active shoe cursor area
+   - corrected bubble step order according to the supplied 1→2→3→4→5 sequence
+   - all bubble assets are 15% smaller
+   - bubble animation moved 60 px up and 20 px left
+   - headline text uses the project's title-style condensed font
 */
 
 /* =========================================================
    TICKET BOOTH – THE ONLY ACTIVE EXTERIOR HOVER TARGET
    ========================================================= */
 
+/* Make decorative stage layers ignore pointer hit-testing.
+   This leaves the actual hotspot as the only interactive exterior region. */
 body.mq-exterior-active #mqExteriorStage > *:not(#mqTicketBoothHotspot){
   pointer-events:none!important;
 }
 
+/* Single approved hotspot for shoes + ticket click.
+   Trim the height so the pavement below the booth no longer feels clickable. */
 body.mq-exterior-active #mqTicketBoothHotspot.mq-booth-button{
   clip-path:none!important;
   -webkit-clip-path:none!important;
@@ -26,44 +33,31 @@ body.mq-exterior-active #mqTicketBoothHotspot.mq-booth-button{
   cursor:none!important;
   touch-action:manipulation!important;
 }
-
-body.mq-exterior-active #mqExteriorScene,
-body.mq-exterior-active #mqExteriorScene *:not(#mqTicketBoothHotspot),
-body.mq-exterior-active #mqExteriorStage,
-body.mq-exterior-active #mqExteriorStage *:not(#mqTicketBoothHotspot){
-  cursor:default!important;
-}
-body.mq-exterior-active #mqExteriorScene *:not(#mqTicketBoothHotspot):hover,
-body.mq-exterior-active #mqExteriorStage *:not(#mqTicketBoothHotspot):hover{
-  cursor:default!important;
-  filter:none!important;
-  transform:none!important;
-}
 body.mq-exterior-active #mqTicketBoothHotspot,
 body.mq-exterior-active #mqTicketBoothHotspot:hover{
   cursor:none!important;
 }
 
+/* Do NOT wipe transforms on every hovered element. That was what made the page
+   jump toward the lower-right corner. Only neutralize generic cursors/visual hover hints. */
+body.mq-exterior-active #mqExteriorScene,
+body.mq-exterior-active #mqExteriorStage,
+body.mq-exterior-active #mqExteriorScene *:not(#mqTicketBoothHotspot),
+body.mq-exterior-active #mqExteriorStage *:not(#mqTicketBoothHotspot){
+  cursor:default!important;
+}
+
+/* Keep auxiliary controls functional but visually quiet on the exterior. */
 body.mq-exterior-active #mqExteriorAudioOpen:hover,
 body.mq-exterior-active .mq-exterior-audio-toggle:hover,
 body.mq-exterior-active #mqDebugToggle:hover{
-  transform:none!important;
   filter:none!important;
-  background:rgba(12,10,7,.92)!important;
-  border-color:rgba(231,192,108,.65)!important;
-  box-shadow:0 8px 22px rgba(0,0,0,.35)!important;
-}
-body.mq-exterior-active #mqExteriorAudioOpen[aria-expanded="true"],
-body.mq-exterior-active #mqExteriorAudioOpen[aria-expanded="true"]:hover{
-  background:rgba(26,20,13,.96)!important;
-  border-color:rgba(238,197,106,.9)!important;
 }
 
 /* =========================================================
-   HAND ANIMATION – APPROVED SMALLER VERSION
+   HAND ANIMATION – APPROVED VERSION
    ========================================================= */
 
-/* Hand/portal position from the latest approved tuning. */
 #mqExteriorStage::after{
   content:"";
   position:absolute;
@@ -73,7 +67,7 @@ body.mq-exterior-active #mqExteriorAudioOpen[aria-expanded="true"]:hover{
   height:200px;
   z-index:14;
   pointer-events:none;
-  background:url("../assets/exterior-v6-9/production/ticket-booth-hand-wave.webp?v=10.0") 0 0 / 260px 200px no-repeat;
+  background:url("../assets/exterior-v6-9/production/ticket-booth-hand-wave.webp?v=10.2") 0 0 / 260px 200px no-repeat;
   image-rendering:auto;
   transform-origin:left center;
   transform:scale(.9)!important;
@@ -108,31 +102,32 @@ body.mq-ticket-open #mqExteriorStage::after{
 }
 
 /* =========================================================
-   BUBBLE – ASSET-BASED LOOP INSTEAD OF CSS-DRAWN SHAPE
+   BUBBLE – ASSET-BASED LOOP
    ========================================================= */
 
-/* The bubble tail origin is intentionally ~5 px left of the previous setting. */
+/* Whole bubble animation moved 20 px left and 60 px up relative to the prior setup.
+   The asset sequence is 1→2→3→4→5 and then back in reverse. */
 body.mq-exterior-active #mqTicketBoothHotspot::before{
   content:"";
   position:absolute;
-  left:191px;
-  top:14px;
-  width:330px;
-  height:248px;
+  left:171px;
+  top:-46px;
+  width:281px;
+  height:211px;
   z-index:17;
   pointer-events:none;
-  background:url("../assets/exterior-v6-9/production/ticket-booth-bubble-loop.webp?v=10.0") center center / 100% 100% no-repeat;
+  background:url("../assets/exterior-v6-9/production/ticket-booth-bubble-loop.webp?v=10.2") center center / 100% 100% no-repeat;
   image-rendering:auto;
 }
 
-/* The text is pure UI, shown only while the final bubble frame is being held. */
+/* Text appears only during the final held state of the bubble. */
 body.mq-exterior-active #mqTicketBoothHotspot::after{
-  content:"Pojďte sem, máme poslední\A volná místa!";
+  content:"Pojďte sem, máme\A poslední volná místa!";
   position:absolute;
-  left:250px;
-  top:73px;
-  width:208px;
-  min-height:72px;
+  left:226px;
+  top:7px;
+  width:170px;
+  min-height:60px;
   z-index:18;
   display:flex;
   align-items:center;
@@ -141,25 +136,18 @@ body.mq-exterior-active #mqTicketBoothHotspot::after{
   white-space:pre-line;
   color:#15110d;
   font-family:"Bebas Neue","Oswald","Arial Narrow","Aptos","Segoe UI",sans-serif;
-  font-size:26px;
-  line-height:1.04;
-  letter-spacing:.02em;
-  text-shadow:0 1px 0 rgba(255,255,255,.25);
+  font-size:24px;
+  line-height:1.02;
+  letter-spacing:.025em;
+  text-shadow:0 1px 0 rgba(255,255,255,.22);
   opacity:0;
   pointer-events:none;
-  transform:translateY(4px);
   animation:mqTicketBubbleText 9.08s linear infinite;
 }
 
 @keyframes mqTicketBubbleText{
-  0%,6.4%,66.5%,100%{
-    opacity:0;
-    transform:translateY(4px);
-  }
-  8.2%,61.7%{
-    opacity:1;
-    transform:translateY(0);
-  }
+  0%,6.4%,66.5%,100%{opacity:0}
+  8.2%,61.7%{opacity:1}
 }
 
 body:not(.mq-exterior-active) #mqTicketBoothHotspot::before,
@@ -170,7 +158,7 @@ body.mq-ticket-open #mqTicketBoothHotspot::after{
 }
 
 /* =========================================================
-   HOME BUTTON – SAME AS STATISTICS / HALL OF FAME
+   HOME BUTTON – MATCH STATISTICS / HALL OF FAME
    ========================================================= */
 
 #homeBtn.mq-home-dock{
