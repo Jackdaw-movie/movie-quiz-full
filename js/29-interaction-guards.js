@@ -247,22 +247,22 @@
   window.MovieQuizCinemaHome=Object.freeze({version:'30.5-stats-parity',sync:syncCinemaHome});
 })();
 
-/* Movie Quiz – ticket booth hand + bubble controller v30.5
-   Restores the smaller, unclipped bubble geometry from the good v10.5/v10.7
-   sequence. The five PNGs now include transparent safe canvas, so 272×204 is
-   the canvas size, not the visible speech-bubble size. Frame timing is restored
-   to the v10.7 visual cadence (~360 ms 1→5 and ~360 ms 5→1).
-   Text visibility is event-driven: it turns on exactly when frame 5 is assigned
-   and turns off in the same tick frame 5 is left. */
+/* Movie Quiz – ticket booth hand + bubble controller v30.7
+   v11.2: hand stays 20 px farther behind the portal; no-flicker frame stack preserved. All five decoded PNG frames stay mounted in
+   the DOM and the controller only switches the active layer, so changing a
+   bubble frame can never expose an undecoded/blank image between paints.
+   Text visibility is still tied exactly to frame 5. */
 (()=>{
   'use strict';
 
-  const ASSET_VERSION='30.5-v107-geometry';
+  const ASSET_VERSION='30.6-frame-stack';
   const HAND_SRC=`assets/exterior-v6-9/production/ticket-booth-hand.png?v=${ASSET_VERSION}`;
   const BUBBLE_FRAMES=[1,2,3,4,5].map(n=>`assets/exterior-v6-9/production/bubble_frame_${n}.png?v=${ASSET_VERSION}`);
 
-  const HAND_MS=3744;
-  const BUBBLE_START_IN_HAND_MS=2952;
+  /* 3744 ms × 1.15 = 4305.6 ms. */
+  const HAND_MS=4306;
+  /* Preserve the same point on the slower hand-return timeline. */
+  const BUBBLE_START_IN_HAND_MS=3395;
   const BUBBLE_STEP_MS=90;
   const BUBBLE_HOLD_MS=7000;
   const SECOND_HAND_DELAY_MS=1200;
@@ -312,22 +312,40 @@
     bubble.setAttribute('aria-hidden','true');
     bubble.dataset.mqBoothVersion=ASSET_VERSION;
 
-    let bubbleArt=bubble.querySelector('.mq-ticket-bubble-art');
+    let frameWrap=bubble.querySelector('.mq-ticket-bubble-frames');
     let text=bubble.querySelector('.mq-ticket-bubble-text');
-    if(!bubbleArt||!text){
+    let frames=frameWrap?[...frameWrap.querySelectorAll('.mq-ticket-bubble-frame')]:[];
+
+    if(!frameWrap||frames.length!==5||!text){
       bubble.replaceChildren();
-      bubbleArt=document.createElement('img');
-      bubbleArt.className='mq-ticket-bubble-art';
-      bubbleArt.alt='';
-      bubbleArt.decoding='async';
+
+      frameWrap=document.createElement('div');
+      frameWrap.className='mq-ticket-bubble-frames';
+      frameWrap.setAttribute('aria-hidden','true');
+
+      frames=BUBBLE_FRAMES.map((src,index)=>{
+        const img=document.createElement('img');
+        img.className='mq-ticket-bubble-frame';
+        img.dataset.mqBubbleFrame=String(index+1);
+        img.alt='';
+        img.decoding='async';
+        img.src=src;
+        frameWrap.appendChild(img);
+        return img;
+      });
+
       text=document.createElement('div');
       text.className='mq-ticket-bubble-text';
       text.innerHTML='Pojďte sem,<br>máme poslední<br>volná místa!';
-      bubble.append(bubbleArt,text);
+      bubble.append(frameWrap,text);
+    }else{
+      frames.forEach((img,index)=>{
+        const src=BUBBLE_FRAMES[index];
+        if(img.getAttribute('src')!==src)img.src=src;
+      });
     }
-    if(!bubbleArt.getAttribute('src'))bubbleArt.src=BUBBLE_FRAMES[0];
 
-    return {stage,portal,hand,bubble,bubbleArt,text};
+    return {stage,portal,hand,bubble,frameWrap,frames,text};
   }
 
   function preloadOne(src){
@@ -349,8 +367,7 @@
   }
 
   function setBubbleFrame(ui,frameNumber){
-    const src=BUBBLE_FRAMES[frameNumber-1];
-    if(ui.bubbleArt.getAttribute('src')!==src)ui.bubbleArt.src=src;
+    ui.frames.forEach((img,index)=>img.classList.toggle('is-active',index===(frameNumber-1)));
     ui.bubble.dataset.mqBubbleFrame=String(frameNumber);
 
     const textVisible=frameNumber===5;
@@ -372,6 +389,7 @@
       ui.bubble.style.transform='none';
       ui.bubble.dataset.mqBubbleFrame='0';
     }
+    ui?.frames?.forEach(img=>img.classList.remove('is-active'));
     if(ui?.text)ui.text.style.opacity='0';
   }
 
@@ -379,13 +397,13 @@
     handAnimation?.cancel?.();
     handAnimation=ui.hand.animate([
       {transform:'translateX(-112px) rotate(0deg)',offset:0},
-      {transform:'translateX(0px) rotate(0deg)',offset:.20},
-      {transform:'translateX(0px) rotate(-14deg)',offset:.28},
-      {transform:'translateX(0px) rotate(14deg)',offset:.36},
-      {transform:'translateX(0px) rotate(-14deg)',offset:.44},
-      {transform:'translateX(0px) rotate(14deg)',offset:.52},
-      {transform:'translateX(0px) rotate(0deg)',offset:.60},
-      {transform:'translateX(0px) rotate(0deg)',offset:.72},
+      {transform:'translateX(-20px) rotate(0deg)',offset:.20},
+      {transform:'translateX(-20px) rotate(-14deg)',offset:.28},
+      {transform:'translateX(-20px) rotate(14deg)',offset:.36},
+      {transform:'translateX(-20px) rotate(-14deg)',offset:.44},
+      {transform:'translateX(-20px) rotate(14deg)',offset:.52},
+      {transform:'translateX(-20px) rotate(0deg)',offset:.60},
+      {transform:'translateX(-20px) rotate(0deg)',offset:.72},
       {transform:'translateX(-112px) rotate(0deg)',offset:1}
     ],{
       duration:HAND_MS,
@@ -414,8 +432,8 @@
   async function hideBubble(ui,token){
     if(token!==generation||!exteriorActive())return false;
 
-    /* First reverse tick is 5 → 4, so text is hidden before any smaller frame
-       is painted. There is no independent text timer. */
+    /* Frame 5 -> 4 hides text in the same operation, before the smaller frame
+       is exposed. The frame image itself is already decoded and mounted. */
     for(let frame=4;frame>=1;frame--){
       if(token!==generation||!exteriorActive())return false;
       setBubbleFrame(ui,frame);
@@ -426,6 +444,7 @@
       ui.bubble.classList.remove('is-visible','is-text-visible');
       ui.bubble.style.visibility='hidden';
       ui.bubble.dataset.mqBubbleFrame='0';
+      ui.frames.forEach(img=>img.classList.remove('is-active'));
       ui.text.style.opacity='0';
     }
     return true;
@@ -486,11 +505,12 @@
     const ui=ensureUi();
     if(!ui)return;
 
-    /* Bubble/hand assets are decorative. Load/decode them only after the user
-       has left the loading gate, so they cannot compete with the first-paint
-       background or critical exterior assets on a first visit. */
     await preloadAssets();
     if(!initialized)return;
+
+    /* Decoding the detached preload images warms the resource cache; decode the
+       five mounted frame layers too before the first cycle starts. */
+    await Promise.all(ui.frames.map(async img=>{try{await img.decode?.()}catch(_){}}));
     syncToScene();
 
     if(!bodyObserver){
@@ -507,191 +527,7 @@
   else window.addEventListener('mq:preload-entered',scheduleController,{once:true});
 
   window.MovieQuizTicketBoothAnimation=Object.freeze({
-    version:'30.5-v107-geometry-frame5-sync',
+    version:'30.7-frame-stack-no-flicker',
     restart:start
   });
 })();
-
-
-
-/* Movie Quiz – ticket/avatar fine-tune v11.7
-   Text-based and DOM-safe polish layer added after the core guards. */
-(()=>{
-  'use strict';
-  const HOME_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5L12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-6h5v6"/></svg>';
-  const GEAR_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.1a3.9 3.9 0 1 1 0 7.8a3.9 3.9 0 0 1 0-7.8Z"/><path d="M19.4 13.1l1.3-1.1l-1-2.8l-1.7.1a6.9 6.9 0 0 0-1.2-1.2l.1-1.7l-2.8-1l-1.1 1.3a6.9 6.9 0 0 0-1.7 0L10 4.4l-2.8 1l.1 1.7c-.43.33-.83.73-1.2 1.2l-1.7-.1l-1 2.8l1.3 1.1a6.9 6.9 0 0 0 0 1.8l-1.3 1.1l1 2.8l1.7-.1c.35.45.76.86 1.2 1.2l-.1 1.7l2.8 1l1.1-1.3c.56.08 1.13.08 1.7 0l1.1 1.3l2.8-1l-.1-1.7c.45-.35.86-.76 1.2-1.2l1.7.1l1-2.8l-1.3-1.1c.08-.59.08-1.2 0-1.8Z"/></svg>';
-  const BUTTON_SELECTOR='button,a,[role="button"],.mqf-btn';
-  let observer=null;
-
-  function normalize(text){
-    return String(text||'')
-      .replace(/\s+/g,' ')
-      .replace(/[★☆✦✧✩✪✫✬✭✮✯✨⇠⇦⇤↞←↤⇐➜➝➞➟➠➡↩↪]+/g,' ')
-      .trim()
-      .toLowerCase();
-  }
-
-  function elementLabel(el){
-    return normalize(
-      el?.getAttribute?.('aria-label') ||
-      el?.getAttribute?.('title') ||
-      el?.dataset?.mqTip ||
-      el?.textContent
-    );
-  }
-
-  function forEachElement(root, cb){
-    const nodes=root.querySelectorAll('*');
-    nodes.forEach(node=>{
-      try{cb(node)}catch(_){}
-    });
-  }
-
-  function patchPinMismatch(){
-    forEachElement(document, el=>{
-      if(el.children.length) return;
-      const txt=normalize(el.textContent);
-      if(txt==='oba piny se musí shodovat' || txt==='oba piny se musi shodovat'){
-        el.classList.add('mq-pin-match-error-v117');
-      }
-    });
-  }
-
-  function patchAvatarSavedText(){
-    forEachElement(document, el=>{
-      if(el.children.length) return;
-      const txt=normalize(el.textContent);
-      if(txt==='avatar byl uložen' || txt==='avatar byl ulozen'){
-        el.classList.add('mq-avatar-saved-v117');
-      }
-    });
-  }
-
-  function removeDuplicateDecorativeIcons(button){
-    const icons=[...button.querySelectorAll('svg,.icon,[class*="icon"],[class*="star"],[class*="arrow"]')]
-      .filter(node=>node.closest(BUTTON_SELECTOR)===button);
-    if(icons.length>1){
-      icons.slice(1).forEach(node=>node.remove());
-    }
-    const decorative=[...button.querySelectorAll('span,i,b,em,strong,small')]
-      .filter(node=>node.closest(BUTTON_SELECTOR)===button)
-      .filter(node=>/^[★☆✦✧✩✪✫✬✭✮✯✨⇠⇦⇤↞←↤⇐➜➝➞➟➠➡↩↪]+$/.test((node.textContent||'').trim()));
-    if(decorative.length>1){
-      decorative.slice(1).forEach(node=>node.remove());
-    }
-  }
-
-  function patchTicketButtons(){
-    document.querySelectorAll(BUTTON_SELECTOR).forEach(btn=>{
-      const label=elementLabel(btn);
-      if(label.includes('hrát jako host') || label.includes('hrat jako host')){
-        btn.classList.add('mq-single-icon-v117');
-        removeDuplicateDecorativeIcons(btn);
-      }
-      if((label==='zpět' || label==='zpet') && btn.closest('.mq-ticket-facade,.mqf-pin-box,[class*="pin"]')){
-        btn.classList.add('mq-single-icon-v117');
-        removeDuplicateDecorativeIcons(btn);
-      }
-    });
-  }
-
-  function clickSettingsFallback(){
-    const candidates=[
-      '#settingsBtn','#openSettingsBtn','#playerSettingsBtn','#mqSettingsButton',
-      '#mqSettingsToggle','#settingsToggle','#audioSettingsBtn','#gearBtn',
-      '[aria-label*="Nastavení"]','[title*="Nastavení"]','[data-mq-tip*="Nastavení"]',
-      '[aria-label*="Settings"]','[title*="Settings"]','[data-mq-tip*="Settings"]'
-    ];
-    for(const sel of candidates){
-      const node=document.querySelector(sel);
-      if(node){ node.click?.(); return; }
-    }
-    const buttons=[...document.querySelectorAll(BUTTON_SELECTOR)];
-    const node=buttons.find(el=>{
-      if(el.closest('#mqAvatarModal')) return false;
-      const label=elementLabel(el);
-      return label.includes('nastavení') || label.includes('settings');
-    });
-    if(node){ node.click?.(); return; }
-    const menu=document.getElementById('mqSettingsMenu');
-    if(menu){
-      const hidden=menu.hidden || getComputedStyle(menu).display==='none';
-      menu.hidden=!hidden ? true : false;
-      menu.style.display=hidden ? 'block' : 'none';
-      menu.setAttribute('aria-hidden', hidden ? 'false' : 'true');
-    }
-  }
-
-  function ensureAvatarCornerButtons(){
-    const modal=document.getElementById('mqAvatarModal');
-    if(!modal) return;
-    let rail=modal.querySelector('.mq-avatar-corner-rail');
-    if(!rail){
-      rail=document.createElement('div');
-      rail.className='mq-avatar-corner-rail';
-      rail.setAttribute('aria-hidden','false');
-      modal.appendChild(rail);
-    }
-    let gear=rail.querySelector('.mq-avatar-corner-btn.mq-settings');
-    if(!gear){
-      gear=document.createElement('button');
-      gear.type='button';
-      gear.className='mq-avatar-corner-btn mq-settings';
-      gear.setAttribute('aria-label','Nastavení');
-      gear.innerHTML=GEAR_SVG;
-      gear.addEventListener('click',clickSettingsFallback);
-      rail.appendChild(gear);
-    }
-    let home=rail.querySelector('.mq-avatar-corner-btn.mq-home');
-    if(!home){
-      home=document.createElement('button');
-      home.type='button';
-      home.className='mq-avatar-corner-btn mq-home';
-      home.setAttribute('aria-label','Hlavní menu');
-      home.innerHTML=HOME_SVG;
-      home.addEventListener('click',()=>{
-        const existing=document.getElementById('homeBtn');
-        if(existing){ existing.click?.(); return; }
-        const fallback=[...document.querySelectorAll(BUTTON_SELECTOR)]
-          .find(el=>{
-            if(el.closest('#mqAvatarModal')) return false;
-            const label=elementLabel(el);
-            return label.includes('hlavní menu') || label.includes('hlavni menu') || label==='domů' || label==='domu' || label==='home';
-          });
-        fallback?.click?.();
-      });
-      rail.appendChild(home);
-    }
-  }
-
-  function hideAvatarBracketsRuntime(){
-    const modal=document.getElementById('mqAvatarModal');
-    if(!modal) return;
-    modal.querySelectorAll('[class*="bracket"],[class*="Bracket"],[data-avatar-bracket]').forEach(el=>{
-      el.style.display='none';
-      el.style.opacity='0';
-      el.style.visibility='hidden';
-    });
-  }
-
-  function applyAll(){
-    patchPinMismatch();
-    patchAvatarSavedText();
-    patchTicketButtons();
-    ensureAvatarCornerButtons();
-    hideAvatarBracketsRuntime();
-  }
-
-  function init(){
-    applyAll();
-    if(observer) return;
-    observer=new MutationObserver(()=>applyAll());
-    observer.observe(document.documentElement,{childList:true,subtree:true,characterData:true});
-  }
-
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true});
-  else init();
-
-  window.MovieQuizTicketAvatarFineTune=Object.freeze({version:'11.7',apply:applyAll});
-})();
-
