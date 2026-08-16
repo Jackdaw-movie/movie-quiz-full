@@ -547,7 +547,11 @@
       skip.setAttribute('title','Zpět');
     }
     const replay=document.getElementById('replayEnd');
-    if(replay)replay.textContent='Hrát';
+    if(replay){
+      replay.textContent='Odejít ze sálu';
+      replay.setAttribute('aria-label','Odejít ze sálu');
+      replay.setAttribute('title','Odejít ze sálu');
+    }
   }
 
   polishEndingLabels();
@@ -588,4 +592,64 @@
       },17052);
     };
   }
+})();
+
+
+/* Movie Quiz v11.16 — global zoom / repaint isolation.
+   The Statistics scene is stable because it removes every inactive cinema layer
+   from painting. Apply the same principle to the regular #screen views without
+   changing their authored geometry: inactive views do not paint at all and the
+   one active view is kept as a single isolated compositor plane. */
+;(()=>{
+  'use strict';
+  const VERSION='11.16-global-paint-isolation';
+  let observer=null;
+  let raf=0;
+
+  function syncViewPaintState(){
+    raf=0;
+    const screen=document.getElementById('screen');
+    if(!screen)return;
+    const views=[...screen.children].filter(node=>node.classList?.contains('view'));
+    const active=views.find(view=>view.classList.contains('active'))||null;
+
+    for(const view of views){
+      const isActive=view===active;
+      view.dataset.mqPaintState=isActive?'active':'inactive';
+      view.setAttribute('aria-hidden',isActive?'false':'true');
+      try{view.inert=!isActive}catch(_){}
+    }
+    screen.dataset.mqPaintView=active?.id||'none';
+  }
+
+  function scheduleSync(){
+    if(raf)cancelAnimationFrame(raf);
+    syncViewPaintState();
+    raf=requestAnimationFrame(syncViewPaintState);
+  }
+
+  function install(){
+    const screen=document.getElementById('screen');
+    if(!screen)return;
+    syncViewPaintState();
+
+    observer?.disconnect?.();
+    observer=new MutationObserver(mutations=>{
+      if(mutations.some(m=>m.type==='attributes'&&m.attributeName==='class'))scheduleSync();
+    });
+    [...screen.children].forEach(node=>{
+      if(node.classList?.contains('view'))observer.observe(node,{attributes:true,attributeFilter:['class']});
+    });
+
+    window.addEventListener('resize',scheduleSync,{passive:true});
+    window.visualViewport?.addEventListener('resize',scheduleSync,{passive:true});
+    window.visualViewport?.addEventListener('scroll',scheduleSync,{passive:true});
+    window.addEventListener('orientationchange',scheduleSync,{passive:true});
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden)scheduleSync()},{passive:true});
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
+  else install();
+
+  window.MovieQuizZoomIsolation=Object.freeze({version:VERSION,sync:scheduleSync});
 })();

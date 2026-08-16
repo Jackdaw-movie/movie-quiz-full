@@ -1,0 +1,97 @@
+/* Movie Quiz v11.16 — global browser-zoom / repaint isolation.
+   Root cause: showView() only toggles .active, so every old screen remains mounted
+   in the same #screen stacking context. During Chromium browser zoom/re-raster,
+   those inactive layers can briefly repaint above/below the current one. The
+   Statistics scene does not suffer from this because it visibility-isolates all
+   underlying cinema layers. This patch applies that proven strategy to every
+   normal Movie Quiz screen and also gives the major full-screen roots their own
+   stable paint plane. No authored positions/sizes are changed. */
+
+/* 1) Never let an inactive page paint. display:none is intentional here: unlike
+   the physical cinema scenery, inactive .view siblings have no reason to remain
+   rasterized between screen changes. JS mirrors this with data-mq-paint-state. */
+html body #page #cinema #screen > .view:not(.active),
+html body #page #cinema #screen > .view[data-mq-paint-state="inactive"]{
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+  content-visibility:hidden!important;
+}
+
+/* 2) The current page is one explicit paint/compositor plane, matching the
+   successful Statistics treatment. Do not force display/layout: each page keeps
+   its original authored display mode and geometry. */
+html body #page #cinema #screen > .view.active,
+html body #page #cinema #screen > .view[data-mq-paint-state="active"]{
+  visibility:visible!important;
+  opacity:1!important;
+  content-visibility:visible!important;
+  isolation:isolate!important;
+  backface-visibility:hidden!important;
+  -webkit-backface-visibility:hidden!important;
+  transform:translateZ(0)!important;
+}
+
+/* 3) Stabilize the projection surface without changing its coordinates. */
+html body #page #cinema > .proscenium > .screen-frame,
+html body #page #cinema > .proscenium > .screen-frame > #screen{
+  isolation:isolate!important;
+  backface-visibility:hidden!important;
+  -webkit-backface-visibility:hidden!important;
+}
+
+/* 4) Separate full-screen roots. This prevents an old scene underneath the
+   current one from being promoted/repainted during browser zoom. */
+#mqPreloadGate,
+#mqExteriorScene,
+#mqTicketLayer,
+#mqAvatarModal,
+#page{
+  isolation:isolate!important;
+  backface-visibility:hidden!important;
+  -webkit-backface-visibility:hidden!important;
+}
+
+/* Exterior owns the viewport before auditorium entry. Keep the cinema tree out
+   of painting entirely, so it cannot flash through the street/ticket screens. */
+body.mq-exterior-active #page{
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+
+/* Once inside the auditorium, old exterior/ticket layers must never repaint. */
+body.mq-auditorium-entered #mqExteriorScene,
+body.mq-auditorium-entered #mqTicketLayer{
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+
+/* Avatar and ticket are dynamic foreground screens; keep their own plane stable. */
+#mqAvatarModal:not([hidden]),
+body.mq-ticket-open #mqTicketLayer{
+  transform:translateZ(0)!important;
+}
+
+/* 5) Preserve the already-working Statistics isolation verbatim in spirit and
+   strengthen the scene as a single plane. */
+body.mq-statistics-open #mqStatisticsScene{
+  isolation:isolate!important;
+  backface-visibility:hidden!important;
+  -webkit-backface-visibility:hidden!important;
+  transform:translateZ(0)!important;
+}
+
+/* 6) Ending correction requested after v11.15. 64px -> exactly half = 32px. */
+#endView #endScore .mq-end-score-number{
+  font-size:32px!important;
+  line-height:.92!important;
+}
+
+/* The label is now longer than the temporary v11.15 "Hrát", so restore a size
+   that fits the existing button cleanly without moving the button itself. */
+#endView #replayEnd{
+  font-size:18px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
