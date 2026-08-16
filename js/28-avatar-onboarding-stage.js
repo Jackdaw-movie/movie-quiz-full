@@ -177,3 +177,137 @@
 
   window.__mqAvatarStageVersion=VERSION;
 })();
+
+/* Movie Quiz – safe ticket/avatar UI polish v11.8
+   IMPORTANT: intentionally isolated from js/29 interaction/exterior controller. */
+(()=>{
+  'use strict';
+
+  const HOME_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5L12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-6h5v6"/></svg>';
+  const GEAR_SVG='<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M13.5 4.2h5l.8 3a10 10 0 0 1 2.2.9l2.7-1.5 3.5 3.5-1.5 2.7c.4.7.7 1.4.9 2.2l3 .8v5l-3 .8a10 10 0 0 1-.9 2.2l1.5 2.7-3.5 3.5-2.7-1.5a10 10 0 0 1-2.2.9l-.8 3h-5l-.8-3a10 10 0 0 1-2.2-.9L7.8 30l-3.5-3.5 1.5-2.7a10 10 0 0 1-.9-2.2l-3-.8v-5l3-.8c.2-.8.5-1.5.9-2.2l-1.5-2.7 3.5-3.5 2.7 1.5a10 10 0 0 1 2.2-.9z"/><circle cx="16" cy="18.3" r="4.6"/></svg>';
+
+  const clean=value=>String(value||'').replace(/\s+/g,' ').trim();
+
+  function syncPinMismatchPosition(){
+    const error=document.getElementById('mqTicketError');
+    if(!error)return;
+    const normalized=clean(error.textContent).toLocaleLowerCase('cs-CZ').replace(/[.!?]+$/,'');
+    error.classList.toggle('mq-pin-mismatch-offset-v118',normalized==='oba piny se musí shodovat');
+  }
+
+  function stripOneDuplicateSymbol(){
+    const facade=document.getElementById('mqTicketFacade');
+    if(!facade)return;
+
+    const guest=facade.querySelector('.mqf-panel[data-state="name"] .mqf-guest');
+    if(guest){
+      const text=clean(guest.textContent);
+      if(/^★\s*/.test(text))guest.textContent=text.replace(/^★\s*/,'');
+    }
+
+    const registerBack=facade.querySelector('.mqf-panel[data-state="register"] .mqf-back');
+    if(registerBack){
+      const text=clean(registerBack.textContent);
+      if(/^←\s*/.test(text))registerBack.textContent=text.replace(/^←\s*/,'');
+    }
+  }
+
+  function syncAvatarSavedState(){
+    const status=document.getElementById('mqAvatarStatus');
+    if(!status)return;
+    const saved=/^Avatar byl uložen\.?$/i.test(clean(status.textContent));
+    status.classList.toggle('is-avatar-saved-v118',saved);
+  }
+
+  function goHomeFromAvatar(){
+    const modal=document.getElementById('mqAvatarModal');
+    if(modal?.classList.contains('is-onboarding')){
+      /* Use the already-approved onboarding back path first so internal state
+         is not left half-open, then invoke the real Home control. */
+      modal.querySelector('.mq-avatar-close')?.click();
+      setTimeout(()=>document.getElementById('homeBtn')?.click(),60);
+      return;
+    }
+
+    window.MovieQuizAvatars?.close?.();
+    requestAnimationFrame(()=>document.getElementById('homeBtn')?.click());
+  }
+
+  function ensureAvatarCornerControls(){
+    const modal=document.getElementById('mqAvatarModal');
+    const dialog=modal?.querySelector('.mq-avatar-dialog');
+    if(!dialog)return;
+
+    let settings=dialog.querySelector('#mqAvatarSettingsCorner');
+    if(!settings){
+      settings=document.createElement('button');
+      settings.type='button';
+      settings.id='mqAvatarSettingsCorner';
+      settings.className='mq-avatar-corner-control mq-avatar-corner-settings mq-settings-gear';
+      settings.setAttribute('aria-label','Nastavení');
+      settings.setAttribute('title','Nastavení');
+      settings.innerHTML=GEAR_SVG;
+      settings.addEventListener('click',event=>{
+        event.preventDefault();
+        event.stopPropagation();
+        window.MovieQuizSettings?.open?.();
+      });
+      dialog.appendChild(settings);
+    }
+
+    let home=dialog.querySelector('#mqAvatarHomeCorner');
+    if(!home){
+      home=document.createElement('button');
+      home.type='button';
+      home.id='mqAvatarHomeCorner';
+      home.className='mq-avatar-corner-control mq-avatar-corner-home';
+      home.setAttribute('aria-label','Hlavní menu');
+      home.setAttribute('title','Hlavní menu');
+      home.innerHTML=HOME_SVG;
+      home.addEventListener('click',event=>{
+        event.preventDefault();
+        event.stopPropagation();
+        goHomeFromAvatar();
+      });
+      dialog.appendChild(home);
+    }
+
+    syncAvatarSavedState();
+  }
+
+  function bindTargetedObservers(){
+    ensureAvatarCornerControls();
+    stripOneDuplicateSymbol();
+    syncPinMismatchPosition();
+    syncAvatarSavedState();
+
+    const facade=document.getElementById('mqTicketFacade');
+    if(facade && facade.dataset.mqV118Observer!=='1'){
+      facade.dataset.mqV118Observer='1';
+      new MutationObserver(stripOneDuplicateSymbol).observe(facade,{childList:true,subtree:true});
+    }
+
+    const error=document.getElementById('mqTicketError');
+    if(error && error.dataset.mqV118Observer!=='1'){
+      error.dataset.mqV118Observer='1';
+      new MutationObserver(syncPinMismatchPosition).observe(error,{childList:true,subtree:true,characterData:true});
+    }
+
+    const status=document.getElementById('mqAvatarStatus');
+    if(status && status.dataset.mqV118Observer!=='1'){
+      status.dataset.mqV118Observer='1';
+      new MutationObserver(syncAvatarSavedState).observe(status,{childList:true,subtree:true,characterData:true});
+    }
+  }
+
+  const modalObserver=new MutationObserver(()=>bindTargetedObservers());
+  modalObserver.observe(document.documentElement,{childList:true,subtree:true});
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',bindTargetedObservers,{once:true});
+  }else{
+    bindTargetedObservers();
+  }
+
+  window.__mqSafeTicketAvatarPolish='11.8';
+})();
