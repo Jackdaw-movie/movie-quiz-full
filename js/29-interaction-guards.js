@@ -198,3 +198,207 @@
     updateNow:applyZoomSafeExteriorFit
   });
 })();
+
+/* Movie Quiz – ticket booth hand + bubble controller v30.0
+   DOM-based timing replaces the fragile baked synchronized WebP timing.
+   Existing static approved assets are reused, so no new binary upload is needed. */
+(()=>{
+  'use strict';
+
+  const HAND_SRC='assets/exterior-v6-9/production/ticket-booth-hand.png';
+  const BUBBLE_FRAMES=[1,2,3,4,5].map(n=>`assets/exterior-v6-9/production/bubble_frame_${n}.png`);
+  const STEP_MS=30;
+  const HAND_MS=2600;
+  const BUBBLE_START_IN_HAND_MS=2050;
+  const BUBBLE_HOLD_MS=7000;
+  const TEXT_DELAY_MS=2000;
+  const SECOND_HAND_DELAY_MS=1200;
+  const HIDDEN_TO_NEXT_HAND_MS=2950;
+
+  let generation=0;
+  let running=false;
+  let handAnimation=null;
+
+  const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+  const exteriorActive=()=>document.body.classList.contains('mq-exterior-active')&&!document.body.classList.contains('mq-ticket-open');
+
+  function ensureUi(){
+    const stage=document.getElementById('mqExteriorStage');
+    if(!stage)return null;
+
+    let portal=document.getElementById('mqTicketHandPortal');
+    if(!portal){
+      portal=document.createElement('div');
+      portal.id='mqTicketHandPortal';
+      portal.className='mq-ticket-hand-portal';
+      portal.setAttribute('aria-hidden','true');
+      portal.innerHTML=`<img class="mq-ticket-hand-img" src="${HAND_SRC}" alt="">`;
+      stage.appendChild(portal);
+    }
+
+    let bubble=document.getElementById('mqTicketBubbleUi');
+    if(!bubble){
+      bubble=document.createElement('div');
+      bubble.id='mqTicketBubbleUi';
+      bubble.className='mq-ticket-bubble-ui';
+      bubble.setAttribute('aria-hidden','true');
+      bubble.innerHTML=`
+        <img class="mq-ticket-bubble-art" src="${BUBBLE_FRAMES[0]}" alt="">
+        <div class="mq-ticket-bubble-text">Pojďte sem,<br>máme poslední<br>volná místa!</div>`;
+      stage.appendChild(bubble);
+    }
+
+    return {
+      stage,
+      portal,
+      hand:portal.querySelector('.mq-ticket-hand-img'),
+      bubble,
+      bubbleArt:bubble.querySelector('.mq-ticket-bubble-art'),
+      text:bubble.querySelector('.mq-ticket-bubble-text')
+    };
+  }
+
+  function preloadAssets(){
+    [HAND_SRC,...BUBBLE_FRAMES].forEach(src=>{
+      const img=new Image();
+      img.decoding='async';
+      img.src=src;
+    });
+  }
+
+  function resetUi(ui){
+    handAnimation?.cancel?.();
+    handAnimation=null;
+    if(ui?.hand){
+      ui.hand.style.transform='translateX(-112px) rotate(0deg)';
+      ui.hand.style.opacity='1';
+    }
+    if(ui?.bubble){
+      ui.bubble.classList.remove('is-visible','is-text-visible');
+      ui.bubble.style.visibility='hidden';
+    }
+    if(ui?.text)ui.text.style.opacity='0';
+  }
+
+  function runHand(ui){
+    handAnimation?.cancel?.();
+    const keyframes=[
+      {transform:'translateX(-112px) rotate(0deg)',offset:0},
+      {transform:'translateX(0px) rotate(0deg)',offset:.20},
+      {transform:'translateX(0px) rotate(-14deg)',offset:.28},
+      {transform:'translateX(0px) rotate(14deg)',offset:.36},
+      {transform:'translateX(0px) rotate(-14deg)',offset:.44},
+      {transform:'translateX(0px) rotate(14deg)',offset:.52},
+      {transform:'translateX(0px) rotate(0deg)',offset:.60},
+      {transform:'translateX(0px) rotate(0deg)',offset:.72},
+      {transform:'translateX(-112px) rotate(0deg)',offset:1}
+    ];
+    handAnimation=ui.hand.animate(keyframes,{
+      duration:HAND_MS,
+      easing:'cubic-bezier(.42,0,.58,1)',
+      fill:'forwards'
+    });
+    return handAnimation.finished.catch(()=>{});
+  }
+
+  async function showBubble(ui,token){
+    ui.bubble.style.visibility='visible';
+    ui.bubble.classList.add('is-visible');
+    ui.bubble.classList.remove('is-text-visible');
+    ui.text.style.opacity='0';
+    for(let i=0;i<BUBBLE_FRAMES.length;i++){
+      if(token!==generation||!exteriorActive())return false;
+      ui.bubbleArt.src=BUBBLE_FRAMES[i];
+      await sleep(STEP_MS);
+    }
+    return true;
+  }
+
+  async function hideBubble(ui,token){
+    ui.bubble.classList.remove('is-text-visible');
+    ui.text.style.opacity='0';
+    for(let i=BUBBLE_FRAMES.length-2;i>=0;i--){
+      if(token!==generation||!exteriorActive())return false;
+      ui.bubbleArt.src=BUBBLE_FRAMES[i];
+      await sleep(STEP_MS);
+    }
+    if(token===generation){
+      ui.bubble.classList.remove('is-visible');
+      ui.bubble.style.visibility='hidden';
+    }
+    return true;
+  }
+
+  async function cycle(token,ui){
+    while(token===generation&&exteriorActive()){
+      runHand(ui);
+      await sleep(BUBBLE_START_IN_HAND_MS);
+      if(token!==generation||!exteriorActive())break;
+
+      const shown=await showBubble(ui,token);
+      if(!shown)break;
+
+      const textTimer=setTimeout(()=>{
+        if(token===generation&&exteriorActive()){
+          ui.bubble.classList.add('is-text-visible');
+          ui.text.style.opacity='1';
+        }
+      },TEXT_DELAY_MS);
+
+      const secondHandTimer=setTimeout(()=>{
+        if(token===generation&&exteriorActive())runHand(ui);
+      },SECOND_HAND_DELAY_MS);
+
+      await sleep(BUBBLE_HOLD_MS);
+      clearTimeout(textTimer);
+      clearTimeout(secondHandTimer);
+      if(token!==generation||!exteriorActive())break;
+
+      ui.bubble.classList.remove('is-text-visible');
+      ui.text.style.opacity='0';
+      await hideBubble(ui,token);
+      if(token!==generation||!exteriorActive())break;
+
+      await sleep(HIDDEN_TO_NEXT_HAND_MS);
+    }
+    resetUi(ui);
+    running=false;
+  }
+
+  function start(){
+    const ui=ensureUi();
+    if(!ui)return;
+    generation++;
+    const token=generation;
+    resetUi(ui);
+    if(!exteriorActive())return;
+    running=true;
+    cycle(token,ui);
+  }
+
+  function syncToScene(){
+    if(exteriorActive()){
+      if(!running)start();
+    }else{
+      generation++;
+      const ui=ensureUi();
+      resetUi(ui);
+      running=false;
+    }
+  }
+
+  function init(){
+    preloadAssets();
+    ensureUi();
+    syncToScene();
+    new MutationObserver(syncToScene).observe(document.body,{attributes:true,attributeFilter:['class']});
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
+  else init();
+
+  window.MovieQuizTicketBoothAnimation=Object.freeze({
+    version:'30.0-dom-sync',
+    restart:start
+  });
+})();
