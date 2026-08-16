@@ -87,7 +87,7 @@ body.mq-exterior-active #mqDebugToggle:hover{
   height:360px;
   z-index:14;
   pointer-events:none;
-  background:url("../assets/exterior-v6-9/production/ticket-booth-synced-loop.webp?v=10.7") 0 0 / 500px 360px no-repeat;
+  background:url("../assets/exterior-v6-9/production/ticket-booth-synced-loop.webp?v=10.7.1") 0 0 / 500px 360px no-repeat;
   image-rendering:auto;
   transform:none!important;
 }
@@ -143,14 +143,13 @@ body.mq-exterior-active #mqTicketBoothHotspot::after{
   animation:mqTicketBubbleTextSync 12.96s linear infinite;
 }
 
-/* Bubble starts at 4.30 s.
-   Step 4 starts at 4.66 s -> text appears here.
-   Final state holds 7 s (4.78–11.78 s).
-   On the reverse step 4 (11.78–11.90 s), the text fades away. */
+/* Bubble growth is ~20% faster.
+   Text appears only when the bubble is fully formed (4.78 s)
+   and disappears first, right when the bubble starts retracting (11.78 s). */
 @keyframes mqTicketBubbleTextSync{
-  0%,35.95%{opacity:0}
-  36.00%,90.89%{opacity:1}
-  91.82%,100%{opacity:0}
+  0%,36.88%{opacity:0}
+  36.89%,90.89%{opacity:1}
+  90.90%,100%{opacity:0}
 }
 
 body:not(.mq-exterior-active) #mqTicketBoothHotspot::after,
