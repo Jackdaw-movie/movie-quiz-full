@@ -1,7 +1,9 @@
-/* Movie Quiz – ticket booth hand / exterior interaction v8
-   - hand + fixed wall 2 px left from v7
-   - 3 s animation cooldown preserved
-   - only ticket booth has exterior hover affordance / shoe cursor
+/* Movie Quiz – ticket booth hand / exterior interaction v9
+   - hand + portal moved 1 px left from v8
+   - hand visually reduced by 10% while keeping the booth-side anchor fixed
+   - speech bubble appears once every 2 hand cycles
+   - floor under the booth is no longer an interactive hover area
+   - only the approved ticket booth hotspot can show the shoe cursor / open ticket
    - auditorium Home button matches Statistics / Hall of Fame styling
 */
 
@@ -17,37 +19,49 @@ body.mq-exterior-active #mqExteriorStage > *:not(#mqTicketBoothHotspot){
 }
 
 /* Make the whole approved booth area one contiguous interactive target.
-   js/26-exterior-scene.js already owns pointerenter/pointermove/click here,
-   therefore this is the only area that can show the shoe cursor and open ticket. */
+   Height is trimmed so the marble floor below the booth is no longer treated
+   as an interactive area. */
 body.mq-exterior-active #mqTicketBoothHotspot.mq-booth-button{
   clip-path:none!important;
   -webkit-clip-path:none!important;
   left:810px!important;
   top:444px!important;
   width:270px!important;
-  height:410px!important;
+  height:360px!important;
   z-index:15!important;
+  overflow:visible!important;
   pointer-events:auto!important;
   cursor:none!important;
   touch-action:manipulation!important;
 }
 
-/* Everywhere else on the exterior uses the ordinary cursor, even for controls.
-   Controls remain clickable; only the misleading hover/cursor affordance is gone. */
+/* Everywhere else on the exterior uses the ordinary cursor and must not create
+   any fake hover affordance. */
 body.mq-exterior-active #mqExteriorScene,
-body.mq-exterior-active #mqExteriorScene *:not(#mqTicketBoothHotspot){
+body.mq-exterior-active #mqExteriorScene *:not(#mqTicketBoothHotspot),
+body.mq-exterior-active #mqExteriorStage,
+body.mq-exterior-active #mqExteriorStage *:not(#mqTicketBoothHotspot){
   cursor:default!important;
 }
-body.mq-exterior-active #mqTicketBoothHotspot{
+body.mq-exterior-active #mqExteriorScene *:not(#mqTicketBoothHotspot):hover,
+body.mq-exterior-active #mqExteriorStage *:not(#mqTicketBoothHotspot):hover{
+  cursor:default!important;
+  filter:none!important;
+  transform:none!important;
+}
+body.mq-exterior-active #mqTicketBoothHotspot,
+body.mq-exterior-active #mqTicketBoothHotspot:hover{
   cursor:none!important;
 }
 
-/* Exterior audio remains functional but no longer visually reacts on hover. */
+/* Exterior audio and debug controls remain functional but no longer visually
+   react like separate hover targets while the exterior is active. */
 body.mq-exterior-active #mqExteriorAudioOpen:hover,
-body.mq-exterior-active .mq-exterior-audio-toggle:hover{
+body.mq-exterior-active .mq-exterior-audio-toggle:hover,
+body.mq-exterior-active #mqDebugToggle:hover{
   transform:none!important;
   filter:none!important;
-  background:rgba(9,9,11,.91)!important;
+  background:rgba(12,10,7,.92)!important;
   border-color:rgba(231,192,108,.65)!important;
   box-shadow:0 8px 22px rgba(0,0,0,.35)!important;
 }
@@ -57,53 +71,46 @@ body.mq-exterior-active #mqExteriorAudioOpen[aria-expanded="true"]:hover{
   border-color:rgba(238,197,106,.9)!important;
 }
 
-/* Debug control can still be used, but it has no separate hover reaction while
-   the exterior is active. */
-body.mq-exterior-active #mqDebugToggle:hover{
-  background:rgba(12,10,7,.92)!important;
-  transform:none!important;
-  filter:none!important;
-}
-
 /* =========================================================
    HAND ANIMATION – FIXED PORTAL
    ========================================================= */
 
-/* v7 portal x=1007 -> v8 x=1005. Moving this fixed canvas also moves the hand
-   exactly 2 px left; its y-position and dimensions remain untouched. */
+/* v8 x=1005 -> v9 x=1004. Keep the booth-side anchor fixed and simply scale the
+   animated hand down by 10%. */
 #mqExteriorStage::after{
   content:"";
   position:absolute;
-  left:1005px;
+  left:1004px;
   top:540px;
   width:260px;
   height:200px;
   z-index:14;
   pointer-events:none;
-  background:url("../assets/exterior-v6-9/production/ticket-booth-hand-wave.webp?v=8.0") 0 0 / 260px 200px no-repeat;
+  background:url("../assets/exterior-v6-9/production/ticket-booth-hand-wave.webp?v=9.0") 0 0 / 260px 200px no-repeat;
   image-rendering:auto;
-  transform:none!important;
+  transform-origin:left center;
+  transform:scale(.9)!important;
 }
 
-/* v7 shadow x=1004 -> v8 x=1002. */
+/* v8 shadow x=1002 -> v9 x=1001. */
 #mqExteriorStage::before{
   content:"";
   position:absolute;
-  left:1002px;
+  left:1001px;
   top:621px;
-  width:24px;
-  height:56px;
+  width:26px;
+  height:58px;
   z-index:16;
   pointer-events:none;
   background:radial-gradient(
     ellipse at 15% 50%,
-    rgba(0,0,0,.42) 0%,
-    rgba(0,0,0,.24) 34%,
-    rgba(0,0,0,.09) 58%,
-    rgba(0,0,0,0) 82%
+    rgba(0,0,0,.48) 0%,
+    rgba(0,0,0,.28) 34%,
+    rgba(0,0,0,.11) 60%,
+    rgba(0,0,0,0) 84%
   );
-  filter:blur(.8px);
-  opacity:.78;
+  filter:blur(1px);
+  opacity:.82;
   mix-blend-mode:multiply;
 }
 
@@ -115,11 +122,89 @@ body.mq-ticket-open #mqExteriorStage::after{
 }
 
 /* =========================================================
+   SPEECH BUBBLE – EVERY SECOND CYCLE
+   ========================================================= */
+
+/* The animated hand loop is ~8.35 s. The bubble runs on a 16.7 s cycle and is
+   shown only during the first half, so it appears once every 2 hand cycles. */
+body.mq-exterior-active #mqTicketBoothHotspot::before{
+  content:"Pojďte sem, máme poslední volná místa!";
+  position:absolute;
+  left:196px;
+  top:30px;
+  width:252px;
+  padding:16px 20px 17px;
+  border:2px solid rgba(154,111,38,.82);
+  border-radius:30px 30px 30px 22px;
+  background:
+    radial-gradient(circle at 30% 18%,rgba(255,248,231,.82),transparent 34%),
+    linear-gradient(180deg,rgba(243,218,168,.98),rgba(231,205,151,.98));
+  color:#15110d;
+  font:900 20px/1.16 "Bebas Neue","Oswald","Arial Narrow","Aptos","Segoe UI",sans-serif;
+  letter-spacing:.02em;
+  text-align:center;
+  box-shadow:
+    0 14px 34px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.5);
+  pointer-events:none;
+  white-space:normal;
+  opacity:0;
+  transform:translate(12px,12px) scale(.88);
+  transform-origin:18% 88%;
+  animation:mqTicketSpeechBubble 16.7s linear infinite;
+}
+
+body.mq-exterior-active #mqTicketBoothHotspot::after{
+  content:"";
+  position:absolute;
+  left:220px;
+  top:138px;
+  width:38px;
+  height:38px;
+  border-left:2px solid rgba(154,111,38,.82);
+  border-bottom:2px solid rgba(154,111,38,.82);
+  border-radius:0 0 0 18px;
+  background:linear-gradient(180deg,rgba(242,216,165,.98),rgba(231,205,151,.98));
+  transform:translate(4px,6px) rotate(16deg) skewX(-18deg) scale(.9);
+  box-shadow:0 10px 24px rgba(0,0,0,.18);
+  pointer-events:none;
+  opacity:0;
+  animation:mqTicketSpeechTail 16.7s linear infinite;
+}
+
+@keyframes mqTicketSpeechBubble{
+  0%,13%,36%,100%{
+    opacity:0;
+    transform:translate(12px,12px) scale(.88);
+  }
+  15%,33%{
+    opacity:1;
+    transform:translate(0,0) scale(1);
+  }
+}
+
+@keyframes mqTicketSpeechTail{
+  0%,13%,36%,100%{
+    opacity:0;
+    transform:translate(4px,6px) rotate(16deg) skewX(-18deg) scale(.9);
+  }
+  15%,33%{
+    opacity:1;
+    transform:translate(0,0) rotate(16deg) skewX(-18deg) scale(1);
+  }
+}
+
+body:not(.mq-exterior-active) #mqTicketBoothHotspot::before,
+body:not(.mq-exterior-active) #mqTicketBoothHotspot::after,
+body.mq-ticket-open #mqTicketBoothHotspot::before,
+body.mq-ticket-open #mqTicketBoothHotspot::after{
+  display:none!important;
+}
+
+/* =========================================================
    HOME BUTTON – MATCH STATISTICS / HALL OF FAME
    ========================================================= */
 
-/* Keep the existing dock position/behavior. Only the visual language is replaced
-   with the same 48×48 black/gold square used by Statistics. */
 #homeBtn.mq-home-dock{
   display:inline-flex!important;
   align-items:center!important;
