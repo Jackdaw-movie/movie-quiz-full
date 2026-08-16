@@ -653,3 +653,711 @@
 
   window.MovieQuizZoomIsolation=Object.freeze({version:VERSION,sync:scheduleSync});
 })();
+
+
+/* ==========================================================================
+   Movie Quiz v11.18 — NÁHODNÉ + canonical question IDs + genre attribution
+   --------------------------------------------------------------------------
+   Architecture:
+   - "random" is a game-selection mode, not a seventh source genre.
+   - One server-verified random session contains questions from all six genres.
+   - The server resolves every source genre from question_id, never from client text.
+   - Completed random answers are redistributed into the six real genre profiles.
+   - Overall game history still shows the completed projection as "Náhodné".
+   ========================================================================== */
+;(()=>{
+  'use strict';
+
+  const VERSION='11.18-random-mode-source-genre-stats';
+  const RANDOM='random';
+  const RANDOM_LABEL='Náhodné';
+  const SOURCE_GENRES=['fantasy','horror','scifi','crime','animation','comedy'];
+  const LABELS={
+    fantasy:'Fantasy',
+    horror:'Horor',
+    scifi:'Sci-fi',
+    crime:'Krimi a thriller',
+    animation:'Animace',
+    comedy:'Komedie'
+  };
+
+  const baseStartGame=window.startGame;
+  const baseNextQuestion=window.nextQuestion;
+  const baseAnswer=window.answer;
+  const baseQuestionBank=window.MovieQuizQuestionBank||null;
+
+  let active=false;
+  let finished=false;
+  let sessionId='';
+  let currentQuestion=null;
+  let loading=false;
+  let answering=false;
+  let shownAt=0;
+  let activeAudio=null;
+  let statsBusy=false;
+  let statsTimer=0;
+  let statsObserver=null;
+  let lastQuestionId='';
+
+  const onlineApi=()=>window.MovieQuizOnline;
+  const questionWrap=()=>document.querySelector('#game .question-wrap');
+  const rows=data=>Array.isArray(data)?data:(data?[data]:[]);
+  const integer=v=>Math.max(0,Math.round(Number(v)||0));
+  const number=v=>Number.isFinite(Number(v))?Number(v):0;
+  const pct=v=>`${Math.max(0,Math.min(100,number(v))).toLocaleString('cs-CZ',{maximumFractionDigits:1})} %`;
+  const gamesWord=n=>n===1?'hra':n>=2&&n<=4?'hry':'her';
+
+  function jsonValue(value,fallback=[]){
+    if(Array.isArray(value))return value;
+    if(value&&typeof value==='object')return value;
+    if(typeof value==='string'){try{return JSON.parse(value)}catch(_){}}
+    return fallback;
+  }
+
+  function addLabel(){
+    try{genreLabels[RANDOM]=RANDOM_LABEL}catch(_){}
+  }
+
+  function installButton(){
+    addLabel();
+    const grid=document.querySelector('#genres .genre-grid');
+    if(!grid)return false;
+    grid.classList.add('mq-random-seven');
+    if(grid.querySelector('.genre-card[data-genre="random"]'))return true;
+
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='selection-card genre-card mq-random-genre-card';
+    button.dataset.genre=RANDOM;
+    button.setAttribute('aria-label','Náhodný mix všech filmových žánrů');
+    button.innerHTML=`
+      <span class="selection-icon genre-icon" aria-hidden="true">
+        <svg viewBox="0 0 72 72">
+          <circle cx="31" cy="36" r="21"/>
+          <circle cx="31" cy="36" r="5"/>
+          <circle cx="31" cy="22" r="3.4"/>
+          <circle cx="43" cy="31" r="3.4"/>
+          <circle cx="38" cy="45" r="3.4"/>
+          <circle cx="23" cy="46" r="3.4"/>
+          <circle cx="19" cy="31" r="3.4"/>
+          <path d="M51 18c8 1 12 5 12 10 0 6-5 8-9 10-5 2-6 5-6 10"/>
+          <path d="M48 56h.1"/>
+        </svg>
+      </span>
+      <span class="card-copy"><strong>${RANDOM_LABEL}</strong></span>`;
+    button.addEventListener('click',()=>window.startGame?.(RANDOM));
+    grid.appendChild(button);
+    return true;
+  }
+
+  function tagQuestion(questionId,sourceGenre='',externalId=''){
+    const id=String(questionId||'').trim();
+    lastQuestionId=id;
+    const wrap=questionWrap();
+    const q=document.getElementById('question');
+    const answers=document.querySelectorAll('#answers .answer');
+
+    for(const el of [wrap,q]){
+      if(!el)continue;
+      if(id)el.dataset.questionId=id;else delete el.dataset.questionId;
+      if(externalId)el.dataset.questionExternalId=String(externalId);else delete el.dataset.questionExternalId;
+      if(sourceGenre)el.dataset.questionSourceGenre=sourceGenre;else delete el.dataset.questionSourceGenre;
+    }
+    answers.forEach(el=>{
+      if(id)el.dataset.questionId=id;else delete el.dataset.questionId;
+    });
+  }
+
+  function mediaStage(){
+    let stage=document.getElementById('mqMediaStage');
+    if(stage)return stage;
+    stage=document.createElement('div');
+    stage.id='mqMediaStage';
+    document.getElementById('question')?.parentNode?.insertBefore(stage,document.getElementById('question'));
+    return stage;
+  }
+
+  function stopMedia(){
+    if(activeAudio){try{activeAudio.pause()}catch(_){} activeAudio=null}
+    mediaStage().innerHTML='';
+  }
+
+  function publicMediaUrl(storagePath){
+    const db=onlineApi()?.getClient?.();
+    if(db){
+      const result=db.storage.from('quiz-media').getPublicUrl(storagePath);
+      if(result?.data?.publicUrl)return result.data.publicUrl;
+    }
+    return `https://ymfaskxcgtgflhnjoylz.supabase.co/storage/v1/object/public/quiz-media/${String(storagePath||'').split('/').map(encodeURIComponent).join('/')}`;
+  }
+
+  function formatSeconds(value){
+    const total=Math.max(0,Math.ceil(Number(value)||0));
+    return `${Math.floor(total/60)}:${String(total%60).padStart(2,'0')}`;
+  }
+
+  function renderMedia(mediaItems){
+    stopMedia();
+    const stage=mediaStage();
+    const items=jsonValue(mediaItems,[]);
+    if(!items.length)return;
+    const item=items[0]||{};
+    const path=item.storagePath||item.storage_path;
+    if(!path)return;
+    const url=publicMediaUrl(path);
+    const type=item.type||'';
+
+    if(type==='image'){
+      const img=document.createElement('img');
+      img.className='mq-media-image';img.src=url;img.alt='Obrazová filmová otázka';img.loading='eager';img.decoding='async';
+      stage.appendChild(img);return;
+    }
+    if(type==='video'){
+      const video=document.createElement('video');
+      video.className='mq-media-video';video.src=url;video.controls=true;video.preload='metadata';video.playsInline=true;
+      stage.appendChild(video);return;
+    }
+    if(type!=='audio')return;
+
+    const clipStart=Math.max(0,Number(item.clipStartMs||item.clip_start_ms||0)/1000);
+    const rawEnd=item.clipEndMs??item.clip_end_ms;
+    const clipEnd=rawEnd==null?null:Math.max(clipStart,Number(rawEnd)/1000);
+    const audio=new Audio(url);audio.preload='metadata';activeAudio=audio;
+
+    const card=document.createElement('div');card.className='mq-audio-card';
+    const head=document.createElement('div');head.className='mq-audio-head';
+    const button=document.createElement('button');button.type='button';button.className='mq-audio-play';button.textContent='▶';button.setAttribute('aria-label','Přehrát zvukovou ukázku');
+    const copy=document.createElement('div');copy.className='mq-audio-copy';
+    const title=document.createElement('div');title.className='mq-audio-title';title.textContent='Zvuková stopa';
+    const time=document.createElement('div');time.className='mq-audio-time';time.textContent='Připraveno k přehrání';
+    const progress=document.createElement('div');progress.className='mq-audio-progress';progress.innerHTML='<i></i>';
+    copy.append(title,time);head.append(button,copy);card.append(head,progress);stage.appendChild(card);
+    const fill=progress.querySelector('i');
+
+    const duration=()=>{
+      if(clipEnd!=null)return Math.max(.1,clipEnd-clipStart);
+      if(Number.isFinite(audio.duration))return Math.max(.1,audio.duration-clipStart);
+      return Math.max(.1,Number(item.durationMs||item.duration_ms||10000)/1000);
+    };
+    const reset=()=>{
+      audio.pause();button.textContent='▶';fill.style.width='0%';time.textContent=`Ukázka ${formatSeconds(duration())}`;
+      try{audio.currentTime=clipStart}catch(_){}
+    };
+    const update=()=>{
+      const elapsed=Math.max(0,audio.currentTime-clipStart),d=duration();
+      fill.style.width=`${Math.min(100,elapsed/d*100)}%`;
+      time.textContent=`Zbývá ${formatSeconds(Math.max(0,d-elapsed))}`;
+      if((clipEnd!=null&&audio.currentTime>=clipEnd)||elapsed>=d)reset();
+    };
+    button.addEventListener('click',async()=>{
+      if(!audio.paused){audio.pause();button.textContent='▶';return}
+      if(audio.currentTime<clipStart||audio.currentTime>=clipStart+duration())audio.currentTime=clipStart;
+      try{await audio.play();button.textContent='❚❚'}catch(_){time.textContent='Zvuk se nepodařilo přehrát'}
+    });
+    audio.addEventListener('loadedmetadata',()=>{if(audio.currentTime<clipStart)audio.currentTime=clipStart;time.textContent=`Ukázka ${formatSeconds(duration())}`});
+    audio.addEventListener('timeupdate',update);
+    audio.addEventListener('pause',()=>{if(audio.currentTime<clipStart+duration())button.textContent='▶'});
+    audio.addEventListener('ended',reset);
+    if(item.autoplay)audio.addEventListener('canplay',()=>button.click(),{once:true});
+  }
+
+  function loadingState(){
+    state.locked=true;
+    questionWrap()?.classList.add('mq-db-loading');
+    document.getElementById('qType').textContent='Online databáze';
+    document.getElementById('qEra').textContent=RANDOM_LABEL;
+    document.getElementById('question').textContent='Losuji otázku napříč filmovými žánry…';
+    answersEl.innerHTML='<div class="mq-db-loading-card"><i class="mq-db-spinner" aria-hidden="true"></i><span>Chystá se další filmová otázka</span></div>';
+    stopMedia();
+  }
+
+  function errorState(error){
+    console.error('Movie Quiz random:',error);
+    state.locked=true;
+    questionWrap()?.classList.remove('mq-db-loading');
+    document.getElementById('qType').textContent='Online databáze';
+    document.getElementById('qEra').textContent=RANDOM_LABEL;
+    document.getElementById('question').textContent='Náhodnou otázku se nepodařilo načíst';
+    answersEl.innerHTML=`<div class="mq-db-error-card">
+      <strong>Náhodný režim zůstal aktivní</strong>
+      <span>${String(error?.message||'Databázová část režimu Náhodné ještě není dostupná.')}</span>
+      <div class="mq-db-error-actions">
+        <button type="button" class="mq-db-retry" id="mqRandomRetry">Zkusit znovu</button>
+        <button type="button" class="mq-db-menu" id="mqRandomMenu">Zpět do nabídky</button>
+      </div>
+    </div>`;
+    document.getElementById('mqRandomRetry')?.addEventListener('click',()=>loadQuestion());
+    document.getElementById('mqRandomMenu')?.addEventListener('click',()=>document.getElementById('homeBtn')?.click());
+  }
+
+  async function ensureSession(){
+    if(sessionId)return sessionId;
+    const {client:db}=await onlineApi().ensureBackend();
+    const {data,error}=await db.rpc('start_random_quiz_session',{
+      p_game_mode:'classic',
+      p_difficulty:state.difficulty,
+      p_question_count:18,
+      p_client_version:'v11.18-random-balanced'
+    });
+    if(error)throw error;
+    const row=rows(data)[0];
+    const id=String(row?.session_id||'');
+    if(!id)throw new Error('Supabase nevrátil identifikátor náhodné hry.');
+    sessionId=id;
+    window.__mqServerVerifiedSessionActive=true;
+    return id;
+  }
+
+  function parseQuestion(row){
+    const options=jsonValue(row.options,[]).map(item=>({
+      id:item.id,
+      text:item.text??item.option_text??''
+    })).filter(item=>item.id&&item.text);
+    if(options.length!==4)throw new Error('Otázka nemá přesně čtyři možnosti odpovědi.');
+
+    const questionId=String(row.question_id||'').trim();
+    if(!questionId)throw new Error('Otázka nemá databázové ID.');
+
+    return {
+      server:true,
+      randomMode:true,
+      questionId,
+      externalId:String(row.question_external_id||''),
+      sourceGenre:String(row.source_genre||''),
+      q:row.prompt,
+      type:row.question_type,
+      typeLabel:row.type_label||'Film',
+      eraLabel:row.era_label||'Napříč érami',
+      tags:row.question_tags||[],
+      options,
+      media:row.media||[]
+    };
+  }
+
+  function renderQuestion(question){
+    questionWrap()?.classList.remove('mq-db-loading','mq-db-error');
+    currentQuestion=question;
+    state.current={...question};
+    state.locked=false;
+
+    document.getElementById('question').textContent=question.q;
+    document.getElementById('qType').textContent=question.typeLabel;
+    document.getElementById('qEra').textContent=question.eraLabel;
+    document.getElementById('questionNo').textContent=state.questionNo;
+    document.getElementById('score').textContent=state.score;
+    document.getElementById('progress').style.width=`${state.score/15*100}%`;
+    answersEl.innerHTML='';
+
+    question.options.forEach((option,index)=>{
+      const button=document.createElement('button');
+      button.className='answer';
+      button.dataset.letter='ABCD'[index];
+      button.dataset.optionId=option.id;
+      button.dataset.questionId=question.questionId;
+      button.textContent=option.text;
+      button.addEventListener('click',()=>window.answer?.(button,option.id));
+      answersEl.appendChild(button);
+    });
+
+    tagQuestion(question.questionId,question.sourceGenre,question.externalId);
+    renderMedia(question.media);
+    shownAt=performance.now();
+
+    window.dispatchEvent(new CustomEvent('mq:server-question-rendered',{detail:{
+      sessionId,
+      questionId:question.questionId,
+      questionExternalId:question.externalId,
+      prompt:question.q,
+      typeLabel:question.typeLabel,
+      eraLabel:question.eraLabel,
+      genre:RANDOM,
+      sourceGenre:question.sourceGenre,
+      difficulty:state.difficulty
+    }}));
+
+    try{animateQuestionIn();sound('tick')}catch(_){}
+  }
+
+  async function loadQuestion(){
+    if(!active||loading||finished)return;
+    loading=true;
+    window.dispatchEvent(new CustomEvent('mq:server-question-cleared'));
+    currentQuestion=null;
+    tagQuestion('');
+    loadingState();
+    try{
+      const sid=await ensureSession();
+      const {client:db}=await onlineApi().ensureBackend();
+      const {data,error}=await db.rpc('get_next_random_quiz_question',{p_session_id:sid});
+      if(error)throw error;
+      const row=rows(data)[0];
+      if(!row)throw new Error('Databáze nevrátila další náhodnou otázku.');
+      renderQuestion(parseQuestion(row));
+    }catch(error){
+      errorState(error);
+    }finally{
+      loading=false;
+    }
+  }
+
+  async function answerRandom(button,optionId){
+    if(!active||finished||answering||state.locked||!currentQuestion)return;
+    answering=true;
+    state.locked=true;
+    stopMedia();
+
+    const buttons=[...document.querySelectorAll('#answers .answer')];
+    buttons.forEach(item=>item.classList.add('locked'));
+    button.classList.add('mq-checking');
+
+    try{
+      const {client:db}=await onlineApi().ensureBackend();
+      const responseMs=Math.max(0,Math.round(performance.now()-shownAt));
+      const {data,error}=await db.rpc('submit_random_quiz_answer',{
+        p_session_id:sessionId,
+        p_question_id:currentQuestion.questionId,
+        p_option_id:optionId,
+        p_response_ms:responseMs
+      });
+      if(error)throw error;
+      const result=rows(data)[0];
+      if(!result)throw new Error('Databáze nepotvrdila odpověď.');
+
+      button.classList.remove('mq-checking');
+      const good=Boolean(result.answer_correct);
+      const correctButton=buttons.find(item=>item.dataset.optionId===String(result.correct_option_id));
+
+      window.__mqLastAnswerCorrect=good;
+      if(good){button.classList.add('correct','answer-correct-pulse');sound('correct')}
+      else{
+        button.classList.add('wrong','answer-wrong-pulse');
+        correctButton?.classList.add('correct','correct-answer-blink');
+        sound('wrong');
+      }
+
+      await throwAward(button);
+      window.__mqLastAnswerCorrect=undefined;
+
+      state.score=Number(result.current_score)||0;
+      state.lives=Math.max(0,Number(result.current_lives)||0);
+      document.getElementById('score').textContent=state.score;
+      document.getElementById('progress').style.width=`${state.score/15*100}%`;
+
+      if(good){showFeedback('Správně');confettiBurst(button)}
+      else burnLife(state.lives);
+
+      const gameFinished=Boolean(result.game_finished);
+      const won=Boolean(result.game_won);
+      if(gameFinished)finished=true;
+
+      const wait=good?1350:1900;
+      setTimeout(()=>{
+        answering=false;
+        if(!active)return;
+        if(gameFinished){
+          if(won)win();else creditsThenEnd();
+          scheduleStatsSync(650);
+          return;
+        }
+        state.questionNo++;
+        window.nextQuestion?.();
+      },wait);
+    }catch(error){
+      button.classList.remove('mq-checking');
+      state.locked=false;
+      answering=false;
+      buttons.forEach(item=>item.classList.remove('locked'));
+      console.error('Movie Quiz random: odpověď se nepodařilo ověřit.',error);
+      try{showFeedback('Zkuste odpověď znovu')}catch(_){}
+    }
+  }
+
+  async function abandon(){
+    const id=sessionId;
+    sessionId='';
+    if(!id||finished)return;
+    try{
+      const {client:db}=await onlineApi().ensureBackend();
+      await db.rpc('abandon_quiz_session',{p_session_id:id});
+    }catch(error){
+      console.warn('Movie Quiz random: rozehranou relaci se nepodařilo označit jako opuštěnou.',error);
+    }
+  }
+
+  function cleanup(abandonOpen=true){
+    if(abandonOpen)abandon();
+    active=false;
+    finished=false;
+    sessionId='';
+    currentQuestion=null;
+    loading=false;
+    answering=false;
+    window.__mqServerVerifiedSessionActive=false;
+    tagQuestion('');
+    stopMedia();
+  }
+
+  function startRandom(){
+    if(active)cleanup(true);
+    active=true;
+    finished=false;
+    sessionId='';
+    currentQuestion=null;
+    loading=false;
+    answering=false;
+    addLabel();
+
+    const result=baseStartGame(RANDOM);
+    /* js/21 deliberately treats unknown genres as local mode. We immediately
+       promote this one mode to our verified random RPC before the first question. */
+    window.__mqServerVerifiedSessionActive=true;
+    return result;
+  }
+
+  window.startGame=function(genre){
+    if(genre===RANDOM)return startRandom();
+    if(active)cleanup(true);
+    return baseStartGame(genre);
+  };
+
+  window.nextQuestion=function(){
+    if(!active)return baseNextQuestion();
+    return loadQuestion();
+  };
+
+  window.answer=function(button,value){
+    if(!active)return baseAnswer(button,value);
+    return answerRandom(button,value);
+  };
+
+  function wrapBank(){
+    const bank=window.MovieQuizQuestionBank||baseQuestionBank;
+    if(!bank||bank.__mqRandomV1118)return;
+    window.MovieQuizQuestionBank=Object.freeze({
+      ...bank,
+      __mqRandomV1118:true,
+      isServerMode:()=>active||Boolean(bank.isServerMode?.()),
+      getSessionId:()=>active?sessionId:(bank.getSessionId?.()||''),
+      getCurrentQuestionId:()=>active?(currentQuestion?.questionId||''):(bank.getCurrentQuestionId?.()||''),
+      getCurrentQuestion:()=>active&&currentQuestion?Object.freeze({
+        sessionId,
+        questionId:currentQuestion.questionId,
+        questionExternalId:currentQuestion.externalId,
+        prompt:currentQuestion.q,
+        typeLabel:currentQuestion.typeLabel,
+        eraLabel:currentQuestion.eraLabel,
+        genre:RANDOM,
+        sourceGenre:currentQuestion.sourceGenre,
+        difficulty:state.difficulty
+      }):bank.getCurrentQuestion?.(),
+      getSupportedGenres:()=>[...new Set([...(bank.getSupportedGenres?.()||[]),RANDOM])],
+      version:`${bank.version||'question-bank'}+${VERSION}`
+    });
+  }
+
+  /* -------------------------- statistics merge -------------------------- */
+
+  function genreCard(item){
+    const games=integer(item.games),wins=integer(item.wins);
+    const correct=integer(item.correct_answers),answered=integer(item.questions_answered);
+    const accuracy=Math.max(0,Math.min(100,number(item.accuracy_percent)));
+    return `<article class="mq-stat-genre" data-genre="${item.genre}">
+      <div class="mq-stat-genre-head"><strong>${LABELS[item.genre]||item.genre}</strong><span>${games} ${gamesWord(games)}</span></div>
+      <div class="mq-stat-bar"><i style="width:${accuracy}%"></i></div>
+      <div class="mq-stat-genre-foot"><span>${pct(accuracy)}</span><span>${wins} výher</span></div>
+      <div class="mq-stat-genre-note">${correct} správně z ${answered} odpovězených</div>
+    </article>`;
+  }
+
+  function playedCard(item,index,maxGames){
+    const games=integer(item.games),wins=integer(item.wins);
+    const width=Math.max(4,Math.min(100,maxGames?games/maxGames*100:0));
+    const winRate=number(item.win_rate_percent)||(games?wins/games*100:0);
+    return `<article class="mq-stat-played-genre" data-genre="${item.genre}">
+      <div class="mq-stat-played-rank">${index+1}</div>
+      <div class="mq-stat-played-copy">
+        <div class="mq-stat-played-head"><strong>${LABELS[item.genre]||item.genre}</strong><span>${games} ${gamesWord(games)}</span></div>
+        <div class="mq-stat-played-bar"><i style="width:${width}%"></i></div>
+        <small>${wins} výher · ${pct(winRate)} výhernost</small>
+      </div>
+    </article>`;
+  }
+
+  function normalizeStatData(data){
+    let value=Array.isArray(data)?data[0]:data;
+    if(typeof value==='string'){try{value=JSON.parse(value)}catch(_){return null}}
+    return value&&typeof value==='object'?value:null;
+  }
+
+  async function syncRandomStatistics(){
+    const scene=document.getElementById('mqStatisticsScene');
+    if(!scene||scene.hidden||statsBusy)return;
+    const genreHost=scene.querySelector('.mq-stat-genres');
+    if(!genreHost||genreHost.dataset.mqRandomMerged==='1'){
+      normalizeHistoryLabels(scene);
+      return;
+    }
+
+    statsBusy=true;
+    try{
+      const {client:db}=await onlineApi().ensureBackend();
+      const [baseResult,randomResult]=await Promise.all([
+        db.rpc('get_my_player_statistics'),
+        db.rpc('get_my_random_genre_statistics')
+      ]);
+      if(baseResult.error)throw baseResult.error;
+      if(randomResult.error)throw randomResult.error;
+
+      const stats=normalizeStatData(baseResult.data);
+      if(!stats)return;
+
+      const baseGenres=Array.isArray(stats.byGenre)?stats.byGenre:[];
+      const extras=rows(randomResult.data);
+      const extraByGenre=new Map(extras.map(item=>[String(item.genre||''),item]));
+
+      const realBaseAnswered=baseGenres
+        .filter(item=>SOURCE_GENRES.includes(String(item?.genre||'')))
+        .reduce((sum,item)=>sum+integer(item?.questions_answered),0);
+      const summaryAnswered=integer(stats?.summary?.questionsAnswered);
+      const extraAnswered=extras.reduce((sum,item)=>sum+integer(item?.questions_answered),0);
+
+      /* If overall answered > the six real genre rows, the legacy statistics
+         grouped random-session answers under "random" (or omitted them). Only in
+         that case do we redistribute our canonical question-id attribution.
+         If a future backend already groups by question.genre, this stays zero and
+         prevents double counting automatically. */
+      const missingFromRealGenres=Math.max(0,summaryAnswered-realBaseAnswered);
+      const addRandomContributions=extraAnswered>0&&missingFromRealGenres>0;
+
+      const merged=SOURCE_GENRES.map(key=>{
+        const base=baseGenres.find(item=>String(item?.genre||'')===key)||{};
+        const extra=extraByGenre.get(key)||{};
+        const baseAnswered=integer(base.questions_answered);
+        const baseCorrect=integer(base.correct_answers);
+        const answered=baseAnswered+(addRandomContributions?integer(extra.questions_answered):0);
+        const correct=baseCorrect+(addRandomContributions?integer(extra.correct_answers):0);
+        const games=integer(base.games);
+        const wins=integer(base.wins);
+        return {
+          genre:key,
+          label:LABELS[key],
+          games,
+          wins,
+          correct_answers:correct,
+          questions_answered:answered,
+          accuracy_percent:answered?correct/answered*100:0,
+          win_rate_percent:number(base.win_rate_percent)||(games?wins/games*100:0)
+        };
+      });
+
+      genreHost.innerHTML=merged.map(genreCard).join('');
+      genreHost.dataset.mqRandomMerged='1';
+
+      const playedHost=scene.querySelector('.mq-stat-played-genres');
+      if(playedHost){
+        const played=merged
+          .filter(item=>item.games>0)
+          .sort((a,b)=>b.games-a.games||b.wins-a.wins)
+          .slice(0,6);
+        const maxGames=Math.max(1,...played.map(item=>item.games));
+        playedHost.innerHTML=played.length
+          ? played.map((item,index)=>playedCard(item,index,maxGames)).join('')
+          : '<div class="mq-stat-state"><small>Zatím bez odehraných žánrů.</small></div>';
+      }
+
+      const eligibleBest=merged.filter(item=>item.questions_answered>0);
+      const best=[...eligibleBest].sort((a,b)=>b.accuracy_percent-a.accuracy_percent||b.questions_answered-a.questions_answered)[0]||null;
+      const most=[...merged].filter(item=>item.games>0).sort((a,b)=>b.games-a.games||b.wins-a.wins)[0]||null;
+      const highlights=scene.querySelectorAll('.mq-stat-highlight');
+
+      if(highlights[0]){
+        const strong=highlights[0].querySelector('strong');
+        const small=highlights[0].querySelector('small');
+        if(strong)strong.textContent=best?LABELS[best.genre]:'—';
+        if(small)small.textContent=best?`${pct(best.accuracy_percent)} · ${best.wins} výher`:'Zatím neurčeno';
+      }
+      if(highlights[1]){
+        const strong=highlights[1].querySelector('strong');
+        const small=highlights[1].querySelector('small');
+        if(strong)strong.textContent=most?LABELS[most.genre]:'—';
+        if(small)small.textContent=most?`${most.games} her · ${pct(most.win_rate_percent)} výher`:'Zatím neurčeno';
+      }
+
+      normalizeHistoryLabels(scene);
+    }catch(error){
+      console.warn('Movie Quiz random: žánrové statistiky Náhodného režimu se nepodařilo sloučit.',error);
+    }finally{
+      statsBusy=false;
+    }
+  }
+
+  function normalizeHistoryLabels(scene=document){
+    scene.querySelectorAll('.mq-stat-game-main strong').forEach(el=>{
+      const value=String(el.textContent||'').trim().toLowerCase();
+      if(value==='random'||value==='náhodné')el.textContent=RANDOM_LABEL;
+    });
+  }
+
+  function scheduleStatsSync(delay=90){
+    if(statsTimer)clearTimeout(statsTimer);
+    statsTimer=setTimeout(()=>{statsTimer=0;syncRandomStatistics()},delay);
+  }
+
+  function installStatsObserver(){
+    const scene=document.getElementById('mqStatisticsScene');
+    if(!scene||statsObserver)return;
+    statsObserver=new MutationObserver(mutations=>{
+      const becameVisible=mutations.some(m=>m.type==='attributes'&&m.attributeName==='hidden');
+      const bodyChanged=mutations.some(m=>m.type==='childList');
+      if(becameVisible||bodyChanged)scheduleStatsSync(110);
+    });
+    statsObserver.observe(scene,{subtree:true,childList:true,attributes:true,attributeFilter:['hidden']});
+    document.addEventListener('click',event=>{
+      if(event.target.closest?.('[data-open-statistics],#mqStatRefresh'))scheduleStatsSync(180);
+    });
+  }
+
+  function installIds(){
+    window.addEventListener('mq:server-question-rendered',event=>{
+      const detail=event.detail||{};
+      tagQuestion(detail.questionId,detail.sourceGenre||'',detail.questionExternalId||'');
+    });
+    window.addEventListener('mq:server-question-cleared',()=>{
+      if(!active)tagQuestion('');
+    });
+
+    window.MovieQuizQuestionIds=Object.freeze({
+      version:VERSION,
+      current:()=>lastQuestionId||window.MovieQuizQuestionBank?.getCurrentQuestionId?.()||'',
+      sourceGenre:()=>questionWrap()?.dataset.questionSourceGenre||'',
+      externalId:()=>questionWrap()?.dataset.questionExternalId||'',
+      isRandomMode:()=>active
+    });
+  }
+
+  function install(){
+    addLabel();
+    installButton();
+    wrapBank();
+    installIds();
+    installStatsObserver();
+
+    document.getElementById('homeBtn')?.addEventListener('click',()=>{if(active)cleanup(true)});
+    ['replayEnd','replayWin','creditsSkip'].forEach(id=>{
+      document.getElementById(id)?.addEventListener('click',()=>{if(active)cleanup(false)});
+    });
+    window.addEventListener('beforeunload',()=>{if(active&&!finished)abandon()});
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
+  else install();
+
+  window.MovieQuizRandomMode=Object.freeze({
+    version:VERSION,
+    label:RANDOM_LABEL,
+    sourceGenres:Object.freeze([...SOURCE_GENRES]),
+    active:()=>active,
+    sessionId:()=>sessionId,
+    currentQuestionId:()=>currentQuestion?.questionId||''
+  });
+})();
