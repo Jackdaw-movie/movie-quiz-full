@@ -87,7 +87,7 @@ body.mq-exterior-active #mqDebugToggle:hover{
   height:360px;
   z-index:14;
   pointer-events:none;
-  background:url("../assets/exterior-v6-9/production/ticket-booth-synced-loop.webp?v=10.7.1") 0 0 / 500px 360px no-repeat;
+  background:url("../assets/exterior-v6-9/production/ticket-booth-synced-loop.webp?v=10.7.2") 0 0 / 500px 360px no-repeat;
   image-rendering:auto;
   transform:none!important;
 }
@@ -104,7 +104,7 @@ body.mq-ticket-open #mqExteriorStage::after{
    ========================================================= */
 body.mq-exterior-active #mqTicketBoothHotspot{
   /* v10.5 safe zone, shifted 7 px left and widened slightly for the 15% larger font */
-  --mq-bubble-text-left:235px;
+  --mq-bubble-text-left:230px;
   --mq-bubble-text-top:28px;
   --mq-bubble-text-width:165px;
   --mq-bubble-text-height:85px;
@@ -143,13 +143,13 @@ body.mq-exterior-active #mqTicketBoothHotspot::after{
   animation:mqTicketBubbleTextSync 12.96s linear infinite;
 }
 
-/* Bubble growth is ~20% faster.
-   Text appears only when the bubble is fully formed (4.78 s)
-   and disappears first, right when the bubble starts retracting (11.78 s). */
+/* Bubble reveal and hide are slightly faster.
+   Text timing is shifted later by 1.5 s, stays locked to the bubble,
+   and disappears just before the bubble starts retracting. */
 @keyframes mqTicketBubbleTextSync{
-  0%,36.88%{opacity:0}
-  36.89%,90.89%{opacity:1}
-  90.90%,100%{opacity:0}
+  0%,47.30%{opacity:0}
+  47.31%,89.35%{opacity:1}
+  89.36%,100%{opacity:0}
 }
 
 body:not(.mq-exterior-active) #mqTicketBoothHotspot::after,
