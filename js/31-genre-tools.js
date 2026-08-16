@@ -60,38 +60,66 @@ function init(){apply();setTimeout(anchorDocks,450);setTimeout(anchorDocks,1300)
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
 
-/* Movie Quiz – statistics Home navigation repair v41.1
-   The Statistics scene owns a separate Home button. Do not proxy that click
-   through #homeBtn, because later UI modules move the global Home control
-   between containers. Mirror the canonical core Home action directly. */
+/* Movie Quiz – statistics Home navigation repair v41.2
+   The Statistics scene has its own Home control. This handler does not proxy
+   through the movable global #homeBtn. It closes the overlay and forces the
+   canonical difficulty menu immediately and again after the current event
+   cycle, so no later UI synchronizer can leave Statistics visually open. */
 (()=>{
 'use strict';
-function goHomeFromStatistics(event){
-  const target=event.target?.closest?.('#mqStatHome');
-  if(!target)return;
+let navigating=false;
 
-  event.preventDefault();
-  event.stopImmediatePropagation();
-
+function forceDifficultyHome(){
   const stats=document.getElementById('mqStatisticsScene');
   if(stats)stats.hidden=true;
-  document.body.classList.remove('mq-statistics-open');
+  document.body.classList.remove('mq-statistics-open','mq-hall-open');
+
+  const settings=document.getElementById('mqSettingsMenu');
+  if(settings){settings.hidden=true;settings.classList.remove('is-open')}
 
   try{if(typeof state!=='undefined'&&state)state.locked=true}catch(_){}
   try{if(typeof resetLives==='function')resetLives(false)}catch(_){}
   document.getElementById('screen')?.removeAttribute('data-genre');
 
-  try{
-    if(typeof showView==='function')showView('difficulty');
-    else document.querySelectorAll('.view').forEach(view=>view.classList.toggle('active',view.id==='difficulty'));
-  }catch(_){
-    document.querySelectorAll('.view').forEach(view=>view.classList.toggle('active',view.id==='difficulty'));
-  }
+  try{if(typeof showView==='function')showView('difficulty')}catch(_){}
+  document.querySelectorAll('#screen > .view').forEach(view=>view.classList.toggle('active',view.id==='difficulty'));
+  document.getElementById('difficulty')?.classList.add('active');
 
   try{if(typeof switchMusic==='function')switchMusic('menu')}catch(_){}
-  try{if(typeof sound==='function')sound('soft');else window.sound?.('soft')}catch(_){}
   try{window.MovieQuizCinemaHome?.sync?.()}catch(_){}
 }
 
-document.addEventListener('click',goHomeFromStatistics,true);
+function activateStatisticsHome(event){
+  const target=event.target?.closest?.('#mqStatHome');
+  if(!target||navigating)return;
+  navigating=true;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+
+  forceDifficultyHome();
+  queueMicrotask(forceDifficultyHome);
+  requestAnimationFrame(()=>{
+    forceDifficultyHome();
+    navigating=false;
+  });
+  setTimeout(forceDifficultyHome,80);
+  try{if(typeof sound==='function')sound('soft');else window.sound?.('soft')}catch(_){}
+}
+
+function bindStatisticsHome(){
+  const button=document.getElementById('mqStatHome');
+  if(!button||button.dataset.mqHomeRepair==='41.2')return;
+  button.dataset.mqHomeRepair='41.2';
+  button.addEventListener('pointerup',activateStatisticsHome,true);
+  button.addEventListener('click',activateStatisticsHome,true);
+}
+
+function init(){
+  bindStatisticsHome();
+  const observer=new MutationObserver(bindStatisticsHome);
+  observer.observe(document.getElementById('cinema')||document.body,{childList:true,subtree:true});
+}
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+document.addEventListener('click',activateStatisticsHome,true);
 })();
