@@ -138,21 +138,18 @@
   window.MovieQuizExteriorZoom=Object.freeze({version:'29.0-zoom-safe',updateNow:applyZoomSafeExteriorFit});
 })();
 
-/* Movie Quiz – ticket booth hand + bubble controller v30.3
-   Frame-driven bubble animation. Text visibility is tied to frame 5 itself,
-   not to an independent timer, so it cannot drift away from the artwork. */
+/* Movie Quiz – ticket booth hand + bubble controller v30.4
+   Restored after loading-screen asset deployment.
+   Bubble is frame-driven and text visibility is tied directly to frame 5. */
 (()=>{
   'use strict';
 
-  const HAND_SRC='assets/exterior-v6-9/production/ticket-booth-hand.png';
-  const BUBBLE_FRAMES=[1,2,3,4,5].map(n=>`assets/exterior-v6-9/production/bubble_frame_${n}.png`);
+  const ASSET_VERSION='30.4-restored';
+  const HAND_SRC=`assets/exterior-v6-9/production/ticket-booth-hand.png?v=${ASSET_VERSION}`;
+  const BUBBLE_FRAMES=[1,2,3,4,5].map(n=>`assets/exterior-v6-9/production/bubble_frame_${n}.png?v=${ASSET_VERSION}`);
 
-  /* Hand slowed another 20% from 3120 ms. */
   const HAND_MS=3744;
-  /* Keep bubble start at the same relative point of the hand return. */
   const BUBBLE_START_IN_HAND_MS=2952;
-
-  /* 4 transitions × 46 ms = 184 ms, roughly 20% slower than the 154 ms version. */
   const BUBBLE_STEP_MS=46;
   const BUBBLE_HOLD_MS=7000;
   const SECOND_HAND_DELAY_MS=1200;
@@ -173,30 +170,47 @@
     if(!portal){
       portal=document.createElement('div');
       portal.id='mqTicketHandPortal';
-      portal.className='mq-ticket-hand-portal';
-      portal.setAttribute('aria-hidden','true');
-      portal.innerHTML=`<img class="mq-ticket-hand-img" src="${HAND_SRC}" alt="">`;
       stage.appendChild(portal);
     }
+    portal.className='mq-ticket-hand-portal';
+    portal.setAttribute('aria-hidden','true');
+    portal.dataset.mqBoothVersion=ASSET_VERSION;
+
+    let hand=portal.querySelector('.mq-ticket-hand-img');
+    if(!hand){
+      portal.replaceChildren();
+      hand=document.createElement('img');
+      hand.className='mq-ticket-hand-img';
+      hand.alt='';
+      portal.appendChild(hand);
+    }
+    if(hand.getAttribute('src')!==HAND_SRC)hand.src=HAND_SRC;
 
     let bubble=document.getElementById('mqTicketBubbleUi');
     if(!bubble){
       bubble=document.createElement('div');
       bubble.id='mqTicketBubbleUi';
-      bubble.className='mq-ticket-bubble-ui';
-      bubble.setAttribute('aria-hidden','true');
-      bubble.innerHTML=`<img class="mq-ticket-bubble-art" src="${BUBBLE_FRAMES[0]}" alt=""><div class="mq-ticket-bubble-text">Pojďte sem,<br>máme poslední<br>volná místa!</div>`;
       stage.appendChild(bubble);
     }
+    bubble.className='mq-ticket-bubble-ui';
+    bubble.setAttribute('aria-hidden','true');
+    bubble.dataset.mqBoothVersion=ASSET_VERSION;
 
-    return {
-      stage,
-      portal,
-      hand:portal.querySelector('.mq-ticket-hand-img'),
-      bubble,
-      bubbleArt:bubble.querySelector('.mq-ticket-bubble-art'),
-      text:bubble.querySelector('.mq-ticket-bubble-text')
-    };
+    let bubbleArt=bubble.querySelector('.mq-ticket-bubble-art');
+    let text=bubble.querySelector('.mq-ticket-bubble-text');
+    if(!bubbleArt||!text){
+      bubble.replaceChildren();
+      bubbleArt=document.createElement('img');
+      bubbleArt.className='mq-ticket-bubble-art';
+      bubbleArt.alt='';
+      text=document.createElement('div');
+      text.className='mq-ticket-bubble-text';
+      text.innerHTML='Pojďte sem,<br>máme poslední<br>volná místa!';
+      bubble.append(bubbleArt,text);
+    }
+    bubbleArt.src=BUBBLE_FRAMES[0];
+
+    return {stage,portal,hand,bubble,bubbleArt,text};
   }
 
   function preloadAssets(){
@@ -211,7 +225,6 @@
     ui.bubbleArt.src=BUBBLE_FRAMES[frameNumber-1];
     ui.bubble.dataset.mqBubbleFrame=String(frameNumber);
 
-    /* This is the synchronization point: text exists only on frame 5. */
     const textVisible=frameNumber===5;
     ui.bubble.classList.toggle('is-text-visible',textVisible);
     ui.text.style.opacity=textVisible?'1':'0';
@@ -262,7 +275,6 @@
     ui.bubble.classList.remove('is-text-visible');
     ui.text.style.opacity='0';
 
-    /* 1 → 2 → 3 → 4 → 5. Text is switched on exactly when 5 is assigned. */
     for(let frame=1;frame<=5;frame++){
       if(token!==generation||!exteriorActive())return false;
       setBubbleFrame(ui,frame);
@@ -274,7 +286,6 @@
   async function hideBubble(ui,token){
     if(token!==generation||!exteriorActive())return false;
 
-    /* Leaving frame 5: text disappears first, in the same tick as frame 4. */
     for(let frame=4;frame>=1;frame--){
       if(token!==generation||!exteriorActive())return false;
       setBubbleFrame(ui,frame);
@@ -299,7 +310,6 @@
       const shown=await showBubble(ui,token);
       if(!shown)break;
 
-      /* Bubble is now physically on frame 5 and text is already visible. */
       const secondHandTimer=setTimeout(()=>{
         if(token===generation&&exteriorActive())runHand(ui);
       },SECOND_HAND_DELAY_MS);
@@ -349,5 +359,5 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
   else init();
 
-  window.MovieQuizTicketBoothAnimation=Object.freeze({version:'30.3-frame5-sync',restart:start});
+  window.MovieQuizTicketBoothAnimation=Object.freeze({version:'30.4-restored-frame5-sync',restart:start});
 })();
