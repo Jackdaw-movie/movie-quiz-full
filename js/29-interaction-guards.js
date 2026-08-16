@@ -20,9 +20,6 @@
     ));
   }
 
-  /* Remove the legacy core mute click listener structurally. 00-core.js binds
-     directly to the original node. Replacing that node with an identical clone
-     drops that listener completely. The Settings module remains the only audio UI. */
   function neutralizeLegacyMuteButton(){
     const old=document.getElementById('muteBtn');
     if(!old||old.dataset.mqLegacyMuteNeutralized==='1')return;
@@ -38,20 +35,15 @@
 
   function restoreConfiguredAudio(){
     if(!avatarModalOpen())return;
-    try{
-      if(typeof state!=='undefined'&&state)state.muted=false;
-    }catch(_){}
+    try{if(typeof state!=='undefined'&&state)state.muted=false}catch(_){}
     try{
       if(typeof initAudio==='function')initAudio();
-      if(typeof audioCtx!=='undefined'&&audioCtx?.state==='suspended'){
-        audioCtx.resume?.().catch?.(()=>{});
-      }
+      if(typeof audioCtx!=='undefined'&&audioCtx?.state==='suspended')audioCtx.resume?.().catch?.(()=>{});
     }catch(_){}
     try{window.MovieQuizSettings?.apply?.()}catch(_){}
     try{
       const volume=Number(window.MovieQuizSettings?.musicVolume?.()??50);
       if(volume>0&&typeof switchMusic==='function')switchMusic('menu');
-      /* apply again after switchMusic: the exterior guard used to zero musicGain. */
       window.MovieQuizSettings?.apply?.();
     }catch(_){}
   }
@@ -59,12 +51,8 @@
   function scheduleAudioIntegrityCheck(event){
     if(insideRealAudioSettings(event?.target))return;
     if(!avatarModalOpen())return;
-    queueMicrotask(()=>{
-      if(avatarModalOpen())restoreConfiguredAudio();
-    });
-    requestAnimationFrame(()=>{
-      if(avatarModalOpen())restoreConfiguredAudio();
-    });
+    queueMicrotask(()=>{if(avatarModalOpen())restoreConfiguredAudio()});
+    requestAnimationFrame(()=>{if(avatarModalOpen())restoreConfiguredAudio()});
   }
 
   function installAvatarArrowOnlyGuard(){
@@ -72,27 +60,9 @@
     const viewport=document.getElementById('mqAvatarCarouselViewport');
     if(!modal||!viewport||viewport.dataset.mqArrowOnlyGuard==='1')return false;
     viewport.dataset.mqArrowOnlyGuard='1';
-
-    viewport.addEventListener('wheel',event=>{
-      if(!avatarModalOpen())return;
-      event.stopImmediatePropagation();
-    },{capture:true,passive:true});
-
-    for(const type of ['pointerdown','pointerup','pointercancel']){
-      viewport.addEventListener(type,event=>{
-        if(!avatarModalOpen())return;
-        event.stopImmediatePropagation();
-      },true);
-    }
-    for(const type of ['touchstart','touchmove','touchend']){
-      viewport.addEventListener(type,event=>{
-        if(!avatarModalOpen())return;
-        event.stopImmediatePropagation();
-      },{capture:true,passive:true});
-    }
-
-    /* Avatar cards are previews only. Navigation happens exclusively through
-       the two graphical [data-avatar-nav] buttons outside the viewport. */
+    viewport.addEventListener('wheel',event=>{if(avatarModalOpen())event.stopImmediatePropagation()},{capture:true,passive:true});
+    for(const type of ['pointerdown','pointerup','pointercancel'])viewport.addEventListener(type,event=>{if(avatarModalOpen())event.stopImmediatePropagation()},true);
+    for(const type of ['touchstart','touchmove','touchend'])viewport.addEventListener(type,event=>{if(avatarModalOpen())event.stopImmediatePropagation()},{capture:true,passive:true});
     viewport.addEventListener('click',event=>{
       if(!avatarModalOpen())return;
       event.preventDefault();
@@ -103,9 +73,7 @@
 
   function observeAvatarModal(){
     if(installAvatarArrowOnlyGuard())return;
-    const observer=new MutationObserver(()=>{
-      if(installAvatarArrowOnlyGuard())observer.disconnect();
-    });
+    const observer=new MutationObserver(()=>{if(installAvatarArrowOnlyGuard())observer.disconnect()});
     observer.observe(document.documentElement,{childList:true,subtree:true});
   }
 
@@ -116,9 +84,6 @@
     event.stopImmediatePropagation();
   },true);
 
-  /* Any ordinary interaction on the avatar screen is allowed to do its UI job,
-     then the configured music level is re-applied. Only actual Settings controls
-     are exempt, because those are the only controls allowed to change audio. */
   document.addEventListener('pointerdown',scheduleAudioIntegrityCheck,true);
   document.addEventListener('click',scheduleAudioIntegrityCheck,true);
 
@@ -129,16 +94,11 @@
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
   else init();
-
   window.addEventListener('mq:avatar-gallery-opened',restoreConfiguredAudio);
   window.__mqInteractionGuardsVersion=VERSION;
 })();
 
-/* Movie Quiz – exterior browser zoom fix v29.0
-   26-exterior-scene.js intentionally fits the 1672×941 master into the viewport,
-   but using visualViewport dimensions means browser zoom is immediately cancelled
-   by another fit-to-screen resize. This later guard preserves the fit scale in
-   physical viewport space, so browser zoom can actually magnify/crop the exterior. */
+/* Movie Quiz – exterior browser zoom fix v29.0 */
 (()=>{
   'use strict';
   const DESIGN_W=1672;
@@ -150,17 +110,11 @@
     raf=0;
     const stage=document.getElementById('mqExteriorStage');
     if(!stage)return;
-
     const currentDpr=Math.max(.1,Number(window.devicePixelRatio)||initialDpr);
     const zoomRatio=currentDpr/initialDpr;
-
-    /* innerWidth/innerHeight shrink when desktop browser zoom increases.
-       Multiplying by the DPR ratio removes that artificial shrink while still
-       responding normally to a real window resize. */
     const physicalCssWidth=Math.max(1,window.innerWidth*zoomRatio);
     const physicalCssHeight=Math.max(1,window.innerHeight*zoomRatio);
     const fit=Math.max(.12,Math.min(physicalCssWidth/DESIGN_W,physicalCssHeight/DESIGN_H));
-
     stage.style.transform=`translate(-50%,-50%) scale(${fit})`;
   }
 
@@ -171,43 +125,27 @@
 
   function neutralizeExteriorNativeHoverHints(){
     const scene=document.getElementById('mqExteriorScene');
-    if(scene){
-      scene.querySelectorAll('[title]').forEach(element=>{
-        if(element.id!=='mqTicketBoothHotspot')element.removeAttribute('title');
-      });
-    }
+    if(scene)scene.querySelectorAll('[title]').forEach(element=>{if(element.id!=='mqTicketBoothHotspot')element.removeAttribute('title')});
     document.getElementById('mqDebugToggle')?.removeAttribute('title');
   }
 
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',()=>{neutralizeExteriorNativeHoverHints();scheduleZoomSafeExteriorFit()},{once:true});
-  }else{
-    neutralizeExteriorNativeHoverHints();
-    scheduleZoomSafeExteriorFit();
-  }
-
-  /* Registered after 26-exterior-scene.js, then applied in RAF, so this wins
-     over the legacy visualViewport fit without touching the rest of exterior JS. */
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{neutralizeExteriorNativeHoverHints();scheduleZoomSafeExteriorFit()},{once:true});
+  else{neutralizeExteriorNativeHoverHints();scheduleZoomSafeExteriorFit()}
   window.addEventListener('resize',scheduleZoomSafeExteriorFit,{passive:true});
   window.visualViewport?.addEventListener('resize',scheduleZoomSafeExteriorFit,{passive:true});
   window.addEventListener('orientationchange',scheduleZoomSafeExteriorFit,{passive:true});
   window.addEventListener('mq:preload-entered',scheduleZoomSafeExteriorFit);
-
-  window.MovieQuizExteriorZoom=Object.freeze({
-    version:'29.0-zoom-safe',
-    updateNow:applyZoomSafeExteriorFit
-  });
+  window.MovieQuizExteriorZoom=Object.freeze({version:'29.0-zoom-safe',updateNow:applyZoomSafeExteriorFit});
 })();
 
-/* Movie Quiz – ticket booth hand + bubble controller v30.0
-   DOM-based timing replaces the fragile baked synchronized WebP timing.
-   Existing static approved assets are reused, so no new binary upload is needed. */
+/* Movie Quiz – ticket booth hand + bubble controller v30.1
+   Uses the approved static hand and the unclipped final bubble asset. */
 (()=>{
   'use strict';
 
   const HAND_SRC='assets/exterior-v6-9/production/ticket-booth-hand.png';
-  const BUBBLE_FRAMES=[1,2,3,4,5].map(n=>`assets/exterior-v6-9/production/bubble_frame_${n}.png`);
-  const STEP_MS=30;
+  const BUBBLE_SRC='assets/exterior-v6-9/production/ticket-booth-bubble-final.png';
+  const BUBBLE_TRANSITION_MS=140;
   const HAND_MS=2600;
   const BUBBLE_START_IN_HAND_MS=2050;
   const BUBBLE_HOLD_MS=7000;
@@ -218,6 +156,7 @@
   let generation=0;
   let running=false;
   let handAnimation=null;
+  let bubbleAnimation=null;
 
   const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   const exteriorActive=()=>document.body.classList.contains('mq-exterior-active')&&!document.body.classList.contains('mq-ticket-open');
@@ -242,47 +181,35 @@
       bubble.id='mqTicketBubbleUi';
       bubble.className='mq-ticket-bubble-ui';
       bubble.setAttribute('aria-hidden','true');
-      bubble.innerHTML=`
-        <img class="mq-ticket-bubble-art" src="${BUBBLE_FRAMES[0]}" alt="">
-        <div class="mq-ticket-bubble-text">Pojďte sem,<br>máme poslední<br>volná místa!</div>`;
+      bubble.innerHTML=`<img class="mq-ticket-bubble-art" src="${BUBBLE_SRC}" alt=""><div class="mq-ticket-bubble-text">Pojďte sem,<br>máme poslední<br>volná místa!</div>`;
       stage.appendChild(bubble);
     }
 
-    return {
-      stage,
-      portal,
-      hand:portal.querySelector('.mq-ticket-hand-img'),
-      bubble,
-      bubbleArt:bubble.querySelector('.mq-ticket-bubble-art'),
-      text:bubble.querySelector('.mq-ticket-bubble-text')
-    };
+    return {stage,portal,hand:portal.querySelector('.mq-ticket-hand-img'),bubble,bubbleArt:bubble.querySelector('.mq-ticket-bubble-art'),text:bubble.querySelector('.mq-ticket-bubble-text')};
   }
 
   function preloadAssets(){
-    [HAND_SRC,...BUBBLE_FRAMES].forEach(src=>{
-      const img=new Image();
-      img.decoding='async';
-      img.src=src;
-    });
+    [HAND_SRC,BUBBLE_SRC].forEach(src=>{const img=new Image();img.decoding='async';img.src=src});
   }
 
   function resetUi(ui){
     handAnimation?.cancel?.();
+    bubbleAnimation?.cancel?.();
     handAnimation=null;
-    if(ui?.hand){
-      ui.hand.style.transform='translateX(-112px) rotate(0deg)';
-      ui.hand.style.opacity='1';
-    }
+    bubbleAnimation=null;
+    if(ui?.hand){ui.hand.style.transform='translateX(-112px) rotate(0deg)';ui.hand.style.opacity='1'}
     if(ui?.bubble){
       ui.bubble.classList.remove('is-visible','is-text-visible');
       ui.bubble.style.visibility='hidden';
+      ui.bubble.style.opacity='0';
+      ui.bubble.style.transform='scale(.08)';
     }
     if(ui?.text)ui.text.style.opacity='0';
   }
 
   function runHand(ui){
     handAnimation?.cancel?.();
-    const keyframes=[
+    handAnimation=ui.hand.animate([
       {transform:'translateX(-112px) rotate(0deg)',offset:0},
       {transform:'translateX(0px) rotate(0deg)',offset:.20},
       {transform:'translateX(0px) rotate(-14deg)',offset:.28},
@@ -292,40 +219,42 @@
       {transform:'translateX(0px) rotate(0deg)',offset:.60},
       {transform:'translateX(0px) rotate(0deg)',offset:.72},
       {transform:'translateX(-112px) rotate(0deg)',offset:1}
-    ];
-    handAnimation=ui.hand.animate(keyframes,{
-      duration:HAND_MS,
-      easing:'cubic-bezier(.42,0,.58,1)',
-      fill:'forwards'
-    });
+    ],{duration:HAND_MS,easing:'cubic-bezier(.42,0,.58,1)',fill:'forwards'});
     return handAnimation.finished.catch(()=>{});
   }
 
   async function showBubble(ui,token){
+    if(token!==generation||!exteriorActive())return false;
+    bubbleAnimation?.cancel?.();
     ui.bubble.style.visibility='visible';
     ui.bubble.classList.add('is-visible');
     ui.bubble.classList.remove('is-text-visible');
     ui.text.style.opacity='0';
-    for(let i=0;i<BUBBLE_FRAMES.length;i++){
-      if(token!==generation||!exteriorActive())return false;
-      ui.bubbleArt.src=BUBBLE_FRAMES[i];
-      await sleep(STEP_MS);
-    }
-    return true;
+    bubbleAnimation=ui.bubble.animate([
+      {opacity:0,transform:'scale(.08)',offset:0},
+      {opacity:1,transform:'scale(.34)',offset:.24},
+      {opacity:1,transform:'scale(.64)',offset:.50},
+      {opacity:1,transform:'scale(.86)',offset:.74},
+      {opacity:1,transform:'scale(1)',offset:1}
+    ],{duration:BUBBLE_TRANSITION_MS,easing:'cubic-bezier(.18,.85,.22,1)',fill:'forwards'});
+    await bubbleAnimation.finished.catch(()=>{});
+    return token===generation&&exteriorActive();
   }
 
   async function hideBubble(ui,token){
+    if(token!==generation||!exteriorActive())return false;
     ui.bubble.classList.remove('is-text-visible');
     ui.text.style.opacity='0';
-    for(let i=BUBBLE_FRAMES.length-2;i>=0;i--){
-      if(token!==generation||!exteriorActive())return false;
-      ui.bubbleArt.src=BUBBLE_FRAMES[i];
-      await sleep(STEP_MS);
-    }
-    if(token===generation){
-      ui.bubble.classList.remove('is-visible');
-      ui.bubble.style.visibility='hidden';
-    }
+    bubbleAnimation?.cancel?.();
+    bubbleAnimation=ui.bubble.animate([
+      {opacity:1,transform:'scale(1)',offset:0},
+      {opacity:1,transform:'scale(.86)',offset:.24},
+      {opacity:1,transform:'scale(.64)',offset:.50},
+      {opacity:1,transform:'scale(.34)',offset:.74},
+      {opacity:0,transform:'scale(.08)',offset:1}
+    ],{duration:BUBBLE_TRANSITION_MS,easing:'cubic-bezier(.55,0,.8,.45)',fill:'forwards'});
+    await bubbleAnimation.finished.catch(()=>{});
+    if(token===generation){ui.bubble.classList.remove('is-visible');ui.bubble.style.visibility='hidden'}
     return true;
   }
 
@@ -345,9 +274,7 @@
         }
       },TEXT_DELAY_MS);
 
-      const secondHandTimer=setTimeout(()=>{
-        if(token===generation&&exteriorActive())runHand(ui);
-      },SECOND_HAND_DELAY_MS);
+      const secondHandTimer=setTimeout(()=>{if(token===generation&&exteriorActive())runHand(ui)},SECOND_HAND_DELAY_MS);
 
       await sleep(BUBBLE_HOLD_MS);
       clearTimeout(textTimer);
@@ -397,8 +324,5 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
   else init();
 
-  window.MovieQuizTicketBoothAnimation=Object.freeze({
-    version:'30.0-dom-sync',
-    restart:start
-  });
+  window.MovieQuizTicketBoothAnimation=Object.freeze({version:'30.1-dom-sync',restart:start});
 })();
