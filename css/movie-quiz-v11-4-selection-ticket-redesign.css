@@ -1,0 +1,294 @@
+/* Movie Quiz v11.4 – selection + genre + ticket visual pass
+   Loaded after v11.3.1. This patch only overrides requested UI.
+*/
+
+/* ==========================================================================
+   1) SELECTION PAGE VERTICAL POSITIONING
+   ========================================================================== */
+
+/* Difficulty heading: current v11.3.1 position + another 40 px. */
+html body.mq-noir-master #page #cinema #screen #difficulty .selection-title{
+  top:calc(16.53703cqh + 90px)!important;
+}
+
+/* Genre selected difficulty + genre heading: 40 px lower than current. */
+html body.mq-noir-master #page #cinema #screen #genres .genre-panel > .eyebrow{
+  top:calc(9.19720cqh + 40px)!important;
+}
+html body.mq-noir-master #page #cinema #screen #genres .genre-panel > .selection-title{
+  top:calc(16.53703cqh + 40px)!important;
+}
+
+/* Three selection utility buttons (Statistics / Hall / Change player): +20 px. */
+html body.mq-noir-master #page #cinema #screen #difficulty > .mq-selection-tools,
+html body.mq-noir-master #page #cinema #screen #genres > .mq-selection-tools{
+  top:calc(4.63994cqh + 20px)!important;
+}
+
+/* "Změnit obtížnost": +20 px. */
+html body.mq-noir-master #page #cinema #screen #genres > #difficultyBack{
+  top:calc(4.63994cqh + 20px)!important;
+}
+
+/* ==========================================================================
+   2) DIM THE ORIGINAL PROJECTION CANVAS WITHOUT REPLACING IT
+   The selection pages remain transparent; this only reduces perceived glare.
+   ========================================================================== */
+html body.mq-noir-master #page #cinema #screen:has(#difficulty.active),
+html body.mq-noir-master #page #cinema #screen:has(#genres.active){
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  box-shadow:
+    inset 0 0 0 9999px rgba(16,9,5,.24),
+    inset 0 0 90px rgba(0,0,0,.30),
+    inset 0 0 0 1px rgba(255,255,255,.025)!important;
+}
+
+/* ==========================================================================
+   3) GENRE BUTTON REDESIGN – 1930s MOVIE QUIZ / ART-DECO
+   Uses the existing inline SVG symbols, restyled rather than adding heavy assets.
+   ========================================================================== */
+html body.mq-noir-master #page #cinema #screen #genres .genre-card{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  border:1px solid rgba(204,154,67,.72)!important;
+  border-radius:7px!important;
+  background:
+    radial-gradient(ellipse at 50% -8%,rgba(239,197,105,.11),transparent 47%),
+    linear-gradient(115deg,rgba(255,235,185,.035),transparent 24%),
+    linear-gradient(180deg,#21160f 0%,#0d0906 57%,#050403 100%)!important;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.84),
+    inset 0 0 0 4px rgba(218,172,82,.055),
+    inset 0 1px rgba(255,236,187,.08),
+    0 9px 20px rgba(0,0,0,.23)!important;
+  color:#f0d38c!important;
+  text-shadow:0 1px 0 #000!important;
+  transition:
+    transform .17s ease,
+    border-color .17s ease,
+    box-shadow .17s ease,
+    filter .17s ease!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #genres .genre-card::before{
+  content:""!important;
+  position:absolute!important;
+  inset:6px!important;
+  z-index:0!important;
+  pointer-events:none!important;
+  border:1px solid rgba(225,181,91,.19)!important;
+  border-radius:3px!important;
+  background:
+    linear-gradient(90deg,transparent 0 12%,rgba(230,185,94,.16) 12% 12.5%,transparent 12.5% 87.5%,rgba(230,185,94,.16) 87.5% 88%,transparent 88%),
+    linear-gradient(180deg,transparent 0 12%,rgba(230,185,94,.10) 12% 12.5%,transparent 12.5% 87.5%,rgba(230,185,94,.10) 87.5% 88%,transparent 88%)!important;
+  box-shadow:none!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #genres .genre-card::after{
+  content:""!important;
+  position:absolute!important;
+  left:14%!important;
+  right:14%!important;
+  top:0!important;
+  height:1px!important;
+  z-index:0!important;
+  pointer-events:none!important;
+  background:linear-gradient(90deg,transparent,#e5b85f,transparent)!important;
+  box-shadow:0 0 10px rgba(225,174,76,.18)!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #genres .genre-card > *{
+  position:relative!important;
+  z-index:2!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #genres .genre-card .genre-icon{
+  display:grid!important;
+  place-items:center!important;
+  width:clamp(64px,5.9cqw,84px)!important;
+  height:clamp(64px,5.9cqw,84px)!important;
+  margin:0 auto clamp(7px,1cqh,12px)!important;
+  overflow:visible!important;
+  color:#efc96f!important;
+  border:1px solid rgba(210,159,70,.62)!important;
+  border-radius:5px!important;
+  background:
+    radial-gradient(circle at 42% 28%,rgba(255,232,168,.13),transparent 40%),
+    linear-gradient(180deg,#332014,#120c08)!important;
+  box-shadow:
+    inset 0 0 0 2px rgba(0,0,0,.58),
+    inset 0 0 0 4px rgba(225,177,84,.07),
+    0 4px 10px rgba(0,0,0,.24)!important;
+  clip-path:polygon(12% 0,88% 0,100% 12%,100% 88%,88% 100%,12% 100%,0 88%,0 12%)!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #genres .genre-card .genre-icon svg{
+  width:120%!important;
+  height:120%!important;
+  max-width:none!important;
+  max-height:none!important;
+  overflow:visible!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:2.25!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  filter:drop-shadow(0 1px 0 rgba(0,0,0,.72))!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #genres .genre-card .card-copy{
+  display:block!important;
+  width:100%!important;
+  text-align:center!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #genres .genre-card .card-copy strong{
+  display:block!important;
+  color:#f3d88f!important;
+  font-family:var(--mq-display,"Limelight","Copperplate",serif)!important;
+  font-size:clamp(17px,1.55vw,24px)!important;
+  font-weight:400!important;
+  line-height:1.05!important;
+  letter-spacing:.018em!important;
+  text-transform:none!important;
+  text-shadow:0 2px 0 rgba(0,0,0,.86)!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #genres .genre-card:hover,
+html body.mq-noir-master #page #cinema #screen #genres .genre-card:focus-visible{
+  transform:translateY(-3px)!important;
+  border-color:#e4b65b!important;
+  filter:brightness(1.08)!important;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.82),
+    inset 0 0 0 4px rgba(235,190,101,.09),
+    inset 0 1px rgba(255,242,204,.12),
+    0 12px 24px rgba(0,0,0,.28),
+    0 0 16px rgba(201,146,55,.11)!important;
+  outline:none!important;
+}
+html body.mq-noir-master #page #cinema #screen #genres .genre-card:hover .genre-icon,
+html body.mq-noir-master #page #cinema #screen #genres .genre-card:focus-visible .genre-icon{
+  color:#ffe099!important;
+  border-color:#e3b456!important;
+  background:
+    radial-gradient(circle at 42% 28%,rgba(255,236,175,.18),transparent 40%),
+    linear-gradient(180deg,#452b17,#160e08)!important;
+}
+
+/* ==========================================================================
+   4) TICKET PAGE BUTTON REDESIGN – MATCH CURRENT MOVIE QUIZ LANGUAGE
+   Keeps existing dimensions/flow, changes material, font and hover language.
+   ========================================================================== */
+body.mq-ticket-open .mq-ticket-facade .mqf-btn{
+  border-radius:6px!important;
+  font-family:var(--mq-display,"Limelight","Copperplate",serif)!important;
+  font-weight:400!important;
+  letter-spacing:.025em!important;
+  text-transform:none!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.90)!important;
+  transition:
+    transform .16s ease,
+    border-color .16s ease,
+    color .16s ease,
+    background .16s ease,
+    box-shadow .16s ease!important;
+}
+
+/* Main ticket actions */
+body.mq-ticket-open .mq-ticket-facade .mqf-primary{
+  border:1px solid rgba(202,151,65,.92)!important;
+  border-radius:6px!important;
+  background:
+    linear-gradient(135deg,rgba(255,243,206,.07) 0 17%,transparent 17% 100%),
+    linear-gradient(180deg,#281a10 0%,#100a06 58%,#050302 100%)!important;
+  color:#f2d68c!important;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.82),
+    inset 0 0 0 4px rgba(218,171,81,.07),
+    inset 0 1px rgba(255,240,198,.12),
+    0 5px 12px rgba(57,27,9,.22)!important;
+  clip-path:none!important;
+}
+
+body.mq-ticket-open .mq-ticket-facade .mqf-primary:hover,
+body.mq-ticket-open .mq-ticket-facade .mqf-primary:focus-visible{
+  transform:translateY(-1px)!important;
+  border-color:#e0ad55!important;
+  color:#fff0bf!important;
+  background:
+    linear-gradient(135deg,rgba(255,245,213,.10) 0 17%,transparent 17% 100%),
+    linear-gradient(180deg,#3a2616 0%,#140d08 58%,#060403 100%)!important;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.82),
+    inset 0 0 0 4px rgba(231,185,94,.09),
+    inset 0 1px rgba(255,245,210,.15),
+    0 7px 16px rgba(57,27,9,.26),
+    0 0 13px rgba(192,135,46,.13)!important;
+  outline:none!important;
+}
+
+/* Back / secondary / guest / recovery-style buttons */
+body.mq-ticket-open .mq-ticket-facade .mqf-back,
+body.mq-ticket-open .mq-ticket-facade .mqf-guest,
+body.mq-ticket-open .mq-ticket-facade .mqf-link{
+  border:1px solid rgba(170,117,47,.72)!important;
+  border-radius:6px!important;
+  background:
+    linear-gradient(180deg,rgba(36,23,14,.96),rgba(11,7,5,.98))!important;
+  color:#e7c46e!important;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.75),
+    inset 0 1px rgba(255,235,186,.08),
+    0 4px 10px rgba(55,26,8,.16)!important;
+}
+
+body.mq-ticket-open .mq-ticket-facade .mqf-link{
+  padding-left:clamp(11px,1vw,15px)!important;
+  padding-right:clamp(11px,1vw,15px)!important;
+  border-bottom-color:rgba(170,117,47,.72)!important;
+}
+
+body.mq-ticket-open .mq-ticket-facade .mqf-back:hover,
+body.mq-ticket-open .mq-ticket-facade .mqf-back:focus-visible,
+body.mq-ticket-open .mq-ticket-facade .mqf-guest:hover,
+body.mq-ticket-open .mq-ticket-facade .mqf-guest:focus-visible,
+body.mq-ticket-open .mq-ticket-facade .mqf-link:hover,
+body.mq-ticket-open .mq-ticket-facade .mqf-link:focus-visible{
+  transform:translateY(-1px)!important;
+  border-color:#d5a34e!important;
+  background:linear-gradient(180deg,#332116,#100a06)!important;
+  color:#fff0bf!important;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.78),
+    inset 0 1px rgba(255,241,199,.11),
+    0 6px 13px rgba(55,26,8,.20)!important;
+  outline:none!important;
+}
+
+/* Ticket help button */
+body.mq-ticket-open .mq-ticket-facade .mqf-tip{
+  border:1px solid rgba(200,149,61,.82)!important;
+  background:linear-gradient(180deg,#27190f,#0d0805)!important;
+  color:#e8c66f!important;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.74),
+    inset 0 1px rgba(255,236,188,.10),
+    0 3px 8px rgba(54,25,8,.18)!important;
+}
+body.mq-ticket-open .mq-ticket-facade .mqf-tip > span{
+  color:#e8c66f!important;
+  font-family:var(--mq-ui,"Oswald","Arial Narrow",sans-serif)!important;
+  text-shadow:none!important;
+}
+body.mq-ticket-open .mq-ticket-facade .mqf-tip:hover,
+body.mq-ticket-open .mq-ticket-facade .mqf-tip:focus-visible{
+  border-color:#e0ad55!important;
+  background:linear-gradient(180deg,#3a2617,#120b07)!important;
+  color:#fff0bf!important;
+  filter:none!important;
+  outline:none!important;
+}
