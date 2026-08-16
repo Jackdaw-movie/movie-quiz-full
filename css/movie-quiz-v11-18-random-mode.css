@@ -28,18 +28,19 @@ html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="r
   color:#c6b7db!important;
 }
 
-/* v11.18.1 — the v11.5 genre redesign hides every inline SVG and replaces the
-   six real genres with mask icons. Random is intentionally different: its
-   reel/question-mark SVG is its own symbol, so explicitly restore it and
-   disable the inherited empty mask layer. */
+/* v11.18.2 — the v11.5 genre redesign hides every inline SVG and replaces the
+   six real genres with mask icons. Random keeps its own reel/question-mark SVG,
+   but its visible drawing is optically scaled to the same footprint as the six
+   mask-based genre symbols. */
 html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"] .genre-icon::before{
   content:none!important;
   display:none!important;
 }
 html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"] .genre-icon > svg{
   display:block!important;
-  width:100%!important;
-  height:100%!important;
+  width:78%!important;
+  height:78%!important;
+  margin:auto!important;
   overflow:visible!important;
   fill:none!important;
   stroke:currentColor!important;
