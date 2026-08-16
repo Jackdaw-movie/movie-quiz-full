@@ -1,13 +1,13 @@
-/* Movie Quiz v11.12 — gameplay paint-plane zoom repair.
-   Paint/compositing only: no gameplay geometry, HUD, question or answer layout changes. */
+/* Movie Quiz v11.14 — verified gameplay paint/zoom repair.
+   Uses the real DOM: .proscenium > .screen-frame > #screen > #game.active.
+   No gameplay geometry, answer, HUD or question layout rules are changed. */
 
-/* Preserve the approved ticket PIN mismatch position. */
+/* Keep the approved PIN mismatch placement from v11.8/v11.9. */
 #mqTicketError.mq-pin-mismatch-offset-v118{
   transform:translate(-50px,-30px)!important;
 }
 
-/* Exact approved flat colours. Scope the variable to the physical proscenium so
-   both the clipped screen and the tiny outside bleed use one identical paint. */
+/* One flat colour per active genre, inherited by the whole projection surface. */
 html body #page #cinema > .proscenium:has(#game.active[data-genre="comedy"]){--mq-game-flat:#967137}
 html body #page #cinema > .proscenium:has(#game.active[data-genre="fantasy"]){--mq-game-flat:#5d4967}
 html body #page #cinema > .proscenium:has(#game.active[data-genre="scifi"]){--mq-game-flat:#355f64}
@@ -17,31 +17,39 @@ html body #page #cinema > .proscenium:has(#game.active[data-genre="animation"]){
 html body #page #cinema > .proscenium:has(#game.active[data-genre="all"]),
 html body #page #cinema > .proscenium:has(#game.active[data-genre="random"]){--mq-game-flat:#6d5b49}
 
-/* ROOT ZOOM FIX:
-   The screen-frame is the first stable element that contains the whole gameplay
-   subtree. Promote THIS physical surface (not #game) to a compositor layer and
-   make it opaque. No dimensions or coordinates are touched. */
-html body #page #cinema > .proscenium > #screenFrame:has(#game.active){
+/* The physical screen frame is the compositor plane. This is the closest
+   gameplay equivalent of the working Statistics scene isolation: the whole
+   visible projection surface is rasterized together instead of #game alone. */
+html body #page #cinema > .proscenium > .screen-frame:has(> #screen > #game.active){
   background:var(--mq-game-flat,#51483f)!important;
+  background-color:var(--mq-game-flat,#51483f)!important;
   background-image:none!important;
-  box-shadow:none!important;
+
+  /* Requested paint extension: same box and coordinates, painted only
+     +4px to the right and +10px downward. A shadow on the physical frame is
+     outside its own overflow clipping and does not resize/reflow anything. */
+  box-shadow:4px 10px 0 0 var(--mq-game-flat,#51483f)!important;
+
   isolation:isolate!important;
   backface-visibility:hidden!important;
   -webkit-backface-visibility:hidden!important;
   transform:translateZ(0)!important;
+  will-change:transform!important;
 }
 
-/* Opaque base directly behind gameplay. Remove the old noir gradient only while
-   the game is active so browser re-rasterization cannot reveal it for a frame. */
-html body #page #cinema > .proscenium > #screenFrame:has(#game.active) > #screen{
+/* Opaque base below all gameplay UI. */
+html body #page #cinema > .proscenium > .screen-frame:has(> #screen > #game.active) > #screen{
   background:var(--mq-game-flat,#51483f)!important;
   background-color:var(--mq-game-flat,#51483f)!important;
   background-image:none!important;
   box-shadow:none!important;
   isolation:isolate!important;
+  backface-visibility:hidden!important;
+  -webkit-backface-visibility:hidden!important;
 }
 
-/* Keep the approved genre field flat without changing its original box. */
+/* Keep the authored theme container in its original box, but paint only the
+   approved single colour. No left/top/width/height/position changes here. */
 html body #page #cinema #screen #game.active > .theme-scene{
   background:var(--mq-game-flat,#51483f)!important;
   background-color:var(--mq-game-flat,#51483f)!important;
@@ -49,35 +57,8 @@ html body #page #cinema #screen #game.active > .theme-scene{
   box-shadow:none!important;
 }
 
-/* EXACT BACKGROUND EXTENSION:
-   .screen-frame and #screen both use overflow:hidden, so an inner theme-scene
-   cannot paint outside them. The extra colour is therefore painted on the
-   OUTER proscenium, immediately behind #screenFrame (z12).
-   Same left/top + width 4px + height 10px = ONLY 4px right and 10px down. */
-html body #page #cinema > .proscenium:has(#game.active)::after{
-  content:""!important;
-  display:block!important;
-  position:absolute!important;
-  left:var(--mq-screen-x)!important;
-  top:var(--mq-screen-y)!important;
-  right:auto!important;
-  bottom:auto!important;
-  width:calc(var(--mq-screen-w) + 4px)!important;
-  height:calc(var(--mq-screen-h) + 10px)!important;
-  margin:0!important;
-  padding:0!important;
-  border:0!important;
-  border-radius:6.8% / 11.5%!important;
-  background:var(--mq-game-flat,#51483f)!important;
-  background-image:none!important;
-  box-shadow:none!important;
-  opacity:1!important;
-  visibility:visible!important;
-  pointer-events:none!important;
-  z-index:11!important;
-}
-
-/* Hide only decorative gameplay paint. Visibility only: no display/reflow. */
+/* Remove only old genre artwork/effects. Keep #fx, feedback and gameplay dust
+   available because they are functional answer/win/loss effects. */
 html body #page #cinema #screen #game.active > #mq-cinematic-fx,
 html body #page #cinema #screen #game.active > .theme-scene > i,
 html body #page #cinema #screen #game.active > .theme-scene .scene-img,
@@ -88,19 +69,14 @@ html body #page #cinema #screen:has(> #game.active) > .projection-grain{
   pointer-events:none!important;
 }
 
-/* Inactive screen views stay laid out but cannot paint during browser zoom.
-   This follows the working Statistics visibility-isolation principle. */
+/* Deep-zoom repaint guard. Inactive sibling screens remain in the DOM and keep
+   their layout, but cannot paint through the active game during browser zoom. */
 html body #page #cinema #screen:has(> #game.active) > .view:not(#game){
   visibility:hidden!important;
+  opacity:0!important;
   pointer-events:none!important;
 }
-
-/* Remove the old low-level #game GPU layer. The whole screenFrame now owns the
-   compositor plane, so transparent parent layers cannot repaint independently. */
 html body #page #cinema #screen:has(> #game.active) > #game.active{
   visibility:visible!important;
   opacity:1!important;
-  transform:none!important;
-  backface-visibility:visible!important;
-  -webkit-backface-visibility:visible!important;
 }
