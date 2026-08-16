@@ -9,7 +9,7 @@
 @import url("cinema-ui-v53-9.css?v=53.9");
 @import url("cinema-ui-v53-10.css?v=53.10");
 @import url("cinema-ui-v53-12.css?v=53.12");
-@import url("ticket-booth-hand.css?v=10.10");
+@import url("ticket-booth-hand.css?v=10.11-restored");
 
 /* Movie Quiz – debug grid v47 restored */
 #mqDebugGridOverlay{position:fixed!important;left:0!important;top:0!important;width:0;height:0;margin:0!important;padding:0!important;border:0!important;overflow:hidden!important;display:none!important;pointer-events:none!important;z-index:2147483646!important;box-sizing:border-box!important}
@@ -19,15 +19,15 @@
 #mqDebugToggle:hover{background:rgba(30,24,12,.96)!important}
 #mqDebugCrosshairX,#mqDebugCrosshairY,#mqDebugScreenBox,#mqDebugElementBox,#mqDebugGridOverlayV46,#mqDebugGridCanvasV46,#mqDebugToggleV46,#mqDebugReadoutV46,#mqAvatarDebugGridLocal{display:none!important;pointer-events:none!important}
 
-/* v55.7 – statistics player identity position */
+/* v55.9 – statistics player identity 10 px higher */
 #mqStatisticsScene .mq-stat-player{
   left:calc(50% - 8px)!important;
-  top:8px!important;
+  top:-2px!important;
 }
 @media(max-width:1100px){
   #mqStatisticsScene .mq-stat-player{
     left:calc(50% - 8px)!important;
-    top:10px!important;
+    top:0!important;
   }
 }
 
