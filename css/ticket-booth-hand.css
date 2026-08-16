@@ -1,11 +1,13 @@
-/* Movie Quiz – exterior booth hand + bubble v10.11-restored
-   Frame-driven synchronization with js/29-interaction-guards.js v30.4.
+/* Movie Quiz – exterior booth hand + bubble v11.0
+   Restored visual geometry from the smaller v10.5/v10.7 bubble.
 
-   Important:
-   - hand stays in the fixed portal, 4 px higher than the old position
-   - bubble is rendered from bubble_frame_1.png ... bubble_frame_5.png
-   - text is inside the same bubble container
-   - JS shows text exactly on bubble frame 5 and hides it the instant frame 5 is left
+   - five frame PNGs use a 900×675 transparent safety canvas
+   - UI canvas remains 272×204, so the visible bubble is ~220 px wide instead
+     of stretching the cropped 560×420 art to ~250+ px
+   - text remains physically inside the bubble container
+   - js/29 controls frame changes and only shows text on frame 5
+   - global cinema Home is the same 48×48 control / SVG geometry / position as
+     the Statistics scene Home button
 */
 
 /* =========================================================
@@ -52,7 +54,6 @@ body.mq-exterior-active #mqDebugToggle:hover{
   background:none!important;
 }
 
-/* Fixed subtle contact shadow at the portal edge. */
 #mqExteriorStage::before{
   content:"";
   position:absolute;
@@ -75,7 +76,7 @@ body.mq-exterior-active #mqDebugToggle:hover{
 }
 
 /* =========================================================
-   HAND – FIXED PORTAL + INNER PENDULUM ASSET
+   HAND – KEEP CURRENT APPROVED SIZE/POSITION
    ========================================================= */
 .mq-ticket-hand-portal{
   position:absolute;
@@ -103,7 +104,7 @@ body.mq-exterior-active #mqDebugToggle:hover{
 }
 
 /* =========================================================
-   BUBBLE – REAL FRAME ASSETS + TEXT IN THE SAME CONTAINER
+   BUBBLE – PADDED 900×675 FRAMES, SMALLER V10.7 VISUAL SIZE
    ========================================================= */
 .mq-ticket-bubble-ui{
   position:absolute;
@@ -162,7 +163,6 @@ body.mq-ticket-open #mqExteriorStage::before{
   display:none!important;
 }
 
-/* Disable all old pseudo-element bubble remnants. */
 body.mq-exterior-active #mqTicketBoothHotspot::before,
 body.mq-exterior-active #mqTicketBoothHotspot::after{
   content:none!important;
@@ -171,21 +171,26 @@ body.mq-exterior-active #mqTicketBoothHotspot::after{
 }
 
 /* =========================================================
-   HOME BUTTON – EXACTLY MATCH STATISTICS CORNER HOME
+   CINEMA HOME – EXACT STATISTICS CORNER CONTROL PARITY
+   The JS guard keeps #homeBtn as a direct child of #cinema, so percentages are
+   relative to the exact same 1672×941 cinema canvas as #mqStatHome.
    ========================================================= */
-#homeBtn.mq-home-dock{
-  position:fixed!important;
+#cinema > #homeBtn.mq-home-dock{
+  position:absolute!important;
   top:5.95%!important;
   right:1.55%!important;
   left:auto!important;
   bottom:auto!important;
   z-index:905!important;
-  display:grid!important;
+  display:none!important;
   place-items:center!important;
   width:48px!important;
   height:48px!important;
   min-width:48px!important;
+  max-width:48px!important;
   min-height:48px!important;
+  max-height:48px!important;
+  margin:0!important;
   padding:0!important;
   border:1px solid rgba(200,149,61,.76)!important;
   border-radius:6px!important;
@@ -195,7 +200,14 @@ body.mq-exterior-active #mqTicketBoothHotspot::after{
   cursor:pointer!important;
   transition:background .15s ease,border-color .15s ease,transform .15s ease!important;
 }
-#homeBtn.mq-home-dock svg{
+
+/* Difficulty + genre selection and the running quiz only. */
+#cinema:has(.selection-view.active) > #homeBtn.mq-home-dock,
+#cinema:has(#game.active) > #homeBtn.mq-home-dock{
+  display:grid!important;
+}
+
+#cinema > #homeBtn.mq-home-dock svg{
   display:block!important;
   width:24px!important;
   height:24px!important;
@@ -207,8 +219,8 @@ body.mq-exterior-active #mqTicketBoothHotspot::after{
   stroke-linejoin:round!important;
   pointer-events:none!important;
 }
-#homeBtn.mq-home-dock:hover,
-#homeBtn.mq-home-dock:focus-visible{
+#cinema > #homeBtn.mq-home-dock:hover,
+#cinema > #homeBtn.mq-home-dock:focus-visible{
   transform:translateY(-1px)!important;
   background:linear-gradient(180deg,#3c2817,#100a06)!important;
   border-color:#e0ad55!important;

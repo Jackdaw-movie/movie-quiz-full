@@ -1,10 +1,10 @@
-/* Movie Quiz — fast loading gate v8.2
+/* Movie Quiz — fast loading gate v8.3
    Priority: paint instantly, then preload the exterior behind it.
-   v8.2: user-supplied 1930s New York intro background + cache-busted loading image. */
+   v8.3: optimized single-request intro background for fast first paint; same image URL is reused by preload + CSS. */
 html,body{min-height:100%}
 body.mq-preloading{overflow:hidden!important;background:#020305!important}
 .mq-preload-gate{position:fixed;inset:0;z-index:2147483640;overflow:hidden;display:block;background:#05080c;color:#eee4cf;opacity:1;visibility:visible;transition:opacity .55s ease,visibility .55s step-end;isolation:isolate;contain:paint}
-.mq-preload-gate::before{content:"";position:absolute;inset:0;z-index:-3;background-color:#071019;background-image:linear-gradient(180deg,rgba(2,5,9,.03) 0%,rgba(3,6,10,.06) 46%,rgba(2,4,7,.38) 73%,rgba(1,2,4,.66) 100%),url("../assets/loading/new-york-night-fast.webp?v=8.2-user-bg");background-size:cover;background-position:center center}
+.mq-preload-gate::before{content:"";position:absolute;inset:0;z-index:-3;background-color:#071019;background-image:linear-gradient(180deg,rgba(2,5,9,.03) 0%,rgba(3,6,10,.06) 46%,rgba(2,4,7,.38) 73%,rgba(1,2,4,.66) 100%),url("../assets/loading/new-york-night.webp");background-size:cover;background-position:center center}
 .mq-preload-gate::after{content:"";position:absolute;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 34%,rgba(0,0,0,.08) 68%,rgba(0,0,0,.48) 100%),linear-gradient(180deg,transparent 0 54%,rgba(0,0,0,.34) 100%)}
 .mq-preload-atmosphere{display:none!important}
 .mq-preload-content{position:absolute;left:50%;bottom:clamp(6.5vh,8.8vh,10vh);transform:translateX(-50%);width:min(760px,calc(100vw - 40px));text-align:center;filter:drop-shadow(0 5px 18px rgba(0,0,0,.68))}

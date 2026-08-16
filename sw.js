@@ -1,4 +1,4 @@
-const CACHE='movie-quiz-master-stage-v24-booth-restore';
+const CACHE='movie-quiz-master-stage-v25-ui-bubble-intro';
 const ASSET_RE=/\/assets\/(avatars|exterior-v6-9\/production|avatar-onboarding-v15\/production|ticket-login\/production|loading)\//;
 self.addEventListener('install',()=>self.skipWaiting());
 self.addEventListener('activate',event=>event.waitUntil((async()=>{

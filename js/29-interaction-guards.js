@@ -20,6 +20,9 @@
     ));
   }
 
+  /* Remove the legacy core mute click listener structurally. 00-core.js binds
+     directly to the original node. Replacing that node with an identical clone
+     drops that listener completely. The Settings module remains the only audio UI. */
   function neutralizeLegacyMuteButton(){
     const old=document.getElementById('muteBtn');
     if(!old||old.dataset.mqLegacyMuteNeutralized==='1')return;
@@ -35,15 +38,20 @@
 
   function restoreConfiguredAudio(){
     if(!avatarModalOpen())return;
-    try{if(typeof state!=='undefined'&&state)state.muted=false}catch(_){}
+    try{
+      if(typeof state!=='undefined'&&state)state.muted=false;
+    }catch(_){}
     try{
       if(typeof initAudio==='function')initAudio();
-      if(typeof audioCtx!=='undefined'&&audioCtx?.state==='suspended')audioCtx.resume?.().catch?.(()=>{});
+      if(typeof audioCtx!=='undefined'&&audioCtx?.state==='suspended'){
+        audioCtx.resume?.().catch?.(()=>{});
+      }
     }catch(_){}
     try{window.MovieQuizSettings?.apply?.()}catch(_){}
     try{
       const volume=Number(window.MovieQuizSettings?.musicVolume?.()??50);
       if(volume>0&&typeof switchMusic==='function')switchMusic('menu');
+      /* apply again after switchMusic: the exterior guard used to zero musicGain. */
       window.MovieQuizSettings?.apply?.();
     }catch(_){}
   }
@@ -51,8 +59,12 @@
   function scheduleAudioIntegrityCheck(event){
     if(insideRealAudioSettings(event?.target))return;
     if(!avatarModalOpen())return;
-    queueMicrotask(()=>{if(avatarModalOpen())restoreConfiguredAudio()});
-    requestAnimationFrame(()=>{if(avatarModalOpen())restoreConfiguredAudio()});
+    queueMicrotask(()=>{
+      if(avatarModalOpen())restoreConfiguredAudio();
+    });
+    requestAnimationFrame(()=>{
+      if(avatarModalOpen())restoreConfiguredAudio();
+    });
   }
 
   function installAvatarArrowOnlyGuard(){
@@ -60,9 +72,27 @@
     const viewport=document.getElementById('mqAvatarCarouselViewport');
     if(!modal||!viewport||viewport.dataset.mqArrowOnlyGuard==='1')return false;
     viewport.dataset.mqArrowOnlyGuard='1';
-    viewport.addEventListener('wheel',event=>{if(avatarModalOpen())event.stopImmediatePropagation()},{capture:true,passive:true});
-    for(const type of ['pointerdown','pointerup','pointercancel'])viewport.addEventListener(type,event=>{if(avatarModalOpen())event.stopImmediatePropagation()},true);
-    for(const type of ['touchstart','touchmove','touchend'])viewport.addEventListener(type,event=>{if(avatarModalOpen())event.stopImmediatePropagation()},{capture:true,passive:true});
+
+    viewport.addEventListener('wheel',event=>{
+      if(!avatarModalOpen())return;
+      event.stopImmediatePropagation();
+    },{capture:true,passive:true});
+
+    for(const type of ['pointerdown','pointerup','pointercancel']){
+      viewport.addEventListener(type,event=>{
+        if(!avatarModalOpen())return;
+        event.stopImmediatePropagation();
+      },true);
+    }
+    for(const type of ['touchstart','touchmove','touchend']){
+      viewport.addEventListener(type,event=>{
+        if(!avatarModalOpen())return;
+        event.stopImmediatePropagation();
+      },{capture:true,passive:true});
+    }
+
+    /* Avatar cards are previews only. Navigation happens exclusively through
+       the two graphical [data-avatar-nav] buttons outside the viewport. */
     viewport.addEventListener('click',event=>{
       if(!avatarModalOpen())return;
       event.preventDefault();
@@ -73,7 +103,9 @@
 
   function observeAvatarModal(){
     if(installAvatarArrowOnlyGuard())return;
-    const observer=new MutationObserver(()=>{if(installAvatarArrowOnlyGuard())observer.disconnect()});
+    const observer=new MutationObserver(()=>{
+      if(installAvatarArrowOnlyGuard())observer.disconnect();
+    });
     observer.observe(document.documentElement,{childList:true,subtree:true});
   }
 
@@ -84,6 +116,9 @@
     event.stopImmediatePropagation();
   },true);
 
+  /* Any ordinary interaction on the avatar screen is allowed to do its UI job,
+     then the configured music level is re-applied. Only actual Settings controls
+     are exempt, because those are the only controls allowed to change audio. */
   document.addEventListener('pointerdown',scheduleAudioIntegrityCheck,true);
   document.addEventListener('click',scheduleAudioIntegrityCheck,true);
 
@@ -94,11 +129,16 @@
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
   else init();
+
   window.addEventListener('mq:avatar-gallery-opened',restoreConfiguredAudio);
   window.__mqInteractionGuardsVersion=VERSION;
 })();
 
-/* Movie Quiz – exterior browser zoom fix v29.0 */
+/* Movie Quiz – exterior browser zoom fix v29.0
+   26-exterior-scene.js intentionally fits the 1672×941 master into the viewport,
+   but using visualViewport dimensions means browser zoom is immediately cancelled
+   by another fit-to-screen resize. This later guard preserves the fit scale in
+   physical viewport space, so browser zoom can actually magnify/crop the exterior. */
 (()=>{
   'use strict';
   const DESIGN_W=1672;
@@ -110,11 +150,17 @@
     raf=0;
     const stage=document.getElementById('mqExteriorStage');
     if(!stage)return;
+
     const currentDpr=Math.max(.1,Number(window.devicePixelRatio)||initialDpr);
     const zoomRatio=currentDpr/initialDpr;
+
+    /* innerWidth/innerHeight shrink when desktop browser zoom increases.
+       Multiplying by the DPR ratio removes that artificial shrink while still
+       responding normally to a real window resize. */
     const physicalCssWidth=Math.max(1,window.innerWidth*zoomRatio);
     const physicalCssHeight=Math.max(1,window.innerHeight*zoomRatio);
     const fit=Math.max(.12,Math.min(physicalCssWidth/DESIGN_W,physicalCssHeight/DESIGN_H));
+
     stage.style.transform=`translate(-50%,-50%) scale(${fit})`;
   }
 
@@ -125,32 +171,99 @@
 
   function neutralizeExteriorNativeHoverHints(){
     const scene=document.getElementById('mqExteriorScene');
-    if(scene)scene.querySelectorAll('[title]').forEach(element=>{if(element.id!=='mqTicketBoothHotspot')element.removeAttribute('title')});
+    if(scene){
+      scene.querySelectorAll('[title]').forEach(element=>{
+        if(element.id!=='mqTicketBoothHotspot')element.removeAttribute('title');
+      });
+    }
     document.getElementById('mqDebugToggle')?.removeAttribute('title');
   }
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{neutralizeExteriorNativeHoverHints();scheduleZoomSafeExteriorFit()},{once:true});
-  else{neutralizeExteriorNativeHoverHints();scheduleZoomSafeExteriorFit()}
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',()=>{neutralizeExteriorNativeHoverHints();scheduleZoomSafeExteriorFit()},{once:true});
+  }else{
+    neutralizeExteriorNativeHoverHints();
+    scheduleZoomSafeExteriorFit();
+  }
+
+  /* Registered after 26-exterior-scene.js, then applied in RAF, so this wins
+     over the legacy visualViewport fit without touching the rest of exterior JS. */
   window.addEventListener('resize',scheduleZoomSafeExteriorFit,{passive:true});
   window.visualViewport?.addEventListener('resize',scheduleZoomSafeExteriorFit,{passive:true});
   window.addEventListener('orientationchange',scheduleZoomSafeExteriorFit,{passive:true});
   window.addEventListener('mq:preload-entered',scheduleZoomSafeExteriorFit);
-  window.MovieQuizExteriorZoom=Object.freeze({version:'29.0-zoom-safe',updateNow:applyZoomSafeExteriorFit});
+
+  window.MovieQuizExteriorZoom=Object.freeze({
+    version:'29.0-zoom-safe',
+    updateNow:applyZoomSafeExteriorFit
+  });
 })();
 
-/* Movie Quiz – ticket booth hand + bubble controller v30.4
-   Restored after loading-screen asset deployment.
-   Bubble is frame-driven and text visibility is tied directly to frame 5. */
+/* Movie Quiz – cinema Home parity v30.5
+   Uses the exact same SVG geometry and cinema-relative positioning as the
+   Statistics scene corner Home button. player-settings.js may move #homeBtn to
+   document.body during its delayed sync passes, so this guard moves it back to
+   #cinema whenever that happens without replacing the button itself/listeners. */
+(()=>{
+  'use strict';
+  const HOME_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5L12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-6h5v6"/></svg>';
+  let observer=null;
+
+  function syncCinemaHome(){
+    const cinema=document.getElementById('cinema');
+    const home=document.getElementById('homeBtn');
+    if(!cinema||!home)return false;
+
+    if(home.parentElement!==cinema)cinema.appendChild(home);
+    home.classList.add('mq-home-dock');
+    home.setAttribute('aria-label','Hlavní menu');
+    home.setAttribute('title','Hlavní menu');
+    home.dataset.mqTip='Hlavní menu';
+
+    if(home.dataset.mqStatisticsHomeGraphic!=='1'){
+      home.dataset.mqStatisticsHomeGraphic='1';
+      home.innerHTML=HOME_SVG;
+    }
+    return true;
+  }
+
+  function init(){
+    syncCinemaHome();
+    setTimeout(syncCinemaHome,420);
+    setTimeout(syncCinemaHome,1350);
+
+    if(observer)return;
+    observer=new MutationObserver(()=>{
+      const home=document.getElementById('homeBtn');
+      const cinema=document.getElementById('cinema');
+      if(home&&cinema&&home.parentElement!==cinema)queueMicrotask(syncCinemaHome);
+    });
+    observer.observe(document.body,{childList:true});
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
+  else init();
+
+  window.MovieQuizCinemaHome=Object.freeze({version:'30.5-stats-parity',sync:syncCinemaHome});
+})();
+
+/* Movie Quiz – ticket booth hand + bubble controller v30.5
+   Restores the smaller, unclipped bubble geometry from the good v10.5/v10.7
+   sequence. The five PNGs now include transparent safe canvas, so 272×204 is
+   the canvas size, not the visible speech-bubble size. Frame timing is restored
+   to the v10.7 visual cadence (~360 ms 1→5 and ~360 ms 5→1).
+   Text visibility is event-driven: it turns on exactly when frame 5 is assigned
+   and turns off in the same tick frame 5 is left. */
 (()=>{
   'use strict';
 
-  const ASSET_VERSION='30.4-restored';
+  const ASSET_VERSION='30.5-v107-geometry';
   const HAND_SRC=`assets/exterior-v6-9/production/ticket-booth-hand.png?v=${ASSET_VERSION}`;
   const BUBBLE_FRAMES=[1,2,3,4,5].map(n=>`assets/exterior-v6-9/production/bubble_frame_${n}.png?v=${ASSET_VERSION}`);
 
   const HAND_MS=3744;
   const BUBBLE_START_IN_HAND_MS=2952;
-  const BUBBLE_STEP_MS=46;
+  const BUBBLE_STEP_MS=90;
   const BUBBLE_HOLD_MS=7000;
   const SECOND_HAND_DELAY_MS=1200;
   const HIDDEN_TO_NEXT_HAND_MS=2950;
@@ -158,6 +271,8 @@
   let generation=0;
   let running=false;
   let handAnimation=null;
+  let bodyObserver=null;
+  let initialized=false;
 
   const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   const exteriorActive=()=>document.body.classList.contains('mq-exterior-active')&&!document.body.classList.contains('mq-ticket-open');
@@ -182,6 +297,7 @@
       hand=document.createElement('img');
       hand.className='mq-ticket-hand-img';
       hand.alt='';
+      hand.decoding='async';
       portal.appendChild(hand);
     }
     if(hand.getAttribute('src')!==HAND_SRC)hand.src=HAND_SRC;
@@ -203,26 +319,38 @@
       bubbleArt=document.createElement('img');
       bubbleArt.className='mq-ticket-bubble-art';
       bubbleArt.alt='';
+      bubbleArt.decoding='async';
       text=document.createElement('div');
       text.className='mq-ticket-bubble-text';
       text.innerHTML='Pojďte sem,<br>máme poslední<br>volná místa!';
       bubble.append(bubbleArt,text);
     }
-    bubbleArt.src=BUBBLE_FRAMES[0];
+    if(!bubbleArt.getAttribute('src'))bubbleArt.src=BUBBLE_FRAMES[0];
 
     return {stage,portal,hand,bubble,bubbleArt,text};
   }
 
-  function preloadAssets(){
-    [HAND_SRC,...BUBBLE_FRAMES].forEach(src=>{
+  function preloadOne(src){
+    return new Promise(resolve=>{
       const img=new Image();
       img.decoding='async';
+      try{img.fetchPriority='low'}catch(_){}
+      img.onload=async()=>{
+        try{await img.decode?.()}catch(_){}
+        resolve(true);
+      };
+      img.onerror=()=>resolve(false);
       img.src=src;
     });
   }
 
+  async function preloadAssets(){
+    await Promise.all([HAND_SRC,...BUBBLE_FRAMES].map(preloadOne));
+  }
+
   function setBubbleFrame(ui,frameNumber){
-    ui.bubbleArt.src=BUBBLE_FRAMES[frameNumber-1];
+    const src=BUBBLE_FRAMES[frameNumber-1];
+    if(ui.bubbleArt.getAttribute('src')!==src)ui.bubbleArt.src=src;
     ui.bubble.dataset.mqBubbleFrame=String(frameNumber);
 
     const textVisible=frameNumber===5;
@@ -286,6 +414,8 @@
   async function hideBubble(ui,token){
     if(token!==generation||!exteriorActive())return false;
 
+    /* First reverse tick is 5 → 4, so text is hidden before any smaller frame
+       is painted. There is no independent text timer. */
     for(let frame=4;frame>=1;frame--){
       if(token!==generation||!exteriorActive())return false;
       setBubbleFrame(ui,frame);
@@ -339,6 +469,7 @@
   }
 
   function syncToScene(){
+    if(!initialized)return;
     if(exteriorActive()){
       if(!running)start();
     }else{
@@ -349,15 +480,34 @@
     }
   }
 
-  function init(){
-    preloadAssets();
-    ensureUi();
+  async function initController(){
+    if(initialized)return;
+    initialized=true;
+    const ui=ensureUi();
+    if(!ui)return;
+
+    /* Bubble/hand assets are decorative. Load/decode them only after the user
+       has left the loading gate, so they cannot compete with the first-paint
+       background or critical exterior assets on a first visit. */
+    await preloadAssets();
+    if(!initialized)return;
     syncToScene();
-    new MutationObserver(syncToScene).observe(document.body,{attributes:true,attributeFilter:['class']});
+
+    if(!bodyObserver){
+      bodyObserver=new MutationObserver(syncToScene);
+      bodyObserver.observe(document.body,{attributes:true,attributeFilter:['class']});
+    }
   }
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
-  else init();
+  function scheduleController(){
+    setTimeout(initController,70);
+  }
 
-  window.MovieQuizTicketBoothAnimation=Object.freeze({version:'30.4-restored-frame5-sync',restart:start});
+  if(document.body.classList.contains('mq-preload-released'))scheduleController();
+  else window.addEventListener('mq:preload-entered',scheduleController,{once:true});
+
+  window.MovieQuizTicketBoothAnimation=Object.freeze({
+    version:'30.5-v107-geometry-frame5-sync',
+    restart:start
+  });
 })();
