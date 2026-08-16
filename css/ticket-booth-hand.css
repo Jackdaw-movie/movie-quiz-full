@@ -111,12 +111,12 @@ body.mq-exterior-active #mqTicketBoothHotspot::before{
   content:"";
   position:absolute;
   left:171px;
-  top:-46px;
-  width:281px;
-  height:211px;
+  top:4px;
+  width:169px;
+  height:127px;
   z-index:17;
   pointer-events:none;
-  background:url("../assets/exterior-v6-9/production/ticket-booth-bubble-loop.webp?v=10.2") center center / 100% 100% no-repeat;
+  background:url("../assets/exterior-v6-9/production/ticket-booth-bubble-loop.webp?v=10.3") center center / 100% 100% no-repeat;
   image-rendering:auto;
 }
 
@@ -124,10 +124,10 @@ body.mq-exterior-active #mqTicketBoothHotspot::before{
 body.mq-exterior-active #mqTicketBoothHotspot::after{
   content:"Pojďte sem, máme\A poslední volná místa!";
   position:absolute;
-  left:226px;
-  top:7px;
-  width:170px;
-  min-height:60px;
+  left:197px;
+  top:40px;
+  width:118px;
+  min-height:52px;
   z-index:18;
   display:flex;
   align-items:center;
@@ -136,7 +136,7 @@ body.mq-exterior-active #mqTicketBoothHotspot::after{
   white-space:pre-line;
   color:#15110d;
   font-family:"Bebas Neue","Oswald","Arial Narrow","Aptos","Segoe UI",sans-serif;
-  font-size:24px;
+  font-size:17px;
   line-height:1.02;
   letter-spacing:.025em;
   text-shadow:0 1px 0 rgba(255,255,255,.22);
