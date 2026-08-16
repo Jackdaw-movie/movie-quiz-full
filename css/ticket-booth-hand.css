@@ -1,25 +1,27 @@
-/* Movie Quiz – exterior booth hand + synchronized bubble v10.6
-   What changed in this pass:
-   - keeps the already-fixed exterior hover behavior
-   - reworks the bubble into a sprite-driven sequence, so text stays locked to it
-   - text appears from bubble step 4, uses the headline font, is 15% larger, and is shifted 7 px left
-   - bubble visible timing: grow -> hold 7 s -> collapse -> 5 s pause to next appearance
-   - hand timeline is synchronized so:
-       1) hand A comes out, waves, returns
-       2) bubble starts while hand A is returning
-       3) while bubble is present, hand B comes out and waves once
-       4) bubble goes away
-       5) during the pause, hand A of the next loop already starts, so the next bubble again appears on return
+/* Movie Quiz – exterior booth synchronized hand + bubble v10.7
+   Built from the last WORKING v10.5 layout.
+
+   Synchronization:
+   - hand A: out -> wave -> return
+   - bubble begins while hand A is returning
+   - bubble text appears at bubble step 4
+   - final bubble holds for 7 seconds
+   - while bubble is visible, hand B comes out and waves once
+   - hand B returns before the bubble collapses
+   - after the bubble disappears there are exactly 5 seconds until the next bubble begins
+   - during that pause, the next hand A already starts, so the next bubble again begins during its return
+
+   The hand + bubble artwork is ONE synchronized animated overlay asset. This avoids
+   the drift / missing-hand problem from v10.6, where two CSS sprite animations were
+   placed in different coordinate systems.
 */
 
 /* =========================================================
-   TICKET BOOTH – THE ONLY ACTIVE EXTERIOR HOVER TARGET
+   TICKET BOOTH – ONLY ACTIVE EXTERIOR HOVER TARGET
    ========================================================= */
-
 body.mq-exterior-active #mqExteriorStage > *:not(#mqTicketBoothHotspot){
   pointer-events:none!important;
 }
-
 body.mq-exterior-active #mqTicketBoothHotspot.mq-booth-button{
   clip-path:none!important;
   -webkit-clip-path:none!important;
@@ -37,14 +39,12 @@ body.mq-exterior-active #mqTicketBoothHotspot,
 body.mq-exterior-active #mqTicketBoothHotspot:hover{
   cursor:none!important;
 }
-
 body.mq-exterior-active #mqExteriorScene,
 body.mq-exterior-active #mqExteriorStage,
 body.mq-exterior-active #mqExteriorScene *:not(#mqTicketBoothHotspot),
 body.mq-exterior-active #mqExteriorStage *:not(#mqTicketBoothHotspot){
   cursor:default!important;
 }
-
 body.mq-exterior-active #mqExteriorAudioOpen:hover,
 body.mq-exterior-active .mq-exterior-audio-toggle:hover,
 body.mq-exterior-active #mqDebugToggle:hover{
@@ -52,30 +52,8 @@ body.mq-exterior-active #mqDebugToggle:hover{
 }
 
 /* =========================================================
-   MASTER TIMING
+   FIXED PORTAL SHADOW
    ========================================================= */
-
-body.mq-exterior-active #mqTicketBoothHotspot{
-  --mq-sync-cycle: 12.96s;
-
-  /* bubble geometry */
-  --mq-bubble-left:168px;
-  --mq-bubble-top:-17px;
-  --mq-bubble-width:272px;
-  --mq-bubble-height:204px;
-
-  /* text safe zone locked to the bubble; shifted 7 px left */
-  --mq-bubble-text-left:235px;
-  --mq-bubble-text-top:28px;
-  --mq-bubble-text-width:158px;
-  --mq-bubble-text-height:85px;
-}
-
-/* =========================================================
-   HAND ANIMATION – TWO SYNCHRONIZED PASSES PER LOOP
-   ========================================================= */
-
-/* portal shadow stays fixed at the ticket window */
 #mqExteriorStage::before{
   content:"";
   position:absolute;
@@ -97,106 +75,49 @@ body.mq-exterior-active #mqTicketBoothHotspot{
   mix-blend-mode:multiply;
 }
 
-/* hand A: starts the loop; bubble begins while this hand is returning */
-#mqExteriorStage::after,
-#mqExteriorScene::before{
+/* =========================================================
+   ONE SYNCHRONIZED OVERLAY: HAND + BUBBLE
+   ========================================================= */
+#mqExteriorStage::after{
   content:"";
   position:absolute;
-  left:1004px;
-  top:540px;
-  width:260px;
-  height:200px;
+  left:930px;
+  top:400px;
+  width:500px;
+  height:360px;
   z-index:14;
   pointer-events:none;
-  background-image:url("../assets/exterior-v6-9/production/ticket-booth-hand-wave-sheet.webp?v=10.6");
-  background-repeat:no-repeat;
-  background-size:100% auto;
+  background:url("../assets/exterior-v6-9/production/ticket-booth-synced-loop.webp?v=10.7") 0 0 / 500px 360px no-repeat;
   image-rendering:auto;
-  transform-origin:left center;
-  transform:scale(.9)!important;
-  opacity:0;
-  will-change:background-position,opacity;
-}
-
-#mqExteriorStage::after{
-  animation:mqHandA var(--mq-sync-cycle) steps(67,end) infinite;
-}
-
-/* hand B: second wave while the bubble is already visible */
-#mqExteriorScene::before{
-  animation:mqHandB var(--mq-sync-cycle) steps(67,end) infinite;
-}
-
-/* active slot: 0.00s → 5.04s */
-@keyframes mqHandA{
-  0%{
-    opacity:1;
-    background-position:0 0;
-  }
-  38.88%{
-    opacity:1;
-    background-position:0 -13200px;
-  }
-  38.89%,100%{
-    opacity:0;
-    background-position:0 -13200px;
-  }
-}
-
-/* active slot: 6.40s → 11.44s */
-@keyframes mqHandB{
-  0%,49.38%{
-    opacity:0;
-    background-position:0 0;
-  }
-  49.39%{
-    opacity:1;
-    background-position:0 0;
-  }
-  88.27%{
-    opacity:1;
-    background-position:0 -13200px;
-  }
-  88.28%,100%{
-    opacity:0;
-    background-position:0 -13200px;
-  }
+  transform:none!important;
 }
 
 body:not(.mq-exterior-active) #mqExteriorStage::before,
 body:not(.mq-exterior-active) #mqExteriorStage::after,
-body:not(.mq-exterior-active) #mqExteriorScene::before,
 body.mq-ticket-open #mqExteriorStage::before,
-body.mq-ticket-open #mqExteriorStage::after,
-body.mq-ticket-open #mqExteriorScene::before{
+body.mq-ticket-open #mqExteriorStage::after{
   display:none!important;
 }
 
 /* =========================================================
-   BUBBLE – SPRITE-DRIVEN, TEXT LOCKED TO THE SAME GEOMETRY
+   UI TEXT – LOCKED TO THE BUBBLE GEOMETRY
    ========================================================= */
+body.mq-exterior-active #mqTicketBoothHotspot{
+  /* v10.5 safe zone, shifted 7 px left and widened slightly for the 15% larger font */
+  --mq-bubble-text-left:235px;
+  --mq-bubble-text-top:28px;
+  --mq-bubble-text-width:165px;
+  --mq-bubble-text-height:85px;
+}
 
+/* The bubble artwork itself now lives in the synchronized overlay above. */
 body.mq-exterior-active #mqTicketBoothHotspot::before{
-  content:"";
-  position:absolute;
-  left:var(--mq-bubble-left);
-  top:var(--mq-bubble-top);
-  width:var(--mq-bubble-width);
-  height:var(--mq-bubble-height);
-  z-index:17;
-  pointer-events:none;
-  background-image:url("../assets/exterior-v6-9/production/ticket-booth-bubble-sheet.webp?v=10.6");
-  background-repeat:no-repeat;
-  background-size:100% auto;
-  background-position:0 0;
-  image-rendering:auto;
-  opacity:0;
-  will-change:background-position,opacity;
-  animation:mqBubble var(--mq-sync-cycle) linear infinite;
+  content:none!important;
+  display:none!important;
 }
 
 body.mq-exterior-active #mqTicketBoothHotspot::after{
-  content:"Pojďte sem,\A máme\A poslední volná\A místa!";
+  content:"Pojďte sem,\A máme poslední\A volná místa!";
   position:absolute;
   left:var(--mq-bubble-text-left);
   top:var(--mq-bubble-text-top);
@@ -212,54 +133,34 @@ body.mq-exterior-active #mqTicketBoothHotspot::after{
   white-space:pre-line;
   color:#17120d;
   font-family:var(--mq-display,"Limelight","Copperplate","Baskerville",serif)!important;
-  font-size:17.3px;
+  font-size:17.25px;
   font-weight:400;
-  line-height:1.02;
-  letter-spacing:.01em;
+  line-height:1.10;
+  letter-spacing:.005em;
   text-shadow:none;
   opacity:0;
   pointer-events:none;
-  animation:mqBubbleText var(--mq-sync-cycle) linear infinite;
+  animation:mqTicketBubbleTextSync 12.96s linear infinite;
 }
 
-/* bubble timeline:
-   - starts while hand A is returning (4.20s)
-   - text appears at step 4 (4.56s)
-   - full bubble holds for 7.0s
-   - bubble collapses and disappears (12.16s)
-   - next bubble starts 5.0s later, while next hand A is already returning */
-@keyframes mqBubble{
-  0%,32.40%{ opacity:0; background-position:0 0; }
-  32.41%,33.33%{ opacity:1; background-position:0 0; }
-  33.34%,34.25%{ opacity:1; background-position:0 -675px; }
-  34.26%,35.18%{ opacity:1; background-position:0 -1350px; }
-  35.19%,36.10%{ opacity:1; background-position:0 -2025px; }
-  36.11%,90.12%{ opacity:1; background-position:0 -2700px; }
-  90.13%,91.04%{ opacity:1; background-position:0 -3375px; }
-  91.05%,91.97%{ opacity:1; background-position:0 -4050px; }
-  91.98%,92.89%{ opacity:1; background-position:0 -4725px; }
-  92.90%,93.82%{ opacity:1; background-position:0 -5400px; }
-  93.83%,100%{ opacity:0; background-position:0 -5400px; }
+/* Bubble starts at 4.30 s.
+   Step 4 starts at 4.66 s -> text appears here.
+   Final state holds 7 s (4.78–11.78 s).
+   On the reverse step 4 (11.78–11.90 s), the text fades away. */
+@keyframes mqTicketBubbleTextSync{
+  0%,35.95%{opacity:0}
+  36.00%,90.89%{opacity:1}
+  91.82%,100%{opacity:0}
 }
 
-/* text appears only from step 4 onward and disappears with the bubble */
-@keyframes mqBubbleText{
-  0%,35.18%{ opacity:0; }
-  35.19%,93.82%{ opacity:1; }
-  93.83%,100%{ opacity:0; }
-}
-
-body:not(.mq-exterior-active) #mqTicketBoothHotspot::before,
 body:not(.mq-exterior-active) #mqTicketBoothHotspot::after,
-body.mq-ticket-open #mqTicketBoothHotspot::before,
 body.mq-ticket-open #mqTicketBoothHotspot::after{
   display:none!important;
 }
 
 /* =========================================================
-   HOME BUTTON – MATCH STATISTICS / HALL OF FAME
+   HOME BUTTON – SAME AS STATISTICS / HALL OF FAME
    ========================================================= */
-
 #homeBtn.mq-home-dock{
   display:inline-flex!important;
   align-items:center!important;

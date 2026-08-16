@@ -9,7 +9,7 @@
 @import url("cinema-ui-v53-9.css?v=53.9");
 @import url("cinema-ui-v53-10.css?v=53.10");
 @import url("cinema-ui-v53-12.css?v=53.12");
-@import url("ticket-booth-hand.css?v=10.6");
+@import url("ticket-booth-hand.css?v=10.7");
 
 /* Movie Quiz – debug grid v47 restored */
 #mqDebugGridOverlay{position:fixed!important;left:0!important;top:0!important;width:0;height:0;margin:0!important;padding:0!important;border:0!important;overflow:hidden!important;display:none!important;pointer-events:none!important;z-index:2147483646!important;box-sizing:border-box!important}
