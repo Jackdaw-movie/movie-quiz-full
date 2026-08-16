@@ -110,13 +110,13 @@ body.mq-ticket-open #mqExteriorStage::after{
 body.mq-exterior-active #mqTicketBoothHotspot::before{
   content:"";
   position:absolute;
-  left:171px;
-  top:4px;
+  left:186px;
+  top:54px;
   width:169px;
   height:127px;
   z-index:17;
   pointer-events:none;
-  background:url("../assets/exterior-v6-9/production/ticket-booth-bubble-loop.webp?v=10.3") center center / 100% 100% no-repeat;
+  background:url("../assets/exterior-v6-9/production/ticket-booth-bubble-loop.webp?v=10.4") center center / 100% 100% no-repeat;
   image-rendering:auto;
 }
 
@@ -135,7 +135,7 @@ body.mq-exterior-active #mqTicketBoothHotspot::after{
   text-align:center;
   white-space:pre-line;
   color:#15110d;
-  font-family:"Bebas Neue","Oswald","Arial Narrow","Aptos","Segoe UI",sans-serif;
+  font-family:var(--mq-ui,"Oswald","Arial Narrow",sans-serif);
   font-size:17px;
   line-height:1.02;
   letter-spacing:.025em;
