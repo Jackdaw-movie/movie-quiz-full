@@ -1,14 +1,25 @@
-/* Movie Quiz – ticket booth hand v7
-   Changes from v6:
-   - hand animation + fixed invisible wall moved 3 px left
-   - cooldown reduced from 5 s to 3 s
-   - full booth remains the ONLY exterior hover effect
-   - other known exterior hover styling is neutralized
+/* Movie Quiz – ticket booth hand / exterior interaction v8
+   - hand + fixed wall 2 px left from v7
+   - 3 s animation cooldown preserved
+   - only ticket booth has exterior hover affordance / shoe cursor
+   - auditorium Home button matches Statistics / Hall of Fame styling
 */
 
-/* Entire visual booth remains the one functional hover/click hotspot.
-   Existing exterior JS owns the shoe cursor and ticket click. */
-#mqTicketBoothHotspot.mq-booth-button{
+/* =========================================================
+   TICKET BOOTH – ONE AND ONLY EXTERIOR HOVER TARGET
+   ========================================================= */
+
+/* Remove pointer hit-testing from every visual stage layer. The booth hotspot is
+   explicitly restored below. This prevents transparent/depth layers from ever
+   behaving like additional hover targets. */
+body.mq-exterior-active #mqExteriorStage > *:not(#mqTicketBoothHotspot){
+  pointer-events:none!important;
+}
+
+/* Make the whole approved booth area one contiguous interactive target.
+   js/26-exterior-scene.js already owns pointerenter/pointermove/click here,
+   therefore this is the only area that can show the shoe cursor and open ticket. */
+body.mq-exterior-active #mqTicketBoothHotspot.mq-booth-button{
   clip-path:none!important;
   -webkit-clip-path:none!important;
   left:810px!important;
@@ -21,27 +32,64 @@
   touch-action:manipulation!important;
 }
 
-/* Fixed invisible wall / animation canvas:
-   v6 x=1010 -> v7 x=1007. Height stays unchanged. */
+/* Everywhere else on the exterior uses the ordinary cursor, even for controls.
+   Controls remain clickable; only the misleading hover/cursor affordance is gone. */
+body.mq-exterior-active #mqExteriorScene,
+body.mq-exterior-active #mqExteriorScene *:not(#mqTicketBoothHotspot){
+  cursor:default!important;
+}
+body.mq-exterior-active #mqTicketBoothHotspot{
+  cursor:none!important;
+}
+
+/* Exterior audio remains functional but no longer visually reacts on hover. */
+body.mq-exterior-active #mqExteriorAudioOpen:hover,
+body.mq-exterior-active .mq-exterior-audio-toggle:hover{
+  transform:none!important;
+  filter:none!important;
+  background:rgba(9,9,11,.91)!important;
+  border-color:rgba(231,192,108,.65)!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.35)!important;
+}
+body.mq-exterior-active #mqExteriorAudioOpen[aria-expanded="true"],
+body.mq-exterior-active #mqExteriorAudioOpen[aria-expanded="true"]:hover{
+  background:rgba(26,20,13,.96)!important;
+  border-color:rgba(238,197,106,.9)!important;
+}
+
+/* Debug control can still be used, but it has no separate hover reaction while
+   the exterior is active. */
+body.mq-exterior-active #mqDebugToggle:hover{
+  background:rgba(12,10,7,.92)!important;
+  transform:none!important;
+  filter:none!important;
+}
+
+/* =========================================================
+   HAND ANIMATION – FIXED PORTAL
+   ========================================================= */
+
+/* v7 portal x=1007 -> v8 x=1005. Moving this fixed canvas also moves the hand
+   exactly 2 px left; its y-position and dimensions remain untouched. */
 #mqExteriorStage::after{
   content:"";
   position:absolute;
-  left:1007px;
+  left:1005px;
   top:540px;
   width:260px;
   height:200px;
   z-index:14;
   pointer-events:none;
-  background:url("../assets/exterior-v6-9/production/ticket-booth-hand-wave.webp?v=7.0") 0 0 / 260px 200px no-repeat;
+  background:url("../assets/exterior-v6-9/production/ticket-booth-hand-wave.webp?v=8.0") 0 0 / 260px 200px no-repeat;
   image-rendering:auto;
+  transform:none!important;
 }
 
-/* Fixed contact shadow moves by the same 3 px:
-   v6 x=1007 -> v7 x=1004. */
+/* v7 shadow x=1004 -> v8 x=1002. */
 #mqExteriorStage::before{
   content:"";
   position:absolute;
-  left:1004px;
+  left:1002px;
   top:621px;
   width:24px;
   height:56px;
@@ -59,41 +107,53 @@
   mix-blend-mode:multiply;
 }
 
-/* EXTERIOR HOVER CLEANUP
-   Keep the booth hover from exterior-scene.css untouched.
-   Remove the other known visual hover reactions while preserving click functionality. */
-
-/* Exterior audio/settings button: no hover brightening. */
-body.mq-exterior-active .mq-exterior-audio-toggle:hover{
-  background:rgba(9,9,11,.91)!important;
-  border-color:rgba(231,192,108,.65)!important;
-  filter:none!important;
-  transform:none!important;
-}
-
-/* If the audio panel is actually open, keep its opened state instead of hover state. */
-body.mq-exterior-active .mq-exterior-audio-toggle[aria-expanded="true"],
-body.mq-exterior-active .mq-exterior-audio-toggle[aria-expanded="true"]:hover{
-  background:rgba(26,20,13,.96)!important;
-  border-color:rgba(238,197,106,.9)!important;
-}
-
-/* Debug-grid toggle remains usable but no longer reacts visually to hover on exterior. */
-body.mq-exterior-active #mqDebugToggle:hover{
-  background:rgba(12,10,7,.92)!important;
-  filter:none!important;
-  transform:none!important;
-}
-
-/* No hover-driven transforms/filters on exterior controls except the ticket booth itself. */
-body.mq-exterior-active #mqExteriorAudioOpen:hover{
-  transform:none!important;
-}
-
-/* Hide hand/shadow once the exterior is no longer active. */
 body:not(.mq-exterior-active) #mqExteriorStage::before,
 body:not(.mq-exterior-active) #mqExteriorStage::after,
 body.mq-ticket-open #mqExteriorStage::before,
 body.mq-ticket-open #mqExteriorStage::after{
   display:none!important;
+}
+
+/* =========================================================
+   HOME BUTTON – MATCH STATISTICS / HALL OF FAME
+   ========================================================= */
+
+/* Keep the existing dock position/behavior. Only the visual language is replaced
+   with the same 48×48 black/gold square used by Statistics. */
+#homeBtn.mq-home-dock{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:48px!important;
+  height:48px!important;
+  min-width:48px!important;
+  min-height:48px!important;
+  padding:0!important;
+  border:1px solid rgba(220,176,83,.78)!important;
+  border-radius:6px!important;
+  background:linear-gradient(180deg,rgba(16,12,7,.96),rgba(6,5,4,.98))!important;
+  color:#e7c46e!important;
+  box-shadow:0 7px 16px rgba(0,0,0,.18),inset 0 0 0 1px rgba(255,230,156,.04)!important;
+  cursor:pointer!important;
+  transition:transform .14s ease,border-color .14s ease,background .14s ease!important;
+}
+#homeBtn.mq-home-dock svg{
+  display:block!important;
+  width:24px!important;
+  height:24px!important;
+  margin:0!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.7!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  pointer-events:none!important;
+}
+#homeBtn.mq-home-dock:hover,
+#homeBtn.mq-home-dock:focus-visible{
+  transform:translateY(-1px)!important;
+  border-color:#f0cf78!important;
+  background:linear-gradient(180deg,rgba(28,20,10,.98),rgba(8,6,4,.99))!important;
+  color:#e7c46e!important;
+  outline:none!important;
 }

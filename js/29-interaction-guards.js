@@ -133,3 +133,68 @@
   window.addEventListener('mq:avatar-gallery-opened',restoreConfiguredAudio);
   window.__mqInteractionGuardsVersion=VERSION;
 })();
+
+/* Movie Quiz – exterior browser zoom fix v29.0
+   26-exterior-scene.js intentionally fits the 1672×941 master into the viewport,
+   but using visualViewport dimensions means browser zoom is immediately cancelled
+   by another fit-to-screen resize. This later guard preserves the fit scale in
+   physical viewport space, so browser zoom can actually magnify/crop the exterior. */
+(()=>{
+  'use strict';
+  const DESIGN_W=1672;
+  const DESIGN_H=941;
+  const initialDpr=Math.max(.1,Number(window.devicePixelRatio)||1);
+  let raf=0;
+
+  function applyZoomSafeExteriorFit(){
+    raf=0;
+    const stage=document.getElementById('mqExteriorStage');
+    if(!stage)return;
+
+    const currentDpr=Math.max(.1,Number(window.devicePixelRatio)||initialDpr);
+    const zoomRatio=currentDpr/initialDpr;
+
+    /* innerWidth/innerHeight shrink when desktop browser zoom increases.
+       Multiplying by the DPR ratio removes that artificial shrink while still
+       responding normally to a real window resize. */
+    const physicalCssWidth=Math.max(1,window.innerWidth*zoomRatio);
+    const physicalCssHeight=Math.max(1,window.innerHeight*zoomRatio);
+    const fit=Math.max(.12,Math.min(physicalCssWidth/DESIGN_W,physicalCssHeight/DESIGN_H));
+
+    stage.style.transform=`translate(-50%,-50%) scale(${fit})`;
+  }
+
+  function scheduleZoomSafeExteriorFit(){
+    if(raf)cancelAnimationFrame(raf);
+    raf=requestAnimationFrame(applyZoomSafeExteriorFit);
+  }
+
+  function neutralizeExteriorNativeHoverHints(){
+    const scene=document.getElementById('mqExteriorScene');
+    if(scene){
+      scene.querySelectorAll('[title]').forEach(element=>{
+        if(element.id!=='mqTicketBoothHotspot')element.removeAttribute('title');
+      });
+    }
+    document.getElementById('mqDebugToggle')?.removeAttribute('title');
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',()=>{neutralizeExteriorNativeHoverHints();scheduleZoomSafeExteriorFit()},{once:true});
+  }else{
+    neutralizeExteriorNativeHoverHints();
+    scheduleZoomSafeExteriorFit();
+  }
+
+  /* Registered after 26-exterior-scene.js, then applied in RAF, so this wins
+     over the legacy visualViewport fit without touching the rest of exterior JS. */
+  window.addEventListener('resize',scheduleZoomSafeExteriorFit,{passive:true});
+  window.visualViewport?.addEventListener('resize',scheduleZoomSafeExteriorFit,{passive:true});
+  window.addEventListener('orientationchange',scheduleZoomSafeExteriorFit,{passive:true});
+  window.addEventListener('mq:preload-entered',scheduleZoomSafeExteriorFit);
+
+  window.MovieQuizExteriorZoom=Object.freeze({
+    version:'29.0-zoom-safe',
+    updateNow:applyZoomSafeExteriorFit
+  });
+})();
