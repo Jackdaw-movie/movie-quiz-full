@@ -22,7 +22,7 @@
 @import url("movie-quiz-v11-14-ending-redesign.css?v=11.14-final-verified");
 @import url("movie-quiz-v11-15-ending-corrections.css?v=11.15");
 @import url("movie-quiz-v11-16-global-zoom-isolation.css?v=11.16");
-@import url("movie-quiz-v11-18-random-mode.css?v=11.18");
+@import url("movie-quiz-v11-18-random-mode.css?v=11.18.2");
 
 /* Movie Quiz – debug grid v47 restored */
 #mqDebugGridOverlay{position:fixed!important;left:0!important;top:0!important;width:0;height:0;margin:0!important;padding:0!important;border:0!important;overflow:hidden!important;display:none!important;pointer-events:none!important;z-index:2147483646!important;box-sizing:border-box!important}
@@ -75,4 +75,14 @@ body.mq-statistics-open #mqStatisticsScene{
   opacity:1!important;
   backface-visibility:hidden!important;
   transform:translateZ(0)!important;
+}
+
+/* ==========================================================================
+   v55.11 – answer typography
+   Gameplay Screen Layout v1 used clamp(14px, 2.65cqh, 22px). Every term is
+   increased by exactly 10%, and this late production rule applies to every
+   difficulty, every real genre and the random game mode.
+   ========================================================================== */
+html body.mq-noir-master #page #cinema #screen #game .answer{
+  font-size:clamp(15.4px,2.915cqh,24.2px)!important;
 }
