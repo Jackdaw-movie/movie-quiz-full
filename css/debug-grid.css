@@ -9,67 +9,34 @@
 @import url("cinema-ui-v53-9.css?v=53.9");
 @import url("cinema-ui-v53-10.css?v=53.10");
 @import url("cinema-ui-v53-12.css?v=53.12");
-@import url("ticket-booth-hand.css?v=5.0");
+@import url("ticket-booth-hand.css?v=6.0");
 
-/* Lightweight but fully functional debug grid styles */
-#mqDebugGridOverlay{
-  position:fixed!important;
-  left:0!important; top:0!important;
-  width:0!important; height:0!important;
-  margin:0!important; padding:0!important; border:0!important;
-  overflow:hidden!important;
-  display:none!important;
-  pointer-events:none!important;
-  z-index:2147483646!important;
-  box-sizing:border-box!important;
-}
-#mqDebugGridCanvas{
-  position:absolute!important;
-  inset:0!important;
-  display:block!important;
-  width:100%!important; height:100%!important;
-  margin:0!important; padding:0!important; border:0!important;
-  pointer-events:none!important;
-}
-#mqDebugReadout{
-  position:fixed!important;
-  display:none!important;
-  z-index:2147483647!important;
-  pointer-events:none!important;
-  min-width:185px!important;
-  max-width:360px!important;
-  margin:0!important;
-  padding:7px 9px!important;
-  border:1px solid rgba(255,255,255,.32)!important;
-  border-radius:7px!important;
-  background:rgba(8,8,10,.92)!important;
-  box-shadow:0 6px 22px rgba(0,0,0,.35)!important;
-  color:#fff!important;
-  font:600 12px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;
-  white-space:pre-line!important;
-}
-#mqDebugToggle{
-  position:fixed!important;
-  left:12px!important;
-  bottom:12px!important;
-  z-index:2147483647!important;
-  display:block!important;
-  width:auto!important;
-  height:auto!important;
-  margin:0!important;
-  padding:8px 10px!important;
-  border:1px solid rgba(255,210,70,.75)!important;
-  border-radius:7px!important;
-  background:rgba(12,10,7,.92)!important;
-  color:#ffd246!important;
-  font:700 12px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;
-  letter-spacing:0!important;
-  text-transform:none!important;
-  cursor:pointer!important;
-  user-select:none!important;
-  box-shadow:0 8px 22px rgba(0,0,0,.34)!important;
-}
+/* Movie Quiz – debug grid v47 restored */
+#mqDebugGridOverlay{position:fixed!important;left:0!important;top:0!important;width:0;height:0;margin:0!important;padding:0!important;border:0!important;overflow:hidden!important;display:none!important;pointer-events:none!important;z-index:2147483646!important;box-sizing:border-box!important}
+#mqDebugGridCanvas{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;border:0!important;pointer-events:none!important}
+#mqDebugReadout{position:fixed!important;display:none!important;z-index:2147483647!important;pointer-events:none!important;min-width:185px!important;max-width:360px!important;margin:0!important;padding:7px 9px!important;border:1px solid rgba(255,255,255,.32)!important;border-radius:7px!important;background:rgba(8,8,10,.92)!important;box-shadow:0 6px 22px rgba(0,0,0,.35)!important;color:#fff!important;font:600 12px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;white-space:pre-line!important}
+#mqDebugToggle{position:fixed!important;left:12px!important;bottom:12px!important;z-index:2147483647!important;display:block!important;width:auto!important;height:auto!important;margin:0!important;padding:8px 10px!important;border:1px solid rgba(255,210,70,.75)!important;border-radius:7px!important;background:rgba(12,10,7,.92)!important;color:#ffd246!important;font:700 12px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;letter-spacing:0!important;text-transform:none!important;cursor:pointer!important;box-shadow:0 5px 18px rgba(0,0,0,.32)!important;appearance:none!important;-webkit-appearance:none!important}
 #mqDebugToggle:hover{background:rgba(30,24,12,.96)!important}
-#mqDebugCrosshairX,#mqDebugCrosshairY,#mqDebugScreenBox,#mqDebugElementBox,
-#mqDebugGridOverlayV46,#mqDebugGridCanvasV46,#mqDebugToggleV46,#mqDebugReadoutV46,
-#mqAvatarDebugGridLocal{display:none!important;pointer-events:none!important}
+#mqDebugCrosshairX,#mqDebugCrosshairY,#mqDebugScreenBox,#mqDebugElementBox,#mqDebugGridOverlayV46,#mqDebugGridCanvasV46,#mqDebugToggleV46,#mqDebugReadoutV46,#mqAvatarDebugGridLocal{display:none!important;pointer-events:none!important}
+
+/* v55.7 – statistics player identity position */
+#mqStatisticsScene .mq-stat-player{
+  left:calc(50% - 8px)!important;
+  top:8px!important;
+}
+@media(max-width:1100px){
+  #mqStatisticsScene .mq-stat-player{
+    left:calc(50% - 8px)!important;
+    top:10px!important;
+  }
+}
+
+/* v55.8 – history score font + remove misleading archive metric */
+#mqStatisticsScene .mq-stat-history-wide .mq-stat-game-score strong,
+#mqStatisticsScene .mq-stat-history-wide .mq-stat-game-score span{
+  font-family:var(--mq-ui,"Oswald","Arial Narrow",sans-serif)!important;
+  font-weight:600!important;
+}
+#mqStatisticsScene .mq-stat-highlights .mq-stat-highlight:nth-child(3){
+  display:none!important;
+}

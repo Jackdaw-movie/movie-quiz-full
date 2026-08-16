@@ -1,61 +1,62 @@
-/* Movie Quiz – Ticket Booth Hand v5
-   Changes:
-   1) portal + animation shifted 10 px left
-   2) subtle shadow at the portal edge
-   3) waving uses fixed wrist pivot (pendulum feel)
-   4) whole animation slowed by 30%
-   5) full booth hover/click area restored
-*/
+/* Movie Quiz – ticket booth hand v6 */
 
-/* Make the whole booth react to hover / shoe cursor / ticket click. */
+/* Entire visual booth + its drop shadow is one active hotspot.
+   Existing 26-exterior-scene.js already handles:
+   pointerenter -> shoe cursor
+   pointermove  -> shoe cursor movement
+   click        -> ticket layer
+*/
 #mqTicketBoothHotspot.mq-booth-button{
   clip-path:none!important;
   -webkit-clip-path:none!important;
-  left:820px!important;
-  top:452px!important;
-  width:250px!important;
-  height:367px!important;
+  left:810px!important;
+  top:444px!important;
+  width:270px!important;
+  height:410px!important;
   z-index:15!important;
   pointer-events:auto!important;
   cursor:none!important;
+  touch-action:manipulation!important;
 }
 
-/* Very subtle dark edge where the hand disappears behind the invisible wall. */
-#mqExteriorStage::before{
-  content:"";
-  position:absolute;
-  left:1008px;   /* portal moved 10 px left from 1020 -> 1010 */
-  top:560px;
-  width:18px;
-  height:156px;
-  z-index:15;
-  pointer-events:none;
-  background:linear-gradient(90deg,
-    rgba(0,0,0,.30) 0%,
-    rgba(0,0,0,.16) 38%,
-    rgba(0,0,0,.06) 72%,
-    rgba(0,0,0,0) 100%);
-  border-radius:2px;
-  mix-blend-mode:multiply;
-}
-
-/* Fixed portal canvas. It never moves. The animated transparent WebP inside it
-   already contains the extend / pendulum wave / retract motion. */
+/* Fixed invisible wall. It is at x=1010 and never moves.
+   The WebP contains the whole hand motion; the left sleeve segment is baked rigid
+   while only the outer arm/hand swings like a pendulum. */
 #mqExteriorStage::after{
   content:"";
   position:absolute;
-  left:1010px;   /* moved 10 px left */
+  left:1010px;
   top:540px;
   width:260px;
   height:200px;
   z-index:14;
   pointer-events:none;
-  background:url("../assets/exterior-v6-9/production/ticket-booth-hand-wave.webp?v=5.0") 0 0 / 260px 200px no-repeat;
+  background:url("../assets/exterior-v6-9/production/ticket-booth-hand-wave.webp?v=6.0") 0 0 / 260px 200px no-repeat;
   image-rendering:auto;
-  transform:none!important;
 }
 
-/* Hide the overlay when the exterior is inactive. */
+/* Extra fixed local contact shadow, intentionally visible but still subtle. */
+#mqExteriorStage::before{
+  content:"";
+  position:absolute;
+  left:1007px;
+  top:621px;
+  width:24px;
+  height:56px;
+  z-index:16;
+  pointer-events:none;
+  background:radial-gradient(
+    ellipse at 15% 50%,
+    rgba(0,0,0,.42) 0%,
+    rgba(0,0,0,.24) 34%,
+    rgba(0,0,0,.09) 58%,
+    rgba(0,0,0,0) 82%
+  );
+  filter:blur(.8px);
+  opacity:.78;
+  mix-blend-mode:multiply;
+}
+
 body:not(.mq-exterior-active) #mqExteriorStage::before,
 body:not(.mq-exterior-active) #mqExteriorStage::after,
 body.mq-ticket-open #mqExteriorStage::before,
