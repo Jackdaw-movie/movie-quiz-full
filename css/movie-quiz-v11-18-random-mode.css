@@ -25,7 +25,7 @@ html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="r
   color:#decff1!important;
 }
 
-/* v11.18.7 — Thriller label/icon refinement + smaller Random question mark. */
+/* v11.18.8 — Thriller icon alignment refinement. */
 html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"] .genre-icon{
   color:#c6b7db!important;
   font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
@@ -69,9 +69,9 @@ html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="c
   line-height:1.08!important;
 }
 
-/* Lower only the Thriller pictogram by 20px; the text and card stay fixed. */
+/* Thriller pictogram: 13px lower than the shared baseline (7px higher than v11.18.7). */
 html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="crime"] .genre-icon{
-  transform:translateY(20px)!important;
+  transform:translateY(13px)!important;
 }
 
 /* All genre symbols stay visually frameless on hover/focus.
