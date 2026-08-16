@@ -138,25 +138,29 @@
   window.MovieQuizExteriorZoom=Object.freeze({version:'29.0-zoom-safe',updateNow:applyZoomSafeExteriorFit});
 })();
 
-/* Movie Quiz – ticket booth hand + bubble controller v30.2
-   Uses the approved static hand and the unclipped final bubble asset. */
+/* Movie Quiz – ticket booth hand + bubble controller v30.3
+   Frame-driven bubble animation. Text visibility is tied to frame 5 itself,
+   not to an independent timer, so it cannot drift away from the artwork. */
 (()=>{
   'use strict';
 
   const HAND_SRC='assets/exterior-v6-9/production/ticket-booth-hand.png';
-  const BUBBLE_SRC='assets/exterior-v6-9/production/ticket-booth-bubble-final.png';
-  const BUBBLE_TRANSITION_MS=154;
-  const HAND_MS=3120;
-  const BUBBLE_START_IN_HAND_MS=2460;
+  const BUBBLE_FRAMES=[1,2,3,4,5].map(n=>`assets/exterior-v6-9/production/bubble_frame_${n}.png`);
+
+  /* Hand slowed another 20% from 3120 ms. */
+  const HAND_MS=3744;
+  /* Keep bubble start at the same relative point of the hand return. */
+  const BUBBLE_START_IN_HAND_MS=2952;
+
+  /* 4 transitions × 46 ms = 184 ms, roughly 20% slower than the 154 ms version. */
+  const BUBBLE_STEP_MS=46;
   const BUBBLE_HOLD_MS=7000;
-  const TEXT_DELAY_MS=800;
   const SECOND_HAND_DELAY_MS=1200;
   const HIDDEN_TO_NEXT_HAND_MS=2950;
 
   let generation=0;
   let running=false;
   let handAnimation=null;
-  let bubbleAnimation=null;
 
   const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   const exteriorActive=()=>document.body.classList.contains('mq-exterior-active')&&!document.body.classList.contains('mq-ticket-open');
@@ -181,28 +185,51 @@
       bubble.id='mqTicketBubbleUi';
       bubble.className='mq-ticket-bubble-ui';
       bubble.setAttribute('aria-hidden','true');
-      bubble.innerHTML=`<img class="mq-ticket-bubble-art" src="${BUBBLE_SRC}" alt=""><div class="mq-ticket-bubble-text">Pojďte sem,<br>máme poslední<br>volná místa!</div>`;
+      bubble.innerHTML=`<img class="mq-ticket-bubble-art" src="${BUBBLE_FRAMES[0]}" alt=""><div class="mq-ticket-bubble-text">Pojďte sem,<br>máme poslední<br>volná místa!</div>`;
       stage.appendChild(bubble);
     }
 
-    return {stage,portal,hand:portal.querySelector('.mq-ticket-hand-img'),bubble,bubbleArt:bubble.querySelector('.mq-ticket-bubble-art'),text:bubble.querySelector('.mq-ticket-bubble-text')};
+    return {
+      stage,
+      portal,
+      hand:portal.querySelector('.mq-ticket-hand-img'),
+      bubble,
+      bubbleArt:bubble.querySelector('.mq-ticket-bubble-art'),
+      text:bubble.querySelector('.mq-ticket-bubble-text')
+    };
   }
 
   function preloadAssets(){
-    [HAND_SRC,BUBBLE_SRC].forEach(src=>{const img=new Image();img.decoding='async';img.src=src});
+    [HAND_SRC,...BUBBLE_FRAMES].forEach(src=>{
+      const img=new Image();
+      img.decoding='async';
+      img.src=src;
+    });
+  }
+
+  function setBubbleFrame(ui,frameNumber){
+    ui.bubbleArt.src=BUBBLE_FRAMES[frameNumber-1];
+    ui.bubble.dataset.mqBubbleFrame=String(frameNumber);
+
+    /* This is the synchronization point: text exists only on frame 5. */
+    const textVisible=frameNumber===5;
+    ui.bubble.classList.toggle('is-text-visible',textVisible);
+    ui.text.style.opacity=textVisible?'1':'0';
   }
 
   function resetUi(ui){
     handAnimation?.cancel?.();
-    bubbleAnimation?.cancel?.();
     handAnimation=null;
-    bubbleAnimation=null;
-    if(ui?.hand){ui.hand.style.transform='translateX(-112px) rotate(0deg)';ui.hand.style.opacity='1'}
+    if(ui?.hand){
+      ui.hand.style.transform='translateX(-112px) rotate(0deg)';
+      ui.hand.style.opacity='1';
+    }
     if(ui?.bubble){
       ui.bubble.classList.remove('is-visible','is-text-visible');
       ui.bubble.style.visibility='hidden';
-      ui.bubble.style.opacity='0';
-      ui.bubble.style.transform='scale(.08)';
+      ui.bubble.style.opacity='1';
+      ui.bubble.style.transform='none';
+      ui.bubble.dataset.mqBubbleFrame='0';
     }
     if(ui?.text)ui.text.style.opacity='0';
   }
@@ -219,42 +246,47 @@
       {transform:'translateX(0px) rotate(0deg)',offset:.60},
       {transform:'translateX(0px) rotate(0deg)',offset:.72},
       {transform:'translateX(-112px) rotate(0deg)',offset:1}
-    ],{duration:HAND_MS,easing:'cubic-bezier(.42,0,.58,1)',fill:'forwards'});
+    ],{
+      duration:HAND_MS,
+      easing:'cubic-bezier(.42,0,.58,1)',
+      fill:'forwards'
+    });
     return handAnimation.finished.catch(()=>{});
   }
 
   async function showBubble(ui,token){
     if(token!==generation||!exteriorActive())return false;
-    bubbleAnimation?.cancel?.();
+
     ui.bubble.style.visibility='visible';
     ui.bubble.classList.add('is-visible');
     ui.bubble.classList.remove('is-text-visible');
     ui.text.style.opacity='0';
-    bubbleAnimation=ui.bubble.animate([
-      {opacity:0,transform:'scale(.08)',offset:0},
-      {opacity:1,transform:'scale(.34)',offset:.24},
-      {opacity:1,transform:'scale(.64)',offset:.50},
-      {opacity:1,transform:'scale(.86)',offset:.74},
-      {opacity:1,transform:'scale(1)',offset:1}
-    ],{duration:BUBBLE_TRANSITION_MS,easing:'cubic-bezier(.18,.85,.22,1)',fill:'forwards'});
-    await bubbleAnimation.finished.catch(()=>{});
-    return token===generation&&exteriorActive();
+
+    /* 1 → 2 → 3 → 4 → 5. Text is switched on exactly when 5 is assigned. */
+    for(let frame=1;frame<=5;frame++){
+      if(token!==generation||!exteriorActive())return false;
+      setBubbleFrame(ui,frame);
+      if(frame<5)await sleep(BUBBLE_STEP_MS);
+    }
+    return true;
   }
 
   async function hideBubble(ui,token){
     if(token!==generation||!exteriorActive())return false;
-    ui.bubble.classList.remove('is-text-visible');
-    ui.text.style.opacity='0';
-    bubbleAnimation?.cancel?.();
-    bubbleAnimation=ui.bubble.animate([
-      {opacity:1,transform:'scale(1)',offset:0},
-      {opacity:1,transform:'scale(.86)',offset:.24},
-      {opacity:1,transform:'scale(.64)',offset:.50},
-      {opacity:1,transform:'scale(.34)',offset:.74},
-      {opacity:0,transform:'scale(.08)',offset:1}
-    ],{duration:BUBBLE_TRANSITION_MS,easing:'cubic-bezier(.55,0,.8,.45)',fill:'forwards'});
-    await bubbleAnimation.finished.catch(()=>{});
-    if(token===generation){ui.bubble.classList.remove('is-visible');ui.bubble.style.visibility='hidden'}
+
+    /* Leaving frame 5: text disappears first, in the same tick as frame 4. */
+    for(let frame=4;frame>=1;frame--){
+      if(token!==generation||!exteriorActive())return false;
+      setBubbleFrame(ui,frame);
+      await sleep(BUBBLE_STEP_MS);
+    }
+
+    if(token===generation){
+      ui.bubble.classList.remove('is-visible','is-text-visible');
+      ui.bubble.style.visibility='hidden';
+      ui.bubble.dataset.mqBubbleFrame='0';
+      ui.text.style.opacity='0';
+    }
     return true;
   }
 
@@ -267,22 +299,15 @@
       const shown=await showBubble(ui,token);
       if(!shown)break;
 
-      const textTimer=setTimeout(()=>{
-        if(token===generation&&exteriorActive()){
-          ui.bubble.classList.add('is-text-visible');
-          ui.text.style.opacity='1';
-        }
-      },TEXT_DELAY_MS);
-
-      const secondHandTimer=setTimeout(()=>{if(token===generation&&exteriorActive())runHand(ui)},SECOND_HAND_DELAY_MS);
+      /* Bubble is now physically on frame 5 and text is already visible. */
+      const secondHandTimer=setTimeout(()=>{
+        if(token===generation&&exteriorActive())runHand(ui);
+      },SECOND_HAND_DELAY_MS);
 
       await sleep(BUBBLE_HOLD_MS);
-      clearTimeout(textTimer);
       clearTimeout(secondHandTimer);
       if(token!==generation||!exteriorActive())break;
 
-      ui.bubble.classList.remove('is-text-visible');
-      ui.text.style.opacity='0';
       await hideBubble(ui,token);
       if(token!==generation||!exteriorActive())break;
 
@@ -324,5 +349,5 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
   else init();
 
-  window.MovieQuizTicketBoothAnimation=Object.freeze({version:'30.2-dom-sync',restart:start});
+  window.MovieQuizTicketBoothAnimation=Object.freeze({version:'30.3-frame5-sync',restart:start});
 })();
