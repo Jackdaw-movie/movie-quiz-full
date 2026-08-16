@@ -25,7 +25,7 @@ html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="r
   color:#decff1!important;
 }
 
-/* v11.18.8 — Thriller icon alignment refinement. */
+/* v11.18.9 — Thriller icon alignment refinement. */
 html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"] .genre-icon{
   color:#c6b7db!important;
   font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
@@ -69,9 +69,9 @@ html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="c
   line-height:1.08!important;
 }
 
-/* Thriller pictogram: 13px lower than the shared baseline (7px higher than v11.18.7). */
+/* Thriller pictogram: 3px lower than the shared baseline, 10px higher than v11.18.8. */
 html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="crime"] .genre-icon{
-  transform:translateY(13px)!important;
+  transform:translateY(3px)!important;
 }
 
 /* All genre symbols stay visually frameless on hover/focus.
