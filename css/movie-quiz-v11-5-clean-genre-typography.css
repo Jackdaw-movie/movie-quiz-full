@@ -1,0 +1,313 @@
+/* Movie Quiz v11.5 – exact selection headings + clean genre buttons + typography pass
+   Purpose:
+   - force the two main selection headings to end at master Y = 350
+   - replace v11.4 genre-card ornament with a cleaner 1930s noir design
+   - redesign all visible typography on the ticket and preload screen
+*/
+
+/* ==========================================================================
+   1) EXACT SELECTION HEADING REGISTRATION
+   Screen master top ≈ y 197.1395. Desired heading bottom = y 350.
+   Therefore the heading anchor is 152.8605 px into the 622 px projection area
+   = 24.57564 cqh. Duplicate IDs intentionally raise specificity above the
+   runtime !important rules injected later by js/31-genre-tools.js.
+   ========================================================================== */
+html body.mq-noir-master #page #cinema #screen#screen #difficulty#difficulty .selection-title{
+  left:50%!important;
+  top:24.57564cqh!important;
+  bottom:auto!important;
+  margin:0!important;
+  transform:translate(-50%,-100%)!important;
+  color:#000!important;
+  text-align:center!important;
+  text-shadow:none!important;
+}
+
+/* Genre heading ends on the same master Y=350 line. */
+html body.mq-noir-master #page #cinema #screen#screen #genres#genres .genre-panel > .selection-title{
+  left:50%!important;
+  top:24.57564cqh!important;
+  bottom:auto!important;
+  margin:0!important;
+  transform:translate(-50%,-100%)!important;
+  color:#000!important;
+  text-align:center!important;
+  text-shadow:none!important;
+}
+
+/* Keep the selected-difficulty line in the same relationship to its title,
+   but shift it down by the same 50 master px. */
+html body.mq-noir-master #page #cinema #screen#screen #genres#genres .genre-panel > .eyebrow{
+  top:17.23579cqh!important;
+  bottom:auto!important;
+  margin:0!important;
+  color:#000!important;
+  text-shadow:none!important;
+}
+html body.mq-noir-master #page #cinema #screen#screen #genres#genres .genre-panel > .eyebrow #selectedDifficulty{
+  color:#000!important;
+  text-shadow:none!important;
+}
+
+/* ==========================================================================
+   2) GENRE BUTTONS – CLEAN 1930s NOIR, NO INNER LINES / NO ICON FRAME
+   ========================================================================== */
+html body.mq-noir-master #page #cinema #screen #genres .genre-card{
+  position:relative!important;
+  isolation:isolate!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:clamp(8px,1.2cqh,14px)!important;
+  overflow:hidden!important;
+  padding:clamp(14px,2cqh,22px) clamp(12px,1.4cqw,20px)!important;
+
+  border:1px solid rgba(204,154,67,.78)!important;
+  border-radius:10px!important;
+  background:
+    radial-gradient(ellipse at 50% 8%,rgba(232,184,89,.12),transparent 42%),
+    linear-gradient(180deg,#25170f 0%,#100a07 55%,#060403 100%)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,235,188,.08),
+    inset 0 -18px 28px rgba(0,0,0,.22),
+    0 8px 18px rgba(0,0,0,.22)!important;
+
+  color:#e1b75b!important;
+  text-shadow:none!important;
+  transition:transform .17s ease,border-color .17s ease,background .17s ease,box-shadow .17s ease,filter .17s ease!important;
+}
+
+/* Remove ALL decorative line layers from the previous pass. */
+html body.mq-noir-master #page #cinema #screen #genres .genre-card::before,
+html body.mq-noir-master #page #cinema #screen #genres .genre-card::after{
+  content:none!important;
+  display:none!important;
+  background:none!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #genres .genre-card .genre-icon{
+  position:relative!important;
+  display:grid!important;
+  place-items:center!important;
+  width:clamp(88px,7.35cqw,108px)!important;
+  height:clamp(88px,12.1cqh,108px)!important;
+  margin:0 auto!important;
+  padding:0!important;
+  overflow:visible!important;
+
+  border:0!important;
+  border-radius:0!important;
+  background:none!important;
+  box-shadow:none!important;
+  clip-path:none!important;
+  color:#d7a74e!important;
+}
+
+/* Hide the old rough inline symbols completely. */
+html body.mq-noir-master #page #cinema #screen #genres .genre-card .genre-icon > svg{
+  display:none!important;
+}
+
+/* New clean custom icon silhouettes. No surrounding frame. */
+html body.mq-noir-master #page #cinema #screen #genres .genre-card .genre-icon::before{
+  content:""!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  background:currentColor!important;
+  -webkit-mask-image:var(--mq-genre-mask)!important;
+  mask-image:var(--mq-genre-mask)!important;
+  -webkit-mask-repeat:no-repeat!important;
+  mask-repeat:no-repeat!important;
+  -webkit-mask-position:center!important;
+  mask-position:center!important;
+  -webkit-mask-size:contain!important;
+  mask-size:contain!important;
+  filter:drop-shadow(0 2px 1px rgba(0,0,0,.60))!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="comedy"] .genre-icon{--mq-genre-mask:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NiA5NiI+PGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTE0IDIwYzEyLTUgMjUtNSAzNyAwdjI1YzAgMTUtOCAyNi0xOCAzMUMyMiA3MSAxNCA2MCAxNCA0NVoiLz48cGF0aCBkPSJNNDUgMzFjMTItNSAyNS01IDM3IDB2MjNjMCAxNC04IDI0LTE4IDI5LTgtNC0xNS0xMS0xNy0yMSIvPjxwYXRoIGQ9Ik0yNCAzNmg3bTkgMGgtNyIvPjxwYXRoIGQ9Ik0yNCA1MmM2IDYgMTMgNiAxOSAwIi8+PHBhdGggZD0iTTU2IDQ1aDZtMTAgMGgtNiIvPjxwYXRoIGQ9Ik01NyA2MWM1LTUgMTEtNSAxNiAwIi8+PC9nPjwvc3ZnPg==")}
+html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="fantasy"] .genre-icon{--mq-genre-mask:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NiA5NiI+PGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTE4IDc4aDYwIi8+PHBhdGggZD0iTTI1IDc4VjQybDEyLTEwIDExIDEwIDExLTEwIDEyIDEwdjM2Ii8+PHBhdGggZD0iTTM3IDMyVjE5bDcgNSA1LTEwIDUgMTAgNy01djEzIi8+PHBhdGggZD0iTTQzIDc4VjU4aDEwdjIwIi8+PHBhdGggZD0iTTY5IDE4bDMgNiA3IDEtNSA1IDEgNy02LTMtNiAzIDEtNy01LTUgNy0xWiIvPjwvZz48L3N2Zz4=")}
+html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="scifi"] .genre-icon{--mq-genre-mask:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NiA5NiI+PGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PGNpcmNsZSBjeD0iNDkiIGN5PSI0OSIgcj0iMTkiLz48cGF0aCBkPSJNMTYgNTdjMTIgOCAzMyAxMCA1MyA0IDEyLTQgMTktMTAgMTctMTQtMi01LTEzLTYtMjctMyIvPjxwYXRoIGQ9Ik0xOCAzOWM4LTYgMjAtMTAgMzItMTAiLz48cGF0aCBkPSJNNzQgMTd2MTBtLTUtNWgxMCIvPjxwYXRoIGQ9Ik0yNSAyMGwyIDUgNSAyLTUgMi0yIDUtMi01LTUtMiA1LTJaIi8+PC9nPjwvc3ZnPg==")}
+html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="horror"] .genre-icon{--mq-genre-mask:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NiA5NiI+PGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTQ4IDEzYy0xOCAwLTI5IDE0LTI5IDMydjM1bDEwLTcgOSA3IDEwLTcgMTAgNyA5LTcgMTAgN1Y0NWMwLTE4LTExLTMyLTI5LTMyWiIvPjxwYXRoIGQ9Ik0zNSA0MmMwLTUgNC05IDktOW04IDBjNSAwIDkgNCA5IDkiLz48cGF0aCBkPSJNMzUgNTdjNCA0IDggNiAxMyA2czktMiAxMy02Ii8+PHBhdGggZD0iTTMxIDE4bC01LTdtMzkgNyA1LTciLz48L2c+PC9zdmc+")}
+html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="crime"] .genre-icon{--mq-genre-mask:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NiA5NiI+PGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PGNpcmNsZSBjeD0iNDIiIGN5PSI0MyIgcj0iMjIiLz48cGF0aCBkPSJNNTggNTlsMjIgMjIiLz48cGF0aCBkPSJNMzAgMzhjNy05IDE5LTkgMjYgMCIvPjxwYXRoIGQ9Ik0yOCA0OWM3IDggMjEgMTAgMjkgMSIvPjxwYXRoIGQ9Ik0zNyAyN2M0LTcgMTEtMTAgMTctOCA1IDIgOCA2IDkgMTEiLz48cGF0aCBkPSJNMzIgNTVjNiA0IDE0IDUgMjEgMiIvPjwvZz48L3N2Zz4=")}
+html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="animation"] .genre-icon{--mq-genre-mask:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NiA5NiI+PGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PGNpcmNsZSBjeD0iNDMiIGN5PSI0OSIgcj0iMjciLz48Y2lyY2xlIGN4PSI0MyIgY3k9IjQ5IiByPSI2Ii8+PGNpcmNsZSBjeD0iNDMiIGN5PSIzMSIgcj0iNSIvPjxjaXJjbGUgY3g9IjU5IiBjeT0iNDQiIHI9IjUiLz48Y2lyY2xlIGN4PSI1MyIgY3k9IjYyIiByPSI1Ii8+PGNpcmNsZSBjeD0iMzMiIGN5PSI2NCIgcj0iNSIvPjxjaXJjbGUgY3g9IjI3IiBjeT0iNDMiIHI9IjUiLz48cGF0aCBkPSJNNjggNjNoMTYiLz48cGF0aCBkPSJNNzcgMTN2MTRtLTctN2gxNCIvPjxwYXRoIGQ9Ik03NCAzMWwyIDUgNSAyLTUgMi0yIDUtMi01LTUtMiA1LTJaIi8+PC9nPjwvc3ZnPg==")}
+
+html body.mq-noir-master #page #cinema #screen #genres .genre-card .card-copy{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  text-align:center!important;
+}
+html body.mq-noir-master #page #cinema #screen #genres .genre-card .card-copy strong{
+  display:block!important;
+  color:#f0d07a!important;
+  font-family:var(--mq-display,"Limelight","Copperplate",serif)!important;
+  font-size:clamp(18px,1.55vw,24px)!important;
+  font-weight:400!important;
+  line-height:1.08!important;
+  letter-spacing:.01em!important;
+  text-transform:none!important;
+  text-shadow:0 2px 0 rgba(0,0,0,.84)!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #genres .genre-card:hover,
+html body.mq-noir-master #page #cinema #screen #genres .genre-card:focus-visible{
+  transform:translateY(-3px)!important;
+  border-color:#e1b356!important;
+  background:
+    radial-gradient(ellipse at 50% 8%,rgba(242,196,101,.17),transparent 44%),
+    linear-gradient(180deg,#322016 0%,#130c08 55%,#070403 100%)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,240,201,.11),
+    inset 0 -18px 28px rgba(0,0,0,.20),
+    0 11px 22px rgba(0,0,0,.26),
+    0 0 15px rgba(202,146,53,.10)!important;
+  filter:brightness(1.045)!important;
+  outline:none!important;
+}
+html body.mq-noir-master #page #cinema #screen #genres .genre-card:hover .genre-icon,
+html body.mq-noir-master #page #cinema #screen #genres .genre-card:focus-visible .genre-icon{
+  color:#f1c96e!important;
+}
+
+/* ==========================================================================
+   3) TICKET – FULL TYPOGRAPHY REDESIGN
+   ========================================================================== */
+body.mq-ticket-open .mq-ticket-facade{
+  color:#4b2814!important;
+  font-family:var(--mq-question,"Cormorant Garamond","Baskerville",serif)!important;
+  text-shadow:0 1px rgba(255,249,226,.56)!important;
+}
+
+body.mq-ticket-open .mq-ticket-facade .mqf-title{
+  color:#45230f!important;
+  font-family:var(--mq-display,"Limelight","Copperplate",serif)!important;
+  font-size:clamp(17px,1.45vw,23px)!important;
+  font-weight:400!important;
+  line-height:1.02!important;
+  letter-spacing:.035em!important;
+  text-transform:none!important;
+  text-shadow:0 1px rgba(255,245,210,.55)!important;
+}
+
+body.mq-ticket-open .mq-ticket-facade .mqf-context{
+  color:#4b2813!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:clamp(16px,1.28vw,20px)!important;
+  font-weight:700!important;
+  line-height:1.08!important;
+  letter-spacing:.015em!important;
+  text-transform:none!important;
+}
+
+body.mq-ticket-open .mq-ticket-facade .mqf-label{
+  color:#5a3218!important;
+  font-family:var(--mq-ui,"Oswald","Arial Narrow",sans-serif)!important;
+  font-size:clamp(10px,.82vw,13px)!important;
+  font-weight:600!important;
+  line-height:1!important;
+  letter-spacing:.12em!important;
+  text-transform:uppercase!important;
+}
+
+body.mq-ticket-open .mq-ticket-facade .mqf-field,
+body.mq-ticket-open .mq-ticket-facade .mqf-pin-box{
+  color:#351b0d!important;
+  -webkit-text-fill-color:#351b0d!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-weight:700!important;
+  letter-spacing:.018em!important;
+}
+
+body.mq-ticket-open .mq-ticket-facade .mqf-field{
+  font-size:clamp(16px,1.3vw,20px)!important;
+}
+body.mq-ticket-open .mq-ticket-facade .mqf-field::placeholder{
+  color:rgba(57,29,14,.57)!important;
+  -webkit-text-fill-color:rgba(57,29,14,.57)!important;
+  font-style:italic!important;
+}
+
+body.mq-ticket-open .mq-ticket-facade .mqf-status-copy{
+  color:#4b2814!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:clamp(15px,1.22vw,19px)!important;
+  font-weight:700!important;
+  line-height:1.25!important;
+}
+body.mq-ticket-open .mq-ticket-facade .mqf-status-name{
+  color:#3e1e0c!important;
+  font-family:var(--mq-display,"Limelight","Copperplate",serif)!important;
+  font-size:clamp(20px,1.65vw,26px)!important;
+  font-weight:400!important;
+  letter-spacing:.025em!important;
+}
+
+body.mq-ticket-open .mq-ticket-facade .mqf-recovery-box small{
+  color:#5b3218!important;
+  font-family:var(--mq-ui,"Oswald","Arial Narrow",sans-serif)!important;
+  font-size:11px!important;
+  font-weight:600!important;
+  letter-spacing:.12em!important;
+}
+body.mq-ticket-open .mq-ticket-facade .mqf-recovery-value{
+  color:#351a0c!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-weight:700!important;
+  letter-spacing:.06em!important;
+}
+
+body.mq-ticket-open .mq-ticket-error{
+  color:#8b2e21!important;
+  font-family:var(--mq-ui,"Oswald","Arial Narrow",sans-serif)!important;
+  font-size:clamp(10px,.82vw,13px)!important;
+  font-weight:600!important;
+  letter-spacing:.025em!important;
+}
+body.mq-ticket-open .mq-ticket-tooltip{
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:14px!important;
+  font-weight:700!important;
+  line-height:1.3!important;
+  letter-spacing:.01em!important;
+}
+
+/* Keep all ticket action labels in the Movie Quiz display font. */
+body.mq-ticket-open .mq-ticket-facade .mqf-btn{
+  font-family:var(--mq-display,"Limelight","Copperplate",serif)!important;
+  font-weight:400!important;
+  letter-spacing:.015em!important;
+  text-transform:none!important;
+}
+
+/* ==========================================================================
+   4) PRELOAD / INTRO LOADING TYPOGRAPHY
+   ========================================================================== */
+body.mq-preloading .mq-preload-status,
+.mq-preload-gate .mq-preload-status{
+  color:#f2dfad!important;
+  font-family:var(--mq-display,"Limelight","Copperplate",serif)!important;
+  font-size:clamp(17px,1.55vw,23px)!important;
+  font-weight:400!important;
+  line-height:1.15!important;
+  letter-spacing:.07em!important;
+  text-transform:none!important;
+  text-shadow:0 3px 15px rgba(0,0,0,.92),0 0 18px rgba(216,161,66,.10)!important;
+}
+
+body.mq-preloading .mq-preload-enter,
+.mq-preload-gate .mq-preload-enter{
+  color:#24170c!important;
+  font-family:var(--mq-display,"Limelight","Copperplate",serif)!important;
+  font-size:clamp(14px,1.28vw,18px)!important;
+  font-weight:400!important;
+  line-height:1.08!important;
+  letter-spacing:.025em!important;
+  text-transform:none!important;
+  text-shadow:0 1px 0 rgba(255,248,220,.68)!important;
+}
