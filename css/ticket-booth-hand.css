@@ -1,14 +1,11 @@
-/* Movie Quiz – exterior booth hand + bubble v10.9
-   Direct DOM-timed rebuild over the current working exterior.
+/* Movie Quiz – exterior booth hand + bubble v10.10
+   Frame-driven synchronization with js/29-interaction-guards.js v30.3.
 
-   Fixes in this version:
-   - old baked hand+bubble WebP overlay is disabled
-   - hand uses the approved single transparent asset in a FIXED clipping portal
-   - hand remains 4 px higher than the earlier version
-   - bubble uses the existing final bubble asset
-   - reveal/hide timing is controlled by js/29-interaction-guards.js v30.2
-   - text is physically inside the bubble UI container, so it stays locked to the bubble
-   - text is moved 10 px higher
+   Important:
+   - hand stays in the fixed portal, 4 px higher than the old position
+   - bubble is rendered from bubble_frame_1.png ... bubble_frame_5.png
+   - text is inside the same bubble container
+   - JS shows text exactly on bubble frame 5 and hides it the instant frame 5 is left
 */
 
 /* =========================================================
@@ -83,7 +80,7 @@ body.mq-exterior-active #mqDebugToggle:hover{
 .mq-ticket-hand-portal{
   position:absolute;
   left:1004px;
-  top:536px; /* 4 px higher */
+  top:536px;
   width:260px;
   height:200px;
   overflow:hidden;
@@ -106,7 +103,7 @@ body.mq-exterior-active #mqDebugToggle:hover{
 }
 
 /* =========================================================
-   BUBBLE – ASSET + TEXT IN ONE RESPONSIVE CONTAINER
+   BUBBLE – REAL FRAME ASSETS + TEXT IN THE SAME CONTAINER
    ========================================================= */
 .mq-ticket-bubble-ui{
   position:absolute;
@@ -117,10 +114,8 @@ body.mq-exterior-active #mqDebugToggle:hover{
   z-index:17;
   pointer-events:none!important;
   visibility:hidden;
-  opacity:0;
-  transform:scale(.08);
-  transform-origin:12% 88%;
-  will-change:transform,opacity;
+  opacity:1;
+  transform:none;
 }
 .mq-ticket-bubble-art{
   position:absolute;
