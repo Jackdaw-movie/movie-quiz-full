@@ -120,7 +120,7 @@ html body.mq-noir-master #page #cinema #screen:has(#genres.active) > .projection
 
 /* Difficulty title: requested wording is already normalized by js/31. */
 html body.mq-noir-master #page #cinema #screen #difficulty .selection-title{
-  top:calc(16.53703cqh + 30px)!important;
+  top:calc(16.53703cqh + 50px)!important;
   color:#000!important;
   text-shadow:none!important;
 }
