@@ -1,11 +1,13 @@
-/* Movie Quiz – ticket booth hand v6 */
-
-/* Entire visual booth + its drop shadow is one active hotspot.
-   Existing 26-exterior-scene.js already handles:
-   pointerenter -> shoe cursor
-   pointermove  -> shoe cursor movement
-   click        -> ticket layer
+/* Movie Quiz – ticket booth hand v7
+   Changes from v6:
+   - hand animation + fixed invisible wall moved 3 px left
+   - cooldown reduced from 5 s to 3 s
+   - full booth remains the ONLY exterior hover effect
+   - other known exterior hover styling is neutralized
 */
+
+/* Entire visual booth remains the one functional hover/click hotspot.
+   Existing exterior JS owns the shoe cursor and ticket click. */
 #mqTicketBoothHotspot.mq-booth-button{
   clip-path:none!important;
   -webkit-clip-path:none!important;
@@ -19,27 +21,27 @@
   touch-action:manipulation!important;
 }
 
-/* Fixed invisible wall. It is at x=1010 and never moves.
-   The WebP contains the whole hand motion; the left sleeve segment is baked rigid
-   while only the outer arm/hand swings like a pendulum. */
+/* Fixed invisible wall / animation canvas:
+   v6 x=1010 -> v7 x=1007. Height stays unchanged. */
 #mqExteriorStage::after{
   content:"";
   position:absolute;
-  left:1010px;
+  left:1007px;
   top:540px;
   width:260px;
   height:200px;
   z-index:14;
   pointer-events:none;
-  background:url("../assets/exterior-v6-9/production/ticket-booth-hand-wave.webp?v=6.0") 0 0 / 260px 200px no-repeat;
+  background:url("../assets/exterior-v6-9/production/ticket-booth-hand-wave.webp?v=7.0") 0 0 / 260px 200px no-repeat;
   image-rendering:auto;
 }
 
-/* Extra fixed local contact shadow, intentionally visible but still subtle. */
+/* Fixed contact shadow moves by the same 3 px:
+   v6 x=1007 -> v7 x=1004. */
 #mqExteriorStage::before{
   content:"";
   position:absolute;
-  left:1007px;
+  left:1004px;
   top:621px;
   width:24px;
   height:56px;
@@ -57,6 +59,38 @@
   mix-blend-mode:multiply;
 }
 
+/* EXTERIOR HOVER CLEANUP
+   Keep the booth hover from exterior-scene.css untouched.
+   Remove the other known visual hover reactions while preserving click functionality. */
+
+/* Exterior audio/settings button: no hover brightening. */
+body.mq-exterior-active .mq-exterior-audio-toggle:hover{
+  background:rgba(9,9,11,.91)!important;
+  border-color:rgba(231,192,108,.65)!important;
+  filter:none!important;
+  transform:none!important;
+}
+
+/* If the audio panel is actually open, keep its opened state instead of hover state. */
+body.mq-exterior-active .mq-exterior-audio-toggle[aria-expanded="true"],
+body.mq-exterior-active .mq-exterior-audio-toggle[aria-expanded="true"]:hover{
+  background:rgba(26,20,13,.96)!important;
+  border-color:rgba(238,197,106,.9)!important;
+}
+
+/* Debug-grid toggle remains usable but no longer reacts visually to hover on exterior. */
+body.mq-exterior-active #mqDebugToggle:hover{
+  background:rgba(12,10,7,.92)!important;
+  filter:none!important;
+  transform:none!important;
+}
+
+/* No hover-driven transforms/filters on exterior controls except the ticket booth itself. */
+body.mq-exterior-active #mqExteriorAudioOpen:hover{
+  transform:none!important;
+}
+
+/* Hide hand/shadow once the exterior is no longer active. */
 body:not(.mq-exterior-active) #mqExteriorStage::before,
 body:not(.mq-exterior-active) #mqExteriorStage::after,
 body.mq-ticket-open #mqExteriorStage::before,
