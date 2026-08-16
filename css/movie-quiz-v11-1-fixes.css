@@ -1,0 +1,117 @@
+/* Movie Quiz v11.1 targeted UI fixes
+   Loaded after the existing cinema/statistics styles through debug-grid.css. */
+
+/* =========================================================
+   CINEMA HOME = EXACT CURRENT STATISTICS HOME
+   ========================================================= */
+#cinema > #homeBtn.mq-home-dock{
+  position:absolute!important;
+  top:5.95%!important;
+  right:1.55%!important;
+  left:auto!important;
+  bottom:auto!important;
+  z-index:905!important;
+  width:48px!important;
+  height:48px!important;
+  min-width:48px!important;
+  max-width:48px!important;
+  min-height:48px!important;
+  max-height:48px!important;
+  margin:0!important;
+  padding:0!important;
+  display:none!important;
+  place-items:center!important;
+  border:1px solid #a6752f!important;
+  border-radius:6px!important;
+  background:linear-gradient(180deg,rgba(31,20,12,.94),rgba(10,7,5,.98))!important;
+  color:var(--mq-gold2,#efd38a)!important;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.72),inset 0 1px rgba(255,233,174,.10),0 7px 18px rgba(0,0,0,.26)!important;
+  cursor:pointer!important;
+  box-sizing:border-box!important;
+  transform:none!important;
+  transition:background .15s ease,border-color .15s ease,transform .15s ease!important;
+}
+#cinema:has(.selection-view.active) > #homeBtn.mq-home-dock,
+#cinema:has(#game.active) > #homeBtn.mq-home-dock{
+  display:grid!important;
+}
+#cinema > #homeBtn.mq-home-dock svg{
+  width:24px!important;
+  height:24px!important;
+  margin:0!important;
+  display:block!important;
+  fill:none!important;
+  color:var(--mq-gold2,#efd38a)!important;
+  stroke:var(--mq-gold2,#efd38a)!important;
+  stroke-width:1.8!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  pointer-events:none!important;
+}
+#cinema > #homeBtn.mq-home-dock:hover,
+#cinema > #homeBtn.mq-home-dock:focus-visible{
+  transform:translateY(-1px)!important;
+  background:linear-gradient(180deg,#3c2817,#100a06)!important;
+  border-color:#d0a052!important;
+  color:#fff0bf!important;
+  outline:none!important;
+}
+#cinema > #homeBtn.mq-home-dock:hover svg,
+#cinema > #homeBtn.mq-home-dock:focus-visible svg{
+  color:#fff0bf!important;
+  stroke:#fff0bf!important;
+}
+
+/* =========================================================
+   HALL OF FAME – REMOVE DOUBLE PODIUM FRAMES
+   ========================================================= */
+#mqHallOfFameScene .mq-hall-podium-card,
+#mqHallOfFameScene .mq-hall-podium-card.is-rank-1,
+#mqHallOfFameScene .mq-hall-podium-card.is-rank-2,
+#mqHallOfFameScene .mq-hall-podium-card.is-rank-3,
+#mqHallOfFameScene .mq-hall-podium-card.is-current{
+  border:0!important;
+  box-shadow:none!important;
+}
+#mqHallOfFameScene .mq-hall-podium-card::before{
+  content:none!important;
+  display:none!important;
+  border:0!important;
+}
+
+/* Ranking numbers: same display size as the Hall heading (47 px), no badge. */
+#mqHallOfFameScene .mq-hall-podium-rank{
+  top:-10px!important; /* old -18 px -> 8 px lower */
+  width:auto!important;
+  height:auto!important;
+  min-width:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#f1d58f!important;
+  font-family:var(--mq-display,"Limelight","Copperplate",serif)!important;
+  font-size:47px!important;
+  font-weight:400!important;
+  line-height:1!important;
+  letter-spacing:.02em!important;
+  text-shadow:0 2px 4px rgba(0,0,0,.72)!important;
+  box-shadow:none!important;
+}
+#mqHallOfFameScene .mq-hall-podium-card.is-rank-1 .mq-hall-podium-rank{
+  top:-14px!important; /* old -22 px -> 8 px lower */
+  width:auto!important;
+  height:auto!important;
+  border:0!important;
+  color:#f1d58f!important;
+  font-size:47px!important;
+  box-shadow:none!important;
+}
+
+/* Remove the extra concentric outline around the three podium avatars too;
+   keep only the avatar's single brass edge. */
+#mqHallOfFameScene .mq-hall-podium-card .mq-hall-avatar,
+#mqHallOfFameScene .mq-hall-podium-card.is-rank-1 .mq-hall-avatar,
+#mqHallOfFameScene .mq-hall-podium-card.is-rank-3 .mq-hall-avatar{
+  box-shadow:0 6px 15px rgba(0,0,0,.35)!important;
+}

@@ -1,4 +1,4 @@
-/* Movie Quiz – exterior booth hand + bubble v11.0
+/* Movie Quiz – exterior booth hand + bubble v11.1
    Restored visual geometry from the smaller v10.5/v10.7 bubble.
 
    - five frame PNGs use a 900×675 transparent safety canvas
@@ -118,20 +118,35 @@ body.mq-exterior-active #mqDebugToggle:hover{
   opacity:1;
   transform:none;
 }
-.mq-ticket-bubble-art{
+.mq-ticket-bubble-frames{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none!important;
+}
+.mq-ticket-bubble-frame{
   position:absolute;
   inset:0;
   width:100%;
   height:100%;
   object-fit:fill;
   display:block;
+  opacity:0;
+  visibility:hidden;
   pointer-events:none!important;
   user-select:none;
+  backface-visibility:hidden;
+  transform:translateZ(0);
+}
+.mq-ticket-bubble-frame.is-active{
+  opacity:1;
+  visibility:visible;
 }
 .mq-ticket-bubble-text{
   position:absolute;
   left:62px;
-  top:35px;
+  top:43px;
   width:165px;
   height:85px;
   z-index:2;

@@ -247,22 +247,22 @@
   window.MovieQuizCinemaHome=Object.freeze({version:'30.5-stats-parity',sync:syncCinemaHome});
 })();
 
-/* Movie Quiz – ticket booth hand + bubble controller v30.5
-   Restores the smaller, unclipped bubble geometry from the good v10.5/v10.7
-   sequence. The five PNGs now include transparent safe canvas, so 272×204 is
-   the canvas size, not the visible speech-bubble size. Frame timing is restored
-   to the v10.7 visual cadence (~360 ms 1→5 and ~360 ms 5→1).
-   Text visibility is event-driven: it turns on exactly when frame 5 is assigned
-   and turns off in the same tick frame 5 is left. */
+/* Movie Quiz – ticket booth hand + bubble controller v30.6
+   v11.1: no-flicker frame stack. All five decoded PNG frames stay mounted in
+   the DOM and the controller only switches the active layer, so changing a
+   bubble frame can never expose an undecoded/blank image between paints.
+   Text visibility is still tied exactly to frame 5. */
 (()=>{
   'use strict';
 
-  const ASSET_VERSION='30.5-v107-geometry';
+  const ASSET_VERSION='30.6-frame-stack';
   const HAND_SRC=`assets/exterior-v6-9/production/ticket-booth-hand.png?v=${ASSET_VERSION}`;
   const BUBBLE_FRAMES=[1,2,3,4,5].map(n=>`assets/exterior-v6-9/production/bubble_frame_${n}.png?v=${ASSET_VERSION}`);
 
-  const HAND_MS=3744;
-  const BUBBLE_START_IN_HAND_MS=2952;
+  /* 3744 ms × 1.15 = 4305.6 ms. */
+  const HAND_MS=4306;
+  /* Preserve the same point on the slower hand-return timeline. */
+  const BUBBLE_START_IN_HAND_MS=3395;
   const BUBBLE_STEP_MS=90;
   const BUBBLE_HOLD_MS=7000;
   const SECOND_HAND_DELAY_MS=1200;
@@ -312,22 +312,40 @@
     bubble.setAttribute('aria-hidden','true');
     bubble.dataset.mqBoothVersion=ASSET_VERSION;
 
-    let bubbleArt=bubble.querySelector('.mq-ticket-bubble-art');
+    let frameWrap=bubble.querySelector('.mq-ticket-bubble-frames');
     let text=bubble.querySelector('.mq-ticket-bubble-text');
-    if(!bubbleArt||!text){
+    let frames=frameWrap?[...frameWrap.querySelectorAll('.mq-ticket-bubble-frame')]:[];
+
+    if(!frameWrap||frames.length!==5||!text){
       bubble.replaceChildren();
-      bubbleArt=document.createElement('img');
-      bubbleArt.className='mq-ticket-bubble-art';
-      bubbleArt.alt='';
-      bubbleArt.decoding='async';
+
+      frameWrap=document.createElement('div');
+      frameWrap.className='mq-ticket-bubble-frames';
+      frameWrap.setAttribute('aria-hidden','true');
+
+      frames=BUBBLE_FRAMES.map((src,index)=>{
+        const img=document.createElement('img');
+        img.className='mq-ticket-bubble-frame';
+        img.dataset.mqBubbleFrame=String(index+1);
+        img.alt='';
+        img.decoding='async';
+        img.src=src;
+        frameWrap.appendChild(img);
+        return img;
+      });
+
       text=document.createElement('div');
       text.className='mq-ticket-bubble-text';
       text.innerHTML='Pojďte sem,<br>máme poslední<br>volná místa!';
-      bubble.append(bubbleArt,text);
+      bubble.append(frameWrap,text);
+    }else{
+      frames.forEach((img,index)=>{
+        const src=BUBBLE_FRAMES[index];
+        if(img.getAttribute('src')!==src)img.src=src;
+      });
     }
-    if(!bubbleArt.getAttribute('src'))bubbleArt.src=BUBBLE_FRAMES[0];
 
-    return {stage,portal,hand,bubble,bubbleArt,text};
+    return {stage,portal,hand,bubble,frameWrap,frames,text};
   }
 
   function preloadOne(src){
@@ -349,8 +367,7 @@
   }
 
   function setBubbleFrame(ui,frameNumber){
-    const src=BUBBLE_FRAMES[frameNumber-1];
-    if(ui.bubbleArt.getAttribute('src')!==src)ui.bubbleArt.src=src;
+    ui.frames.forEach((img,index)=>img.classList.toggle('is-active',index===(frameNumber-1)));
     ui.bubble.dataset.mqBubbleFrame=String(frameNumber);
 
     const textVisible=frameNumber===5;
@@ -372,6 +389,7 @@
       ui.bubble.style.transform='none';
       ui.bubble.dataset.mqBubbleFrame='0';
     }
+    ui?.frames?.forEach(img=>img.classList.remove('is-active'));
     if(ui?.text)ui.text.style.opacity='0';
   }
 
@@ -414,8 +432,8 @@
   async function hideBubble(ui,token){
     if(token!==generation||!exteriorActive())return false;
 
-    /* First reverse tick is 5 → 4, so text is hidden before any smaller frame
-       is painted. There is no independent text timer. */
+    /* Frame 5 -> 4 hides text in the same operation, before the smaller frame
+       is exposed. The frame image itself is already decoded and mounted. */
     for(let frame=4;frame>=1;frame--){
       if(token!==generation||!exteriorActive())return false;
       setBubbleFrame(ui,frame);
@@ -426,6 +444,7 @@
       ui.bubble.classList.remove('is-visible','is-text-visible');
       ui.bubble.style.visibility='hidden';
       ui.bubble.dataset.mqBubbleFrame='0';
+      ui.frames.forEach(img=>img.classList.remove('is-active'));
       ui.text.style.opacity='0';
     }
     return true;
@@ -486,11 +505,12 @@
     const ui=ensureUi();
     if(!ui)return;
 
-    /* Bubble/hand assets are decorative. Load/decode them only after the user
-       has left the loading gate, so they cannot compete with the first-paint
-       background or critical exterior assets on a first visit. */
     await preloadAssets();
     if(!initialized)return;
+
+    /* Decoding the detached preload images warms the resource cache; decode the
+       five mounted frame layers too before the first cycle starts. */
+    await Promise.all(ui.frames.map(async img=>{try{await img.decode?.()}catch(_){}}));
     syncToScene();
 
     if(!bodyObserver){
@@ -507,7 +527,7 @@
   else window.addEventListener('mq:preload-entered',scheduleController,{once:true});
 
   window.MovieQuizTicketBoothAnimation=Object.freeze({
-    version:'30.5-v107-geometry-frame5-sync',
+    version:'30.6-frame-stack-no-flicker',
     restart:start
   });
 })();
