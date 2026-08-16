@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='v55.4-statistics-profile-history';
+  const VERSION='v55.5-statistics-home-direct';
   const SCENE_ID='mqStatisticsScene';
   const GENRE_ORDER=['fantasy','horror','scifi','crime','animation','comedy'];
   const DIFFICULTY_ORDER=['easy','medium','hard'];
@@ -142,7 +142,13 @@
     scene.querySelector('#mqStatBack')?.addEventListener('click',closeStatistics);
     scene.querySelector('#mqStatRefresh')?.addEventListener('click',()=>renderStatistics(true));
     scene.querySelector('#mqStatGear')?.addEventListener('click',openSettings);
-    scene.querySelector('#mqStatHome')?.addEventListener('click',goHome);
+
+    /* Home is bound directly inside the authoritative Statistics module.
+       pointerdown makes the control immune to later click interceptors; click
+       remains as keyboard/accessibility fallback. */
+    const home=scene.querySelector('#mqStatHome');
+    home?.addEventListener('pointerdown',goHome,{capture:true});
+    home?.addEventListener('click',goHome,{capture:true});
   }
 
   function openSettings(){
@@ -152,11 +158,45 @@
     if(menu){menu.hidden=false;menu.classList.add('is-open');}
   }
 
-  function goHome(){
+  function forceDifficultyHome(){
+    const scene=document.getElementById(SCENE_ID);
+    if(scene)scene.hidden=true;
+    document.body.classList.remove('mq-statistics-open','mq-hall-open');
+
+    const settings=document.getElementById('mqSettingsMenu');
+    if(settings){settings.hidden=true;settings.classList.remove('is-open');}
+
+    try{if(typeof state!=='undefined'&&state)state.locked=true}catch(_){}
+    try{if(typeof resetLives==='function')resetLives(false)}catch(_){}
+    document.getElementById('screen')?.removeAttribute('data-genre');
+
+    /* Use the app router when available, then enforce the DOM state as a
+       fallback. This deliberately does NOT click the movable global homeBtn. */
+    try{
+      if(typeof window.showView==='function')window.showView('difficulty');
+      else if(typeof showView==='function')showView('difficulty');
+    }catch(_){}
+    document.querySelectorAll('#screen > .view').forEach(view=>{
+      view.classList.toggle('active',view.id==='difficulty');
+    });
+
+    try{if(typeof switchMusic==='function')switchMusic('menu')}catch(_){}
+    try{window.MovieQuizCinemaHome?.sync?.()}catch(_){}
+  }
+
+  function goHome(event){
+    event?.preventDefault?.();
+    event?.stopPropagation?.();
     closeStatistics(false);
-    const home=document.getElementById('homeBtn');
-    if(home){setTimeout(()=>home.click(),0);return;}
-    if(typeof window.showView==='function')window.showView('intro');
+    forceDifficultyHome();
+
+    /* Several late UI modules synchronize on the next paint. Reassert once
+       after their cycle so Statistics cannot be restored by a stale observer. */
+    queueMicrotask(forceDifficultyHome);
+    requestAnimationFrame(forceDifficultyHome);
+    setTimeout(forceDifficultyHome,60);
+
+    try{if(typeof sound==='function')sound('soft');else window.sound?.('soft')}catch(_){}
   }
 
   function installButtons(){

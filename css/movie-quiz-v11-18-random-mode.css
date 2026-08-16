@@ -25,13 +25,33 @@ html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="r
   color:#decff1!important;
 }
 
-/* v11.18.3 — Náhodné now uses the exact same icon construction as Komedie and
-   the other six genre cards. The shared .genre-icon dimensions, centering,
-   spacing and mask rendering from v11.5 are left untouched. Only the colour
-   and the mask artwork differ. */
+/* v11.18.4 — robust question-mark icon.
+   The card keeps the exact shared .genre-icon box, card flex layout, gap and
+   card-copy positioning used by Komedie. v11.6 replaces the six genre icons
+   through ::before background-images, so Random explicitly disables that
+   pseudo-element and renders a real text glyph instead. This removes the
+   mask/background-image conflict that made the previous Random icon blank. */
 html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"] .genre-icon{
   color:#c6b7db!important;
-  --mq-genre-mask:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NiA5NiI+CjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPgo8cGF0aCBkPSJNMjggMzJjMi0xMyAxMi0yMSAyNi0yMSAxNSAwIDI2IDkgMjYgMjIgMCAxMS03IDE3LTE3IDIzLTggNS0xMSAxMC0xMSAxOCIvPgo8cGF0aCBkPSJNNTIgODZoLjEiLz4KPC9nPgo8L3N2Zz4=")!important;
+  font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
+  font-size:clamp(78px,6.25cqw,96px)!important;
+  font-weight:700!important;
+  font-style:normal!important;
+  line-height:1!important;
+  letter-spacing:0!important;
+  text-align:center!important;
+  text-indent:0!important;
+  text-shadow:0 2px 1px rgba(0,0,0,.64),0 0 7px rgba(198,183,219,.10)!important;
+}
+html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"] .genre-icon::before{
+  content:none!important;
+  display:none!important;
+  width:0!important;
+  height:0!important;
+  background:none!important;
+  background-image:none!important;
+  -webkit-mask:none!important;
+  mask:none!important;
 }
 html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"] .genre-icon > svg{
   display:none!important;
@@ -39,6 +59,7 @@ html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="r
 html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"]:hover .genre-icon,
 html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"]:focus-visible .genre-icon{
   color:#d9c9f0!important;
+  text-shadow:0 2px 1px rgba(0,0,0,.60),0 0 9px rgba(217,201,240,.18)!important;
 }
 
 /* Dedicated mixed-mode screen colour. */

@@ -1,6 +1,6 @@
 (()=>{
   'use strict';
-  const VERSION='interaction-guards-v28.0';
+  const VERSION='interaction-guards-v28.1';
 
   function visible(element){
     if(!element||element.hidden)return false;
@@ -668,7 +668,7 @@
 ;(()=>{
   'use strict';
 
-  const VERSION='11.18-random-mode-source-genre-stats';
+  const VERSION='11.18.4-random-question-mark';
   const RANDOM='random';
   const RANDOM_LABEL='Náhodné';
   const SOURCE_GENRES=['fantasy','horror','scifi','crime','animation','comedy'];
@@ -731,19 +731,7 @@
     button.dataset.genre=RANDOM;
     button.setAttribute('aria-label','Náhodný mix všech filmových žánrů');
     button.innerHTML=`
-      <span class="selection-icon genre-icon" aria-hidden="true">
-        <svg viewBox="0 0 72 72">
-          <circle cx="31" cy="36" r="21"/>
-          <circle cx="31" cy="36" r="5"/>
-          <circle cx="31" cy="22" r="3.4"/>
-          <circle cx="43" cy="31" r="3.4"/>
-          <circle cx="38" cy="45" r="3.4"/>
-          <circle cx="23" cy="46" r="3.4"/>
-          <circle cx="19" cy="31" r="3.4"/>
-          <path d="M51 18c8 1 12 5 12 10 0 6-5 8-9 10-5 2-6 5-6 10"/>
-          <path d="M48 56h.1"/>
-        </svg>
-      </span>
+      <span class="selection-icon genre-icon mq-random-question-mark" aria-hidden="true">?</span>
       <span class="card-copy"><strong>${RANDOM_LABEL}</strong></span>`;
     button.addEventListener('click',()=>window.startGame?.(RANDOM));
     grid.appendChild(button);
