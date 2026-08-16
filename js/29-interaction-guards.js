@@ -531,3 +531,61 @@
     restart:start
   });
 })();
+
+/* Movie Quiz v11.15 — loss ending only.
+   IMPORTANT: appended after the byte-identical current v28.0 interaction guards,
+   so all existing exterior/zoom/hand/bubble behavior above remains untouched. */
+;(()=>{
+  'use strict';
+
+  function polishEndingLabels(){
+    const skip=document.getElementById('creditsSkip');
+    const skipLabel=skip?.querySelector('span');
+    if(skipLabel)skipLabel.textContent='Zpět';
+    if(skip){
+      skip.setAttribute('aria-label','Zpět z titulků');
+      skip.setAttribute('title','Zpět');
+    }
+    const replay=document.getElementById('replayEnd');
+    if(replay)replay.textContent='Hrát';
+  }
+
+  polishEndingLabels();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',polishEndingLabels,{once:true});
+
+  /* Core uses a 16.992 s credits roll and previously switched to THE END at
+     17.112 s (120 ms later). v11.15 halves that post-roll gap to 60 ms. */
+  if(typeof creditsThenEnd==='function'){
+    creditsThenEnd=function(){
+      polishEndingLabels();
+      state.locked=true;
+      cinema.classList.add('dim');
+      $('#filmLives').style.display='none';
+      showView('creditsView');
+      $('#creditsRoll').innerHTML=`
+        <h2>Movie Quiz</h2>
+        <div class="credit-block"><div class="credit-role">Dnešní divák</div><div class="credit-name">Filmový znalec v první řadě</div></div>
+        <div class="credit-block"><div class="credit-role">Správné odpovědi</div><div class="credit-name">${state.score} z 15</div></div>
+        <div class="credit-block"><div class="credit-role">Režim projekce</div><div class="credit-name">${difficultyLabels[state.difficulty]} · ${genreLabels[state.genre]}</div></div>
+        <div class="credit-block"><div class="credit-role">Projekce</div><div class="credit-name">Skončila po ${state.questionNo}. otázce</div></div>
+        <div class="credit-block"><div class="credit-role">Poděkování</div><div class="credit-name">Všem filmům, které stojí za další zhlédnutí</div></div>
+        <div class="credit-block"><div class="credit-role">Konec projekce</div><div class="credit-name">Prosíme, rozsviťte v sále</div></div>`;
+      const roll=$('#creditsRoll');
+      roll.style.animation='none';
+      void roll.offsetWidth;
+      roll.style.animation='creditsRoll 16.992s linear forwards';
+      switchMusic('credits');
+      sound('credits');
+      creditsEndTimer=setTimeout(()=>{
+        creditsEndTimer=null;
+        showView('endView');
+        const score=$('#endScore');
+        if(score){
+          score.innerHTML=`<span class="mq-end-score-number">${state.score}</span><span class="mq-end-score-copy">správných odpovědí · ${difficultyLabels[state.difficulty]} · ${genreLabels[state.genre]}</span>`;
+        }
+        $('#endCard').classList.add('reveal');
+        sound('end');
+      },17052);
+    };
+  }
+})();

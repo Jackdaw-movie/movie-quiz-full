@@ -1,0 +1,108 @@
+/* Movie Quiz v11.15 — targeted loss-ending corrections.
+   Loaded after v11.14. Does not touch gameplay geometry, exterior, hand or bubble. */
+
+/* Credits are now correctly centered. Keep their v11.14 horizontal position.
+   Only redesign the existing back/menu control. */
+#creditsView #creditsSkip{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:9px!important;
+  min-width:116px!important;
+  height:42px!important;
+  padding:0 14px!important;
+  box-sizing:border-box!important;
+  border:1px solid #a6752f!important;
+  border-radius:6px!important;
+  background:
+    linear-gradient(135deg,rgba(255,244,208,.065) 0 17%,transparent 17% 100%),
+    linear-gradient(180deg,#20150d 0%,#0c0805 58%,#030201 100%)!important;
+  color:#f1d58f!important;
+  font-family:var(--mq-display,"Limelight","Copperplate",serif)!important;
+  font-size:15px!important;
+  font-weight:400!important;
+  line-height:1!important;
+  letter-spacing:.035em!important;
+  text-transform:none!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.92)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,242,204,.12),
+    inset 0 0 0 1px rgba(0,0,0,.80),
+    0 5px 12px rgba(0,0,0,.24)!important;
+  transition:background .15s ease,border-color .15s ease,color .15s ease,transform .15s ease!important;
+}
+#creditsView #creditsSkip svg{
+  width:19px!important;
+  height:19px!important;
+  flex:0 0 19px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.8!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+#creditsView #creditsSkip:hover,
+#creditsView #creditsSkip:focus-visible{
+  background:
+    linear-gradient(135deg,rgba(255,245,213,.09) 0 17%,transparent 17% 100%),
+    linear-gradient(180deg,#352317 0%,#120b07 58%,#050302 100%)!important;
+  border-color:#e0ad55!important;
+  color:#fff0bf!important;
+  transform:translateY(-1px)!important;
+  outline:none!important;
+}
+
+/* v11.14 moved this group 60 px right. Move it 58 px back left,
+   leaving a deliberate +2 px optical correction from its original center. */
+#endView #endScore,
+#endView #replayEnd,
+#endView #mqEndStats{
+  left:2px!important;
+}
+
+/* Result line below THE END. The JS patch wraps the score so the number can
+   be genuinely much larger without enlarging the rest of the sentence. */
+#endView #endScore{
+  display:flex!important;
+  align-items:baseline!important;
+  justify-content:center!important;
+  gap:12px!important;
+  flex-wrap:wrap!important;
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  line-height:1!important;
+  text-align:center!important;
+}
+#endView #endScore .mq-end-score-number{
+  display:inline-block!important;
+  color:#f1d58f!important;
+  font-family:var(--mq-ui,"Oswald","Arial Narrow","Helvetica Neue",sans-serif)!important;
+  font-size:64px!important;
+  font-weight:600!important;
+  line-height:.82!important;
+  letter-spacing:-.025em!important;
+  font-variant-numeric:tabular-nums!important;
+  text-shadow:0 2px 0 rgba(0,0,0,.92),0 0 16px rgba(230,183,90,.12)!important;
+}
+#endView #endScore .mq-end-score-copy{
+  display:inline-block!important;
+  color:#f1dfb5!important;
+  font-family:var(--mq-question,"Cormorant Garamond","Baskerville","Times New Roman",serif)!important;
+  font-size:18px!important;
+  font-weight:700!important;
+  line-height:1.15!important;
+  letter-spacing:.015em!important;
+  white-space:nowrap!important;
+}
+
+/* The primary replay label is intentionally much larger and shorter: HRÁT. */
+#endView #replayEnd{
+  font-family:var(--mq-display,"Limelight","Copperplate","Baskerville",serif)!important;
+  font-size:24px!important;
+  line-height:1!important;
+  letter-spacing:.025em!important;
+  text-transform:none!important;
+}
