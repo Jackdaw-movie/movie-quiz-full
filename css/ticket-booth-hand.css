@@ -67,7 +67,7 @@ body.mq-exterior-active #mqDebugToggle:hover{
   height:200px;
   z-index:14;
   pointer-events:none;
-  background:url("../assets/exterior-v6-9/production/ticket-booth-hand-wave.webp?v=10.2") 0 0 / 260px 200px no-repeat;
+  background:url("../assets/exterior-v6-9/production/ticket-booth-hand-wave.webp?v=10.5") 0 0 / 260px 200px no-repeat;
   image-rendering:auto;
   transform-origin:left center;
   transform:scale(.9)!important;
@@ -102,52 +102,77 @@ body.mq-ticket-open #mqExteriorStage::after{
 }
 
 /* =========================================================
-   BUBBLE – ASSET-BASED LOOP
+   BUBBLE – ASSET + UI TEXT LOCKED TO THE SAME MASTER GEOMETRY
    ========================================================= */
 
-/* Whole bubble animation moved 20 px left and 60 px up relative to the prior setup.
-   The asset sequence is 1→2→3→4→5 and then back in reverse. */
+/* Root cause fixed:
+   the previous 560×420 animation canvas clipped the larger bubble frames at the
+   top/right edges. The new animation uses a 900×675 transparent canvas, with all
+   five supplied assets aligned by the same tail tip and with safe transparent
+   margins on every side.
+
+   The display box is enlarged proportionally, so the visible bubble stays at the
+   same intended on-stage size while the extra canvas area prevents cropping. */
+body.mq-exterior-active #mqTicketBoothHotspot{
+  --mq-bubble-left:168px;
+  --mq-bubble-top:-17px;
+  --mq-bubble-width:272px;
+  --mq-bubble-height:204px;
+
+  /* Text safe zone is derived from the final bubble frame itself. */
+  --mq-bubble-text-left:242px;
+  --mq-bubble-text-top:28px;
+  --mq-bubble-text-width:151px;
+  --mq-bubble-text-height:85px;
+}
+
 body.mq-exterior-active #mqTicketBoothHotspot::before{
   content:"";
   position:absolute;
-  left:186px;
-  top:54px;
-  width:169px;
-  height:127px;
+  left:var(--mq-bubble-left);
+  top:var(--mq-bubble-top);
+  width:var(--mq-bubble-width);
+  height:var(--mq-bubble-height);
   z-index:17;
   pointer-events:none;
-  background:url("../assets/exterior-v6-9/production/ticket-booth-bubble-loop.webp?v=10.4") center center / 100% 100% no-repeat;
+  background:url("../assets/exterior-v6-9/production/ticket-booth-bubble-loop.webp?v=10.5") center center / 100% 100% no-repeat;
   image-rendering:auto;
 }
 
-/* Text appears only during the final held state of the bubble. */
+/* Text is no longer positioned independently by eye. It is locked to the
+   measured safe zone of the same final bubble geometry, so stage scaling/zoom
+   keeps text and artwork together. */
 body.mq-exterior-active #mqTicketBoothHotspot::after{
-  content:"Pojďte sem, máme\A poslední volná místa!";
+  content:"Pojďte sem,\A máme poslední\A volná místa!";
   position:absolute;
-  left:197px;
-  top:40px;
-  width:118px;
-  min-height:52px;
+  left:var(--mq-bubble-text-left);
+  top:var(--mq-bubble-text-top);
+  width:var(--mq-bubble-text-width);
+  height:var(--mq-bubble-text-height);
   z-index:18;
   display:flex;
   align-items:center;
   justify-content:center;
+  padding:0;
+  margin:0;
   text-align:center;
   white-space:pre-line;
-  color:#15110d;
-  font-family:var(--mq-ui,"Oswald","Arial Narrow",sans-serif);
-  font-size:17px;
-  line-height:1.02;
-  letter-spacing:.025em;
-  text-shadow:0 1px 0 rgba(255,255,255,.22);
+  color:#17120d;
+  font-family:var(--mq-display,"Limelight","Copperplate","Baskerville",serif)!important;
+  font-size:15px;
+  font-weight:400;
+  line-height:1.12;
+  letter-spacing:.01em;
+  text-shadow:none;
   opacity:0;
   pointer-events:none;
-  animation:mqTicketBubbleText 9.08s linear infinite;
+  animation:mqTicketBubbleText 8.96s linear infinite;
 }
 
+/* 4×120 ms growth -> 5 s final hold -> 4×120 ms shrink -> 3 s pause. */
 @keyframes mqTicketBubbleText{
-  0%,6.4%,66.5%,100%{opacity:0}
-  8.2%,61.7%{opacity:1}
+  0%,5.2%,61.4%,100%{opacity:0}
+  5.7%,60.9%{opacity:1}
 }
 
 body:not(.mq-exterior-active) #mqTicketBoothHotspot::before,
