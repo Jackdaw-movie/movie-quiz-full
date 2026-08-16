@@ -24,30 +24,21 @@ html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="r
 html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"] .card-copy strong{
   color:#decff1!important;
 }
+
+/* v11.18.3 — Náhodné now uses the exact same icon construction as Komedie and
+   the other six genre cards. The shared .genre-icon dimensions, centering,
+   spacing and mask rendering from v11.5 are left untouched. Only the colour
+   and the mask artwork differ. */
 html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"] .genre-icon{
   color:#c6b7db!important;
-}
-
-/* v11.18.2 — the v11.5 genre redesign hides every inline SVG and replaces the
-   six real genres with mask icons. Random keeps its own reel/question-mark SVG,
-   but its visible drawing is optically scaled to the same footprint as the six
-   mask-based genre symbols. */
-html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"] .genre-icon::before{
-  content:none!important;
-  display:none!important;
+  --mq-genre-mask:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NiA5NiI+CjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPgo8cGF0aCBkPSJNMjggMzJjMi0xMyAxMi0yMSAyNi0yMSAxNSAwIDI2IDkgMjYgMjIgMCAxMS03IDE3LTE3IDIzLTggNS0xMSAxMC0xMSAxOCIvPgo8cGF0aCBkPSJNNTIgODZoLjEiLz4KPC9nPgo8L3N2Zz4=")!important;
 }
 html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"] .genre-icon > svg{
-  display:block!important;
-  width:78%!important;
-  height:78%!important;
-  margin:auto!important;
-  overflow:visible!important;
-  fill:none!important;
-  stroke:currentColor!important;
-  stroke-width:3.7!important;
-  stroke-linecap:round!important;
-  stroke-linejoin:round!important;
-  filter:drop-shadow(0 2px 1px rgba(0,0,0,.60))!important;
+  display:none!important;
+}
+html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"]:hover .genre-icon,
+html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"]:focus-visible .genre-icon{
+  color:#d9c9f0!important;
 }
 
 /* Dedicated mixed-mode screen colour. */
