@@ -27,14 +27,26 @@ html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="r
 html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"] .genre-icon{
   color:#c6b7db!important;
 }
-html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"] .genre-icon svg{
+
+/* v11.18.1 — the v11.5 genre redesign hides every inline SVG and replaces the
+   six real genres with mask icons. Random is intentionally different: its
+   reel/question-mark SVG is its own symbol, so explicitly restore it and
+   disable the inherited empty mask layer. */
+html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"] .genre-icon::before{
+  content:none!important;
+  display:none!important;
+}
+html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"] .genre-icon > svg{
+  display:block!important;
   width:100%!important;
   height:100%!important;
+  overflow:visible!important;
   fill:none!important;
   stroke:currentColor!important;
   stroke-width:3.7!important;
   stroke-linecap:round!important;
   stroke-linejoin:round!important;
+  filter:drop-shadow(0 2px 1px rgba(0,0,0,.60))!important;
 }
 
 /* Dedicated mixed-mode screen colour. */
