@@ -59,3 +59,39 @@ function apply(){installStyle();normalizeSelectionUi();anchorDocks()}
 function init(){apply();setTimeout(anchorDocks,450);setTimeout(anchorDocks,1300);document.addEventListener('click',()=>queueMicrotask(anchorDocks));window.addEventListener('mq:guest-mode-changed',()=>setTimeout(anchorDocks,20));window.addEventListener('mq:avatar-changed',()=>setTimeout(anchorDocks,0))}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
+
+/* Movie Quiz – statistics Home navigation repair v41.1
+   The Statistics scene owns a separate Home button. Do not proxy that click
+   through #homeBtn, because later UI modules move the global Home control
+   between containers. Mirror the canonical core Home action directly. */
+(()=>{
+'use strict';
+function goHomeFromStatistics(event){
+  const target=event.target?.closest?.('#mqStatHome');
+  if(!target)return;
+
+  event.preventDefault();
+  event.stopImmediatePropagation();
+
+  const stats=document.getElementById('mqStatisticsScene');
+  if(stats)stats.hidden=true;
+  document.body.classList.remove('mq-statistics-open');
+
+  try{if(typeof state!=='undefined'&&state)state.locked=true}catch(_){}
+  try{if(typeof resetLives==='function')resetLives(false)}catch(_){}
+  document.getElementById('screen')?.removeAttribute('data-genre');
+
+  try{
+    if(typeof showView==='function')showView('difficulty');
+    else document.querySelectorAll('.view').forEach(view=>view.classList.toggle('active',view.id==='difficulty'));
+  }catch(_){
+    document.querySelectorAll('.view').forEach(view=>view.classList.toggle('active',view.id==='difficulty'));
+  }
+
+  try{if(typeof switchMusic==='function')switchMusic('menu')}catch(_){}
+  try{if(typeof sound==='function')sound('soft');else window.sound?.('soft')}catch(_){}
+  try{window.MovieQuizCinemaHome?.sync?.()}catch(_){}
+}
+
+document.addEventListener('click',goHomeFromStatistics,true);
+})();
