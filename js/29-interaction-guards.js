@@ -247,8 +247,8 @@
   window.MovieQuizCinemaHome=Object.freeze({version:'30.5-stats-parity',sync:syncCinemaHome});
 })();
 
-/* Movie Quiz – ticket booth hand + bubble controller v30.6
-   v11.1: no-flicker frame stack. All five decoded PNG frames stay mounted in
+/* Movie Quiz – ticket booth hand + bubble controller v30.7
+   v11.2: hand stays 20 px farther behind the portal; no-flicker frame stack preserved. All five decoded PNG frames stay mounted in
    the DOM and the controller only switches the active layer, so changing a
    bubble frame can never expose an undecoded/blank image between paints.
    Text visibility is still tied exactly to frame 5. */
@@ -397,13 +397,13 @@
     handAnimation?.cancel?.();
     handAnimation=ui.hand.animate([
       {transform:'translateX(-112px) rotate(0deg)',offset:0},
-      {transform:'translateX(0px) rotate(0deg)',offset:.20},
-      {transform:'translateX(0px) rotate(-14deg)',offset:.28},
-      {transform:'translateX(0px) rotate(14deg)',offset:.36},
-      {transform:'translateX(0px) rotate(-14deg)',offset:.44},
-      {transform:'translateX(0px) rotate(14deg)',offset:.52},
-      {transform:'translateX(0px) rotate(0deg)',offset:.60},
-      {transform:'translateX(0px) rotate(0deg)',offset:.72},
+      {transform:'translateX(-20px) rotate(0deg)',offset:.20},
+      {transform:'translateX(-20px) rotate(-14deg)',offset:.28},
+      {transform:'translateX(-20px) rotate(14deg)',offset:.36},
+      {transform:'translateX(-20px) rotate(-14deg)',offset:.44},
+      {transform:'translateX(-20px) rotate(14deg)',offset:.52},
+      {transform:'translateX(-20px) rotate(0deg)',offset:.60},
+      {transform:'translateX(-20px) rotate(0deg)',offset:.72},
       {transform:'translateX(-112px) rotate(0deg)',offset:1}
     ],{
       duration:HAND_MS,
@@ -527,7 +527,7 @@
   else window.addEventListener('mq:preload-entered',scheduleController,{once:true});
 
   window.MovieQuizTicketBoothAnimation=Object.freeze({
-    version:'30.6-frame-stack-no-flicker',
+    version:'30.7-frame-stack-no-flicker',
     restart:start
   });
 })();
