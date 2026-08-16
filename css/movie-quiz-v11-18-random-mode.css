@@ -25,22 +25,22 @@ html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="r
   color:#decff1!important;
 }
 
-/* v11.18.4 — robust question-mark icon.
-   The card keeps the exact shared .genre-icon box, card flex layout, gap and
-   card-copy positioning used by Komedie. v11.6 replaces the six genre icons
-   through ::before background-images, so Random explicitly disables that
-   pseudo-element and renders a real text glyph instead. This removes the
-   mask/background-image conflict that made the previous Random icon blank. */
+/* v11.18.5 — screenshot-calibrated question-mark icon.
+   Keep the exact shared 108px genre-icon box and card layout. The question mark
+   itself is 15% smaller than v11.18.4 and the whole icon box is optically moved
+   20px upward. Because transform does not participate in flex layout, the
+   Náhodné label stays registered exactly where it was. */
 html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"] .genre-icon{
   color:#c6b7db!important;
   font-family:var(--mq-question,"Cormorant Garamond",Georgia,serif)!important;
-  font-size:clamp(78px,6.25cqw,96px)!important;
+  font-size:clamp(66.3px,5.3125cqw,81.6px)!important;
   font-weight:700!important;
   font-style:normal!important;
   line-height:1!important;
   letter-spacing:0!important;
   text-align:center!important;
   text-indent:0!important;
+  transform:translateY(-20px)!important;
   text-shadow:0 2px 1px rgba(0,0,0,.64),0 0 7px rgba(198,183,219,.10)!important;
 }
 html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="random"] .genre-icon::before{
