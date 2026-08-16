@@ -15,6 +15,7 @@
 @import url("movie-quiz-v11-3-fixes.css?v=11.3.1");
 @import url("movie-quiz-v11-4-selection-ticket-redesign.css?v=11.4");
 @import url("movie-quiz-v11-5-clean-genre-typography.css?v=11.5");
+@import url("movie-quiz-v11-6-tools-icons.css?v=11.6");
 
 /* Movie Quiz – debug grid v47 restored */
 #mqDebugGridOverlay{position:fixed!important;left:0!important;top:0!important;width:0;height:0;margin:0!important;padding:0!important;border:0!important;overflow:hidden!important;display:none!important;pointer-events:none!important;z-index:2147483646!important;box-sizing:border-box!important}

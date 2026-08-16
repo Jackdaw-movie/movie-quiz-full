@@ -1,0 +1,62 @@
+/* Movie Quiz v11.6 – selection tools Y=240 + richer genre pictograms
+   Loaded after v11.5. Only the requested controls/icons are overridden.
+*/
+
+/* ==========================================================================
+   1) EXACT TOP EDGE OF SELECTION CONTROLS = MASTER Y 240
+   Projection screen starts at master y≈197.1395. Required inset:
+   240 - 197.1395 = 42.8605 px = 6.89076 cqh of the 622px screen.
+   X coordinates are intentionally untouched.
+   ========================================================================== */
+html body.mq-noir-master #page #cinema #screen#screen #difficulty#difficulty > .mq-selection-tools,
+html body.mq-noir-master #page #cinema #screen#screen #genres#genres > .mq-selection-tools{
+  top:6.89076cqh!important;
+}
+
+html body.mq-noir-master #page #cinema #screen#screen #genres#genres > #difficultyBack{
+  top:6.89076cqh!important;
+}
+
+/* ==========================================================================
+   2) MORE ELABORATE GENRE ICONS
+   Keep the approved v11.5 cards/font/layout. Replace only the pictograms.
+   No inner icon frame is reintroduced.
+   ========================================================================== */
+html body.mq-noir-master #page #cinema #screen #genres .genre-card .genre-icon::before{
+  content:""!important;
+  display:block!important;
+  width:112%!important;
+  height:112%!important;
+  background-color:transparent!important;
+  background-repeat:no-repeat!important;
+  background-position:center!important;
+  background-size:contain!important;
+  -webkit-mask:none!important;
+  mask:none!important;
+  filter:drop-shadow(0 2px 1px rgba(0,0,0,.64)) drop-shadow(0 0 5px rgba(210,151,51,.07))!important;
+}
+
+html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="comedy"] .genre-icon::before{
+  background-image:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIj4KPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2ZmZTZhMyIvPjxzdG9wIG9mZnNldD0iLjQ4IiBzdG9wLWNvbG9yPSIjZDZhNzRkIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjOGQ1YjIwIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0idXJsKCNnKSIgc3Ryb2tlLXdpZHRoPSI0LjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+CjxwYXRoIGQ9Ik0xNiAyN2MxNC02IDMwLTcgNDQtMnYyOGMwIDE4LTkgMzEtMjIgMzgtMTQtNy0yMi0yMC0yMi0zOFoiLz4KPHBhdGggZD0iTTU1IDM0YzE1LTYgMzItNiA0NyAwdjI1YzAgMTctOSAyOS0yMyAzNi0xMS01LTE5LTE0LTIyLTI2Ii8+CjxwYXRoIGQ9Ik0yNyA0NGM0LTQgOS00IDEzIDBtOCAwYzQtNCA5LTQgMTMgMCIvPgo8cGF0aCBkPSJNMjkgNjVjNyA3IDE1IDggMjQgMSIvPgo8cGF0aCBkPSJNNjggNTFjNC0zIDgtMyAxMiAwbTggMGM0LTMgOC0zIDEyIDAiLz4KPHBhdGggZD0iTTY5IDcyYzgtNyAxNy03IDI1IDAiLz4KPHBhdGggZD0iTTI4IDMwbC03LTltNjYgOSA4LTkiLz4KPHBhdGggZD0iTTQwIDIxYzItNiA3LTEwIDEzLTEybTI0IDE5YzMtNyA5LTExIDE2LTEyIi8+CjwvZz48L3N2Zz4=")!important;
+}
+html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="fantasy"] .genre-icon::before{
+  background-image:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIj4KPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iLjIiIHkxPSIwIiB4Mj0iLjgiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjZmZlOGFhIi8+PHN0b3Agb2Zmc2V0PSIuNTIiIHN0b3AtY29sb3I9IiNkM2EwNDQiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM4NDUyMWEiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2cpIiBzdHJva2Utd2lkdGg9IjQuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KPHBhdGggZD0iTTE4IDk4aDg0Ii8+CjxwYXRoIGQ9Ik0yNyA5OFY0OGwxNC0xMSAxMyAxMSAxMy0xMSAxNSAxMXY1MCIvPgo8cGF0aCBkPSJNNDEgMzdWMjBsOCA2IDYtMTMgNiAxMyA4LTZ2MTciLz4KPHBhdGggZD0iTTQ3IDk4VjcwaDE1djI4Ii8+CjxwYXRoIGQ9Ik0zMSA2MWg5djEyaC05em00MyAwaDl2MTJoLTkiLz4KPHBhdGggZD0iTTg3IDE5bDQgOCA5IDItNyA2IDIgOS04LTQtOCA0IDItOS03LTYgOS0yWiIvPgo8cGF0aCBkPSJNMjIgMjhjOC0xMCAxOC0xNSAyOS0xNyIvPgo8cGF0aCBkPSJNOTYgNTBjNSA5IDYgMTkgNCAzMCIvPgo8L2c+PC9zdmc+")!important;
+}
+html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="scifi"] .genre-icon::before{
+  background-image:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIj4KPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2ZmZWJhOSIvPjxzdG9wIG9mZnNldD0iLjUiIHN0b3AtY29sb3I9IiNkNWE1NGEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM4MDUwMWIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2cpIiBzdHJva2Utd2lkdGg9IjQuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KPGVsbGlwc2UgY3g9IjU5IiBjeT0iNTciIHJ4PSIzOCIgcnk9IjE0Ii8+CjxwYXRoIGQ9Ik0zNiA1MWM0LTE2IDE1LTI1IDIzLTI1czE5IDkgMjMgMjUiLz4KPHBhdGggZD0iTTI5IDYwYzggMTAgNTIgMTQgNjggMCIvPgo8cGF0aCBkPSJNNDMgNjhsLTkgMThtMTgtMTUtNCAyMm0yNy0yMiA0IDIybS0xLTI1IDkgMTgiLz4KPHBhdGggZD0iTTUwIDQ1YzYtNiAxMi04IDE4LTMiLz4KPGNpcmNsZSBjeD0iOTMiIGN5PSIyNSIgcj0iOCIvPgo8cGF0aCBkPSJNOTMgMTJ2NW0wIDE2djVtLTEzLTEzaDVtMTYgMGg1Ii8+CjxwYXRoIGQ9Ik0yMSAyOWwzIDYgNyAxLTUgNSAxIDctNi0zLTYgMyAxLTctNS01IDctMVoiLz4KPC9nPjwvc3ZnPg==")!important;
+}
+html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="horror"] .genre-icon::before{
+  background-image:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIj4KPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iLjE1IiB5MT0iMCIgeDI9Ii44NSIgeTI9IjEiPjxzdG9wIHN0b3AtY29sb3I9IiNmZmUzYTAiLz48c3RvcCBvZmZzZXQ9Ii41IiBzdG9wLWNvbG9yPSIjY2Q5NzQwIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNzc0NjE1Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0idXJsKCNnKSIgc3Ryb2tlLXdpZHRoPSI0LjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+CjxwYXRoIGQ9Ik0yNSA5OVY1MmwxNy0xNCA3IDcgMTItMjUgMTIgMjYgOC04IDE1IDE0djQ3Ii8+CjxwYXRoIGQ9Ik0zOCA5OVY3N2gxNHYyMm0xNy0zNWgxMXYxNUg2OSIvPgo8cGF0aCBkPSJNMzIgNTNsOS0xN200NyAxNy04LTE3Ii8+CjxwYXRoIGQ9Ik00NSAyNWMtOC05LTE4LTgtMjUtMyA3IDEgMTEgNSAxMiAxMSIvPgo8cGF0aCBkPSJNODQgMjVjOC05IDE4LTggMjUtMy03IDEtMTEgNS0xMiAxMSIvPgo8cGF0aCBkPSJNNTUgNTZjMy02IDgtOSAxMy05czEwIDMgMTMgOSIvPgo8cGF0aCBkPSJNNTggNjZoM20xMyAwaDMiLz4KPHBhdGggZD0iTTU5IDc3YzUgNCAxMSA0IDE2IDAiLz4KPC9nPjwvc3ZnPg==")!important;
+}
+html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="crime"] .genre-icon::before{
+  background-image:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIj4KPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2ZmZThhNiIvPjxzdG9wIG9mZnNldD0iLjUiIHN0b3AtY29sb3I9IiNkMWEwNDciLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM3YzRhMTciLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2cpIiBzdHJva2Utd2lkdGg9IjQuMSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KPGNpcmNsZSBjeD0iNTAiIGN5PSI1MyIgcj0iMzEiLz4KPHBhdGggZD0iTTcyIDc1bDI5IDI5Ii8+CjxwYXRoIGQ9Ik0zMSA0NWM4LTEyIDIyLTE2IDM1LTkiLz4KPHBhdGggZD0iTTMxIDYxYzEwIDEwIDI3IDEzIDQwIDMiLz4KPHBhdGggZD0iTTM5IDMwYzUtOSAxMy0xNCAyMi0xNCA4IDAgMTUgNCAyMCAxMSIvPgo8cGF0aCBkPSJNMzYgNzZjMTAgNyAyMiA4IDMzIDMiLz4KPHBhdGggZD0iTTQ0IDQzYzItMyA1LTQgOC00bTggMmMzIDAgNiAxIDggNCIvPgo8cGF0aCBkPSJNNDggNTNoMm0xNCAwaDIiLz4KPHBhdGggZD0iTTIyIDk2YzExLTUgMjMtNiAzNS0zIi8+CjwvZz48L3N2Zz4=")!important;
+}
+html body.mq-noir-master #page #cinema #screen #genres .genre-card[data-genre="animation"] .genre-icon::before{
+  background-image:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIj4KPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2ZmZWFhOCIvPjxzdG9wIG9mZnNldD0iLjUiIHN0b3AtY29sb3I9IiNkM2EyNDciLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM3ZjRkMTkiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2cpIiBzdHJva2Utd2lkdGg9IjQuMSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KPGNpcmNsZSBjeD0iNTAiIGN5PSI1OCIgcj0iMzQiLz4KPGNpcmNsZSBjeD0iNTAiIGN5PSI1OCIgcj0iNyIvPgo8Y2lyY2xlIGN4PSI1MCIgY3k9IjM1IiByPSI2Ii8+CjxjaXJjbGUgY3g9IjcwIiBjeT0iNDkiIHI9IjYiLz4KPGNpcmNsZSBjeD0iNjMiIGN5PSI3MiIgcj0iNiIvPgo8Y2lyY2xlIGN4PSIzOCIgY3k9Ijc4IiByPSI2Ii8+CjxjaXJjbGUgY3g9IjI5IiBjeT0iNTIiIHI9IjYiLz4KPHBhdGggZD0iTTc4IDgyaDI2Ii8+CjxwYXRoIGQ9Ik05MSAxOXYxN20tOC04aDE3Ii8+CjxwYXRoIGQ9Ik05MiA0M2wzIDYgNyAxLTUgNSAxIDctNi0zLTYgMyAxLTctNS01IDctMVoiLz4KPHBhdGggZD0iTTE5IDk1YzE1IDcgMzQgOCA1MCAyIi8+CjxwYXRoIGQ9Ik03OCA4M2wxMCAxNiIvPgo8L2c+PC9zdmc+")!important;
+}
+
+/* Slight glow on hover without changing the card geometry. */
+html body.mq-noir-master #page #cinema #screen #genres .genre-card:hover .genre-icon::before,
+html body.mq-noir-master #page #cinema #screen #genres .genre-card:focus-visible .genre-icon::before{
+  filter:drop-shadow(0 2px 1px rgba(0,0,0,.62)) drop-shadow(0 0 7px rgba(238,188,83,.14))!important;
+}
