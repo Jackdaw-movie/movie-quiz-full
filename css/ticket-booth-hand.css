@@ -87,7 +87,7 @@ body.mq-exterior-active #mqDebugToggle:hover{
   height:360px;
   z-index:14;
   pointer-events:none;
-  background:url("../assets/exterior-v6-9/production/ticket-booth-synced-loop.webp?v=10.7.2") 0 0 / 500px 360px no-repeat;
+  background:url("../assets/exterior-v6-9/production/ticket-booth-synced-loop.webp?v=10.7.3") 0 0 / 500px 360px no-repeat;
   image-rendering:auto;
   transform:none!important;
 }
@@ -143,13 +143,13 @@ body.mq-exterior-active #mqTicketBoothHotspot::after{
   animation:mqTicketBubbleTextSync 12.96s linear infinite;
 }
 
-/* Bubble reveal and hide are slightly faster.
-   Text timing is shifted later by 1.5 s, stays locked to the bubble,
-   and disappears just before the bubble starts retracting. */
+/* Bubble reveal and hide are a bit faster.
+   Text phase is shifted by 1.5 s, stays locked to the bubble,
+   and disappears slightly before the bubble starts retracting. */
 @keyframes mqTicketBubbleTextSync{
-  0%,47.30%{opacity:0}
-  47.31%,89.35%{opacity:1}
-  89.36%,100%{opacity:0}
+  0%,35.73%{opacity:0}
+  35.74%,88.58%{opacity:1}
+  88.59%,100%{opacity:0}
 }
 
 body:not(.mq-exterior-active) #mqTicketBoothHotspot::after,
