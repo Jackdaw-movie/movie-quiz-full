@@ -1,0 +1,607 @@
+/* Movie Quiz – Responsive Foundation v1.0
+   ---------------------------------------------------------------------------
+   This is the only responsive override layer. It deliberately sits after the
+   historical Movie Quiz styles and keeps approved artwork untouched.
+
+   Strategy:
+   1. Artwork-led scenes stay one coordinate plane: exterior / cinema / avatar.
+   2. Desktop + windowed desktop preserve the approved 1672×941 composition.
+   3. Fixed gameplay pixels are converted to projection-container units so they
+      scale with the painted screen instead of drifting on 4K or small windows.
+   4. Portrait phones use an adaptive projection surface: the auditorium remains
+      atmospheric background art, while functional UI gets the full viewport.
+   5. Touch, safe-area, short-height and reduced-motion states have own rules.
+   --------------------------------------------------------------------------- */
+
+:root{
+  --mq-safe-top:max(10px,env(safe-area-inset-top));
+  --mq-safe-right:max(10px,env(safe-area-inset-right));
+  --mq-safe-bottom:max(10px,env(safe-area-inset-bottom));
+  --mq-safe-left:max(10px,env(safe-area-inset-left));
+  --mq-responsive-edge:clamp(10px,2.2vw,28px);
+}
+
+html,body{
+  width:100%;
+  min-width:0;
+  min-height:100%;
+  margin:0;
+  overscroll-behavior:none;
+}
+body{min-height:100dvh;overflow-x:hidden}
+button,input,select,textarea{max-width:100%}
+img,video,canvas{max-width:100%}
+
+/* ---------------------------------------------------------------------------
+   LOADING – preserve the complete city composition on desktop/windowed desktop
+   instead of cropping it whenever the browser aspect ratio changes.
+   --------------------------------------------------------------------------- */
+body.mq-noir-master .mq-preload-gate::before{
+  background-color:#071019!important;
+  background-size:100% 100%,contain!important;
+  background-repeat:no-repeat,no-repeat!important;
+  background-position:center,center!important;
+}
+body.mq-noir-master .mq-preload-content{
+  left:max(50%,var(--mq-safe-left))!important;
+  width:min(760px,calc(100vw - var(--mq-safe-left) - var(--mq-safe-right) - 20px))!important;
+}
+
+/* ---------------------------------------------------------------------------
+   EXTERIOR – all art/depth/hotspot layers remain registered to the same master.
+   The existing JS owns exact contain-scaling on desktop. Never resize children.
+   --------------------------------------------------------------------------- */
+body.mq-noir-master .mq-v6-stage,
+body.mq-noir-master .mq-v6-stage *{box-sizing:border-box}
+body.mq-noir-master .mq-exterior-audio{
+  right:var(--mq-safe-right)!important;
+  top:var(--mq-safe-top)!important;
+}
+body.mq-noir-master .mq-exterior-audio-panel{
+  max-width:calc(100vw - var(--mq-safe-left) - var(--mq-safe-right))!important;
+}
+
+/* Ticket desk is decorative: show the complete approved desk on desktop rather
+   than independently cropping it away from the ticket composition. */
+body.mq-noir-master .mq-ticket-backdrop{
+  background-color:#100906!important;
+  background-size:contain!important;
+  background-repeat:no-repeat!important;
+  background-position:center!important;
+}
+
+/* ---------------------------------------------------------------------------
+   CINEMA MASTER – make the cinema itself a size container. The approved master
+   stays aspect-fit; the following UI values scale against that master.
+   --------------------------------------------------------------------------- */
+html body.mq-noir-master #page #cinema{
+  container-type:size!important;
+  container-name:mq-cinema-stage;
+}
+
+/* Projection typography may grow above the old desktop caps on large screens. */
+html body.mq-noir-master.mq-noir-master #page #cinema #screen .selection-title{
+  font-size:clamp(23px,4.15cqh,64px)!important;
+}
+html body.mq-noir-master.mq-noir-master #page #cinema #screen .eyebrow{
+  font-size:clamp(11px,1.9cqh,25px)!important;
+}
+html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .question{
+  font-size:clamp(21px,4.05cqh,58px)!important;
+}
+html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .answer{
+  font-size:clamp(14px,2.915cqh,38px)!important;
+}
+
+/* ---------------------------------------------------------------------------
+   GAMEPLAY MASTER-PIXEL CONVERSION
+   Projection reference = 1163 × 622. Every old px offset below is converted
+   to cqw/cqh, which eliminates drift when the auditorium scales.
+   --------------------------------------------------------------------------- */
+html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .hud{
+  left:3.26741cqw!important;       /* 38 / 1163 */
+  top:3.69775cqh!important;        /* 23 / 622 */
+  right:2.66552cqw!important;      /* 31 / 1163 */
+  height:18.00643cqh!important;    /* 112 / 622 */
+  min-height:18.00643cqh!important;
+  max-height:18.00643cqh!important;
+  padding:1.92926cqh 1.71969cqw!important;
+  grid-template-columns:minmax(20.20636cqw,.90fr) minmax(28.37489cqw,1.24fr) minmax(19.34652cqw,.86fr)!important;
+  column-gap:1.54772cqw!important;
+}
+html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .hud-left{gap:1.28977cqw!important}
+html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .hud-center{padding:0 .68788cqw!important}
+html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .hud-center #themeLabel{
+  top:-1.12540cqh!important;
+  font-size:clamp(13px,3.21543cqh,31px)!important;
+}
+html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .hud-center>.stat-value{
+  font-size:clamp(22px,5.78778cqh,54px)!important;
+}
+html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .hud-center .progress-track{
+  margin-top:1.44695cqh!important;
+}
+html body.mq-noir-master.mq-noir-master #page #cinema #screen #game #filmLives{
+  width:13.41359cqw!important;
+  min-width:13.41359cqw!important;
+  height:4.82315cqh!important;
+  margin-right:.68788cqw!important;
+}
+html body.mq-noir-master.mq-noir-master #page #cinema #screen #game #filmLives>.life{
+  flex-basis:4.47120cqw!important;
+  width:4.47120cqw!important;
+  height:4.82315cqh!important;
+}
+html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .hud-actions{
+  top:1.28617cqh!important;
+  right:.77386cqw!important;
+}
+html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .question-wrap{
+  top:23.47267cqh!important;
+  height:76.52733cqh!important;
+  padding:1.60772cqh 2.40757cqw 7.07395cqh!important;
+}
+html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .hud-center>.stat-value,
+html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .hud-center>#themeLabel{
+  transform:translate3d(-24.91545cqw,-5.48867cqh,0)!important;
+}
+html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .question-meta,
+html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .question{
+  transform:translate3d(0,-8.03859cqh,0)!important;
+}
+html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .answers{
+  transform:translate3d(0,-3.21543cqh,0)!important;
+}
+
+/* End states also scale with the projection rather than stopping at desktop px. */
+html body.mq-noir-master #page #cinema #screen #endView .end-title,
+html body.mq-noir-master #page #cinema #screen #winView .win-title{
+  font-size:clamp(34px,8cqh,88px)!important;
+}
+
+/* ---------------------------------------------------------------------------
+   STATISTICS – direct child of cinema, so use cinema container units for the
+   desktop master. This preserves layout proportions on small windows and 4K.
+   --------------------------------------------------------------------------- */
+html body.mq-noir-master #mqStatisticsScene{container-type:size!important;container-name:mq-stat-stage}
+html body.mq-noir-master #mqStatisticsScene .mq-stat-layout{
+  grid-template-rows:12.32731cqh 15.72795cqh minmax(0,1fr) 5.52604cqh!important;
+  gap:1.48778cqh!important;
+}
+html body.mq-noir-master #mqStatisticsScene .mq-stat-header{min-height:12.32731cqh!important;padding-bottom:1.91286cqh!important}
+html body.mq-noir-master #mqStatisticsScene .mq-stat-title .mq-stat-kicker{font-size:clamp(11px,1.70032cqh,25px)!important}
+html body.mq-noir-master #mqStatisticsScene .mq-stat-title h1{font-size:clamp(34px,6.05739cqh,88px)!important}
+html body.mq-noir-master #mqStatisticsScene .mq-stat-title p{font-size:clamp(11px,1.59405cqh,23px)!important}
+html body.mq-noir-master #mqStatisticsScene .mq-stat-metric span{font-size:clamp(10px,1.48778cqh,21px)!important}
+html body.mq-noir-master #mqStatisticsScene .mq-stat-metric strong{font-size:clamp(31px,5.20723cqh,76px)!important}
+html body.mq-noir-master #mqStatisticsScene .mq-stat-metric small{font-size:clamp(10px,1.48778cqh,21px)!important}
+html body.mq-noir-master #mqStatisticsScene .mq-stat-section-head h2{font-size:clamp(19px,2.76302cqh,40px)!important}
+html body.mq-noir-master #mqStatisticsScene .mq-stat-section-head span,
+html body.mq-noir-master #mqStatisticsScene .mq-stat-section-head small{font-size:clamp(9px,1.38151cqh,20px)!important}
+html body.mq-noir-master #mqStatisticsScene .mq-stat-corner{
+  width:clamp(38px,5.10096cqh,74px)!important;
+  height:clamp(38px,5.10096cqh,74px)!important;
+}
+html body.mq-noir-master #mqStatisticsScene .mq-stat-player-frame{
+  width:clamp(54px,8.07651cqh,116px)!important;
+  height:clamp(54px,8.07651cqh,116px)!important;
+}
+
+/* ---------------------------------------------------------------------------
+   COMPACT DESKTOP / SPLIT WINDOW
+   This breakpoint is intentionally generous: it catches laptop split-screen
+   before elements become microscopically small.
+   --------------------------------------------------------------------------- */
+@media (max-width:1279px), (max-height:720px){
+  :root{--mq-responsive-edge:clamp(8px,1.5vw,18px)}
+
+  body.mq-noir-master .mq-exterior-audio-toggle{width:44px!important;height:44px!important}
+  body.mq-noir-master .mq-exterior-audio-panel{top:52px!important}
+
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .hud{
+    column-gap:1cqw!important;
+    padding-left:1.25cqw!important;
+    padding-right:1.25cqw!important;
+  }
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .hud-left .clapper-icon{transform:scale(.88)!important;transform-origin:left center!important}
+
+  body.mq-noir-master .mq-settings-menu{
+    max-height:calc(100dvh - var(--mq-safe-top) - var(--mq-safe-bottom) - 12px)!important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   TABLET / VERY NARROW DESKTOP
+   --------------------------------------------------------------------------- */
+@media (max-width:899px){
+  body.mq-noir-master .mq-exterior-audio{right:var(--mq-safe-right)!important;top:var(--mq-safe-top)!important}
+  body.mq-noir-master .mq-exterior-audio-panel{width:min(228px,calc(100vw - 24px))!important}
+
+  body.mq-noir-master .mq-settings-menu{
+    width:min(420px,calc(100vw - var(--mq-safe-left) - var(--mq-safe-right)))!important;
+    max-height:calc(100dvh - var(--mq-safe-top) - var(--mq-safe-bottom))!important;
+  }
+
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-title{max-width:58%!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-player{display:none!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-columns{grid-template-columns:1fr!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-column + .mq-stat-column{
+    padding-left:0!important;padding-top:18px!important;border-left:0!important;border-top:1px solid rgba(0,0,0,.25)!important
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   PORTRAIT PHONE
+   The physical auditorium becomes atmospheric framing while the projection is
+   promoted to a full-height readable surface. This is intentionally different
+   from desktop: a 16:9 cinema scaled wholly into a 9:19 phone would be unusable.
+   --------------------------------------------------------------------------- */
+@media (max-width:699px) and (orientation:portrait){
+  :root{--mq-responsive-edge:max(10px,env(safe-area-inset-left))}
+
+  /* Loading: on a portrait phone intentional art-directed crop is preferable
+     to a tiny letterboxed landscape photograph. */
+  body.mq-noir-master .mq-preload-gate::before{
+    background-size:100% 100%,cover!important;
+    background-position:center,50% 50%!important;
+  }
+  body.mq-noir-master .mq-preload-content{
+    bottom:max(5.5dvh,var(--mq-safe-bottom))!important;
+    width:calc(100vw - var(--mq-safe-left) - var(--mq-safe-right) - 8px)!important;
+  }
+  body.mq-noir-master .mq-preload-enter{width:min(420px,94vw)!important;min-height:64px!important}
+
+  /* Exterior: crop the WHOLE master plane together, never individual assets.
+     Fixed scale tiers track phone height; booth remains near the centre crop. */
+  body.mq-noir-master .mq-v6-stage{
+    left:48%!important;
+    transform:translate(-50%,-50%) scale(.78)!important;
+  }
+  body.mq-noir-master .mq-walk-cursor-v6{display:none!important}
+  body.mq-noir-master .mq-booth-button{cursor:pointer!important}
+
+  /* Mobile ticket: the exact landscape ticket art cannot hold accessible form
+     controls at 390px. Keep its visual language, but let the functional ticket
+     become a portrait parchment card on the desk. */
+  body.mq-noir-master .mq-ticket-layer{
+    padding:calc(var(--mq-safe-top) + 6px) calc(var(--mq-safe-right) + 6px) calc(var(--mq-safe-bottom) + 6px) calc(var(--mq-safe-left) + 6px)!important;
+    overflow:hidden!important;
+  }
+  body.mq-noir-master .mq-ticket-backdrop{background-size:cover!important;background-position:center!important}
+  body.mq-noir-master .mq-ticket-scene{
+    width:100%!important;max-width:520px!important;min-width:0!important;
+    height:100%!important;max-height:760px!important;aspect-ratio:auto!important;
+    filter:drop-shadow(0 18px 30px rgba(0,0,0,.42))!important;
+  }
+  body.mq-noir-master .mq-admit-ticket{
+    inset:0!important;overflow:hidden!important;border:1px solid rgba(101,60,23,.86)!important;border-radius:18px!important;
+    background:
+      radial-gradient(circle at 50% 18%,rgba(255,249,226,.72),transparent 38%),
+      repeating-linear-gradient(90deg,rgba(73,39,14,.025) 0 1px,transparent 1px 5px),
+      linear-gradient(145deg,#f2d28d,#e4b75e 48%,#efce89)!important;
+    box-shadow:inset 0 0 0 4px rgba(88,51,18,.10),inset 0 0 70px rgba(116,69,20,.15)!important;
+  }
+  body.mq-noir-master .mq-ticket-art{display:none!important}
+  body.mq-noir-master .mq-ticket-facade{
+    left:18px!important;right:18px!important;top:22px!important;bottom:38px!important;height:auto!important;
+    display:block!important;overflow:hidden!important;
+  }
+  body.mq-noir-master .mqf-panel{
+    height:100%!important;grid-template-rows:auto minmax(0,1fr) auto!important;gap:8px!important;overflow:auto!important;padding:3px 2px!important;
+  }
+  body.mq-noir-master .mqf-head{min-height:34px!important;transform:none!important}
+  body.mq-noir-master .mqf-title{font-size:clamp(16px,5vw,22px)!important}
+  body.mq-noir-master .mqf-context{font-size:clamp(14px,4.4vw,19px)!important;transform:none!important}
+  body.mq-noir-master .mqf-body{gap:8px!important;padding-top:4px!important;transform:none!important;overflow:auto!important}
+  body.mq-noir-master .mqf-label{font-size:12px!important}
+  body.mq-noir-master .mqf-field,
+  body.mq-noir-master .mqf-pin{height:46px!important;min-height:46px!important}
+  body.mq-noir-master .mqf-field{font-size:17px!important}
+  body.mq-noir-master .mqf-pin-boxes{gap:6px!important}
+  body.mq-noir-master .mqf-pin-box{font-size:22px!important}
+  body.mq-noir-master .mqf-footer{
+    min-height:0!important;padding-top:9px!important;transform:none!important;flex-wrap:wrap!important;justify-content:center!important;
+  }
+  body.mq-noir-master .mqf-left-actions,
+  body.mq-noir-master .mqf-right-actions{width:100%!important;justify-content:center!important;flex-wrap:wrap!important}
+  body.mq-noir-master .mqf-btn{min-height:44px!important;font-size:12px!important}
+  body.mq-noir-master .mqf-primary,
+  body.mq-noir-master .mqf-guest{width:100%!important;min-width:0!important}
+  body.mq-noir-master .mq-ticket-error{
+    left:20px!important;right:20px!important;top:auto!important;bottom:9px!important;height:22px!important;font-size:11px!important;
+  }
+  body.mq-noir-master .mq-ticket-online-mark{right:12px!important;top:10px!important}
+
+  /* Full viewport cinema in portrait. Artwork stays as atmosphere and is never
+     stretched; the functional projection is independent and readable. */
+  html body.mq-noir-master #page #cinema{
+    left:0!important;top:0!important;width:100vw!important;height:100dvh!important;
+    aspect-ratio:auto!important;transform:none!important;overflow:hidden!important;
+  }
+  html body.mq-noir-master #page #cinema > #mqCinemaMasterArt{
+    width:100%!important;height:100%!important;object-fit:cover!important;object-position:center center!important;
+    filter:brightness(.58) contrast(1.08) saturate(.88)!important;
+  }
+  html body.mq-noir-master #page #cinema > .proscenium > .screen-frame{
+    left:var(--mq-safe-left)!important;
+    top:calc(var(--mq-safe-top) + 58px)!important;
+    width:calc(100vw - var(--mq-safe-left) - var(--mq-safe-right))!important;
+    height:calc(100dvh - var(--mq-safe-top) - var(--mq-safe-bottom) - 70px)!important;
+    border-radius:18px!important;
+    background:rgba(20,14,10,.90)!important;
+    box-shadow:0 14px 38px rgba(0,0,0,.50),inset 0 0 0 1px rgba(230,201,141,.22)!important;
+  }
+  html body.mq-noir-master #page #cinema #screen{border-radius:inherit!important;overflow:hidden!important}
+
+  /* Intro */
+  html body.mq-noir-master #page #cinema #screen #intro{padding:20px!important}
+  html body.mq-noir-master #page #cinema #screen #intro .start-link{
+    max-width:calc(100% - 28px)!important;white-space:normal!important;text-align:center!important;
+  }
+  html body.mq-noir-master #page #cinema #screen #intro .help{right:12px!important;top:12px!important}
+  html body.mq-noir-master #page #cinema #screen #intro .tooltip{max-width:calc(100% - 28px)!important}
+
+  /* Difficulty */
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #difficulty,
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #genres{
+    overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important;padding:0 12px 18px!important;
+  }
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #difficulty .selection-title{
+    top:58px!important;width:calc(100% - 24px)!important;max-width:none!important;font-size:clamp(23px,7vw,31px)!important;line-height:1.02!important;
+  }
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #difficulty .difficulty-grid{
+    left:12px!important;right:12px!important;top:132px!important;width:auto!important;height:auto!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-auto-rows:auto!important;column-gap:8px!important;transform:none!important;
+  }
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #difficulty .difficulty-card{
+    width:100%!important;min-width:0!important;max-width:none!important;height:auto!important;min-height:0!important;max-height:none!important;
+    aspect-ratio:1/1!important;background-size:contain!important;
+  }
+
+  /* Selection tools are touch targets, not tiny master-scaled icons. */
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #difficulty>.mq-selection-tools,
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #genres>.mq-selection-tools{
+    position:absolute!important;right:10px!important;top:9px!important;left:auto!important;gap:6px!important;max-width:none!important;
+  }
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #genres>#difficultyBack{
+    left:10px!important;top:9px!important;
+  }
+  html body.mq-noir-master #page #cinema #screen .mq-selection-tools button,
+  html body.mq-noir-master #page #cinema #screen #difficultyBack{
+    min-width:40px!important;min-height:40px!important;
+  }
+
+  /* Genres – 2 columns / 4 rows; seventh random card is centred. */
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #genres .genre-panel::before{height:112px!important}
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #genres .genre-panel>.eyebrow{
+    top:54px!important;width:calc(100% - 24px)!important;font-size:12px!important;
+  }
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #genres .genre-panel>.selection-title{
+    top:76px!important;width:calc(100% - 24px)!important;max-width:none!important;font-size:clamp(22px,6.6vw,29px)!important;
+  }
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #genres .genre-grid,
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #genres .genre-grid.mq-random-seven{
+    display:grid!important;width:100%!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:none!important;
+    grid-auto-rows:minmax(112px,auto)!important;gap:10px!important;padding-bottom:16px!important;
+  }
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #genres .genre-grid.mq-random-seven>.genre-card{
+    grid-column:auto!important;width:100%!important;height:auto!important;min-height:112px!important;
+  }
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #genres .genre-grid.mq-random-seven>.genre-card:nth-child(5),
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #genres .genre-grid.mq-random-seven>.genre-card:nth-child(6){grid-column:auto!important}
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #genres .genre-grid.mq-random-seven>.genre-card:nth-child(7){
+    grid-column:1 / -1!important;width:calc(50% - 5px)!important;justify-self:center!important;
+  }
+  html body.mq-noir-master #page #cinema #screen #genres .genre-card{height:auto!important;min-height:112px!important;padding:10px 8px!important}
+  html body.mq-noir-master #page #cinema #screen #genres .genre-icon{width:58px!important;height:58px!important;max-height:58px!important}
+  html body.mq-noir-master #page #cinema #screen #genres .genre-card .card-copy strong{font-size:18px!important}
+
+  /* Gameplay – compact HUD + single-column answers. */
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .hud{
+    left:8px!important;right:8px!important;top:8px!important;width:auto!important;height:112px!important;min-height:112px!important;max-height:112px!important;
+    padding:8px 8px!important;grid-template-columns:minmax(70px,.8fr) minmax(120px,1.25fr) minmax(82px,.85fr)!important;column-gap:6px!important;
+  }
+  html body.mq-noir-master #page #cinema #screen #game .hud-left{gap:4px!important}
+  html body.mq-noir-master #page #cinema #screen #game .hud-left .clapper-icon{display:none!important}
+  html body.mq-noir-master #page #cinema #screen #game .hud-left .stat-label{font-size:10px!important}
+  html body.mq-noir-master #page #cinema #screen #game .hud-left .stat-value{font-size:20px!important}
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .hud-center{padding:0!important}
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .hud-center #themeLabel{
+    top:0!important;font-size:10px!important;letter-spacing:.04em!important;white-space:normal!important;
+  }
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .hud-center>.stat-value{
+    font-size:22px!important;transform:none!important;
+  }
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .hud-center>#themeLabel{transform:none!important}
+  html body.mq-noir-master #page #cinema #screen #game .hud-center .progress-track{width:92%!important;margin-top:6px!important}
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game #filmLives{
+    width:84px!important;min-width:84px!important;height:24px!important;margin:0!important;transform:none!important;
+  }
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game #filmLives>.life{
+    flex:0 0 28px!important;width:28px!important;height:24px!important;
+  }
+  html body.mq-noir-master #page #cinema #screen #game .hud-actions{top:2px!important;right:2px!important}
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .question-wrap{
+    top:124px!important;height:calc(100% - 124px)!important;padding:8px 10px max(14px,var(--mq-safe-bottom))!important;
+    overflow-y:auto!important;overflow-x:hidden!important;justify-content:flex-start!important;overscroll-behavior:contain!important;
+  }
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .question-meta,
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .question,
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .answers{transform:none!important}
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .question{font-size:clamp(21px,6.4vw,29px)!important;line-height:1.08!important}
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .answers{
+    grid-template-columns:1fr!important;gap:9px!important;width:100%!important;
+  }
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .answer{
+    min-height:58px!important;max-height:none!important;padding:11px 13px!important;font-size:clamp(16px,4.4vw,20px)!important;line-height:1.16!important;
+  }
+  html body.mq-noir-master #page #cinema #screen #game #mqMediaStage img,
+  html body.mq-noir-master #page #cinema #screen #game #mqMediaStage video{max-width:100%!important;max-height:24dvh!important;object-fit:contain!important}
+
+  /* Global corner player/home controls become real mobile-sized touch targets. */
+  html body.mq-noir-master>#homeBtn.mq-home-dock,
+  html body.mq-noir-master #page #cinema>#homeBtn.mq-home-dock{
+    position:fixed!important;left:auto!important;right:var(--mq-safe-right)!important;top:var(--mq-safe-top)!important;
+    width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;z-index:2147482000!important;
+  }
+  html body.mq-noir-master>#mqPlayerBadge.mq-player-dock,
+  html body.mq-noir-master #page #cinema>#mqPlayerBadge.mq-player-dock{
+    position:fixed!important;left:var(--mq-safe-left)!important;top:var(--mq-safe-top)!important;height:44px!important;min-height:44px!important;max-height:44px!important;z-index:2147481900!important;
+  }
+  html body.mq-noir-master>#mqPlayerBadge .mq-avatar-badge,
+  html body.mq-noir-master #page #cinema>#mqPlayerBadge .mq-avatar-badge{
+    width:40px!important;height:40px!important;flex-basis:40px!important;
+  }
+
+  /* Settings panel */
+  body.mq-noir-master .mq-settings-menu{
+    left:var(--mq-safe-left)!important;right:var(--mq-safe-right)!important;top:calc(var(--mq-safe-top) + 52px)!important;
+    width:auto!important;max-height:calc(100dvh - var(--mq-safe-top) - var(--mq-safe-bottom) - 62px)!important;
+    border-radius:14px!important;padding:12px!important;
+  }
+  body.mq-noir-master .mq-settings-profile{grid-template-columns:52px minmax(0,1fr)!important}
+  body.mq-noir-master .mq-settings-avatar{width:52px!important;height:52px!important}
+  body.mq-noir-master .mq-settings-avatar-button{grid-column:1/-1!important;width:100%!important;min-height:42px!important}
+  body.mq-noir-master .mq-volume-row{grid-template-columns:1fr!important;gap:8px!important}
+  body.mq-noir-master .mq-volume-controls input[type="range"]{height:34px!important}
+
+  /* Avatar onboarding – crop the ONE master stage around its central composition,
+     then reposition controls inside that same coordinate system. */
+  #mqAvatarModal{overflow:hidden!important;padding:0!important;background:#120b06!important}
+  #mqAvatarModal .mq-avatar-dialog{--mq-avatar-stage-scale:.78!important}
+  #mqAvatarModal .mq-avatar-carousel-choice.is-left-1,
+  #mqAvatarModal .mq-avatar-carousel-choice.is-right-1{display:none!important}
+  #mqAvatarModal .mq-avatar-carousel-choice.is-center{left:661px!important;top:250px!important;width:350px!important;height:420px!important}
+  #mqAvatarModal .mq-avatar-carousel-arrow{top:455px!important;width:72px!important;height:72px!important}
+  #mqAvatarModal .mq-avatar-carousel-arrow.is-prev{left:620px!important}
+  #mqAvatarModal .mq-avatar-carousel-arrow.is-next{left:980px!important}
+  #mqAvatarModal .mq-avatar-confirm{left:686px!important;top:798px!important;width:300px!important;height:86px!important}
+  #mqAvatarModal .mq-avatar-close{left:756px!important;top:708px!important;width:160px!important;height:66px!important}
+  #mqAvatarModal .mq-avatar-modal-status{left:836px!important;bottom:35px!important;width:400px!important;max-width:400px!important;font-size:16px!important}
+
+  /* Statistics becomes editorial vertical content rather than a shrunk 16:9 page. */
+  html body.mq-noir-master #mqStatisticsScene{
+    position:absolute!important;inset:0!important;overflow:hidden!important;
+    background-color:#d4aa70!important;background-size:cover!important;background-position:center!important;
+  }
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-layout{
+    left:var(--mq-safe-left)!important;right:var(--mq-safe-right)!important;top:calc(var(--mq-safe-top) + 54px)!important;bottom:var(--mq-safe-bottom)!important;
+    width:auto!important;height:auto!important;grid-template-rows:auto auto minmax(0,1fr) auto!important;gap:12px!important;overflow:visible!important;
+  }
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-header{
+    min-height:0!important;padding:0 0 12px!important;gap:10px!important;flex-direction:column!important;align-items:stretch!important;
+  }
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-title{max-width:100%!important;text-align:center!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-title .mq-stat-kicker{font-size:11px!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-title h1{font-size:clamp(30px,9vw,42px)!important;line-height:1!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-title p{font-size:12px!important;margin-top:5px!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-actions{width:100%!important;justify-content:center!important;padding:0!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-action{flex:1 1 0!important;min-width:0!important;height:42px!important;font-size:11px!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-metric{padding:8px 9px 9px 12px!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-metric span{font-size:9px!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-metric strong{font-size:30px!important;margin:4px 0!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-metric small{font-size:10px!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-main{padding-right:5px!important;overflow-y:auto!important;overflow-x:hidden!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-columns{grid-template-columns:1fr!important;gap:18px!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-column + .mq-stat-column{padding:16px 0 0!important;border-left:0!important;border-top:1px solid rgba(0,0,0,.25)!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-section-head{min-height:0!important;margin-bottom:8px!important;padding-bottom:8px!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-section-head h2{font-size:22px!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-section-head span,
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-section-head small{font-size:10px!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-genres{grid-template-columns:1fr 1fr!important;gap:8px 12px!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-history-wide{margin-top:18px!important;padding-top:14px!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-history-wide .mq-stat-game{
+    grid-template-columns:62px minmax(0,1fr) 58px!important;column-gap:8px!important;min-height:58px!important;
+  }
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-history-wide .mq-stat-game-meta{grid-column:2/4!important;text-align:left!important;font-size:10px!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-footer{font-size:10px!important;white-space:normal!important;flex-wrap:wrap!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-corner{
+    position:fixed!important;top:var(--mq-safe-top)!important;width:42px!important;height:42px!important;
+  }
+  html body.mq-noir-master #mqStatisticsScene #mqStatGear{left:var(--mq-safe-left)!important}
+  html body.mq-noir-master #mqStatisticsScene #mqStatHome{right:var(--mq-safe-right)!important}
+}
+
+/* Phone-height tuning for exterior/avatar master crop. */
+@media (max-width:699px) and (orientation:portrait) and (max-height:700px){
+  body.mq-noir-master .mq-v6-stage{transform:translate(-50%,-50%) scale(.66)!important}
+  #mqAvatarModal .mq-avatar-dialog{--mq-avatar-stage-scale:.66!important}
+  #mqAvatarModal .mq-avatar-carousel-choice.is-center{top:260px!important;height:390px!important}
+  #mqAvatarModal .mq-avatar-confirm{top:800px!important}
+  #mqAvatarModal .mq-avatar-close{top:704px!important}
+}
+@media (max-width:699px) and (orientation:portrait) and (min-height:821px){
+  body.mq-noir-master .mq-v6-stage{transform:translate(-50%,-50%) scale(.88)!important}
+  #mqAvatarModal .mq-avatar-dialog{--mq-avatar-stage-scale:.88!important}
+}
+@media (max-width:699px) and (orientation:portrait) and (min-height:940px){
+  body.mq-noir-master .mq-v6-stage{transform:translate(-50%,-50%) scale(.98)!important}
+  #mqAvatarModal .mq-avatar-dialog{--mq-avatar-stage-scale:.98!important}
+}
+
+/* ---------------------------------------------------------------------------
+   LANDSCAPE PHONE / VERY SHORT VIEWPORT
+   Use almost the whole viewport as the projection surface and keep two answer
+   columns. This avoids a 16:9 cinema being letterboxed to a postage stamp.
+   --------------------------------------------------------------------------- */
+@media (max-width:1000px) and (max-height:560px) and (orientation:landscape){
+  html body.mq-noir-master #page #cinema{
+    left:0!important;top:0!important;width:100vw!important;height:100dvh!important;aspect-ratio:auto!important;transform:none!important;
+  }
+  html body.mq-noir-master #page #cinema > #mqCinemaMasterArt{width:100%!important;height:100%!important;object-fit:cover!important;filter:brightness(.54) saturate(.86)!important}
+  html body.mq-noir-master #page #cinema > .proscenium > .screen-frame{
+    left:calc(var(--mq-safe-left) + 4px)!important;top:calc(var(--mq-safe-top) + 4px)!important;
+    width:calc(100vw - var(--mq-safe-left) - var(--mq-safe-right) - 8px)!important;
+    height:calc(100dvh - var(--mq-safe-top) - var(--mq-safe-bottom) - 8px)!important;
+    border-radius:14px!important;background:rgba(18,13,9,.92)!important;
+  }
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .hud{
+    left:7px!important;right:7px!important;top:6px!important;height:76px!important;min-height:76px!important;max-height:76px!important;padding:5px 7px!important;
+  }
+  html body.mq-noir-master #page #cinema #screen #game .hud-left .clapper-icon{display:none!important}
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .hud-center #themeLabel{font-size:10px!important;top:0!important;transform:none!important}
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .hud-center>.stat-value{font-size:20px!important;transform:none!important}
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .question-wrap{
+    top:84px!important;height:calc(100% - 84px)!important;padding:4px 10px 8px!important;overflow-y:auto!important;
+  }
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .question-meta,
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .question,
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .answers{transform:none!important}
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .question{font-size:clamp(18px,4.5dvh,24px)!important;margin-bottom:5px!important}
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .answers{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px 8px!important}
+  html body.mq-noir-master.mq-noir-master #page #cinema #screen #game .answer{min-height:44px!important;max-height:none!important;padding:7px 10px!important;font-size:14px!important}
+}
+
+/* ---------------------------------------------------------------------------
+   LARGE / ULTRA-LARGE MONITORS
+   Cinema/exterior already upscale correctly. Avatar JS historically caps at 1;
+   these tiers lift only that cap while keeping its single-master geometry.
+   --------------------------------------------------------------------------- */
+@media (min-width:1920px) and (min-height:1000px){#mqAvatarModal .mq-avatar-dialog{--mq-avatar-stage-scale:1.08!important}}
+@media (min-width:2400px) and (min-height:1300px){#mqAvatarModal .mq-avatar-dialog{--mq-avatar-stage-scale:1.34!important}}
+@media (min-width:3000px) and (min-height:1650px){#mqAvatarModal .mq-avatar-dialog{--mq-avatar-stage-scale:1.70!important}}
+@media (min-width:3700px) and (min-height:2050px){#mqAvatarModal .mq-avatar-dialog{--mq-avatar-stage-scale:2.18!important}}
+
+/* ---------------------------------------------------------------------------
+   TOUCH + ACCESSIBILITY
+   --------------------------------------------------------------------------- */
+@media (hover:none),(pointer:coarse){
+  body.mq-noir-master button{touch-action:manipulation}
+  body.mq-noir-master .mq-walk-cursor{display:none!important}
+  body.mq-noir-master .mq-booth-button{cursor:pointer!important}
+  body.mq-noir-master .genre-card:hover,
+  body.mq-noir-master .difficulty-card:hover{transform:none!important}
+  body.mq-noir-master .mq-settings-gear:hover{transform:none!important}
+}
+
+@media (prefers-reduced-motion:reduce){
+  body.mq-noir-master *,body.mq-noir-master *::before,body.mq-noir-master *::after{
+    scroll-behavior:auto!important;
+  }
+  body.mq-noir-master .mq-v6-searchlights i,
+  body.mq-noir-master .mq-v65-steam-live img,
+  body.mq-noir-master .mq-v6-sign,
+  body.mq-noir-master .mq-v6-marquee,
+  body.mq-noir-master .mq-v6-lamp{animation-duration:1ms!important;animation-iteration-count:1!important}
+}
