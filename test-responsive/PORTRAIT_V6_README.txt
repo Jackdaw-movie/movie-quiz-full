@@ -1,4 +1,4 @@
-Movie Quiz – RESPONSIVE PORTRAIT EXTERIOR v6.1
+Movie Quiz – RESPONSIVE PORTRAIT EXTERIOR v6.2
 TEST INSTANCE ONLY
 
 Co se mění:
@@ -39,3 +39,11 @@ Patch v6.1:
 - zoom-safe portrait cover scale, aby browser zoom neodhaloval černé okraje
 - ruka posunuta +30 px vpravo a +50 px dolů
 - bublina i text posunuty +30 px vpravo a +30 px dolů
+
+Patch v6.2:
+- ruka +3 px doprava
+- bublina +5 px dolů
+- odlesk auta už není obdélník; používá transparentní exact car-shine overlay odvozený z assetu auta
+- car shine cyklus zrychlen na 8 s
+- výraznější steam
+- výraznější a zřetelnější blink/chase marquee světel

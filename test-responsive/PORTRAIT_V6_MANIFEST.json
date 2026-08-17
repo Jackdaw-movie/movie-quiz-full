@@ -1,5 +1,5 @@
 {
-  "version": "6.1",
+  "version": "6.2",
   "scope": "test-responsive only",
   "portrait_breakpoint": "(orientation: portrait) and (max-width: 1180px)",
   "master": {
@@ -45,13 +45,15 @@
       "x": 120,
       "y": 585,
       "w": 966,
-      "h": 150
+      "h": 150,
+      "visibility": "stronger chase"
     },
     "steam": {
-      "x": 765,
-      "y": 1005,
-      "w": 165,
-      "h": 210
+      "x": 758,
+      "y": 998,
+      "w": 182,
+      "h": 228,
+      "visibility": "stronger"
     },
     "boothHitTarget": {
       "x": 458,
@@ -60,16 +62,25 @@
       "h": 385
     },
     "handPortal": {
-      "x": 650,
+      "x": 653,
       "y": 792,
       "w": 260,
       "h": 200
     },
     "bubble": {
       "x": 625,
-      "y": 660,
+      "y": 665,
       "w": 272,
       "h": 204
+    },
+    "carShine": {
+      "file": "test-responsive/assets/exterior-portrait-v6/car-shine.png",
+      "x": 0,
+      "y": 910,
+      "w": 545,
+      "h": 325,
+      "mode": "transparent overlay exact to car silhouette",
+      "cycle_seconds": 8
     }
   },
   "reused_production_behaviour": [

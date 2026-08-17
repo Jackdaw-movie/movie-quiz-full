@@ -1,4 +1,4 @@
-/* Movie Quiz – portrait exterior v6.1
+/* Movie Quiz – portrait exterior v6.2
    TEST INSTANCE ONLY.
    Mobile + tablet portrait rebuild using a dedicated 1086×1235 top-anchored master.
 
@@ -106,24 +106,20 @@
     z-index:8!important;
     display:block!important;
     pointer-events:none!important;
-    -webkit-mask:url('../assets/exterior-portrait-v6/car-mask.png') center/100% 100% no-repeat!important;
-    mask:url('../assets/exterior-portrait-v6/car-mask.png') center/100% 100% no-repeat!important;
-    background:linear-gradient(108deg,
-      transparent 31%,
-      rgba(255,230,167,0) 38%,
-      rgba(255,229,169,.28) 46%,
-      rgba(255,235,185,.42) 49%,
-      rgba(255,229,169,.22) 53%,
-      rgba(255,230,167,0) 59%,
-      transparent 66%);
-    background-size:230% 100%;
-    background-position:138% 0;
+    background:url('../assets/exterior-portrait-v6/car-shine.png') center/100% 100% no-repeat!important;
     mix-blend-mode:screen;
     opacity:0;
-    animation:mqPV6CarShine 10s ease-in-out infinite;
+    transform:translate3d(132px,0,0);
+    will-change:transform,opacity!important;
+    animation:mqPV6CarShine 8s ease-in-out infinite;
   }
   @keyframes mqPV6CarShine{
-    0%,68%{background-position:138% 0;opacity:0}
+    0%,62%{transform:translate3d(132px,0,0);opacity:0}
+    67%{opacity:.62}
+    80%{transform:translate3d(-34px,0,0);opacity:.52}
+    88%{transform:translate3d(-110px,0,0);opacity:.18}
+    100%{transform:translate3d(-110px,0,0);opacity:0}
+  }
     72%{opacity:.46}
     86%{background-position:-30% 0;opacity:.38}
     92%,100%{background-position:-30% 0;opacity:0}
@@ -175,47 +171,47 @@
 
   /* Marquee bulbs – exact bulb pixels split into 3 chase groups from the portrait master. */
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee{
-    left:120px!important;top:585px!important;width:966px!important;height:150px!important;z-index:9!important;
-    opacity:.10!important;mix-blend-mode:screen!important;
+    left:120px!important;top:585px!important;width:966px!important;height:150px!important;z-index:12!important;
+    opacity:.18!important;mix-blend-mode:screen!important;
   }
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.halo{
-    opacity:.13!important;filter:blur(.35px);animation:mqPV6BulbHalo 3.2s ease-in-out infinite;
+    opacity:.20!important;filter:blur(.45px);animation:mqPV6BulbHalo 2.8s ease-in-out infinite;
   }
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g1,
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g2,
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g3{
-    opacity:.08!important;
-    filter:brightness(1.18) saturate(1.03) drop-shadow(0 0 2px rgba(255,198,92,.46));
-    animation:mqPV6BulbChase 1.35s ease-in-out infinite;
+    opacity:.16!important;
+    filter:brightness(1.28) saturate(1.05) drop-shadow(0 0 2px rgba(255,198,92,.56));
+    animation:mqPV6BulbChase 1.05s ease-in-out infinite;
   }
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g1{animation-delay:0s}
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g2{animation-delay:-.45s}
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g3{animation-delay:-.90s}
   @keyframes mqPV6BulbChase{
-    0%,28%,100%{opacity:.07;filter:brightness(1.08) saturate(1.02)}
-    42%,68%{opacity:.78;filter:brightness(1.66) saturate(1.08) drop-shadow(0 0 3px rgba(255,205,105,.74)) drop-shadow(0 0 7px rgba(255,156,42,.28))}
+    0%,22%,100%{opacity:.12;filter:brightness(1.14) saturate(1.03)}
+    38%,70%{opacity:.98;filter:brightness(1.92) saturate(1.10) drop-shadow(0 0 4px rgba(255,205,105,.86)) drop-shadow(0 0 9px rgba(255,156,42,.36))}
   }
   @keyframes mqPV6BulbHalo{
-    0%,100%{opacity:.09;filter:blur(.20px)}
-    50%{opacity:.22;filter:blur(.70px)}
+    0%,100%{opacity:.14;filter:blur(.26px)}
+    50%{opacity:.34;filter:blur(.82px)}
   }
 
   /* Steam – two copies of the exact master-derived plume. */
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-steam{
-    left:765px!important;top:1005px!important;width:165px!important;height:210px!important;z-index:13!important;
+    left:758px!important;top:998px!important;width:182px!important;height:228px!important;z-index:13!important;
     mix-blend-mode:screen!important;
     transform-origin:38% 92%!important;
-    filter:brightness(1.10) saturate(.88) contrast(1.02) blur(.10px);
+    filter:brightness(1.18) saturate(.90) contrast(1.04) blur(.06px);
   }
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-steam.steam-a{animation:mqPV6Steam 3.8s ease-out infinite}
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-steam.steam-b{animation:mqPV6Steam 3.8s ease-out -1.9s infinite}
   @keyframes mqPV6Steam{
     0%{transform:translate3d(0,3px,0) scale(.99,.98);opacity:0}
-    13%{opacity:.34}
-    34%{transform:translate3d(-1px,-3px,0) scale(1.015,1.035);opacity:.58}
-    62%{transform:translate3d(2px,-10px,0) scale(1.04,1.08);opacity:.48}
-    82%{transform:translate3d(-2px,-17px,0) scale(1.065,1.13);opacity:.25;filter:brightness(1.16) saturate(.84) blur(.34px)}
-    100%{transform:translate3d(3px,-24px,0) scale(1.09,1.18);opacity:0;filter:brightness(1.18) saturate(.82) blur(.68px)}
+    11%{opacity:.46}
+    32%{transform:translate3d(-1px,-4px,0) scale(1.02,1.05);opacity:.76}
+    58%{transform:translate3d(3px,-12px,0) scale(1.06,1.11);opacity:.66}
+    82%{transform:translate3d(-2px,-20px,0) scale(1.09,1.17);opacity:.36;filter:brightness(1.22) saturate(.86) blur(.28px)}
+    100%{transform:translate3d(4px,-29px,0) scale(1.13,1.23);opacity:0;filter:brightness(1.22) saturate(.84) blur(.62px)}
   }
 
   /* Searchlight motion, positioned against the portrait sky. */
@@ -288,7 +284,7 @@
 
   html.mq-exterior-portrait-v6 body.mq-noir-master #mqExteriorStage > .mq-ticket-hand-portal{
     position:absolute!important;
-    left:650px!important;
+    left:653px!important;
     top:792px!important;
     width:260px!important;
     height:200px!important;
@@ -314,7 +310,7 @@
   html.mq-exterior-portrait-v6 body.mq-noir-master #mqExteriorStage > .mq-ticket-bubble-ui{
     position:absolute!important;
     left:625px!important;
-    top:660px!important;
+    top:665px!important;
     width:272px!important;
     height:204px!important;
     z-index:31!important;
