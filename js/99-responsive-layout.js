@@ -99,79 +99,168 @@
   }
 })();
 
-/* Exterior virtual booth interaction v2.2
-   The DOM hotspot no longer participates in pointer hit-testing. Instead we
-   convert the real pointer position back into the approved 1672×941 master and
-   test a precise polygon. The lower booth base / sidewalk is intentionally NOT
-   interactive. */
+/* Movie Quiz – exterior interaction v3.0
+   The exterior mouse layer is rebuilt around the ACTUAL alpha silhouette of
+   assets/exterior-v6-9/production/booth.webp.
+
+   - no rectangular DOM mouse hotspot
+   - no hand cursor anywhere in the exterior
+   - only pixels belonging to the booth activate hover/click
+   - transparent holes inside the booth silhouette are filled, so windows still
+     behave as part of the booth
+   - native cursor is hidden only while the booth is active; animated shoes are
+     then the only visible pointer */
 (()=>{
   'use strict';
-  const VERSION='responsive-exterior-pointer-v2.2';
-  const MASTER_W=1672;
-  const MASTER_H=941;
-  const ACTIVE_POLYGON=[
-    [926,452],[913,471],[865,492],[833,545],[841,569],[835,585],
-    [841,675],[831,679],[841,690],[842,720],[1058,720],[1061,610],
-    [1065,550],[1026,495],[940,470]
-  ];
+
+  const VERSION='responsive-exterior-alpha-hit-v3.0';
+  const ALPHA_THRESHOLD=56;
+  let alphaMask=null;
+  let maskWidth=0;
+  let maskHeight=0;
+  let maskSource='';
+  let maskBuildPromise=null;
   let lastPointer=null;
   let pointerRaf=0;
 
-  const booth=()=>document.getElementById('mqTicketBoothHotspot');
-  const stage=()=>document.getElementById('mqExteriorStage');
+  const boothButton=()=>document.getElementById('mqTicketBoothHotspot');
+  const boothArt=()=>document.querySelector('#mqExteriorStage .mq-v6-booth-direct');
   const shoes=()=>document.getElementById('mqWalkCursor');
 
   function exteriorIsInteractive(){
     return document.body.classList.contains('mq-exterior-active') &&
+      !document.body.classList.contains('mq-preloading') &&
       !document.body.classList.contains('mq-ticket-open') &&
       !document.body.classList.contains('mq-entering-auditorium');
   }
 
-  function pointInPolygon(x,y,polygon){
-    let inside=false;
-    for(let i=0,j=polygon.length-1;i<polygon.length;j=i++){
-      const xi=polygon[i][0],yi=polygon[i][1];
-      const xj=polygon[j][0],yj=polygon[j][1];
-      const intersects=((yi>y)!==(yj>y)) && (x<((xj-xi)*(y-yi))/((yj-yi)||1e-9)+xi);
-      if(intersects)inside=!inside;
-    }
-    return inside;
-  }
-
-  function clientToMaster(clientX,clientY){
-    const el=stage();
-    if(!el)return null;
-    const rect=el.getBoundingClientRect();
-    if(rect.width<=0||rect.height<=0)return null;
-    return {
-      x:(clientX-rect.left)*(MASTER_W/rect.width),
-      y:(clientY-rect.top)*(MASTER_H/rect.height)
-    };
-  }
-
-  function isVirtualBoothPoint(clientX,clientY){
-    if(!exteriorIsInteractive())return false;
-    const target=booth();
-    if(!target||target.disabled)return false;
-    const p=clientToMaster(clientX,clientY);
-    return Boolean(p&&pointInPolygon(p.x,p.y,ACTIVE_POLYGON));
+  function clearHover(){
+    document.documentElement.classList.remove('mq-booth-alpha-hover');
+    shoes()?.classList.remove('is-visible');
   }
 
   function setHover(active){
-    const root=document.documentElement;
-    const cursor=shoes();
-    root.classList.toggle('mq-booth-virtual-hover',Boolean(active));
-    if(cursor)cursor.classList.toggle('is-visible',Boolean(active));
+    const on=Boolean(active&&exteriorIsInteractive());
+    document.documentElement.classList.toggle('mq-booth-alpha-hover',on);
+    shoes()?.classList.toggle('is-visible',on);
   }
 
-  function clearHover(){setHover(false)}
+  function waitForImage(image){
+    if(image.complete&&image.naturalWidth>0)return Promise.resolve(true);
+    return new Promise(resolve=>{
+      const done=ok=>{image.removeEventListener('load',onLoad);image.removeEventListener('error',onError);resolve(ok)};
+      const onLoad=()=>done(true);
+      const onError=()=>done(false);
+      image.addEventListener('load',onLoad,{once:true});
+      image.addEventListener('error',onError,{once:true});
+    });
+  }
+
+  async function buildAlphaMask(){
+    const image=boothArt();
+    if(!image)return false;
+    const source=image.currentSrc||image.src||'';
+    if(alphaMask&&maskSource===source&&maskWidth===image.naturalWidth&&maskHeight===image.naturalHeight)return true;
+    if(maskBuildPromise)return maskBuildPromise;
+
+    maskBuildPromise=(async()=>{
+      if(!await waitForImage(image))return false;
+      try{await image.decode?.()}catch(_){}
+      const w=image.naturalWidth|0;
+      const h=image.naturalHeight|0;
+      if(w<2||h<2)return false;
+
+      try{
+        const canvas=document.createElement('canvas');
+        canvas.width=w;
+        canvas.height=h;
+        const ctx=canvas.getContext('2d',{willReadFrequently:true});
+        if(!ctx)return false;
+        ctx.clearRect(0,0,w,h);
+        ctx.drawImage(image,0,0,w,h);
+        const rgba=ctx.getImageData(0,0,w,h).data;
+        const count=w*h;
+        const solid=new Uint8Array(count);
+        const outside=new Uint8Array(count);
+        const queue=new Int32Array(count);
+        let head=0;
+        let tail=0;
+
+        for(let i=0,p=3;i<count;i++,p+=4){
+          if(rgba[p]>=ALPHA_THRESHOLD)solid[i]=1;
+        }
+
+        const enqueue=index=>{
+          if(index<0||index>=count||solid[index]||outside[index])return;
+          outside[index]=1;
+          queue[tail++]=index;
+        };
+
+        /* Flood-fill transparent pixels connected to the image border. Any
+           transparent pixels NOT reachable from the border are interior holes
+           (windows etc.) and therefore belong to the booth silhouette. */
+        for(let x=0;x<w;x++){
+          enqueue(x);
+          enqueue((h-1)*w+x);
+        }
+        for(let y=1;y<h-1;y++){
+          enqueue(y*w);
+          enqueue(y*w+w-1);
+        }
+
+        while(head<tail){
+          const index=queue[head++];
+          const x=index%w;
+          if(x>0)enqueue(index-1);
+          if(x<w-1)enqueue(index+1);
+          if(index>=w)enqueue(index-w);
+          if(index<count-w)enqueue(index+w);
+        }
+
+        const mask=new Uint8Array(count);
+        for(let i=0;i<count;i++){
+          if(solid[i]||!outside[i])mask[i]=1;
+        }
+
+        alphaMask=mask;
+        maskWidth=w;
+        maskHeight=h;
+        maskSource=source;
+        window.__mqExteriorBoothHitMap={version:VERSION,width:w,height:h,source};
+        return true;
+      }catch(error){
+        console.warn('[Movie Quiz] Booth alpha hit-map unavailable',error);
+        alphaMask=null;
+        maskWidth=0;
+        maskHeight=0;
+        return false;
+      }
+    })().finally(()=>{maskBuildPromise=null});
+
+    return maskBuildPromise;
+  }
+
+  function alphaHit(clientX,clientY){
+    if(!exteriorIsInteractive()||!alphaMask)return false;
+    const button=boothButton();
+    const image=boothArt();
+    if(!button||button.disabled||!image)return false;
+    const rect=image.getBoundingClientRect();
+    if(rect.width<=0||rect.height<=0)return false;
+    if(clientX<rect.left||clientX>=rect.right||clientY<rect.top||clientY>=rect.bottom)return false;
+
+    const px=Math.max(0,Math.min(maskWidth-1,Math.floor((clientX-rect.left)/rect.width*maskWidth)));
+    const py=Math.max(0,Math.min(maskHeight-1,Math.floor((clientY-rect.top)/rect.height*maskHeight)));
+    return alphaMask[py*maskWidth+px]===1;
+  }
 
   function applyPointerState(){
     pointerRaf=0;
     if(!lastPointer||lastPointer.pointerType!=='mouse'){
-      clearHover();return;
+      clearHover();
+      return;
     }
-    const active=isVirtualBoothPoint(lastPointer.x,lastPointer.y);
+    const active=alphaHit(lastPointer.x,lastPointer.y);
     setHover(active);
     if(active){
       const cursor=shoes();
@@ -195,32 +284,43 @@
   document.addEventListener('pointermove',rememberPointer,true);
   document.addEventListener('pointerdown',rememberPointer,true);
   document.addEventListener('pointercancel',clearHover,true);
-  document.addEventListener('mouseleave',clearHover,true);
   window.addEventListener('blur',clearHover);
-  document.addEventListener('visibilitychange',()=>{if(document.hidden)clearHover();});
+  window.addEventListener('mouseout',event=>{if(!event.relatedTarget)clearHover()});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)clearHover()});
 
-  /* Preserve the existing booth click handler without exposing its rectangular
-     DOM box. Trusted clicks inside the virtual polygon are forwarded to it. */
+  /* Forward only real clicks/taps on the booth silhouette to the existing booth
+     button. The original ticket/approach logic remains untouched. */
   document.addEventListener('click',event=>{
-    if(!event.isTrusted||event.button!==0)return;
-    if(!isVirtualBoothPoint(event.clientX,event.clientY))return;
+    if(!event.isTrusted)return;
+    if(typeof event.button==='number'&&event.button!==0)return;
+    if(!alphaHit(event.clientX,event.clientY))return;
     event.preventDefault();
     event.stopPropagation();
     clearHover();
-    booth()?.click();
+    boothButton()?.click();
   },true);
 
-  window.addEventListener('resize',schedulePointerCheck,{passive:true});
-  window.visualViewport?.addEventListener('resize',schedulePointerCheck,{passive:true});
-  window.visualViewport?.addEventListener('scroll',schedulePointerCheck,{passive:true});
-  window.addEventListener('mq:responsive-layout-applied',schedulePointerCheck,{passive:true});
-  window.addEventListener('mq:master-stage-resized',schedulePointerCheck,{passive:true});
+  const layoutChanged=()=>{
+    schedulePointerCheck();
+    if(!alphaMask)buildAlphaMask().then(schedulePointerCheck);
+  };
+  window.addEventListener('resize',layoutChanged,{passive:true});
+  window.visualViewport?.addEventListener('resize',layoutChanged,{passive:true});
+  window.visualViewport?.addEventListener('scroll',layoutChanged,{passive:true});
+  window.addEventListener('mq:responsive-layout-applied',layoutChanged,{passive:true});
+  window.addEventListener('mq:master-stage-resized',layoutChanged,{passive:true});
+  window.addEventListener('mq:preload-entered',layoutChanged,{passive:true});
 
   const start=()=>{
-    new MutationObserver(schedulePointerCheck).observe(document.body,{attributes:true,attributeFilter:['class']});
+    new MutationObserver(()=>{
+      if(!exteriorIsInteractive())clearHover();
+      schedulePointerCheck();
+    }).observe(document.body,{attributes:true,attributeFilter:['class']});
     clearHover();
+    buildAlphaMask().then(schedulePointerCheck);
     window.__mqResponsiveExteriorPointerVersion=VERSION;
   };
+
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});
   else start();
 })();
