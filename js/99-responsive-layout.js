@@ -117,10 +117,12 @@
   const target=()=>document.getElementById(TARGET_ID);
 
   function exteriorInteractive(){
+    const old=booth();
     return document.body.classList.contains('mq-exterior-active') &&
       !document.body.classList.contains('mq-preloading') &&
       !document.body.classList.contains('mq-ticket-open') &&
-      !document.body.classList.contains('mq-entering-auditorium');
+      !document.body.classList.contains('mq-entering-auditorium') &&
+      !old?.disabled;
   }
 
   function clearLegacyStates(){
@@ -141,14 +143,13 @@
   }
 
   function showHover(event){
-    if(!exteriorInteractive()||event.pointerType&&event.pointerType!=='mouse'){
+    if(!exteriorInteractive()||(event.pointerType&&event.pointerType!=='mouse')){
       clearHover();
       return;
     }
     clearLegacyStates();
     root().classList.add('mq-booth-target-hover');
-    const cursor=shoes();
-    cursor?.classList.add('is-visible');
+    shoes()?.classList.add('is-visible');
     placeShoes(event);
   }
 
@@ -175,8 +176,8 @@
     if(hit.dataset.mqInstalled===VERSION)return true;
     hit.dataset.mqInstalled=VERSION;
 
-    hit.addEventListener('pointerenter',event=>showHover(event));
-    hit.addEventListener('pointermove',event=>showHover(event));
+    hit.addEventListener('pointerenter',showHover);
+    hit.addEventListener('pointermove',showHover);
     hit.addEventListener('pointerleave',clearHover);
     hit.addEventListener('pointercancel',clearHover);
 
@@ -218,7 +219,7 @@
 
     if(!bodyObserver){
       bodyObserver=new MutationObserver(sync);
-      bodyObserver.observe(document.body,{attributes:true,attributeFilter:['class'],childList:true,subtree:true});
+      bodyObserver.observe(document.body,{attributes:true,attributeFilter:['class']});
     }
 
     window.__mqResponsiveExteriorPointerVersion=VERSION;
