@@ -1,4 +1,4 @@
-/* Movie Quiz – portrait exterior v6.0
+/* Movie Quiz – portrait exterior v6.1
    TEST INSTANCE ONLY.
    Mobile + tablet portrait rebuild using a dedicated 1086×1235 top-anchored master.
 
@@ -288,8 +288,8 @@
 
   html.mq-exterior-portrait-v6 body.mq-noir-master #mqExteriorStage > .mq-ticket-hand-portal{
     position:absolute!important;
-    left:620px!important;
-    top:742px!important;
+    left:650px!important;
+    top:792px!important;
     width:260px!important;
     height:200px!important;
     overflow:hidden!important;
@@ -313,8 +313,8 @@
 
   html.mq-exterior-portrait-v6 body.mq-noir-master #mqExteriorStage > .mq-ticket-bubble-ui{
     position:absolute!important;
-    left:595px!important;
-    top:630px!important;
+    left:625px!important;
+    top:660px!important;
     width:272px!important;
     height:204px!important;
     z-index:31!important;

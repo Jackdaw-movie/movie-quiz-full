@@ -1,4 +1,4 @@
-Movie Quiz – RESPONSIVE PORTRAIT EXTERIOR v6.0
+Movie Quiz – RESPONSIVE PORTRAIT EXTERIOR v6.1
 TEST INSTANCE ONLY
 
 Co se mění:
@@ -33,3 +33,9 @@ Animace:
 Důležité:
 - portrait obrazové vrstvy jsou odvozené z pixelů stejného portrait masteru.
 - boty, ruka a bubble frames se znovu negenerují; používají existující produkční assety a stávající produkční logiku.
+
+
+Patch v6.1:
+- zoom-safe portrait cover scale, aby browser zoom neodhaloval černé okraje
+- ruka posunuta +30 px vpravo a +50 px dolů
+- bublina i text posunuty +30 px vpravo a +30 px dolů

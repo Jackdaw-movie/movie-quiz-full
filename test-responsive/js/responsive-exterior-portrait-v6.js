@@ -1,7 +1,8 @@
 (()=>{
   'use strict';
 
-  const VERSION='responsive-exterior-portrait-v6.0';
+  const VERSION='responsive-exterior-portrait-v6.1';
+  const initialDpr=Math.max(.1,Number(window.devicePixelRatio)||1);
   const QUERY='(orientation: portrait) and (max-width: 1180px)';
   const MASTER_W=1086;
   const MASTER_H=1235;
@@ -15,10 +16,20 @@
   const master=()=>stage()?.querySelector('.mq-v6-master');
 
   function viewport(){
-    const vv=window.visualViewport;
+    const currentDpr=Math.max(.1,Number(window.devicePixelRatio)||initialDpr);
+    const zoomRatio=currentDpr/initialDpr;
+
+    /* Browser zoom must not make the exterior visually smaller.
+       innerWidth/innerHeight shrink when desktop browser zoom increases.
+       Multiplying by the DPR ratio removes that artificial shrink, while still
+       reacting to genuine viewport/orientation changes. */
+    const physicalCssWidth=Math.max(1,(window.innerWidth||document.documentElement.clientWidth||1)*zoomRatio);
+    const physicalCssHeight=Math.max(1,(window.innerHeight||document.documentElement.clientHeight||1)*zoomRatio);
+
     return {
-      width:Math.max(1,Number(vv?.width)||window.innerWidth||document.documentElement.clientWidth||1),
-      height:Math.max(1,Number(vv?.height)||window.innerHeight||document.documentElement.clientHeight||1)
+      width:physicalCssWidth,
+      height:physicalCssHeight,
+      zoomRatio
     };
   }
 
@@ -96,7 +107,7 @@
   }
 
   function applyTopAnchoredCover(){
-    const {width,height}=viewport();
+    const {width,height,zoomRatio}=viewport();
 
     /* COVER, but the Y origin is always the top edge of the portrait artwork.
        No booth-centering and no bottom anchoring. */
@@ -106,6 +117,7 @@
     r.style.setProperty('--mq-pv6-scale',scale.toFixed(7));
     r.dataset.mqPortraitExteriorScale=scale.toFixed(5);
     r.dataset.mqPortraitExteriorAnchor='top-center';
+    r.dataset.mqPortraitExteriorZoomRatio=zoomRatio.toFixed(5);
 
     const s=stage();
     if(s){
