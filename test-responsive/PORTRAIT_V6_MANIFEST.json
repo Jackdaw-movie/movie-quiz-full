@@ -1,5 +1,5 @@
 {
-  "version": "6.2",
+  "version": "6.3",
   "scope": "test-responsive only",
   "portrait_breakpoint": "(orientation: portrait) and (max-width: 1180px)",
   "master": {
@@ -80,7 +80,16 @@
       "w": 545,
       "h": 325,
       "mode": "transparent overlay exact to car silhouette",
-      "cycle_seconds": 8
+      "cycle_seconds": 9,
+      "mirrored": true
+    },
+    "marqueeLightsOverlay": {
+      "file": "test-responsive/assets/exterior-portrait-v6/marquee-lights.png",
+      "x": 118,
+      "y": 580,
+      "w": 968,
+      "h": 158,
+      "animation": "desktop-style brightness pulse 5.4s alternate"
     }
   },
   "reused_production_behaviour": [

@@ -1,4 +1,4 @@
-Movie Quiz – RESPONSIVE PORTRAIT EXTERIOR v6.2
+Movie Quiz – RESPONSIVE PORTRAIT EXTERIOR v6.3
 TEST INSTANCE ONLY
 
 Co se mění:
@@ -47,3 +47,9 @@ Patch v6.2:
 - car shine cyklus zrychlen na 8 s
 - výraznější steam
 - výraznější a zřetelnější blink/chase marquee světel
+
+Patch v6.3:
+- odlesk auta zpomalen na 9 s
+- car-shine overlay zrcadlově otočen
+- doplněn desktop-style marquee-lights pulse z exact portrait assetu marquee-lights.png
+- chase bulb overlays ponechány jen jako jemný doplněk, hlavní blikání dělá přesný marquee-lights overlay

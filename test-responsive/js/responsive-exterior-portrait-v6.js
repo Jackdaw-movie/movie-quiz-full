@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='responsive-exterior-portrait-v6.2';
+  const VERSION='responsive-exterior-portrait-v6.3';
   const initialDpr=Math.max(.1,Number(window.devicePixelRatio)||1);
   const QUERY='(orientation: portrait) and (max-width: 1180px)';
   const MASTER_W=1086;
@@ -53,6 +53,7 @@
     addImg(s,'mq-pv6-jackdaws-glow','jackdaws-glow.png');
     addImg(s,'mq-pv6-hotel-glow','hotel-glow.png');
 
+    addImg(s,'mq-pv6-marquee-lights','marquee-lights.png');
     addImg(s,'mq-pv6-marquee halo','marquee-bulbs-halo.png');
     addImg(s,'mq-pv6-marquee g1','marquee-bulbs-1.png');
     addImg(s,'mq-pv6-marquee g2','marquee-bulbs-2.png');

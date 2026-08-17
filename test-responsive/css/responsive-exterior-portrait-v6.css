@@ -1,4 +1,4 @@
-/* Movie Quiz – portrait exterior v6.2
+/* Movie Quiz – portrait exterior v6.3
    TEST INSTANCE ONLY.
    Mobile + tablet portrait rebuild using a dedicated 1086×1235 top-anchored master.
 
@@ -111,7 +111,7 @@
     opacity:0;
     transform:translate3d(132px,0,0);
     will-change:transform,opacity!important;
-    animation:mqPV6CarShine 8s ease-in-out infinite;
+    animation:mqPV6CarShine 9s ease-in-out infinite;
   }
   @keyframes mqPV6CarShine{
     0%,62%{transform:translate3d(132px,0,0);opacity:0}
@@ -169,31 +169,43 @@
     62%{opacity:.48}
   }
 
+  /* Desktop-style marquee light pulse using the exact portrait master cutout. */
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee-lights{
+    left:118px!important;top:580px!important;width:968px!important;height:158px!important;z-index:11!important;
+    opacity:1!important;mix-blend-mode:screen!important;
+    filter:brightness(1.02) drop-shadow(8px 11px 7px rgba(0,0,0,.18));
+    animation:mqPV6MarqueeLight 5.4s ease-in-out infinite alternate;
+  }
+  @keyframes mqPV6MarqueeLight{
+    from{filter:brightness(1.02) drop-shadow(8px 11px 7px rgba(0,0,0,.18))}
+    to{filter:brightness(1.16) saturate(1.04) drop-shadow(9px 13px 8px rgba(0,0,0,.24)) drop-shadow(0 0 4px rgba(255,183,70,.18))}
+  }
+
   /* Marquee bulbs – exact bulb pixels split into 3 chase groups from the portrait master. */
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee{
-    left:120px!important;top:585px!important;width:966px!important;height:150px!important;z-index:12!important;
-    opacity:.18!important;mix-blend-mode:screen!important;
+    left:120px!important;top:585px!important;width:966px!important;height:150px!important;z-index:9!important;
+    opacity:.10!important;mix-blend-mode:screen!important;
   }
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.halo{
-    opacity:.20!important;filter:blur(.45px);animation:mqPV6BulbHalo 2.8s ease-in-out infinite;
+    opacity:.12!important;filter:blur(.38px);animation:mqPV6BulbHalo 3.2s ease-in-out infinite;
   }
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g1,
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g2,
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g3{
-    opacity:.16!important;
-    filter:brightness(1.28) saturate(1.05) drop-shadow(0 0 2px rgba(255,198,92,.56));
-    animation:mqPV6BulbChase 1.05s ease-in-out infinite;
+    opacity:.09!important;
+    filter:brightness(1.18) saturate(1.03) drop-shadow(0 0 2px rgba(255,198,92,.44));
+    animation:mqPV6BulbChase 1.35s ease-in-out infinite;
   }
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g1{animation-delay:0s}
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g2{animation-delay:-.45s}
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g3{animation-delay:-.90s}
   @keyframes mqPV6BulbChase{
-    0%,22%,100%{opacity:.12;filter:brightness(1.14) saturate(1.03)}
-    38%,70%{opacity:.98;filter:brightness(1.92) saturate(1.10) drop-shadow(0 0 4px rgba(255,205,105,.86)) drop-shadow(0 0 9px rgba(255,156,42,.36))}
+    0%,28%,100%{opacity:.07;filter:brightness(1.08) saturate(1.02)}
+    42%,68%{opacity:.72;filter:brightness(1.56) saturate(1.07) drop-shadow(0 0 3px rgba(255,205,105,.68)) drop-shadow(0 0 7px rgba(255,156,42,.24))}
   }
   @keyframes mqPV6BulbHalo{
-    0%,100%{opacity:.14;filter:blur(.26px)}
-    50%{opacity:.34;filter:blur(.82px)}
+    0%,100%{opacity:.09;filter:blur(.20px)}
+    50%{opacity:.20;filter:blur(.60px)}
   }
 
   /* Steam – two copies of the exact master-derived plume. */
