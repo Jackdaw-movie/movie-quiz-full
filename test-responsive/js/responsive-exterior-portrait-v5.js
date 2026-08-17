@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='responsive-exterior-portrait-v5.0';
+  const VERSION='responsive-exterior-portrait-v5.1';
   const MASTER_W=1086;
   const MASTER_H=1448;
   const BOOTH_X=565;
@@ -36,6 +36,67 @@
     return node;
   }
 
+  function interactive(){
+    const b=document.body;
+    const old=document.getElementById('mqTicketBoothHotspot');
+    return !!(b&&b.classList.contains('mq-exterior-active')&&!b.classList.contains('mq-preloading')&&!b.classList.contains('mq-ticket-open')&&!b.classList.contains('mq-entering-auditorium')&&(!old||!old.disabled));
+  }
+
+  function setHover(on){
+    root().classList.toggle('mq-portrait-booth-hover',!!on);
+  }
+
+  function ensurePrompt(){
+    const s=stage();
+    if(!s||s.querySelector('.mq-portrait-cta'))return;
+    const wrap=document.createElement('div');
+    wrap.className='mq-portrait-cta';
+    wrap.setAttribute('aria-hidden','true');
+    const bubble=document.createElement('div');
+    bubble.className='mq-portrait-cta-bubble';
+    bubble.textContent='VSTUPTE DO KINA';
+    const hand=document.createElement('div');
+    hand.className='mq-portrait-cta-hand';
+    hand.textContent='☞';
+    wrap.appendChild(bubble);
+    wrap.appendChild(hand);
+    s.appendChild(wrap);
+  }
+
+  function syncPrompt(){
+    const prompt=stage()?.querySelector('.mq-portrait-cta');
+    if(prompt)prompt.style.display=interactive()?'block':'none';
+  }
+
+  function ensureBoothTarget(){
+    const s=stage();
+    if(!s)return;
+    let t=s.querySelector('#mqPortraitBoothHitTarget');
+    if(!t){
+      t=document.createElement('div');
+      t.id='mqPortraitBoothHitTarget';
+      t.setAttribute('aria-hidden','true');
+      t.tabIndex=-1;
+      s.appendChild(t);
+      const clear=()=>setHover(false);
+      t.addEventListener('pointerenter',e=>{ if(e.pointerType==='mouse'&&interactive()) setHover(true); });
+      t.addEventListener('pointermove',e=>{ if(e.pointerType==='mouse'&&interactive()) setHover(true); });
+      t.addEventListener('pointerleave',clear);
+      t.addEventListener('pointercancel',clear);
+      t.addEventListener('mousedown',()=>{ if(interactive()) setHover(true); });
+      t.addEventListener('mouseup',clear);
+      t.addEventListener('click',event=>{
+        if(!interactive()) return;
+        event.preventDefault();
+        event.stopPropagation();
+        setHover(false);
+        const old=document.getElementById('mqTicketBoothHotspot');
+        if(old&&!old.disabled) old.click();
+      });
+    }
+    syncPrompt();
+  }
+
   function ensureFx(){
     const s=stage();
     if(!s)return;
@@ -52,6 +113,8 @@
       shine.setAttribute('aria-hidden','true');
       s.appendChild(shine);
     }
+    ensurePrompt();
+    ensureBoothTarget();
   }
 
   function setMasterPortrait(on){
@@ -76,21 +139,13 @@
 
   function applyPortraitTransform(){
     const {width,height}=viewport();
-
-    /* Exact booth-centred cover: the booth anchor maps to 50% / 50% while the
-       portrait art still covers every viewport edge. This naturally produces
-       the requested closer framing without any horizontal drag/pan. */
     const leftRoom=BOOTH_X;
     const rightRoom=MASTER_W-BOOTH_X;
     const topRoom=BOOTH_Y;
     const bottomRoom=MASTER_H-BOOTH_Y;
-    const scale=Math.max(
-      (width/2)/Math.min(leftRoom,rightRoom),
-      (height/2)/Math.min(topRoom,bottomRoom)
-    );
+    const scale=Math.max((width/2)/Math.min(leftRoom,rightRoom),(height/2)/Math.min(topRoom,bottomRoom));
     const tx=(width/2)-(BOOTH_X*scale);
     const ty=(height/2)-(BOOTH_Y*scale);
-
     const r=root();
     r.style.setProperty('--mq-exterior-portrait-scale',scale.toFixed(7));
     r.style.setProperty('--mq-exterior-portrait-x',`${tx.toFixed(3)}px`);
@@ -108,12 +163,15 @@
     if(active){
       ensureFx();
       applyPortraitTransform();
+      syncPrompt();
       const s=stage();
       if(s){
         s.dataset.mqMasterWidth=String(MASTER_W);
         s.dataset.mqMasterHeight=String(MASTER_H);
         s.dataset.mqScaleMode='portrait-booth-center-cover';
       }
+    }else{
+      setHover(false);
     }
     window.__mqResponsiveExteriorPortraitVersion=VERSION;
   }
@@ -126,9 +184,10 @@
   const observer=new MutationObserver(()=>schedule());
 
   function start(){
-    observer.observe(document.documentElement,{subtree:true,childList:true});
+    observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class','hidden']});
     mql.addEventListener?.('change',schedule);
     window.addEventListener('resize',schedule,{passive:true});
+    window.addEventListener('blur',()=>setHover(false));
     window.addEventListener('orientationchange',schedule,{passive:true});
     window.visualViewport?.addEventListener('resize',schedule,{passive:true});
     window.visualViewport?.addEventListener('scroll',schedule,{passive:true});

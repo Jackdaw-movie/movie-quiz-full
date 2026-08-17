@@ -1,26 +1,9 @@
-Movie Quiz – Responsive Exterior Portrait v5.0
-TEST INSTANCE ONLY
+Movie Quiz – responsive exterior portrait v5.1 TEST patch
 
-This patch contains files only under test-responsive/.
-It does not overwrite production index.html, css/, js/ or assets/.
-
-What changes:
-- portrait mobile/tablet exterior uses dedicated 1086×1448 master
-- ticket booth is the viewport anchor and is kept exactly in the visual centre
-- no drag / horizontal panning
-- desktop exterior remains unchanged
-- production 1672×941 exterior assets are hidden only in portrait test mode
-- portrait-specific glow/steam/booth/car FX are cut directly from the new master,
-  so the animation layers are registered to the actual objects in that image
-- existing ticket-booth click continues to invoke the production ticket/login flow
-
-Files added:
-- test-responsive/css/responsive-exterior-portrait-v5.css
-- test-responsive/js/responsive-exterior-portrait-v5.js
-- test-responsive/assets/exterior-portrait-v5/*
-
-File replaced:
-- test-responsive/index.html
-
-Expected test path after upload:
-/test-responsive/
+Fixes vs previous patch:
+- restored deterministic booth hover/click in portrait mode via a portrait-owned booth hit target
+- added portrait-anchored CTA bubble + waving hand near the booth
+- hid drifting legacy helper bubble/hand in portrait mode only
+- corrected portrait car-shine placement
+- corrected portrait steam placement
+- retained desktop/production untouched; patch changes test-responsive only
