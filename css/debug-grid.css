@@ -27,6 +27,7 @@
 @import url("responsive-v1-tablet.css?v=1.0.0");
 @import url("responsive-v1-motion.css?v=1.0.0");
 @import url("responsive-v1-large.css?v=1.0.0");
+@import url("responsive-v1-cover.css?v=1.0.1");
 
 /* Movie Quiz – debug grid v47 restored */
 #mqDebugGridOverlay{position:fixed!important;left:0!important;top:0!important;width:0;height:0;margin:0!important;padding:0!important;border:0!important;overflow:hidden!important;display:none!important;pointer-events:none!important;z-index:2147483646!important;box-sizing:border-box!important}
