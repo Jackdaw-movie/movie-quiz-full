@@ -1,0 +1,117 @@
+/* Movie Quiz – Responsive Foundation v1.0 / portrait-tablet addendum
+   700–899 px portrait needs its own composition: a contained 16:9 auditorium
+   would otherwise occupy only ~40% of an iPad-class screen height. */
+
+@media (min-width:700px) and (max-width:899px) and (orientation:portrait){
+  /* Exterior: crop the complete registered 1672×941 plane, never its children. */
+  body.mq-noir-master .mq-v6-stage{
+    left:49%!important;
+    transform:translate(-50%,-50%) scale(.98)!important;
+  }
+  body.mq-noir-master .mq-walk-cursor-v6{display:none!important}
+  body.mq-noir-master .mq-booth-button{cursor:pointer!important}
+
+  /* Full-height auditorium atmosphere + independent readable projection. */
+  html body.mq-noir-master #page #cinema{
+    left:0!important;top:0!important;width:100vw!important;height:100dvh!important;
+    aspect-ratio:auto!important;transform:none!important;overflow:hidden!important;
+  }
+  html body.mq-noir-master #page #cinema > #mqCinemaMasterArt{
+    width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;
+    filter:brightness(.62) contrast(1.06) saturate(.90)!important;
+  }
+  html body.mq-noir-master #page #cinema > .proscenium > .screen-frame{
+    left:calc(var(--mq-safe-left) + 8px)!important;
+    top:calc(var(--mq-safe-top) + 62px)!important;
+    width:calc(100vw - var(--mq-safe-left) - var(--mq-safe-right) - 16px)!important;
+    height:calc(100dvh - var(--mq-safe-top) - var(--mq-safe-bottom) - 78px)!important;
+    border-radius:22px!important;background:rgba(20,14,10,.90)!important;
+    box-shadow:0 18px 48px rgba(0,0,0,.48),inset 0 0 0 1px rgba(230,201,141,.22)!important;
+  }
+
+  html body.mq-noir-master #page #cinema #screen #difficulty,
+  html body.mq-noir-master #page #cinema #screen #genres{overflow-y:auto!important;overflow-x:hidden!important;padding:0 18px 22px!important}
+
+  html body.mq-noir-master #page #cinema #screen #difficulty .selection-title{
+    top:68px!important;width:calc(100% - 36px)!important;max-width:none!important;font-size:clamp(30px,5vw,42px)!important;
+  }
+  html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-grid{
+    left:18px!important;right:18px!important;top:155px!important;width:auto!important;height:auto!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-auto-rows:auto!important;column-gap:18px!important;transform:none!important;
+  }
+  html body.mq-noir-master #page #cinema #screen #difficulty .difficulty-card{
+    width:100%!important;min-width:0!important;max-width:none!important;height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:1/1!important;
+  }
+
+  html body.mq-noir-master #page #cinema #screen #difficulty>.mq-selection-tools,
+  html body.mq-noir-master #page #cinema #screen #genres>.mq-selection-tools{right:14px!important;top:12px!important;gap:8px!important}
+  html body.mq-noir-master #page #cinema #screen #genres>#difficultyBack{left:14px!important;top:12px!important}
+  html body.mq-noir-master #page #cinema #screen .mq-selection-tools button,
+  html body.mq-noir-master #page #cinema #screen #difficultyBack{min-width:44px!important;min-height:44px!important}
+
+  html body.mq-noir-master #page #cinema #screen #genres .genre-panel::before{height:128px!important}
+  html body.mq-noir-master #page #cinema #screen #genres .genre-panel>.eyebrow{top:62px!important;width:calc(100% - 40px)!important;font-size:14px!important}
+  html body.mq-noir-master #page #cinema #screen #genres .genre-panel>.selection-title{top:87px!important;width:calc(100% - 40px)!important;max-width:none!important;font-size:clamp(29px,4.7vw,40px)!important}
+  html body.mq-noir-master #page #cinema #screen #genres .genre-grid,
+  html body.mq-noir-master #page #cinema #screen #genres .genre-grid.mq-random-seven{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-template-rows:none!important;grid-auto-rows:minmax(150px,auto)!important;gap:14px!important;width:100%!important;
+  }
+  html body.mq-noir-master #page #cinema #screen #genres .genre-grid.mq-random-seven>.genre-card{
+    grid-column:auto!important;width:100%!important;height:auto!important;min-height:150px!important;
+  }
+  html body.mq-noir-master #page #cinema #screen #genres .genre-grid.mq-random-seven>.genre-card:nth-child(5),
+  html body.mq-noir-master #page #cinema #screen #genres .genre-grid.mq-random-seven>.genre-card:nth-child(6),
+  html body.mq-noir-master #page #cinema #screen #genres .genre-grid.mq-random-seven>.genre-card:nth-child(7){grid-column:auto!important}
+  html body.mq-noir-master #page #cinema #screen #genres .genre-grid.mq-random-seven>.genre-card:nth-child(7){grid-column:2!important}
+  html body.mq-noir-master #page #cinema #screen #genres .genre-icon{width:76px!important;height:76px!important;max-height:76px!important}
+
+  /* Tablet gameplay keeps two answer columns, but uses viewport-sized HUD. */
+  html body.mq-noir-master #page #cinema #screen #game .hud{
+    left:12px!important;right:12px!important;top:10px!important;width:auto!important;height:126px!important;min-height:126px!important;max-height:126px!important;
+    padding:10px 12px!important;grid-template-columns:minmax(130px,.85fr) minmax(250px,1.3fr) minmax(150px,.85fr)!important;column-gap:12px!important;
+  }
+  html body.mq-noir-master #page #cinema #screen #game .hud-center #themeLabel{top:0!important;font-size:15px!important;transform:none!important}
+  html body.mq-noir-master #page #cinema #screen #game .hud-center>.stat-value{font-size:30px!important;transform:none!important}
+  html body.mq-noir-master #page #cinema #screen #game #filmLives{width:132px!important;min-width:132px!important;height:28px!important;transform:none!important}
+  html body.mq-noir-master #page #cinema #screen #game #filmLives>.life{flex:0 0 44px!important;width:44px!important;height:28px!important}
+  html body.mq-noir-master #page #cinema #screen #game .question-wrap{
+    top:142px!important;height:calc(100% - 142px)!important;padding:10px 18px max(18px,var(--mq-safe-bottom))!important;overflow-y:auto!important;justify-content:flex-start!important;
+  }
+  html body.mq-noir-master #page #cinema #screen #game .question-meta,
+  html body.mq-noir-master #page #cinema #screen #game .question,
+  html body.mq-noir-master #page #cinema #screen #game .answers{transform:none!important}
+  html body.mq-noir-master #page #cinema #screen #game .question{font-size:clamp(27px,4.6vw,38px)!important}
+  html body.mq-noir-master #page #cinema #screen #game .answers{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+  html body.mq-noir-master #page #cinema #screen #game .answer{min-height:72px!important;max-height:none!important;padding:13px 16px!important;font-size:clamp(18px,2.8vw,23px)!important}
+
+  /* Avatar: central crop with both navigation arrows still reachable. */
+  #mqAvatarModal{overflow:hidden!important;padding:0!important}
+  #mqAvatarModal .mq-avatar-dialog{--mq-avatar-stage-scale:.96!important}
+  #mqAvatarModal .mq-avatar-carousel-choice.is-left-1,
+  #mqAvatarModal .mq-avatar-carousel-choice.is-right-1{display:none!important}
+  #mqAvatarModal .mq-avatar-carousel-arrow.is-prev{left:535px!important}
+  #mqAvatarModal .mq-avatar-carousel-arrow.is-next{left:1045px!important}
+
+  /* Statistics: 2-column KPI row, vertically scrollable editorial body. */
+  html body.mq-noir-master #mqStatisticsScene{background-size:cover!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-layout{
+    left:calc(var(--mq-safe-left) + 18px)!important;right:calc(var(--mq-safe-right) + 18px)!important;
+    top:calc(var(--mq-safe-top) + 66px)!important;bottom:calc(var(--mq-safe-bottom) + 10px)!important;width:auto!important;height:auto!important;
+    grid-template-rows:auto auto minmax(0,1fr) auto!important;gap:14px!important;
+  }
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-player{display:none!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-title{max-width:100%!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-title h1{font-size:44px!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-main{overflow-y:auto!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-columns{grid-template-columns:1fr 1fr!important;gap:22px!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-columns .mq-stat-column:nth-child(3){grid-column:1/-1!important;padding-left:0!important;border-left:0!important;border-top:1px solid rgba(0,0,0,.25)!important;padding-top:18px!important}
+  html body.mq-noir-master #mqStatisticsScene .mq-stat-corner{position:fixed!important;top:var(--mq-safe-top)!important;width:46px!important;height:46px!important}
+  html body.mq-noir-master #mqStatisticsScene #mqStatGear{left:var(--mq-safe-left)!important}
+  html body.mq-noir-master #mqStatisticsScene #mqStatHome{right:var(--mq-safe-right)!important}
+}
+
+@media (min-width:700px) and (max-width:899px) and (orientation:portrait) and (min-height:1100px){
+  body.mq-noir-master .mq-v6-stage{transform:translate(-50%,-50%) scale(1.14)!important}
+  #mqAvatarModal .mq-avatar-dialog{--mq-avatar-stage-scale:1.08!important}
+}
