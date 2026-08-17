@@ -1,18 +1,38 @@
-/* Movie Quiz – responsive exterior interaction safety v2.2 */
+/* Movie Quiz – responsive exterior interaction safety v2.2
+   The browser must never use the transparent booth button rectangle for hover.
+   Hover/click are calculated in 1672×941 master coordinates by js/99-responsive-layout.js. */
+
 html body.mq-noir-master.mq-exterior-active #mqExteriorScene #mqExteriorStage #mqTicketBoothHotspot.mq-booth-button{
-  left:820px!important;top:452px!important;width:250px!important;height:367px!important;
-  -webkit-clip-path:none!important;clip-path:none!important;
-  pointer-events:none!important;cursor:default!important;
+  left:820px!important;
+  top:452px!important;
+  width:250px!important;
+  height:367px!important;
+  -webkit-clip-path:none!important;
+  clip-path:none!important;
+  pointer-events:none!important;
+  cursor:default!important;
 }
+
+/* Exterior is visually non-interactive everywhere unless the runtime says the
+   pointer is inside the precise virtual booth polygon. */
 html body.mq-noir-master.mq-exterior-active #mqExteriorScene,
 html body.mq-noir-master.mq-exterior-active #mqExteriorStage,
 html body.mq-noir-master.mq-exterior-active #mqExteriorScene *,
-html body.mq-noir-master.mq-exterior-active #mqExteriorStage *{cursor:default!important}
+html body.mq-noir-master.mq-exterior-active #mqExteriorStage *{
+  cursor:default!important;
+}
+
 html.mq-booth-virtual-hover body.mq-noir-master.mq-exterior-active #mqExteriorScene,
 html.mq-booth-virtual-hover body.mq-noir-master.mq-exterior-active #mqExteriorScene *,
 html.mq-booth-virtual-hover body.mq-noir-master.mq-exterior-active #mqExteriorStage,
-html.mq-booth-virtual-hover body.mq-noir-master.mq-exterior-active #mqExteriorStage *{cursor:none!important}
+html.mq-booth-virtual-hover body.mq-noir-master.mq-exterior-active #mqExteriorStage *{
+  cursor:none!important;
+}
+
 body.mq-exterior-active .mq-walk-cursor-v6{pointer-events:none!important}
 html:not(.mq-booth-virtual-hover) body .mq-walk-cursor-v6,
 body:not(.mq-exterior-active) .mq-walk-cursor-v6,
-body.mq-ticket-open .mq-walk-cursor-v6{opacity:0!important;visibility:hidden!important}
+body.mq-ticket-open .mq-walk-cursor-v6{
+  opacity:0!important;
+  visibility:hidden!important;
+}
