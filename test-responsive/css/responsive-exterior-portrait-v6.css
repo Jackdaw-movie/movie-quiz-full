@@ -1,0 +1,374 @@
+/* Movie Quiz – portrait exterior v6.0
+   TEST INSTANCE ONLY.
+   Mobile + tablet portrait rebuild using a dedicated 1086×1235 top-anchored master.
+
+   Desktop production remains untouched.
+   The portrait layers are exact pixel-derived cutouts from this portrait master.
+*/
+
+@media (orientation:portrait) and (max-width:1180px){
+
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-v6-viewport{
+    overflow:hidden!important;
+    background:#020306!important;
+    touch-action:manipulation!important;
+  }
+
+  /* TOP-ANCHORED portrait framing.
+     The stage always starts at the top of the graphic. If cover creates overflow,
+     it is cropped only horizontally or at the bottom, never by shifting the artwork down. */
+  html.mq-exterior-portrait-v6 body.mq-noir-master #mqExteriorStage.mq-v6-stage{
+    position:absolute!important;
+    left:50%!important;
+    top:0!important;
+    width:1086px!important;
+    height:1235px!important;
+    transform-origin:50% 0!important;
+    transform:translate3d(-50%,0,0) scale(var(--mq-pv6-scale,1))!important;
+    isolation:isolate!important;
+  }
+
+  html.mq-exterior-portrait-v6 body.mq-noir-master #mqExteriorStage > .mq-v6-master{
+    position:absolute!important;
+    inset:0!important;
+    width:1086px!important;
+    height:1235px!important;
+    max-width:none!important;
+    object-fit:fill!important;
+    z-index:1!important;
+  }
+
+  /* Desktop master-derived depth layers are hidden only in portrait mode.
+     They were cut for the 1672×941 desktop geometry and cannot register to this master. */
+  html.mq-exterior-portrait-v6 body.mq-noir-master #mqExteriorStage > .mq-v6-sign,
+  html.mq-exterior-portrait-v6 body.mq-noir-master #mqExteriorStage > .mq-v63-sign-letters,
+  html.mq-exterior-portrait-v6 body.mq-noir-master #mqExteriorStage > .mq-v64-hotel-letters,
+  html.mq-exterior-portrait-v6 body.mq-noir-master #mqExteriorStage > .mq-v6-marquee,
+  html.mq-exterior-portrait-v6 body.mq-noir-master #mqExteriorStage > .mq-v63-marquee-lights,
+  html.mq-exterior-portrait-v6 body.mq-noir-master #mqExteriorStage > .mq-v6-lamp,
+  html.mq-exterior-portrait-v6 body.mq-noir-master #mqExteriorStage > .mq-v6-car,
+  html.mq-exterior-portrait-v6 body.mq-noir-master #mqExteriorStage > .mq-v6-car-shine-aligned,
+  html.mq-exterior-portrait-v6 body.mq-noir-master #mqExteriorStage > .mq-v6-booth-direct,
+  html.mq-exterior-portrait-v6 body.mq-noir-master #mqExteriorStage > .mq-v65-steam-live,
+  html.mq-exterior-portrait-v6 body.mq-noir-master #mqExteriorStage > .mq-v6-searchlights{
+    display:none!important;
+  }
+
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-layer{
+    position:absolute!important;
+    display:block!important;
+    max-width:none!important;
+    pointer-events:none!important;
+    user-select:none!important;
+    object-fit:fill!important;
+    backface-visibility:hidden!important;
+  }
+
+  /* ---------------------------------------------------------
+     EXACT PORTRAIT ASSET REGISTRATION
+     --------------------------------------------------------- */
+
+  /* Booth – exact portrait master pixels. Hover changes only lighting, not geometry. */
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-booth{
+    left:445px!important;
+    top:650px!important;
+    width:245px!important;
+    height:405px!important;
+    z-index:10!important;
+    opacity:1!important;
+    filter:brightness(1.003) drop-shadow(5px 9px 6px rgba(0,0,0,.38));
+    transition:filter .18s ease,opacity .18s ease!important;
+  }
+  html.mq-exterior-portrait-v6.mq-booth-target-hover body.mq-noir-master.mq-exterior-active:not(.mq-ticket-open):not(.mq-preloading) .mq-pv6-booth{
+    filter:brightness(1.105) saturate(1.035)
+      drop-shadow(5px 9px 6px rgba(0,0,0,.42))
+      drop-shadow(0 0 8px rgba(255,194,88,.45))
+      drop-shadow(0 0 17px rgba(255,153,40,.22))!important;
+  }
+
+  /* Car – exact pixel cutout. */
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-car{
+    left:0!important;
+    top:910px!important;
+    width:545px!important;
+    height:325px!important;
+    z-index:7!important;
+    opacity:1!important;
+  }
+
+  /* Car reflection sweep, clipped to the exact portrait car mask. */
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-car-shine{
+    position:absolute!important;
+    left:0!important;
+    top:910px!important;
+    width:545px!important;
+    height:325px!important;
+    z-index:8!important;
+    display:block!important;
+    pointer-events:none!important;
+    -webkit-mask:url('../assets/exterior-portrait-v6/car-mask.png') center/100% 100% no-repeat!important;
+    mask:url('../assets/exterior-portrait-v6/car-mask.png') center/100% 100% no-repeat!important;
+    background:linear-gradient(108deg,
+      transparent 31%,
+      rgba(255,230,167,0) 38%,
+      rgba(255,229,169,.28) 46%,
+      rgba(255,235,185,.42) 49%,
+      rgba(255,229,169,.22) 53%,
+      rgba(255,230,167,0) 59%,
+      transparent 66%);
+    background-size:230% 100%;
+    background-position:138% 0;
+    mix-blend-mode:screen;
+    opacity:0;
+    animation:mqPV6CarShine 10s ease-in-out infinite;
+  }
+  @keyframes mqPV6CarShine{
+    0%,68%{background-position:138% 0;opacity:0}
+    72%{opacity:.46}
+    86%{background-position:-30% 0;opacity:.38}
+    92%,100%{background-position:-30% 0;opacity:0}
+  }
+
+  /* JACKDAW'S and HOTEL – only the exact warm pixels cut from the portrait master glow. */
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-jackdaws-glow{
+    left:135px!important;top:55px!important;width:140px!important;height:470px!important;z-index:9!important;
+    opacity:.24!important;mix-blend-mode:screen!important;
+    filter:brightness(1.28) saturate(1.08) drop-shadow(0 0 2px rgba(255,194,76,.38));
+    animation:mqPV6JackdawsGlow 3.25s ease-in-out infinite;
+  }
+  @keyframes mqPV6JackdawsGlow{
+    0%,100%{opacity:.20;filter:brightness(1.20) saturate(1.05) drop-shadow(0 0 2px rgba(255,185,66,.28))}
+    50%{opacity:.62;filter:brightness(1.74) saturate(1.14) drop-shadow(0 0 4px rgba(255,219,128,.72)) drop-shadow(0 0 10px rgba(255,139,28,.28))}
+  }
+
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-hotel-glow{
+    left:0!important;top:460px!important;width:86px!important;height:230px!important;z-index:9!important;
+    opacity:.22!important;mix-blend-mode:screen!important;
+    filter:brightness(1.25) saturate(1.07);
+    animation:mqPV6HotelGlow 3.7s ease-in-out -1.1s infinite;
+  }
+  @keyframes mqPV6HotelGlow{
+    0%,100%{opacity:.18;filter:brightness(1.18) saturate(1.05)}
+    50%{opacity:.58;filter:brightness(1.72) saturate(1.13) drop-shadow(0 0 6px rgba(255,190,72,.42))}
+  }
+
+  /* Left lamp – exact visible master pixels, period-style irregular flicker. */
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-lamp{
+    left:0!important;top:630px!important;width:40px!important;height:375px!important;z-index:8!important;opacity:1!important;
+  }
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-lamp-glow{
+    left:0!important;top:630px!important;width:40px!important;height:375px!important;z-index:9!important;
+    opacity:.30!important;mix-blend-mode:screen!important;
+    animation:mqPV6LampFlicker 5.8s steps(1,end) infinite;
+  }
+  @keyframes mqPV6LampFlicker{
+    0%,31%,36%,58%,64%,88%,100%{opacity:.25;filter:brightness(1.12)}
+    32%{opacity:.06;filter:brightness(.72)}
+    33%{opacity:.58;filter:brightness(1.55) drop-shadow(0 0 8px rgba(255,190,75,.50))}
+    34%{opacity:.14;filter:brightness(.88)}
+    35%{opacity:.42;filter:brightness(1.35)}
+    59%{opacity:.12;filter:brightness(.84)}
+    60%{opacity:.54;filter:brightness(1.48) drop-shadow(0 0 8px rgba(255,190,75,.42))}
+    61%,63%{opacity:.23}
+    62%{opacity:.48}
+  }
+
+  /* Marquee bulbs – exact bulb pixels split into 3 chase groups from the portrait master. */
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee{
+    left:120px!important;top:585px!important;width:966px!important;height:150px!important;z-index:9!important;
+    opacity:.10!important;mix-blend-mode:screen!important;
+  }
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.halo{
+    opacity:.13!important;filter:blur(.35px);animation:mqPV6BulbHalo 3.2s ease-in-out infinite;
+  }
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g1,
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g2,
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g3{
+    opacity:.08!important;
+    filter:brightness(1.18) saturate(1.03) drop-shadow(0 0 2px rgba(255,198,92,.46));
+    animation:mqPV6BulbChase 1.35s ease-in-out infinite;
+  }
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g1{animation-delay:0s}
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g2{animation-delay:-.45s}
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g3{animation-delay:-.90s}
+  @keyframes mqPV6BulbChase{
+    0%,28%,100%{opacity:.07;filter:brightness(1.08) saturate(1.02)}
+    42%,68%{opacity:.78;filter:brightness(1.66) saturate(1.08) drop-shadow(0 0 3px rgba(255,205,105,.74)) drop-shadow(0 0 7px rgba(255,156,42,.28))}
+  }
+  @keyframes mqPV6BulbHalo{
+    0%,100%{opacity:.09;filter:blur(.20px)}
+    50%{opacity:.22;filter:blur(.70px)}
+  }
+
+  /* Steam – two copies of the exact master-derived plume. */
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-steam{
+    left:765px!important;top:1005px!important;width:165px!important;height:210px!important;z-index:13!important;
+    mix-blend-mode:screen!important;
+    transform-origin:38% 92%!important;
+    filter:brightness(1.10) saturate(.88) contrast(1.02) blur(.10px);
+  }
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-steam.steam-a{animation:mqPV6Steam 3.8s ease-out infinite}
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-steam.steam-b{animation:mqPV6Steam 3.8s ease-out -1.9s infinite}
+  @keyframes mqPV6Steam{
+    0%{transform:translate3d(0,3px,0) scale(.99,.98);opacity:0}
+    13%{opacity:.34}
+    34%{transform:translate3d(-1px,-3px,0) scale(1.015,1.035);opacity:.58}
+    62%{transform:translate3d(2px,-10px,0) scale(1.04,1.08);opacity:.48}
+    82%{transform:translate3d(-2px,-17px,0) scale(1.065,1.13);opacity:.25;filter:brightness(1.16) saturate(.84) blur(.34px)}
+    100%{transform:translate3d(3px,-24px,0) scale(1.09,1.18);opacity:0;filter:brightness(1.18) saturate(.82) blur(.68px)}
+  }
+
+  /* Searchlight motion, positioned against the portrait sky. */
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-searchlights{
+    position:absolute!important;inset:0!important;z-index:2!important;pointer-events:none!important;
+    mix-blend-mode:screen!important;overflow:hidden!important;
+  }
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-searchlights i{
+    position:absolute!important;
+    left:65px!important;top:-175px!important;width:104px!important;height:510px!important;
+    transform-origin:86% 98%!important;
+    clip-path:polygon(44% 0,56% 0,100% 100%,0 100%)!important;
+    background:linear-gradient(180deg,rgba(214,225,255,.19),rgba(192,212,255,.08) 62%,rgba(176,203,255,.02) 87%,transparent)!important;
+    filter:blur(3px)!important;opacity:.16;
+    animation:mqPV6BeamA 8.4s ease-in-out infinite alternate;
+  }
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-searchlights i:nth-child(2){
+    left:160px!important;top:-160px!important;height:520px!important;opacity:.13;
+    animation:mqPV6BeamB 9.6s ease-in-out infinite alternate;
+  }
+  @keyframes mqPV6BeamA{0%{transform:rotate(-7deg);opacity:.10}48%{opacity:.20}100%{transform:rotate(8deg);opacity:.14}}
+  @keyframes mqPV6BeamB{0%{transform:rotate(7deg);opacity:.16}55%{opacity:.09}100%{transform:rotate(-9deg);opacity:.19}}
+
+  /* ---------------------------------------------------------
+     BOOTH INTERACTION + SHOES
+     Existing responsive v4 JS still owns hover/click and existing production
+     ticket/footstep logic. We only register the target to the portrait booth.
+     --------------------------------------------------------- */
+
+  html.mq-exterior-portrait-v6 body.mq-noir-master.mq-exterior-active:not(.mq-preloading):not(.mq-ticket-open)
+  #mqExteriorStage > #mqResponsiveBoothHitTarget{
+    left:458px!important;
+    top:660px!important;
+    width:220px!important;
+    height:385px!important;
+    z-index:40!important;
+    display:block!important;
+    pointer-events:auto!important;
+    cursor:none!important;
+    touch-action:manipulation!important;
+    -webkit-clip-path:polygon(40% 0%,61% 0%,80% 6%,91% 15%,97% 28%,96% 92%,86% 98%,13% 98%,4% 92%,3% 31%,8% 18%,20% 8%)!important;
+    clip-path:polygon(40% 0%,61% 0%,80% 6%,91% 15%,97% 28%,96% 92%,86% 98%,13% 98%,4% 92%,3% 31%,8% 18%,20% 8%)!important;
+  }
+
+  /* Keep the original production button pointer-dead: responsive v4 uses it
+     only as the internal trigger so the approved footsteps/ticket logic is preserved. */
+  html.mq-exterior-portrait-v6 body.mq-noir-master.mq-exterior-active
+  #mqExteriorStage > #mqTicketBoothHotspot{
+    left:458px!important;top:660px!important;width:220px!important;height:385px!important;
+    pointer-events:none!important;
+  }
+
+  /* Responsive v1 hides shoes on phones. Portrait v6 restores them for actual
+     mouse/trackpad hover; the existing JS never shows them for touch pointers. */
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-walk-cursor-v6{
+    display:block!important;
+    pointer-events:none!important;
+  }
+  html.mq-exterior-portrait-v6.mq-booth-target-hover body.mq-noir-master.mq-exterior-active:not(.mq-ticket-open):not(.mq-preloading) .mq-walk-cursor-v6{
+    opacity:1!important;
+    visibility:visible!important;
+  }
+
+  /* ---------------------------------------------------------
+     HAND + BUBBLE
+     Reuses the production hand PNG and five production bubble frames.
+     The existing v30.7 controller keeps the exact desktop timing/sequence.
+     Only geometry is remapped to the portrait booth.
+     --------------------------------------------------------- */
+
+  html.mq-exterior-portrait-v6 body.mq-noir-master #mqExteriorStage > .mq-ticket-hand-portal{
+    position:absolute!important;
+    left:620px!important;
+    top:742px!important;
+    width:260px!important;
+    height:200px!important;
+    overflow:hidden!important;
+    z-index:30!important;
+    pointer-events:none!important;
+  }
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-ticket-hand-img{
+    position:absolute!important;
+    left:0!important;
+    top:61px!important;
+    width:104px!important;
+    height:auto!important;
+    max-width:none!important;
+    pointer-events:none!important;
+    user-select:none!important;
+    transform:translateX(-112px) rotate(0deg);
+    transform-origin:26px 31px!important;
+    will-change:transform!important;
+    filter:drop-shadow(0 1px 1px rgba(0,0,0,.16))!important;
+  }
+
+  html.mq-exterior-portrait-v6 body.mq-noir-master #mqExteriorStage > .mq-ticket-bubble-ui{
+    position:absolute!important;
+    left:595px!important;
+    top:630px!important;
+    width:272px!important;
+    height:204px!important;
+    z-index:31!important;
+    pointer-events:none!important;
+    visibility:hidden;
+    opacity:1;
+    transform:none;
+  }
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-ticket-bubble-frames{
+    position:absolute!important;inset:0!important;width:100%!important;height:100%!important;pointer-events:none!important;
+  }
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-ticket-bubble-frame{
+    position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:fill!important;
+    display:block!important;opacity:0;visibility:hidden;pointer-events:none!important;user-select:none!important;
+    backface-visibility:hidden!important;transform:translateZ(0)!important;
+  }
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-ticket-bubble-frame.is-active{opacity:1!important;visibility:visible!important}
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-ticket-bubble-text{
+    position:absolute!important;left:62px!important;top:43px!important;width:165px!important;height:85px!important;z-index:2!important;
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    margin:0!important;padding:0!important;text-align:center!important;
+    color:#17120d!important;font-family:var(--mq-display,"Limelight","Copperplate","Baskerville",serif)!important;
+    font-size:17.25px!important;font-weight:400!important;line-height:1.10!important;letter-spacing:.005em!important;
+    text-shadow:none!important;opacity:0;pointer-events:none!important;
+  }
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-ticket-bubble-ui.is-visible{visibility:visible!important}
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-ticket-bubble-ui.is-text-visible .mq-ticket-bubble-text{opacity:1!important}
+
+  html.mq-exterior-portrait-v6 body:not(.mq-exterior-active) .mq-ticket-hand-portal,
+  html.mq-exterior-portrait-v6 body:not(.mq-exterior-active) .mq-ticket-bubble-ui,
+  html.mq-exterior-portrait-v6 body.mq-ticket-open .mq-ticket-hand-portal,
+  html.mq-exterior-portrait-v6 body.mq-ticket-open .mq-ticket-bubble-ui{
+    display:none!important;
+  }
+
+  /* The stage vignette must use the portrait dimensions, not the desktop artwork. */
+  html.mq-exterior-portrait-v6 body.mq-noir-master #mqExteriorStage > .mq-v6-vignette{
+    inset:0!important;
+    width:1086px!important;
+    height:1235px!important;
+    z-index:18!important;
+    pointer-events:none!important;
+    box-shadow:inset 0 0 68px rgba(0,0,0,.13)!important;
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  html.mq-exterior-portrait-v6 .mq-pv6-car-shine,
+  html.mq-exterior-portrait-v6 .mq-pv6-jackdaws-glow,
+  html.mq-exterior-portrait-v6 .mq-pv6-hotel-glow,
+  html.mq-exterior-portrait-v6 .mq-pv6-lamp-glow,
+  html.mq-exterior-portrait-v6 .mq-pv6-marquee,
+  html.mq-exterior-portrait-v6 .mq-pv6-steam,
+  html.mq-exterior-portrait-v6 .mq-pv6-searchlights i{
+    animation:none!important;
+  }
+}

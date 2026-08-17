@@ -1,0 +1,79 @@
+{
+  "version": "6.0",
+  "scope": "test-responsive only",
+  "portrait_breakpoint": "(orientation: portrait) and (max-width: 1180px)",
+  "master": {
+    "width": 1086,
+    "height": 1235,
+    "source": "exact crop from the approved portrait artwork",
+    "anchor": "top-center",
+    "scale_mode": "cover"
+  },
+  "layers": {
+    "booth": {
+      "x": 445,
+      "y": 650,
+      "w": 245,
+      "h": 405
+    },
+    "car": {
+      "x": 0,
+      "y": 910,
+      "w": 545,
+      "h": 325
+    },
+    "lamp": {
+      "x": 0,
+      "y": 630,
+      "w": 40,
+      "h": 375
+    },
+    "jackdawsGlow": {
+      "x": 135,
+      "y": 55,
+      "w": 140,
+      "h": 470
+    },
+    "hotelGlow": {
+      "x": 0,
+      "y": 460,
+      "w": 86,
+      "h": 230
+    },
+    "marqueeBulbs": {
+      "x": 120,
+      "y": 585,
+      "w": 966,
+      "h": 150
+    },
+    "steam": {
+      "x": 765,
+      "y": 1005,
+      "w": 165,
+      "h": 210
+    },
+    "boothHitTarget": {
+      "x": 458,
+      "y": 660,
+      "w": 220,
+      "h": 385
+    }
+  },
+  "reused_production_behaviour": [
+    "footsteps and existing ticket opening flow from js/26-exterior-scene.js",
+    "shoe cursor assets and pointer tracking from responsive-runtime-v2.js",
+    "hand PNG + five bubble frames + desktop timing sequence from js/29-interaction-guards.js"
+  ],
+  "portrait_animations": [
+    "moving searchlights",
+    "JACKDAW'S glow",
+    "HOTEL glow",
+    "lamp flicker",
+    "3-group marquee bulb chase",
+    "car reflection sweep",
+    "two-pass steam",
+    "booth hover glow",
+    "animated shoe cursor hover",
+    "ticket-booth hand and 5-frame speech bubble sequence"
+  ]
+}
