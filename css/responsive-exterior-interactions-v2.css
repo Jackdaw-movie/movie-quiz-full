@@ -1,38 +1,70 @@
-/* Movie Quiz – responsive exterior interaction safety v2.2
-   The browser must never use the transparent booth button rectangle for hover.
-   Hover/click are calculated in 1672×941 master coordinates by js/99-responsive-layout.js. */
+/* Movie Quiz – exterior interaction layer v3.0
+   Rebuilt from scratch for the responsive branch.
+   There is exactly one mouse-hover target in the exterior: the visible ticket booth.
+   The DOM button never participates in pointer hit-testing; JS uses the booth image
+   alpha silhouette as the authoritative hit-map. */
 
+/* The legacy rectangular button stays available for keyboard activation and for
+   the existing click handler, but it can never create a mouse hit-area. */
 html body.mq-noir-master.mq-exterior-active #mqExteriorScene #mqExteriorStage #mqTicketBoothHotspot.mq-booth-button{
   left:820px!important;
   top:452px!important;
   width:250px!important;
   height:367px!important;
-  -webkit-clip-path:none!important;
-  clip-path:none!important;
   pointer-events:none!important;
   cursor:default!important;
+  -webkit-clip-path:none!important;
+  clip-path:none!important;
 }
 
-/* Exterior is visually non-interactive everywhere unless the runtime says the
-   pointer is inside the precise virtual booth polygon. */
-html body.mq-noir-master.mq-exterior-active #mqExteriorScene,
-html body.mq-noir-master.mq-exterior-active #mqExteriorStage,
-html body.mq-noir-master.mq-exterior-active #mqExteriorScene *,
-html body.mq-noir-master.mq-exterior-active #mqExteriorStage *{
+/* No hand/pointer cursor anywhere in the exterior. This includes the audio
+   controls: they remain fully clickable, but they do not advertise a second
+   hover target. */
+html body.mq-noir-master.mq-exterior-active:not(.mq-preloading):not(.mq-ticket-open) #mqExteriorScene,
+html body.mq-noir-master.mq-exterior-active:not(.mq-preloading):not(.mq-ticket-open) #mqExteriorScene *{
+  cursor:default!important;
+}
+html body.mq-noir-master.mq-exterior-active:not(.mq-preloading):not(.mq-ticket-open) #mqDebugToggle{
   cursor:default!important;
 }
 
-html.mq-booth-virtual-hover body.mq-noir-master.mq-exterior-active #mqExteriorScene,
-html.mq-booth-virtual-hover body.mq-noir-master.mq-exterior-active #mqExteriorScene *,
-html.mq-booth-virtual-hover body.mq-noir-master.mq-exterior-active #mqExteriorStage,
-html.mq-booth-virtual-hover body.mq-noir-master.mq-exterior-active #mqExteriorStage *{
+/* The only hover state. When JS confirms that the pointer is inside the real
+   booth silhouette, the native cursor disappears everywhere under the exterior
+   so only the animated shoes remain visible. */
+html.mq-booth-alpha-hover body.mq-noir-master.mq-exterior-active:not(.mq-ticket-open) #mqExteriorScene,
+html.mq-booth-alpha-hover body.mq-noir-master.mq-exterior-active:not(.mq-ticket-open) #mqExteriorScene *{
   cursor:none!important;
 }
 
-body.mq-exterior-active .mq-walk-cursor-v6{pointer-events:none!important}
-html:not(.mq-booth-virtual-hover) body .mq-walk-cursor-v6,
+/* Preserve the approved visual booth response without relying on :hover of the
+   now non-interactive DOM button. */
+html.mq-booth-alpha-hover body.mq-noir-master.mq-exterior-active .mq-v6-booth-direct{
+  transform:none!important;
+  filter:brightness(1.095) saturate(1.035) drop-shadow(7px 11px 7px rgba(0,0,0,.58)) drop-shadow(0 0 9px rgba(255,194,88,.42)) drop-shadow(0 0 18px rgba(255,165,48,.20))!important;
+}
+
+/* Do not create a second visual hover on the audio gear. The expanded state is
+   still allowed to show that the panel is open. */
+html body.mq-noir-master.mq-exterior-active:not(.mq-ticket-open) #mqExteriorAudioOpen:hover:not([aria-expanded="true"]),
+html body.mq-noir-master.mq-exterior-active:not(.mq-ticket-open) .mq-exterior-audio-toggle:hover:not([aria-expanded="true"]){
+  background:rgba(9,9,11,.91)!important;
+  border-color:rgba(231,192,108,.65)!important;
+  filter:none!important;
+  transform:none!important;
+}
+
+/* Shoes are presentation only. They can never become the hit-tested element. */
+body.mq-exterior-active .mq-walk-cursor-v6{
+  pointer-events:none!important;
+}
+html:not(.mq-booth-alpha-hover) body .mq-walk-cursor-v6,
 body:not(.mq-exterior-active) .mq-walk-cursor-v6,
-body.mq-ticket-open .mq-walk-cursor-v6{
+body.mq-ticket-open .mq-walk-cursor-v6,
+body.mq-preloading .mq-walk-cursor-v6{
   opacity:0!important;
   visibility:hidden!important;
+}
+html.mq-booth-alpha-hover body.mq-exterior-active:not(.mq-ticket-open):not(.mq-preloading) .mq-walk-cursor-v6{
+  opacity:1!important;
+  visibility:visible!important;
 }
