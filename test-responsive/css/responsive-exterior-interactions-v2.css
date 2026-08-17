@@ -1,0 +1,19 @@
+/* Movie Quiz – responsive exterior interaction safety v2.1 */
+body.mq-exterior-active #mqTicketBoothHotspot.mq-booth-button{
+  left:820px!important;
+  top:452px!important;
+  width:250px!important;
+  height:367px!important;
+  -webkit-clip-path:polygon(42.29% 0%,37.15% 5.19%,17.91% 10.84%,4.98% 25.28%,8.46% 31.83%,5.80% 36.34%,8.29% 60.84%,4.31% 61.74%,8.46% 64.79%,6.14% 88.71%,.17% 90.29%,0 94.70%,58.37% 99.77%,99.83% 90.86%,96.02% 80.02%,98.34% 26.86%,82.26% 11.63%,47.93% 4.85%)!important;
+  clip-path:polygon(42.29% 0%,37.15% 5.19%,17.91% 10.84%,4.98% 25.28%,8.46% 31.83%,5.80% 36.34%,8.29% 60.84%,4.31% 61.74%,8.46% 64.79%,6.14% 88.71%,.17% 90.29%,0 94.70%,58.37% 99.77%,99.83% 90.86%,96.02% 80.02%,98.34% 26.86%,82.26% 11.63%,47.93% 4.85%)!important;
+  overflow:hidden!important;
+  pointer-events:auto!important;
+  cursor:none!important;
+}
+body.mq-exterior-active #mqExteriorScene,
+body.mq-exterior-active #mqExteriorStage,
+body.mq-exterior-active #mqExteriorScene *:not(#mqTicketBoothHotspot),
+body.mq-exterior-active #mqExteriorStage *:not(#mqTicketBoothHotspot){cursor:default!important}
+body.mq-exterior-active .mq-walk-cursor-v6{pointer-events:none!important}
+body:not(.mq-exterior-active) .mq-walk-cursor-v6,
+body.mq-ticket-open .mq-walk-cursor-v6{opacity:0!important;visibility:hidden!important}
