@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050506">
+<title>Movie Quiz – Responsive Test</title>
+<style>
+html,body{margin:0;width:100%;height:100%;background:#050506;color:#ead9b5;font-family:system-ui,sans-serif}
+.mq-preview-loader{position:fixed;inset:0;display:grid;place-items:center;text-align:center;padding:24px;box-sizing:border-box;background:#050506}
+.mq-preview-loader strong{display:block;font-size:18px;letter-spacing:.08em;text-transform:uppercase}
+.mq-preview-loader span{display:block;margin-top:8px;font-size:13px;opacity:.72}
+</style>
+</head>
+<body>
+<div class="mq-preview-loader"><div><strong>Movie Quiz</strong><span>Načítám responzivní testovací verzi…</span></div></div>
+<script>
+(async()=>{
+  try{
+    const response=await fetch('../index.html?mqResponsiveSource='+Date.now(),{cache:'no-store'});
+    if(!response.ok)throw new Error('HTTP '+response.status);
+    let html=await response.text();
+    const responsiveHead=`
+<base href="../">
+<meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="test-responsive/css/responsive-v1.css?v=1.0.0">
+<link rel="stylesheet" href="test-responsive/css/responsive-v1-tablet.css?v=1.0.0">
+<link rel="stylesheet" href="test-responsive/css/responsive-v1-motion.css?v=1.0.0">
+<link rel="stylesheet" href="test-responsive/css/responsive-v1-large.css?v=1.0.0">
+`;
+    html=html.replace(/<head(\s[^>]*)?>/i,match=>match+responsiveHead);
+    html=html.replace(/<title>Movie Quiz<\/title>/i,'<title>Movie Quiz – Responsive Test</title>');
+    html=html.replace(/<body class="([^"]*)"/i,'<body class="$1 mq-responsive-preview"');
+    document.open();
+    document.write(html);
+    document.close();
+  }catch(error){
+    document.body.innerHTML='<div class="mq-preview-loader"><div><strong>Testovací verzi se nepodařilo načíst</strong><span>'+String(error&&error.message||error)+'</span></div></div>';
+  }
+})();
+</script>
+</body>
+</html>
