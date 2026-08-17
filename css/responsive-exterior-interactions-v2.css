@@ -15,10 +15,14 @@ html body.mq-noir-master.mq-exterior-active #mqExteriorScene #mqExteriorStage #m
   clip-path:none!important;
 }
 
-/* During the exterior scene the normal cursor is always the plain arrow. This
-   intentionally neutralises pointer/hand cursors from every older stylesheet. */
+/* During the exterior scene the normal cursor is always the plain arrow. */
 html body.mq-noir-master.mq-exterior-active:not(.mq-preloading):not(.mq-ticket-open),
 html body.mq-noir-master.mq-exterior-active:not(.mq-preloading):not(.mq-ticket-open) *{
+  cursor:default!important;
+}
+
+/* Beat the production debug rule that uses an ID selector + !important. */
+html body.mq-noir-master.mq-exterior-active:not(.mq-preloading):not(.mq-ticket-open) #mqDebugToggle{
   cursor:default!important;
 }
 
@@ -37,7 +41,7 @@ html body.mq-noir-master.mq-exterior-active:not(.mq-preloading):not(.mq-ticket-o
   padding:0!important;
   border:0!important;
   outline:0!important;
-  background:rgba(0,0,0,.001)!important;
+  background:transparent!important;
   box-shadow:none!important;
   pointer-events:auto!important;
   cursor:none!important;
@@ -46,9 +50,8 @@ html body.mq-noir-master.mq-exterior-active:not(.mq-preloading):not(.mq-ticket-o
   clip-path:polygon(42.29% 0%,37.15% 5.19%,17.91% 10.84%,4.98% 25.28%,8.46% 31.83%,5.80% 36.34%,8.29% 60.84%,4.31% 61.74%,8.46% 64.79%,7.66% 73%,96.33% 73%,98.34% 26.86%,82.26% 11.63%,47.93% 4.85%)!important;
 }
 
-/* When the single booth target is active, hide the native cursor globally, not
-   merely inside the exterior element. This prevents any browser/ancestor cursor
-   from being painted together with the animated shoes. */
+/* While the single target is active, the system cursor is suppressed globally.
+   This makes overlap between the animated shoes and native cursor impossible. */
 html.mq-booth-target-hover,
 html.mq-booth-target-hover body,
 html.mq-booth-target-hover body *{
@@ -61,8 +64,7 @@ html.mq-booth-target-hover body.mq-noir-master.mq-exterior-active .mq-v6-booth-d
   filter:brightness(1.095) saturate(1.035) drop-shadow(7px 11px 7px rgba(0,0,0,.58)) drop-shadow(0 0 9px rgba(255,194,88,.42)) drop-shadow(0 0 18px rgba(255,165,48,.20))!important;
 }
 
-/* No independent hover styling anywhere else in the exterior. Controls remain
-   functional but visually stable until they are actually opened/changed. */
+/* No independent visual hover anywhere else in the exterior. */
 html body.mq-noir-master.mq-exterior-active:not(.mq-ticket-open) #mqExteriorAudioOpen:hover:not([aria-expanded="true"]),
 html body.mq-noir-master.mq-exterior-active:not(.mq-ticket-open) .mq-exterior-audio-toggle:hover:not([aria-expanded="true"]){
   background:rgba(9,9,11,.91)!important;
