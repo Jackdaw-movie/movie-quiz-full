@@ -1,4 +1,4 @@
-Movie Quiz – RESPONSIVE PORTRAIT EXTERIOR v6.3
+Movie Quiz – RESPONSIVE PORTRAIT EXTERIOR v6.4
 TEST INSTANCE ONLY
 
 Co se mění:
@@ -53,3 +53,12 @@ Patch v6.3:
 - car-shine overlay zrcadlově otočen
 - doplněn desktop-style marquee-lights pulse z exact portrait assetu marquee-lights.png
 - chase bulb overlays ponechány jen jako jemný doplněk, hlavní blikání dělá přesný marquee-lights overlay
+
+Patch v6.4 – skutečná oprava dvou problémů:
+- AUTO: odlesk už nepoužívá black/white PNG jako alpha mask. Používá přímo alpha kanál car.png.
+  Samotná vrstva zůstává stát přesně na autě; hýbe se pouze gradient uvnitř masky.
+  Tím odlesk nemůže vytvořit obdélník mimo auto. Směr je zrcadlově otočený, cyklus zůstává 9 s.
+- KINO: předchozí marquee PNG byly chybně téměř celé neprůhledné výřezy.
+  Jsou kompletně přegenerované z pixelů tohoto portrait masteru jako transparentní bulb-only vrstvy.
+  Animace používá stejné časy jako desktop v6.3: 1.35 s chase, delay 0 / -0.45 / -0.90 s,
+  plus 3.2 s bulb halo.

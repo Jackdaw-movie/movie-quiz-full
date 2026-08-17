@@ -1,4 +1,4 @@
-/* Movie Quiz – portrait exterior v6.3
+/* Movie Quiz – portrait exterior v6.4
    TEST INSTANCE ONLY.
    Mobile + tablet portrait rebuild using a dedicated 1086×1235 top-anchored master.
 
@@ -106,19 +106,41 @@
     z-index:8!important;
     display:block!important;
     pointer-events:none!important;
-    background:url('../assets/exterior-portrait-v6/car-shine.png') center/100% 100% no-repeat!important;
+
+    /* IMPORTANT: use the actual transparent CAR asset as the alpha mask.
+       The previous black/white mask had an opaque alpha channel, so Safari/Chrome
+       correctly treated the whole rectangle as visible. */
+    -webkit-mask-image:url('../assets/exterior-portrait-v6/car.png')!important;
+    -webkit-mask-repeat:no-repeat!important;
+    -webkit-mask-position:center!important;
+    -webkit-mask-size:100% 100%!important;
+    mask-image:url('../assets/exterior-portrait-v6/car.png')!important;
+    mask-repeat:no-repeat!important;
+    mask-position:center!important;
+    mask-size:100% 100%!important;
+
+    /* Mirrored sweep: the layer never moves. Only background-position moves
+       inside the fixed car silhouette, so it physically cannot spill outside it. */
+    background:linear-gradient(72deg,
+      transparent 0 35%,
+      rgba(255,232,174,0) 39%,
+      rgba(255,229,164,.24) 44%,
+      rgba(255,245,206,.48) 48%,
+      rgba(255,225,151,.20) 52%,
+      rgba(255,232,174,0) 57%,
+      transparent 62% 100%);
+    background-size:245% 100%;
+    background-position:-48% 0;
     mix-blend-mode:screen;
     opacity:0;
-    transform:translate3d(132px,0,0);
-    will-change:transform,opacity!important;
     animation:mqPV6CarShine 9s ease-in-out infinite;
   }
   @keyframes mqPV6CarShine{
-    0%,62%{transform:translate3d(132px,0,0);opacity:0}
-    67%{opacity:.62}
-    80%{transform:translate3d(-34px,0,0);opacity:.52}
-    88%{transform:translate3d(-110px,0,0);opacity:.18}
-    100%{transform:translate3d(-110px,0,0);opacity:0}
+    0%,64%{background-position:-48% 0;opacity:0}
+    68%{opacity:.56}
+    82%{background-position:145% 0;opacity:.48}
+    89%{background-position:180% 0;opacity:.12}
+    100%{background-position:180% 0;opacity:0}
   }
     72%{opacity:.46}
     86%{background-position:-30% 0;opacity:.38}
@@ -169,43 +191,54 @@
     62%{opacity:.48}
   }
 
-  /* Desktop-style marquee light pulse using the exact portrait master cutout. */
-  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee-lights{
-    left:118px!important;top:580px!important;width:968px!important;height:158px!important;z-index:11!important;
-    opacity:1!important;mix-blend-mode:screen!important;
-    filter:brightness(1.02) drop-shadow(8px 11px 7px rgba(0,0,0,.18));
-    animation:mqPV6MarqueeLight 5.4s ease-in-out infinite alternate;
-  }
-  @keyframes mqPV6MarqueeLight{
-    from{filter:brightness(1.02) drop-shadow(8px 11px 7px rgba(0,0,0,.18))}
-    to{filter:brightness(1.16) saturate(1.04) drop-shadow(9px 13px 8px rgba(0,0,0,.24)) drop-shadow(0 0 4px rgba(255,183,70,.18))}
+
+  /* MARQUEE BULBS – same implementation principle and timing as desktop v6.3.
+     The PNGs are now real transparent bulb-only cutouts from this exact portrait master. */
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee{
+    left:180px!important;
+    top:565px!important;
+    width:906px!important;
+    height:180px!important;
+    z-index:12!important;
+    opacity:.08;
+    mix-blend-mode:screen!important;
+    object-fit:fill!important;
+    pointer-events:none!important;
   }
 
-  /* Marquee bulbs – exact bulb pixels split into 3 chase groups from the portrait master. */
-  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee{
-    left:120px!important;top:585px!important;width:966px!important;height:150px!important;z-index:9!important;
-    opacity:.10!important;mix-blend-mode:screen!important;
-  }
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.halo{
-    opacity:.12!important;filter:blur(.38px);animation:mqPV6BulbHalo 3.2s ease-in-out infinite;
+    opacity:.18!important;
+    mix-blend-mode:screen!important;
+    animation:mqPV6BulbHalo 3.2s ease-in-out infinite!important;
   }
+
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g1,
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g2,
   html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g3{
-    opacity:.09!important;
-    filter:brightness(1.18) saturate(1.03) drop-shadow(0 0 2px rgba(255,198,92,.44));
-    animation:mqPV6BulbChase 1.35s ease-in-out infinite;
+    opacity:.08!important;
+    mix-blend-mode:screen!important;
+    filter:brightness(1.30) saturate(1.05) drop-shadow(0 0 2px rgba(255,198,92,.58))!important;
+    animation:mqPV6BulbChase 1.35s ease-in-out infinite!important;
   }
-  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g1{animation-delay:0s}
-  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g2{animation-delay:-.45s}
-  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g3{animation-delay:-.90s}
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g1{animation-delay:0s!important}
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g2{animation-delay:-.45s!important}
+  html.mq-exterior-portrait-v6 body.mq-noir-master .mq-pv6-marquee.g3{animation-delay:-.90s!important}
+
   @keyframes mqPV6BulbChase{
-    0%,28%,100%{opacity:.07;filter:brightness(1.08) saturate(1.02)}
-    42%,68%{opacity:.72;filter:brightness(1.56) saturate(1.07) drop-shadow(0 0 3px rgba(255,205,105,.68)) drop-shadow(0 0 7px rgba(255,156,42,.24))}
+    0%,28%,100%{
+      opacity:.08;
+      filter:brightness(1.10) saturate(1.02) drop-shadow(0 0 1px rgba(255,198,92,.28))
+    }
+    42%,68%{
+      opacity:.82;
+      filter:brightness(1.62) saturate(1.08)
+        drop-shadow(0 0 3px rgba(255,205,105,.78))
+        drop-shadow(0 0 7px rgba(255,156,42,.30))
+    }
   }
   @keyframes mqPV6BulbHalo{
-    0%,100%{opacity:.09;filter:blur(.20px)}
-    50%{opacity:.20;filter:blur(.60px)}
+    0%,100%{opacity:.12;filter:blur(.15px)}
+    50%{opacity:.27;filter:blur(.55px)}
   }
 
   /* Steam – two copies of the exact master-derived plume. */
