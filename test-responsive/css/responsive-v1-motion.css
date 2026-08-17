@@ -1,0 +1,113 @@
+/* Movie Quiz – Responsive Foundation v1.0 / motion + utility overlays
+   Motion must follow the projection container, not the browser viewport. */
+
+/* Fantasy dragon: the historical animation travels in vw/vh. That diverges from
+   the cinema whenever the browser is windowed or letterboxed. Use screen
+   container units so the dragon always crosses the actual projection surface. */
+html body.mq-noir-master #cinema #screen #mq-cinematic-fx[data-fx-genre="fantasy"] .mq-fantasy-dragon-v34{
+  width:min(22cqw,18%)!important;
+  animation-name:mqResponsiveFantasyDragonV1!important;
+}
+@keyframes mqResponsiveFantasyDragonV1{
+  0%,68%{transform:translate3d(0,0,0) scale(.54) rotate(-8deg);opacity:0}
+  71%{opacity:.84}
+  79%{transform:translate3d(-30cqw,-1.5cqh,0) scale(.60) rotate(-3deg);opacity:.92}
+  87%{transform:translate3d(-58cqw,1cqh,0) scale(.68) rotate(1deg);opacity:.94}
+  94%{transform:translate3d(-88cqw,-.6cqh,0) scale(.76) rotate(-2deg);opacity:.88}
+  100%{transform:translate3d(-100cqw,0,0) scale(.80) rotate(-3deg);opacity:0}
+}
+
+/* Database media / load / error states scale inside the available question
+   column and never force the projection wider. */
+html body.mq-noir-master #cinema #screen #game #mqMediaStage{
+  width:min(60cqw,100%)!important;
+  max-width:100%!important;
+}
+html body.mq-noir-master #cinema #screen #game .mq-media-image,
+html body.mq-noir-master #cinema #screen #game .mq-media-video{
+  max-width:100%!important;
+  max-height:min(41.8cqh,360px)!important;
+  object-fit:contain!important;
+}
+html body.mq-noir-master #cinema #screen #game .mq-db-loading-card,
+html body.mq-noir-master #cinema #screen #game .mq-db-error-card{
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+
+/* Question-report modal already has fluid width; add real safe-area boundaries
+   and a phone-height guard for mobile browser chrome / keyboard changes. */
+body.mq-noir-master .mq-report-layer{
+  padding:max(14px,var(--mq-safe-top)) max(14px,var(--mq-safe-right)) max(14px,var(--mq-safe-bottom)) max(14px,var(--mq-safe-left))!important;
+}
+body.mq-noir-master .mq-report-dialog{
+  width:min(520px,calc(100vw - var(--mq-safe-left) - var(--mq-safe-right) - 16px))!important;
+  max-height:calc(100dvh - var(--mq-safe-top) - var(--mq-safe-bottom) - 16px)!important;
+  box-sizing:border-box!important;
+}
+
+/* Credits/results must remain reachable on short screens. */
+html body.mq-noir-master #cinema #screen #creditsView,
+html body.mq-noir-master #cinema #screen #endView,
+html body.mq-noir-master #cinema #screen #winView{
+  overflow:hidden!important;
+}
+html body.mq-noir-master #cinema #screen #creditsView .credits-window,
+html body.mq-noir-master #cinema #screen #endView .end-card,
+html body.mq-noir-master #cinema #screen #winView .win-card{
+  max-width:94%!important;
+}
+
+@media (max-width:899px){
+  /* Debug controls are development utilities and must not cover touch UI. The G
+     shortcut remains available on keyboards at desktop widths. */
+  #mqDebugToggle{display:none!important}
+
+  body.mq-noir-master .mq-report-trigger{min-height:40px!important}
+  body.mq-noir-master .mq-report-close{width:42px!important;height:42px!important;right:8px!important;top:8px!important}
+
+  html body.mq-noir-master #cinema #screen #creditsView .credits-skip{min-width:44px!important;min-height:44px!important}
+}
+
+@media (max-width:699px) and (orientation:portrait){
+  html body.mq-noir-master #cinema #screen #mq-cinematic-fx[data-fx-genre="fantasy"] .mq-fantasy-dragon-v34{
+    width:25%!important;top:30%!important;right:-22%!important;
+  }
+  html body.mq-noir-master #cinema #screen #game #mqMediaStage{
+    width:100%!important;margin-bottom:8px!important;
+  }
+  html body.mq-noir-master #cinema #screen #game .mq-media-image,
+  html body.mq-noir-master #cinema #screen #game .mq-media-video{max-height:22dvh!important;border-radius:12px!important}
+  html body.mq-noir-master #cinema #screen #game .mq-audio-card{width:100%!important;padding:9px 10px!important;border-radius:12px!important}
+  html body.mq-noir-master #cinema #screen #game .mq-audio-play{width:44px!important;height:44px!important;flex-basis:44px!important}
+
+  body.mq-noir-master .mq-report-layer{place-items:end center!important}
+  body.mq-noir-master .mq-report-dialog{
+    width:100%!important;max-width:none!important;max-height:min(82dvh,720px)!important;
+    border-radius:18px 18px 10px 10px!important;padding:24px 16px max(18px,var(--mq-safe-bottom))!important;
+  }
+
+  html body.mq-noir-master #cinema #screen #creditsView .credits-window{
+    width:calc(100% - 24px)!important;max-height:calc(100% - 70px)!important;
+  }
+  html body.mq-noir-master #cinema #screen #endView .end-card,
+  html body.mq-noir-master #cinema #screen #winView .win-card{
+    width:calc(100% - 24px)!important;max-height:calc(100% - 28px)!important;padding-left:12px!important;padding-right:12px!important;
+  }
+  html body.mq-noir-master #cinema #screen #endView .replay,
+  html body.mq-noir-master #cinema #screen #winView .replay{min-height:48px!important;max-width:100%!important}
+}
+
+@media (max-width:1000px) and (max-height:560px) and (orientation:landscape){
+  html body.mq-noir-master #cinema #screen #mq-cinematic-fx[data-fx-genre="fantasy"] .mq-fantasy-dragon-v34{top:24%!important;width:18%!important}
+  body.mq-noir-master .mq-report-dialog{max-height:calc(100dvh - 12px)!important;padding:18px!important}
+  body.mq-noir-master .mq-report-question{margin:8px 0 10px!important;padding:8px 10px!important}
+  body.mq-noir-master .mq-report-label{margin:8px 0 5px!important}
+  body.mq-noir-master .mq-report-dialog textarea{min-height:64px!important}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html body.mq-noir-master #cinema #screen #mq-cinematic-fx .mq-fantasy-dragon-v34{animation:none!important;display:none!important}
+  html body.mq-noir-master #cinema #screen #game .answer.mq-checking::after{animation:none!important}
+  html body.mq-noir-master #cinema #screen #game .mq-db-spinner{animation-duration:1.5s!important}
+}

@@ -1,0 +1,57 @@
+/* Movie Quiz – Responsive Foundation v1.0 / large monitors
+   Keeps the same approved compositions, but prevents UI-led scenes from looking
+   miniature on 1440p/4K CSS viewports. No source artwork is altered. */
+
+@media (min-width:2200px) and (min-height:1100px){
+  /* Loading screen remains the same composition; only functional UI grows. */
+  body.mq-noir-master .mq-preload-content{
+    width:min(1050px,calc(100vw - 80px))!important;
+    bottom:8.5dvh!important;
+  }
+  body.mq-noir-master .mq-preload-status{
+    margin-bottom:24px!important;
+    font-size:clamp(18px,1.05vw,27px)!important;
+  }
+  body.mq-noir-master .mq-preload-track{width:min(820px,86%)!important;height:4px!important}
+  body.mq-noir-master .mq-preload-action-slot{height:142px!important;margin-top:24px!important}
+  body.mq-noir-master .mq-preload-reel{width:112px!important;height:112px!important;margin-left:-56px!important}
+  body.mq-noir-master .mq-preload-enter{
+    width:min(690px,44vw)!important;
+    height:116px!important;
+    padding-left:92px!important;padding-right:92px!important;
+    font-size:clamp(14px,.72vw,19px)!important;
+  }
+
+  /* Ticket has percentage-registered controls, so the entire approved ticket
+     scene can grow as one plane without breaking its geometry. */
+  body.mq-noir-master .mq-ticket-scene{
+    container-type:size!important;
+    width:min(74vw,calc(90dvh * 1.3186),2300px)!important;
+    max-width:none!important;
+  }
+  body.mq-noir-master .mqf-field,
+  body.mq-noir-master .mqf-pin{height:clamp(44px,4.6cqh,64px)!important}
+  body.mq-noir-master .mqf-field{font-size:clamp(16px,1.75cqh,24px)!important}
+  body.mq-noir-master .mqf-pin-box{font-size:clamp(20px,2.2cqh,31px)!important}
+  body.mq-noir-master .mqf-label{font-size:clamp(11px,1.25cqh,17px)!important}
+  body.mq-noir-master .mqf-btn{min-height:clamp(38px,4.3cqh,58px)!important;font-size:clamp(11px,1.22cqh,17px)!important}
+  body.mq-noir-master .mqf-title{font-size:clamp(18px,2.2cqh,31px)!important}
+  body.mq-noir-master .mqf-context{font-size:clamp(16px,1.9cqh,27px)!important}
+  body.mq-noir-master .mq-ticket-error{font-size:clamp(11px,1.05cqh,15px)!important}
+
+  /* Non-master floating controls should remain visually proportional too. */
+  body.mq-noir-master .mq-exterior-audio-toggle{width:58px!important;height:58px!important}
+  body.mq-noir-master .mq-exterior-audio-panel{top:68px!important;width:280px!important;padding:15px!important}
+  body.mq-noir-master .mq-exterior-audio-panel>strong{font-size:13px!important}
+  body.mq-noir-master .mq-exterior-audio-panel label{font-size:11px!important}
+}
+
+@media (min-width:3000px) and (min-height:1600px){
+  body.mq-noir-master .mq-ticket-scene{width:min(70vw,calc(90dvh * 1.3186),2500px)!important}
+  body.mq-noir-master .mq-preload-content{width:min(1250px,calc(100vw - 100px))!important}
+  body.mq-noir-master .mq-preload-track{width:min(980px,86%)!important}
+  body.mq-noir-master .mq-preload-enter{width:min(820px,40vw)!important;height:136px!important}
+  body.mq-noir-master .mq-preload-reel{width:132px!important;height:132px!important;margin-left:-66px!important}
+  body.mq-noir-master .mq-exterior-audio-toggle{width:66px!important;height:66px!important}
+  body.mq-noir-master .mq-exterior-audio-panel{top:76px!important;width:320px!important}
+}
