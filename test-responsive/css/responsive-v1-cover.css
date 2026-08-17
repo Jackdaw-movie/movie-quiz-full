@@ -1,0 +1,9 @@
+/* Movie Quiz – Responsive v1.0.1
+   Intro/loading artwork must always fill the whole viewport.
+   Cropping at the edges is intentional; black letterbox bars are not. */
+html body.mq-noir-master .mq-preload-gate::before{
+  background-color:#071019!important;
+  background-size:100% 100%,cover!important;
+  background-repeat:no-repeat,no-repeat!important;
+  background-position:center center!important;
+}
