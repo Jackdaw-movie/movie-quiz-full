@@ -1,4 +1,0 @@
-v7.2
-- Desktop shoes fix: portrait pointer handler never clears production shoes outside portrait.
-- Booth: only the glow halo moves +10 px; booth.png stays fixed.
-- Marquee lights: bulb-only layers are forced to z-index 999999 and alternate G1 -> G2 -> G3.
