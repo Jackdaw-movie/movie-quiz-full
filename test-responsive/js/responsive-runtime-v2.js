@@ -94,7 +94,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='responsive-exterior-single-target-v4.1-portrait-only';
+  const VERSION='responsive-exterior-single-target-v4.2-portrait-only';
   const TARGET_ID='mqResponsiveBoothHitTarget';
   const mql=window.matchMedia('(orientation: portrait) and (max-width: 1180px)');
   let bodyObserver=null;
@@ -137,6 +137,20 @@
     cursor.style.top=`${event.clientY}px`;
   }
 
+  function pointerIsOnTarget(event){
+    const hit=target();
+    if(!hit)return false;
+    const under=document.elementFromPoint(event.clientX,event.clientY);
+    return under===hit || Boolean(under && hit.contains(under));
+  }
+
+  function safetyPointerCheck(event){
+    if(!root().classList.contains('mq-booth-target-hover'))return;
+    if(!mql.matches || !exteriorInteractive() || !pointerIsOnTarget(event)){
+      clearHover();
+    }
+  }
+
   function showHover(event){
     if(!exteriorInteractive()||(event.pointerType&&event.pointerType!=='mouse')){
       clearHover();
@@ -170,6 +184,7 @@
     hit.addEventListener('pointerenter',showHover);
     hit.addEventListener('pointermove',showHover);
     hit.addEventListener('pointerleave',clearHover);
+    hit.addEventListener('pointerout',event=>{if(!hit.contains(event.relatedTarget))clearHover()});
     hit.addEventListener('pointercancel',clearHover);
     hit.addEventListener('click',event=>{
       if(!exteriorInteractive())return;
@@ -194,6 +209,8 @@
   function start(){
     sync();
     mql.addEventListener?.('change',sync);
+    document.addEventListener('pointermove',safetyPointerCheck,true);
+    document.addEventListener('pointerdown',safetyPointerCheck,true);
     window.addEventListener('blur',clearHover);
     window.addEventListener('resize',sync,{passive:true});
     window.visualViewport?.addEventListener('resize',sync,{passive:true});

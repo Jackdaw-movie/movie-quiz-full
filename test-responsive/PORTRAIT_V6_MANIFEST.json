@@ -1,5 +1,5 @@
 {
-  "version": "6.9",
+  "version": "6.10",
   "scope": "test-responsive only",
   "portrait_breakpoint": "(orientation: portrait) and (max-width: 1180px)",
   "master": {
@@ -86,10 +86,6 @@
       "h": 170,
       "effect": "desktop-style single asset pulse"
     },
-    "boothGlow": {
-      "file": "test-responsive/assets/exterior-portrait-v6/booth-glow.png",
-      "implementation": "edge-only ring generated from exact rebuilt booth alpha"
-    },
     "jackdawsSign": {
       "file": "test-responsive/assets/exterior-portrait-v6/jackdaws-sign.png",
       "x": 135,
@@ -153,5 +149,10 @@
     "car_asset": "rebuilt true transparent cutout from portrait master",
     "booth_asset": "rebuilt true transparent cutout from portrait master",
     "marquee": "bulb-only halo + 3 chase groups, no full rectangular marquee overlay"
+  },
+  "fixes_v6_10": {
+    "shoes": "document-level pointer safety check + pointerout; hover state cannot remain after leaving target",
+    "booth_hover": "drop-shadow directly on exact booth.png; no separate glow asset",
+    "marquee": "59 detected bulb centers; desktop v6.3 3-group chase, stronger portrait peak"
   }
 }

@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='responsive-exterior-portrait-v6.9';
+  const VERSION='responsive-exterior-portrait-v6.10';
   const initialDpr=Math.max(.1,Number(window.devicePixelRatio)||1);
   const QUERY='(orientation: portrait) and (max-width: 1180px)';
   const MASTER_W=1086;
@@ -65,7 +65,6 @@
     }
 
     addImg(s,'mq-pv6-booth','booth.png');
-    addImg(s,'mq-pv6-booth-glow','booth-glow.png');
 
     if(!s.querySelector('.mq-pv63-marquee-lights')){
       const lights=document.createElement('div');
