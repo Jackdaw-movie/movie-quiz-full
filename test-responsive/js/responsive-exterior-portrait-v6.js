@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='responsive-exterior-portrait-v6.8';
+  const VERSION='responsive-exterior-portrait-v6.9';
   const initialDpr=Math.max(.1,Number(window.devicePixelRatio)||1);
   const QUERY='(orientation: portrait) and (max-width: 1180px)';
   const MASTER_W=1086;
@@ -49,10 +49,13 @@
   function ensurePortraitLayers(){
     const s=stage();
     if(!s)return;
+
     addImg(s,'mq-pv6-sign','jackdaws-sign.png');
+    addImg(s,'mq-pv6-jackdaws-glow','jackdaws-glow.png');
     addImg(s,'mq-pv6-hotel-sign','hotel-sign.png');
-    addImg(s,'mq-pv6-marquee','marquee-lights.png');
+    addImg(s,'mq-pv6-hotel-glow','hotel-glow.png');
     addImg(s,'mq-pv6-lamp','lamp.png');
+
     addImg(s,'mq-pv6-car','car.png');
     if(!s.querySelector('.mq-pv6-car-shine')){
       const shine=document.createElement('div');
@@ -60,10 +63,25 @@
       shine.setAttribute('aria-hidden','true');
       s.appendChild(shine);
     }
+
     addImg(s,'mq-pv6-booth','booth.png');
     addImg(s,'mq-pv6-booth-glow','booth-glow.png');
+
+    if(!s.querySelector('.mq-pv63-marquee-lights')){
+      const lights=document.createElement('div');
+      lights.className='mq-pv63-marquee-lights';
+      lights.setAttribute('aria-hidden','true');
+      lights.innerHTML=
+        '<img class="mq-pv63-bulb-halo" src="'+BASE+'marquee-bulbs-halo.png" alt="">'+
+        '<img class="mq-pv63-bulb-group g1" src="'+BASE+'marquee-bulbs-1.png" alt="">'+
+        '<img class="mq-pv63-bulb-group g2" src="'+BASE+'marquee-bulbs-2.png" alt="">'+
+        '<img class="mq-pv63-bulb-group g3" src="'+BASE+'marquee-bulbs-3.png" alt="">';
+      s.appendChild(lights);
+    }
+
     addImg(s,'mq-pv6-steam steam-a','steam.png');
     addImg(s,'mq-pv6-steam steam-b','steam.png');
+
     if(!s.querySelector('.mq-pv6-searchlights')){
       const lights=document.createElement('div');
       lights.className='mq-pv6-searchlights';
@@ -76,7 +94,7 @@
   function togglePortraitLayerVisibility(active){
     const s=stage();
     if(!s)return;
-    s.querySelectorAll('.mq-pv6-layer,.mq-pv6-car-shine,.mq-pv6-searchlights').forEach(node=>{
+    s.querySelectorAll('.mq-pv6-layer,.mq-pv6-car-shine,.mq-pv63-marquee-lights,.mq-pv6-searchlights').forEach(node=>{
       node.style.display=active?'block':'none';
     });
   }

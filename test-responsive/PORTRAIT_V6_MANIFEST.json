@@ -1,5 +1,5 @@
 {
-  "version": "6.8",
+  "version": "6.9",
   "scope": "test-responsive only",
   "portrait_breakpoint": "(orientation: portrait) and (max-width: 1180px)",
   "master": {
@@ -74,12 +74,9 @@
       "h": 204
     },
     "carShine": {
-      "type": "css masked overlay using car-alpha-mask.png derived from car.png",
-      "x": 0,
-      "y": 910,
-      "w": 545,
-      "h": 325,
-      "cycle_seconds": 8
+      "mask": "car-shine-mask.png derived by intersecting exact car alpha with metal-body region",
+      "cycle_seconds": 8,
+      "implementation": "desktop-style stationary masked layer; background-position only"
     },
     "marqueeLights": {
       "file": "test-responsive/assets/exterior-portrait-v6/marquee-lights.png",
@@ -91,11 +88,7 @@
     },
     "boothGlow": {
       "file": "test-responsive/assets/exterior-portrait-v6/booth-glow.png",
-      "x": 445,
-      "y": 650,
-      "w": 245,
-      "h": 405,
-      "effect": "edge-only hover glow"
+      "implementation": "edge-only ring generated from exact rebuilt booth alpha"
     },
     "jackdawsSign": {
       "file": "test-responsive/assets/exterior-portrait-v6/jackdaws-sign.png",
@@ -120,6 +113,21 @@
       "w": 966,
       "h": 170,
       "effect": "glow pulse overlay over exact marquee asset"
+    },
+    "marqueeBulbs": {
+      "files": [
+        "marquee-bulbs-halo.png",
+        "marquee-bulbs-1.png",
+        "marquee-bulbs-2.png",
+        "marquee-bulbs-3.png"
+      ],
+      "geometry": [
+        120,
+        585,
+        966,
+        170
+      ],
+      "implementation": "desktop v6.3 parity: halo 3.2s, chase 1.35s, delays 0/-0.45/-0.90"
     }
   },
   "reused_production_behaviour": [
@@ -138,5 +146,12 @@
     "booth hover glow",
     "animated shoe cursor hover",
     "ticket-booth hand and 5-frame speech bubble sequence"
-  ]
+  ],
+  "audit": {
+    "desktop_interactions": "production mqTicketBoothHotspot untouched outside portrait",
+    "desktop_reference": "css/exterior-scene.css v6.3 bulb groups + v6.1 car shine + production booth listeners",
+    "car_asset": "rebuilt true transparent cutout from portrait master",
+    "booth_asset": "rebuilt true transparent cutout from portrait master",
+    "marquee": "bulb-only halo + 3 chase groups, no full rectangular marquee overlay"
+  }
 }

@@ -57,30 +57,22 @@
     }));
   }
 
-  function schedule(){
-    if(raf)return;
-    raf=requestAnimationFrame(apply);
-  }
+  function schedule(){if(!raf)raf=requestAnimationFrame(apply)}
 
   const observer=new MutationObserver(mutations=>{
     for(const mutation of mutations){
       if(mutation.type==='attributes'){
         const target=mutation.target;
-        if(target?.id==='mqAvatarModal'||target?.id==='mqTicketLayer'||target?.id==='mqExteriorScene'){
-          schedule();return;
-        }
+        if(target?.id==='mqAvatarModal'||target?.id==='mqTicketLayer'||target?.id==='mqExteriorScene'){schedule();return}
       }
       for(const node of mutation.addedNodes||[]){
         if(!(node instanceof Element))continue;
-        if(node.id==='mqAvatarModal'||node.id==='mqExteriorStage'||node.querySelector?.('#mqAvatarModal,#mqExteriorStage')){
-          schedule();return;
-        }
+        if(node.id==='mqAvatarModal'||node.id==='mqExteriorStage'||node.querySelector?.('#mqAvatarModal,#mqExteriorStage')){schedule();return}
       }
     }
   });
 
   window.MovieQuizResponsiveLayout={VERSION,viewport,coverScale,applyNow:apply,update:schedule};
-
   window.addEventListener('resize',schedule,{passive:true});
   window.addEventListener('orientationchange',schedule,{passive:true});
   window.visualViewport?.addEventListener('resize',schedule,{passive:true});
@@ -88,26 +80,23 @@
   window.addEventListener('mq:master-stage-resized',schedule,{passive:true});
   window.addEventListener('mq:preload-entered',schedule,{passive:true});
 
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',()=>{
-      observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['hidden','class']});
-      apply();
-    },{once:true});
-  }else{
+  const start=()=>{
     observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['hidden','class']});
     apply();
-  }
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});
+  else start();
 })();
 
-/* Movie Quiz – exterior interaction v4.0
-   One dedicated DOM hit target owns all pointer hover/click behaviour.
-   The old booth button is pointer-dead and is used only to invoke the existing
-   ticket/footstep handler programmatically after the new target is clicked. */
+/* Portrait-only booth target.
+   Desktop is deliberately not touched. Production #mqTicketBoothHotspot owns
+   desktop shoes, hover glow and click behavior. */
 (()=>{
   'use strict';
 
-  const VERSION='responsive-exterior-single-target-v4.0';
+  const VERSION='responsive-exterior-single-target-v4.1-portrait-only';
   const TARGET_ID='mqResponsiveBoothHitTarget';
+  const mql=window.matchMedia('(orientation: portrait) and (max-width: 1180px)');
   let bodyObserver=null;
 
   const root=()=>document.documentElement;
@@ -118,21 +107,27 @@
 
   function exteriorInteractive(){
     const old=booth();
-    return document.body.classList.contains('mq-exterior-active') &&
+    return mql.matches &&
+      document.body.classList.contains('mq-exterior-active') &&
       !document.body.classList.contains('mq-preloading') &&
       !document.body.classList.contains('mq-ticket-open') &&
       !document.body.classList.contains('mq-entering-auditorium') &&
       !old?.disabled;
   }
 
-  function clearLegacyStates(){
-    root().classList.remove('mq-booth-alpha-hover','mq-booth-virtual-hover');
+  function clearHover(){
+    root().classList.remove('mq-booth-target-hover','mq-booth-alpha-hover','mq-booth-virtual-hover');
+    shoes()?.classList.remove('is-visible');
   }
 
-  function clearHover(){
-    root().classList.remove('mq-booth-target-hover');
-    clearLegacyStates();
-    shoes()?.classList.remove('is-visible');
+  function restoreDesktop(){
+    clearHover();
+    const old=booth();
+    if(old){
+      old.style.removeProperty('pointer-events');
+      old.style.removeProperty('cursor');
+    }
+    target()?.remove();
   }
 
   function placeShoes(event){
@@ -147,23 +142,19 @@
       clearHover();
       return;
     }
-    clearLegacyStates();
     root().classList.add('mq-booth-target-hover');
     shoes()?.classList.add('is-visible');
     placeShoes(event);
   }
 
-  function disableLegacyHotspot(){
+  function installTarget(){
+    if(!mql.matches){restoreDesktop();return false}
+    const s=stage();
     const old=booth();
-    if(!old)return;
+    if(!s||!old)return false;
+
     old.style.setProperty('pointer-events','none','important');
     old.style.setProperty('cursor','default','important');
-  }
-
-  function installTarget(){
-    const s=stage();
-    if(!s)return false;
-    disableLegacyHotspot();
 
     let hit=target();
     if(!hit){
@@ -180,48 +171,38 @@
     hit.addEventListener('pointermove',showHover);
     hit.addEventListener('pointerleave',clearHover);
     hit.addEventListener('pointercancel',clearHover);
-
     hit.addEventListener('click',event=>{
       if(!exteriorInteractive())return;
       if(typeof event.button==='number'&&event.button!==0)return;
-      const old=booth();
-      if(!old||old.disabled)return;
+      const legacy=booth();
+      if(!legacy||legacy.disabled)return;
       event.preventDefault();
       event.stopImmediatePropagation();
       clearHover();
-      old.click();
+      legacy.click();
     });
 
     return true;
   }
 
-  function safetyPointerCheck(event){
-    if(!root().classList.contains('mq-booth-target-hover'))return;
-    const hit=target();
-    if(!hit||!event.composedPath().includes(hit))clearHover();
-  }
-
   function sync(){
+    if(!mql.matches){restoreDesktop();return}
     installTarget();
     if(!exteriorInteractive())clearHover();
   }
 
   function start(){
-    clearHover();
-    installTarget();
-
-    document.addEventListener('pointermove',safetyPointerCheck,true);
+    sync();
+    mql.addEventListener?.('change',sync);
     window.addEventListener('blur',clearHover);
-    window.addEventListener('resize',clearHover,{passive:true});
-    window.visualViewport?.addEventListener('resize',clearHover,{passive:true});
-    window.visualViewport?.addEventListener('scroll',clearHover,{passive:true});
+    window.addEventListener('resize',sync,{passive:true});
+    window.visualViewport?.addEventListener('resize',sync,{passive:true});
     document.addEventListener('visibilitychange',()=>{if(document.hidden)clearHover()});
 
     if(!bodyObserver){
       bodyObserver=new MutationObserver(sync);
       bodyObserver.observe(document.body,{attributes:true,attributeFilter:['class']});
     }
-
     window.__mqResponsiveExteriorPointerVersion=VERSION;
   }
 
