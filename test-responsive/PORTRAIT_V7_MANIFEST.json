@@ -1,5 +1,5 @@
 {
-  "version": "7.1-clean-rebuild",
+  "version": "7.2-clean-rebuild",
   "architecture": "new portrait module, no old responsive exterior interaction layer",
   "desktop": "production interaction untouched",
   "booth": {
@@ -23,5 +23,10 @@
     "halo_seconds": 3.2,
     "effect": "christmas-tree alternating pulses across 3 bulb groups"
   },
-  "hand_bubble": "positions copied unchanged from v6.9"
+  "hand_bubble": "positions copied unchanged from v6.9",
+  "fixes_v7_2": {
+    "desktop_shoes": "portrait pointermove is a no-op outside portrait; production desktop cursor is untouched",
+    "booth_glow": "glow-only image derived from booth-mask.png, shifted +10px; no duplicate booth pixels",
+    "marquee": "z-index 999999, three highly visible sequential bulb pulses"
+  }
 }
