@@ -1,0 +1,26 @@
+{
+  "version": "7.0-clean-rebuild",
+  "architecture": "new portrait module, no old responsive exterior interaction layer",
+  "desktop": "production interaction untouched",
+  "booth": {
+    "asset": "booth.png isolated with booth-mask.png",
+    "hover": "filter on same image",
+    "hit_test": "alpha mask sampled on every pointermove"
+  },
+  "car": {
+    "status": "preserved from user-approved v6.9",
+    "cycle_seconds": 8
+  },
+  "marquee": {
+    "bulb_centers": 50,
+    "groups": 3,
+    "chase_seconds": 1.35,
+    "phase_offsets": [
+      0,
+      -0.45,
+      -0.9
+    ],
+    "halo_seconds": 3.2
+  },
+  "hand_bubble": "positions copied unchanged from v6.9"
+}
