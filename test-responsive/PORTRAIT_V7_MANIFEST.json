@@ -1,10 +1,10 @@
 {
-  "version": "7.0-clean-rebuild",
+  "version": "7.1-clean-rebuild",
   "architecture": "new portrait module, no old responsive exterior interaction layer",
   "desktop": "production interaction untouched",
   "booth": {
     "asset": "booth.png isolated with booth-mask.png",
-    "hover": "filter on same image",
+    "hover": "same booth asset used for glow overlay, shifted +10px on x-axis",
     "hit_test": "alpha mask sampled on every pointermove"
   },
   "car": {
@@ -20,7 +20,8 @@
       -0.45,
       -0.9
     ],
-    "halo_seconds": 3.2
+    "halo_seconds": 3.2,
+    "effect": "christmas-tree alternating pulses across 3 bulb groups"
   },
   "hand_bubble": "positions copied unchanged from v6.9"
 }
