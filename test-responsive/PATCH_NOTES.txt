@@ -1,9 +1,19 @@
-Movie Quiz – responsive exterior portrait v5.1 TEST patch
+Movie Quiz – responsive exterior v8.0 CLEANUP
 
-Fixes vs previous patch:
-- restored deterministic booth hover/click in portrait mode via a portrait-owned booth hit target
-- added portrait-anchored CTA bubble + waving hand near the booth
-- hid drifting legacy helper bubble/hand in portrait mode only
-- corrected portrait car-shine placement
-- corrected portrait steam placement
-- retained desktop/production untouched; patch changes test-responsive only
+Active exterior responsive stack:
+- test-responsive/css/responsive-exterior-v8.css
+- test-responsive/js/responsive-exterior-v8.js
+- test-responsive/js/responsive-runtime-v3.js
+
+Cleanup / fixes:
+- only the ticket booth remains an interactive target in the exterior scene
+- desktop keeps the production booth hover, production shoes and production click handler
+- portrait uses one pixel-mask booth hover/click controller only
+- legacy responsive booth hit targets and stale hover classes are removed at runtime
+- all other exterior stage descendants are pointer-dead in the responsive test build
+- booth glow is roughly 50% softer; only its halo is shifted +10 px, never the booth asset
+- marquee uses the exact production v6.3 halo + G1/G2/G3 timing through Web Animations
+- marquee is placed above all other stage layers
+- car/shine and approved hand/bubble geometry remain unchanged
+
+See EXTERIOR_V8_AUDIT.md for implementation and browser-harness validation details.
