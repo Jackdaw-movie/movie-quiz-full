@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='responsive-exterior-portrait-v6.6';
+  const VERSION='responsive-exterior-portrait-v6.8';
   const initialDpr=Math.max(.1,Number(window.devicePixelRatio)||1);
   const QUERY='(orientation: portrait) and (max-width: 1180px)';
   const MASTER_W=1086;
@@ -49,18 +49,10 @@
   function ensurePortraitLayers(){
     const s=stage();
     if(!s)return;
-
     addImg(s,'mq-pv6-sign','jackdaws-sign.png');
-    addImg(s,'mq-pv6-jackdaws-glow','jackdaws-glow.png');
-
     addImg(s,'mq-pv6-hotel-sign','hotel-sign.png');
-    addImg(s,'mq-pv6-hotel-glow','hotel-glow.png');
-
-    addImg(s,'mq-pv6-marquee-lights','marquee-lights.png');
-
+    addImg(s,'mq-pv6-marquee','marquee-lights.png');
     addImg(s,'mq-pv6-lamp','lamp.png');
-    addImg(s,'mq-pv6-lamp-glow','lamp-glow.png');
-
     addImg(s,'mq-pv6-car','car.png');
     if(!s.querySelector('.mq-pv6-car-shine')){
       const shine=document.createElement('div');
@@ -68,13 +60,10 @@
       shine.setAttribute('aria-hidden','true');
       s.appendChild(shine);
     }
-
     addImg(s,'mq-pv6-booth','booth.png');
     addImg(s,'mq-pv6-booth-glow','booth-glow.png');
-
     addImg(s,'mq-pv6-steam steam-a','steam.png');
     addImg(s,'mq-pv6-steam steam-b','steam.png');
-
     if(!s.querySelector('.mq-pv6-searchlights')){
       const lights=document.createElement('div');
       lights.className='mq-pv6-searchlights';
@@ -82,6 +71,14 @@
       lights.innerHTML='<i></i><i></i>';
       s.appendChild(lights);
     }
+  }
+
+  function togglePortraitLayerVisibility(active){
+    const s=stage();
+    if(!s)return;
+    s.querySelectorAll('.mq-pv6-layer,.mq-pv6-car-shine,.mq-pv6-searchlights').forEach(node=>{
+      node.style.display=active?'block':'none';
+    });
   }
 
   function rememberOriginal(img){
@@ -146,11 +143,12 @@
 
     if(active){
       ensurePortraitLayers();
+      togglePortraitLayerVisibility(true);
       applyTopAnchoredCover();
     }else{
-      root().classList.remove('mq-booth-target-hover');
-      try{window.MovieQuizMasterStage?.updateNow?.()}catch(_){}
-      try{window.MovieQuizExteriorZoom?.updateNow?.()}catch(_){}
+      togglePortraitLayerVisibility(false);
+      try{window.MovieQuizMasterStage?.updateNow?.()}catch(_){ }
+      try{window.MovieQuizExteriorZoom?.updateNow?.()}catch(_){ }
     }
 
     window.__mqResponsiveExteriorPortraitVersion=VERSION;

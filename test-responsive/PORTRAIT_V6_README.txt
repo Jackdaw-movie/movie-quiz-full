@@ -1,4 +1,4 @@
-Movie Quiz – RESPONSIVE PORTRAIT EXTERIOR v6.6
+Movie Quiz – RESPONSIVE PORTRAIT EXTERIOR v6.8
 TEST INSTANCE ONLY
 
 Co se mění:
@@ -73,3 +73,15 @@ Patch v6.6:
 - všechny tyto assety dostaly lehký 3D / pop-out efekt přes vlastní drop-shadow, nikoli jen efekt na pozadí.
 - odlesk auta je aplikovaný přímo nad assetem auta a ořezaný alpha kanálem car.png, cyklus 8 s.
 - marquee lights jsou skutečný asset marquee-lights.png a pulzují na sobě, ne na pozadí; ruka a bublina zůstaly zachované.
+
+Patch v6.7:
+- desktop fix: portrait runtime už na desktopu nesmazává mq-booth-target-hover, takže se vrací boty i hover podsvícení budky.
+- mobil fix: budka se při hoveru už nezesvětluje celá, svítí jen edge-only booth-glow overlay.
+- mobil fix: odlesk auta je nově řešený 4 přesně vyřezanými frame overlay assety přímo ve tvaru auta, takže nemůže utéct mimo siluetu. Cyklus 8 s.
+- mobil fix: světla nad vstupem jsou exact marquee asset + samostatná glow vrstva, která opravdu bliká.
+
+Patch v6.8 audit rebuild:
+- desktop is protected: portrait layers are forcibly hidden when the portrait breakpoint is inactive, so desktop boty and booth hover are no longer interfered with.
+- portrait marquee now follows the desktop logic directly: one exact marquee asset with the desktop filter pulse.
+- portrait car shine now follows the desktop logic directly: one CSS shine layer masked by a true alpha mask generated from car.png.
+- portrait booth hover lights only the edge overlay, not the whole booth.

@@ -1,5 +1,5 @@
 {
-  "version": "6.6",
+  "version": "6.8",
   "scope": "test-responsive only",
   "portrait_breakpoint": "(orientation: portrait) and (max-width: 1180px)",
   "master": {
@@ -74,7 +74,7 @@
       "h": 204
     },
     "carShine": {
-      "type": "css masked overlay using car.png alpha",
+      "type": "css masked overlay using car-alpha-mask.png derived from car.png",
       "x": 0,
       "y": 910,
       "w": 545,
@@ -87,7 +87,7 @@
       "y": 585,
       "w": 966,
       "h": 170,
-      "effect": "raised asset + desktop-style pulse"
+      "effect": "desktop-style single asset pulse"
     },
     "boothGlow": {
       "file": "test-responsive/assets/exterior-portrait-v6/booth-glow.png",
@@ -95,7 +95,7 @@
       "y": 650,
       "w": 245,
       "h": 405,
-      "effect": "full contour hover glow"
+      "effect": "edge-only hover glow"
     },
     "jackdawsSign": {
       "file": "test-responsive/assets/exterior-portrait-v6/jackdaws-sign.png",
@@ -112,6 +112,14 @@
       "w": 86,
       "h": 230,
       "effect": "raised asset + glow"
+    },
+    "marqueeLightsGlow": {
+      "file": "test-responsive/assets/exterior-portrait-v6/marquee-lights.png",
+      "x": 120,
+      "y": 585,
+      "w": 966,
+      "h": 170,
+      "effect": "glow pulse overlay over exact marquee asset"
     }
   },
   "reused_production_behaviour": [
