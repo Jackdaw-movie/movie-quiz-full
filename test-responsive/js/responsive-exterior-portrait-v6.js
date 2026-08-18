@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='responsive-exterior-portrait-v6.4';
+  const VERSION='responsive-exterior-portrait-v6.6';
   const initialDpr=Math.max(.1,Number(window.devicePixelRatio)||1);
   const QUERY='(orientation: portrait) and (max-width: 1180px)';
   const MASTER_W=1086;
@@ -50,13 +50,13 @@
     const s=stage();
     if(!s)return;
 
+    addImg(s,'mq-pv6-sign','jackdaws-sign.png');
     addImg(s,'mq-pv6-jackdaws-glow','jackdaws-glow.png');
+
+    addImg(s,'mq-pv6-hotel-sign','hotel-sign.png');
     addImg(s,'mq-pv6-hotel-glow','hotel-glow.png');
 
-    addImg(s,'mq-pv6-marquee halo','marquee-bulbs-halo.png');
-    addImg(s,'mq-pv6-marquee g1','marquee-bulbs-1.png');
-    addImg(s,'mq-pv6-marquee g2','marquee-bulbs-2.png');
-    addImg(s,'mq-pv6-marquee g3','marquee-bulbs-3.png');
+    addImg(s,'mq-pv6-marquee-lights','marquee-lights.png');
 
     addImg(s,'mq-pv6-lamp','lamp.png');
     addImg(s,'mq-pv6-lamp-glow','lamp-glow.png');
@@ -70,6 +70,8 @@
     }
 
     addImg(s,'mq-pv6-booth','booth.png');
+    addImg(s,'mq-pv6-booth-glow','booth-glow.png');
+
     addImg(s,'mq-pv6-steam steam-a','steam.png');
     addImg(s,'mq-pv6-steam steam-b','steam.png');
 

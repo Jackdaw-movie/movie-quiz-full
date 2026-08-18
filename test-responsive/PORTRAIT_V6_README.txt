@@ -1,4 +1,4 @@
-Movie Quiz – RESPONSIVE PORTRAIT EXTERIOR v6.4
+Movie Quiz – RESPONSIVE PORTRAIT EXTERIOR v6.6
 TEST INSTANCE ONLY
 
 Co se mění:
@@ -62,3 +62,14 @@ Patch v6.4 – skutečná oprava dvou problémů:
   Jsou kompletně přegenerované z pixelů tohoto portrait masteru jako transparentní bulb-only vrstvy.
   Animace používá stejné časy jako desktop v6.3: 1.35 s chase, delay 0 / -0.45 / -0.90 s,
   plus 3.2 s bulb halo.
+
+Patch v6.5:
+- auto: odlesk už není maskovaný obdélník; je to transparentní exact overlay stejné velikosti a stejné pozice jako asset auta. Pohybuje se jen uvnitř assetu.
+- kino: odstraněné chybné duplikované bulb stripy; nově jeden exact marquee-lights overlay vyříznutý z portrait masteru a animovaný stejně jako desktop marquee pulse.
+- budka: přidaný exact booth-glow overlay po celém obvodu assetu při hoveru.
+
+Patch v6.6:
+- do scény jsou vloženy skutečné portrait assety: JACKDAW'S sign, HOTEL sign, lampa, auto, marquee lights, budka a pára.
+- všechny tyto assety dostaly lehký 3D / pop-out efekt přes vlastní drop-shadow, nikoli jen efekt na pozadí.
+- odlesk auta je aplikovaný přímo nad assetem auta a ořezaný alpha kanálem car.png, cyklus 8 s.
+- marquee lights jsou skutečný asset marquee-lights.png a pulzují na sobě, ne na pozadí; ruka a bublina zůstaly zachované.

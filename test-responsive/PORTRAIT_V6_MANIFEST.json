@@ -1,5 +1,5 @@
 {
-  "version": "6.4",
+  "version": "6.6",
   "scope": "test-responsive only",
   "portrait_breakpoint": "(orientation: portrait) and (max-width: 1180px)",
   "master": {
@@ -12,22 +12,28 @@
   },
   "layers": {
     "booth": {
+      "file": "test-responsive/assets/exterior-portrait-v6/booth.png",
       "x": 445,
       "y": 650,
       "w": 245,
-      "h": 405
+      "h": 405,
+      "effect": "raised asset + full contour hover glow"
     },
     "car": {
+      "file": "test-responsive/assets/exterior-portrait-v6/car.png",
       "x": 0,
       "y": 910,
       "w": 545,
-      "h": 325
+      "h": 325,
+      "effect": "raised asset"
     },
     "lamp": {
+      "file": "test-responsive/assets/exterior-portrait-v6/lamp.png",
       "x": 0,
       "y": 630,
       "w": 40,
-      "h": 375
+      "h": 375,
+      "effect": "raised asset + flicker glow"
     },
     "jackdawsGlow": {
       "x": 135,
@@ -41,20 +47,13 @@
       "w": 86,
       "h": 230
     },
-    "marqueeBulbs": {
-      "x": 180,
-      "y": 565,
-      "w": 906,
-      "h": 180,
-      "source": "transparent bulb-only exact pixel cutouts from portrait master",
-      "timing": "desktop v6.3 parity: chase 1.35s, delays 0/-0.45/-0.90; halo 3.2s"
-    },
     "steam": {
+      "file": "test-responsive/assets/exterior-portrait-v6/steam.png",
       "x": 758,
       "y": 998,
       "w": 182,
       "h": 228,
-      "visibility": "stronger"
+      "effect": "raised asset + live animation"
     },
     "boothHitTarget": {
       "x": 458,
@@ -75,14 +74,44 @@
       "h": 204
     },
     "carShine": {
+      "type": "css masked overlay using car.png alpha",
       "x": 0,
       "y": 910,
       "w": 545,
       "h": 325,
-      "mask": "car.png alpha channel",
-      "movement": "gradient background only; overlay itself fixed",
-      "mirrored": true,
-      "cycle_seconds": 9
+      "cycle_seconds": 8
+    },
+    "marqueeLights": {
+      "file": "test-responsive/assets/exterior-portrait-v6/marquee-lights.png",
+      "x": 120,
+      "y": 585,
+      "w": 966,
+      "h": 170,
+      "effect": "raised asset + desktop-style pulse"
+    },
+    "boothGlow": {
+      "file": "test-responsive/assets/exterior-portrait-v6/booth-glow.png",
+      "x": 445,
+      "y": 650,
+      "w": 245,
+      "h": 405,
+      "effect": "full contour hover glow"
+    },
+    "jackdawsSign": {
+      "file": "test-responsive/assets/exterior-portrait-v6/jackdaws-sign.png",
+      "x": 135,
+      "y": 55,
+      "w": 140,
+      "h": 470,
+      "effect": "raised asset + glow"
+    },
+    "hotelSign": {
+      "file": "test-responsive/assets/exterior-portrait-v6/hotel-sign.png",
+      "x": 0,
+      "y": 460,
+      "w": 86,
+      "h": 230,
+      "effect": "raised asset + glow"
     }
   },
   "reused_production_behaviour": [
