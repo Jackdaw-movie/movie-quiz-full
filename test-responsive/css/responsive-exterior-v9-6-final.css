@@ -1,0 +1,24 @@
+/* Movie Quiz – responsive exterior v9.6 final cursor lock
+   Loaded last. When the booth hover is active, the shoe cursor fully replaces
+   the native cursor everywhere until the hover class is cleared by v9.6 JS.
+*/
+html.mq-v9-booth-hover,
+html.mq-v9-booth-hover *,
+html.mq-v9-booth-hover *::before,
+html.mq-v9-booth-hover *::after{
+  cursor:none!important;
+}
+
+html.mq-v9-booth-hover body.mq-responsive-preview .mq-walk-cursor-v6{
+  display:block!important;
+  opacity:1!important;
+  visibility:visible!important;
+  position:fixed!important;
+  z-index:2147483646!important;
+  pointer-events:none!important;
+}
+
+html:not(.mq-v9-booth-hover) body.mq-responsive-preview .mq-walk-cursor-v6{
+  opacity:0!important;
+  visibility:hidden!important;
+}
