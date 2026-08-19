@@ -1,0 +1,77 @@
+/* Movie Quiz – responsive exterior v9.2 polish
+   Final cleanup for the two remaining interaction issues:
+   1) mobile/tablet shoes were hidden by older responsive foundations
+   2) remove every visual/native hover inherited from the production booth class
+*/
+
+/* The v9 clean target owns its own geometry. It no longer needs .mq-booth-button,
+   therefore no production :hover/:focus/mobile-cursor rule can attach to it. */
+body.mq-responsive-preview #mqExteriorStage > #mqTicketBoothHotspot.mq-v9-booth-target{
+  position:absolute!important;
+  z-index:15!important;
+  left:820px!important;
+  top:452px!important;
+  width:250px!important;
+  height:367px!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  outline:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  filter:none!important;
+  transform:none!important;
+  appearance:none!important;
+  -webkit-appearance:none!important;
+  -webkit-tap-highlight-color:transparent!important;
+  cursor:none!important;
+  pointer-events:auto!important;
+  clip-path:polygon(42.29% 0.00%,37.15% 5.19%,17.91% 10.84%,4.98% 25.28%,8.46% 31.83%,5.80% 36.34%,8.29% 60.84%,4.31% 61.74%,8.46% 64.79%,6.14% 88.71%,0.17% 90.29%,0.00% 94.70%,58.37% 99.77%,99.83% 90.86%,96.02% 80.02%,98.34% 26.86%,82.26% 11.63%,47.93% 4.85%)!important;
+}
+
+body.mq-responsive-preview #mqExteriorStage > #mqTicketBoothHotspot.mq-v9-booth-target:hover,
+body.mq-responsive-preview #mqExteriorStage > #mqTicketBoothHotspot.mq-v9-booth-target:focus,
+body.mq-responsive-preview #mqExteriorStage > #mqTicketBoothHotspot.mq-v9-booth-target:focus-visible,
+body.mq-responsive-preview #mqExteriorStage > #mqTicketBoothHotspot.mq-v9-booth-target:active{
+  outline:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  filter:none!important;
+  transform:none!important;
+}
+
+/* Defensive neutralisation if an old responsive hover class is briefly restored
+   by a legacy script before the v9.2 class observer strips it again. */
+html.mq-booth-target-hover body.mq-responsive-preview #mqExteriorStage > .mq-v6-booth-direct,
+html.mq-booth-alpha-hover body.mq-responsive-preview #mqExteriorStage > .mq-v6-booth-direct,
+html.mq-booth-virtual-hover body.mq-responsive-preview #mqExteriorStage > .mq-v6-booth-direct,
+html.mq-pv6-booth-hover body.mq-responsive-preview #mqExteriorStage > .mq-v6-booth-direct,
+html.mq-pv7-booth-hover body.mq-responsive-preview #mqExteriorStage > .mq-v6-booth-direct,
+html.mq-pv8-booth-hover body.mq-responsive-preview #mqExteriorStage > .mq-v6-booth-direct{
+  transform:none!important;
+  filter:brightness(1.01) drop-shadow(7px 11px 7px rgba(0,0,0,.56))!important;
+}
+
+/* Older responsive-v1.css and responsive-v1-tablet.css contain
+   .mq-walk-cursor-v6{display:none!important}. v9.2 is intentionally loaded last
+   and restores the approved shoe cursor in the portrait exterior. */
+@media (orientation:portrait) and (max-width:1180px){
+  body.mq-responsive-preview .mq-walk-cursor-v6{
+    display:block!important;
+    position:fixed!important;
+    z-index:2147483646!important;
+    pointer-events:none!important;
+  }
+
+  html.mq-v9-booth-hover body.mq-responsive-preview.mq-exterior-active:not(.mq-ticket-open):not(.mq-preloading) .mq-walk-cursor-v6{
+    display:block!important;
+    opacity:1!important;
+    visibility:visible!important;
+  }
+
+  body.mq-responsive-preview #mqExteriorStage > #mqTicketBoothHotspot.mq-v9-booth-target{
+    pointer-events:none!important;
+    cursor:default!important;
+  }
+}
