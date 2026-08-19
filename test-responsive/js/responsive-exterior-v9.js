@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='responsive-exterior-v9.0-single-controller';
+  const VERSION='responsive-exterior-v9.1-single-controller';
   const PORTRAIT_QUERY='(orientation: portrait) and (max-width: 1180px)';
   const PORTRAIT_W=1086;
   const PORTRAIT_H=1235;
@@ -144,8 +144,7 @@
     const zoomRatio=currentDpr/initialDpr;
     const w=Math.max(1,innerWidth*zoomRatio);
     const h=Math.max(1,innerHeight*zoomRatio);
-    const scale=Math.max(w/PORTRAIT_W,h/PORTRAIT_H);
-    root().style.setProperty('--mq-pv9-scale',scale.toFixed(7));
+    root().style.setProperty('--mq-pv9-scale',Math.max(w/PORTRAIT_W,h/PORTRAIT_H).toFixed(7));
   }
 
   function loadBoothMask(){
@@ -202,6 +201,13 @@
     return clientX>=rect.left&&clientX<=rect.right&&clientY>=rect.top&&clientY<=rect.bottom;
   }
 
+  function eventTargetsStage(event){
+    const s=stage();
+    if(!s)return false;
+    if(event.target===s||event.target===cleanBooth)return true;
+    try{return event.composedPath?.().includes(s)===true}catch(_){return false}
+  }
+
   function cleanBoothHit(event){
     if(!cleanBooth)return false;
     if(portraitMql.matches)return portraitBoothHit(event.clientX,event.clientY);
@@ -209,8 +215,7 @@
   }
 
   function hideShoes(){
-    const cursor=shoes();
-    if(cursor)cursor.classList.remove('is-visible');
+    shoes()?.classList.remove('is-visible');
   }
 
   function setHover(active,event){
@@ -250,7 +255,6 @@
       cleanBooth=current;
       return true;
     }
-
     originalBooth=current;
     cleanBooth=current.cloneNode(true);
     cleanBooth.dataset.mqV9Clean='1';
@@ -285,11 +289,23 @@
     event.stopPropagation();
   }
 
-  /* Window capture runs before document/stage handlers from the production build.
-     This is the only interaction controller allowed to receive exterior input. */
+  /* This controller is active only while the exterior is genuinely interactive,
+     and only when the event's real DOM path belongs to #mqExteriorStage. */
   function captureExterior(event){
     if(syntheticClick)return;
+
+    if(!isExteriorInteractive()){
+      if(event.type==='pointermove'||event.type==='mousemove')clearHover();
+      return;
+    }
+
     if(typeof event.clientX!=='number'||typeof event.clientY!=='number')return;
+
+    if(!eventTargetsStage(event)){
+      if(event.type==='pointermove'||event.type==='mousemove')clearHover();
+      return;
+    }
+
     if(!stageContainsPoint(event.clientX,event.clientY)){
       if(event.type==='pointermove'||event.type==='mousemove')clearHover();
       return;
@@ -298,11 +314,6 @@
     const hit=cleanBoothHit(event);
 
     if(event.type==='pointermove'||event.type==='mousemove'){
-      if(!isExteriorInteractive()){
-        clearHover();
-        stopEvent(event);
-        return;
-      }
       const isMouse=!event.pointerType||event.pointerType==='mouse';
       setHover(Boolean(hit&&isMouse),event);
       stopEvent(event);
@@ -315,11 +326,11 @@
       return;
     }
 
-    /* No legacy pointer/mouse down/up/over event can create a second hotspot. */
     stopEvent(event);
   }
 
   function keydown(event){
+    if(!isExteriorInteractive())return;
     if(document.activeElement!==cleanBooth)return;
     if(event.key!=='Enter'&&event.key!==' ')return;
     event.preventDefault();
