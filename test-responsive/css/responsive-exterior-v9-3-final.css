@@ -1,0 +1,59 @@
+/* Movie Quiz – responsive exterior v9.3 final interaction cleanup
+   - no native DOM hover target in the exterior
+   - shoes fully replace the mouse cursor on the booth
+   - old production/responsive booth hover selectors are structurally disabled
+*/
+
+body.mq-responsive-preview #mqExteriorStage > #mqTicketBoothHotspot.mq-v9-booth-target{
+  pointer-events:none!important;
+  cursor:default!important;
+  background:transparent!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  filter:none!important;
+  transform:none!important;
+  appearance:none!important;
+  -webkit-appearance:none!important;
+  -webkit-tap-highlight-color:transparent!important;
+}
+
+body.mq-responsive-preview.mq-exterior-active #mqExteriorScene,
+body.mq-responsive-preview.mq-exterior-active #mqExteriorScene *,
+body.mq-responsive-preview.mq-exterior-active #mqExteriorStage,
+body.mq-responsive-preview.mq-exterior-active #mqExteriorStage *{
+  cursor:default!important;
+}
+
+html.mq-v9-booth-hover,
+html.mq-v9-booth-hover body.mq-responsive-preview,
+html.mq-v9-booth-hover body.mq-responsive-preview #mqExteriorScene,
+html.mq-v9-booth-hover body.mq-responsive-preview #mqExteriorScene *,
+html.mq-v9-booth-hover body.mq-responsive-preview #mqExteriorStage,
+html.mq-v9-booth-hover body.mq-responsive-preview #mqExteriorStage *{
+  cursor:none!important;
+}
+
+html.mq-booth-target-hover body.mq-responsive-preview #mqExteriorStage > .mq-v6-booth-direct,
+html.mq-booth-alpha-hover body.mq-responsive-preview #mqExteriorStage > .mq-v6-booth-direct,
+html.mq-booth-virtual-hover body.mq-responsive-preview #mqExteriorStage > .mq-v6-booth-direct,
+html.mq-pv6-booth-hover body.mq-responsive-preview #mqExteriorStage > .mq-v6-booth-direct,
+html.mq-pv7-booth-hover body.mq-responsive-preview #mqExteriorStage > .mq-v6-booth-direct,
+html.mq-pv8-booth-hover body.mq-responsive-preview #mqExteriorStage > .mq-v6-booth-direct{
+  transform:none!important;
+  filter:brightness(1.01) drop-shadow(7px 11px 7px rgba(0,0,0,.56))!important;
+}
+
+@media (orientation:portrait) and (max-width:1180px){
+  body.mq-responsive-preview .mq-walk-cursor-v6{
+    display:block!important;
+    position:fixed!important;
+    z-index:2147483646!important;
+    pointer-events:none!important;
+  }
+  html.mq-v9-booth-hover body.mq-responsive-preview.mq-exterior-active:not(.mq-ticket-open):not(.mq-preloading) .mq-walk-cursor-v6{
+    display:block!important;
+    opacity:1!important;
+    visibility:visible!important;
+  }
+}
