@@ -1,11 +1,12 @@
-/* Movie Quiz – responsive exterior v9.3 final interaction cleanup
-   - no native DOM hover target in the exterior
-   - shoes fully replace the mouse cursor on the booth
-   - old production/responsive booth hover selectors are structurally disabled
+/* Movie Quiz – responsive exterior v9.4 root-cause cleanup
+   The painted exterior has exactly one interaction: the booth hit test owned by JS.
+   The DOM booth anchor is hidden and cannot create native :hover/focus geometry.
 */
 
 body.mq-responsive-preview #mqExteriorStage > #mqTicketBoothHotspot.mq-v9-booth-target{
+  display:none!important;
   pointer-events:none!important;
+  visibility:hidden!important;
   cursor:default!important;
   background:transparent!important;
   border:0!important;
@@ -18,8 +19,6 @@ body.mq-responsive-preview #mqExteriorStage > #mqTicketBoothHotspot.mq-v9-booth-
   -webkit-tap-highlight-color:transparent!important;
 }
 
-body.mq-responsive-preview.mq-exterior-active #mqExteriorScene,
-body.mq-responsive-preview.mq-exterior-active #mqExteriorScene *,
 body.mq-responsive-preview.mq-exterior-active #mqExteriorStage,
 body.mq-responsive-preview.mq-exterior-active #mqExteriorStage *{
   cursor:default!important;
@@ -28,7 +27,7 @@ body.mq-responsive-preview.mq-exterior-active #mqExteriorStage *{
 html.mq-v9-booth-hover,
 html.mq-v9-booth-hover body.mq-responsive-preview,
 html.mq-v9-booth-hover body.mq-responsive-preview #mqExteriorScene,
-html.mq-v9-booth-hover body.mq-responsive-preview #mqExteriorScene *,
+html.mq-v9-booth-hover body.mq-responsive-preview #mqExteriorScene .mq-v6-viewport,
 html.mq-v9-booth-hover body.mq-responsive-preview #mqExteriorStage,
 html.mq-v9-booth-hover body.mq-responsive-preview #mqExteriorStage *{
   cursor:none!important;
