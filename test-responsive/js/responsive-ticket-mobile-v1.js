@@ -1,8 +1,8 @@
 (()=>{
   'use strict';
 
-  const VERSION='responsive-ticket-mobile-v1.0';
-  const MOBILE_QUERY='(max-width: 699px) and (orientation: portrait)';
+  const VERSION='responsive-ticket-mobile-v1.1';
+  const MOBILE_QUERY='(max-width: 820px) and (orientation: portrait)';
   const mql=matchMedia(MOBILE_QUERY);
   let guestSelected=false;
   let facadeObserver=null;
@@ -19,33 +19,48 @@
   function hostNote(){
     const note=shell()?.querySelector('.mq-guest-note');
     const text=clean(note?.textContent);
-    if(!text)return 'Bez ukládání statistik a účasti v žebříčku.';
-    return text.replace(/\s+/g,' ');
+    if(!text)return 'Bez statistik a žebříčku.';
+    return text;
   }
 
   function patchNameState(){
     const f=facade();
-    if(!f||!mql.matches)return;
+    if(!f)return;
     const panel=f.querySelector('.mqf-panel[data-state="name"]');
-    if(!panel){
+    if(!mql.matches){
+      if(panel){
+        const guest=panel.querySelector('.mqf-guest');
+        const field=panel.querySelector('.mqf-field[data-source-input="mqPlayerName"]');
+        const primary=panel.querySelector('.mqf-primary[data-submit-form="mqCheckNameForm"]');
+        panel.classList.remove('mq-mobile-guest-selected');
+        if(guest?.dataset.mqMobileGuestPatched==='1'){
+          guest.innerHTML='★ Hrát jako host';
+          guest.classList.remove('mq-mobile-guest-choice','is-selected');
+          guest.removeAttribute('role');
+          guest.removeAttribute('aria-checked');
+          delete guest.dataset.mqMobileGuestPatched;
+        }
+        if(field){field.disabled=false;field.removeAttribute('aria-disabled')}
+        if(primary)primary.textContent='Pokračovat';
+      }
       guestSelected=false;
       return;
     }
+    if(!panel){guestSelected=false;return}
 
     const guest=panel.querySelector('.mqf-guest[data-source-click="#mqPlayAsGuest"]');
     const field=panel.querySelector('.mqf-field[data-source-input="mqPlayerName"]');
     const primary=panel.querySelector('.mqf-primary[data-submit-form="mqCheckNameForm"]');
 
     panel.classList.toggle('mq-mobile-guest-selected',guestSelected);
-
     if(guest){
       guest.classList.add('mq-mobile-guest-choice');
-      guest.setAttribute('aria-pressed',String(guestSelected));
+      guest.classList.toggle('is-selected',guestSelected);
       guest.setAttribute('role','checkbox');
       guest.setAttribute('aria-checked',String(guestSelected));
       if(guest.dataset.mqMobileGuestPatched!=='1'){
         guest.dataset.mqMobileGuestPatched='1';
-        guest.innerHTML=`<span class="mq-mobile-guest-title">Hrát jako host</span><span class="mq-mobile-guest-note">${hostNote()}</span>`;
+        guest.innerHTML=`<span class="mqf-guest-copy"><strong>Hrát jako host</strong><small>${hostNote()}</small></span>`;
       }
     }
 
@@ -56,18 +71,15 @@
 
     if(primary){
       primary.disabled=false;
-      primary.textContent='Pokračovat';
-      primary.setAttribute('aria-label',guestSelected?'Pokračovat jako host':'Pokračovat');
+      primary.textContent=guestSelected?'Vstoupit jako host':'Pokračovat';
+      primary.setAttribute('aria-label',guestSelected?'Vstoupit jako host':'Pokračovat');
     }
   }
 
   function schedulePatch(){
     if(queued)return;
     queued=true;
-    requestAnimationFrame(()=>{
-      queued=false;
-      patchNameState();
-    });
+    requestAnimationFrame(()=>{queued=false;patchNameState()});
   }
 
   function clickSource(selector){
@@ -132,7 +144,7 @@
 
   function observeFacade(){
     const f=facade();
-    if(!f){setTimeout(observeFacade,80);return;}
+    if(!f){setTimeout(observeFacade,80);return}
     if(facadeObserver)return;
     facadeObserver=new MutationObserver(schedulePatch);
     facadeObserver.observe(f,{childList:true,subtree:true});
@@ -142,10 +154,9 @@
   function start(){
     document.addEventListener('click',onClick,true);
     document.addEventListener('keydown',onKeydown,true);
-    mql.addEventListener?.('change',()=>{
-      guestSelected=false;
-      schedulePatch();
-    });
+    mql.addEventListener?.('change',()=>{guestSelected=false;schedulePatch()});
+    window.addEventListener('resize',schedulePatch,{passive:true});
+    window.visualViewport?.addEventListener('resize',schedulePatch,{passive:true});
     observeFacade();
     window.__mqResponsiveTicketVersion=VERSION;
   }
