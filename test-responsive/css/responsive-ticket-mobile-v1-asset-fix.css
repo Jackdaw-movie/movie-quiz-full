@@ -1,0 +1,9 @@
+/* Use the verified binary WebP mobile ticket artwork. Loaded after the base mobile ticket layout. */
+@media (orientation:portrait) and (max-width:820px){
+  body.mq-responsive-preview.mq-ticket-open .mq-ticket-scene::before{
+    background-image:url('../assets/ticket-mobile/mobile-ticket-master.webp?v=1.0.0')!important;
+    background-position:center!important;
+    background-size:100% 100%!important;
+    background-repeat:no-repeat!important;
+  }
+}
