@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
 
-  const VERSION='responsive-exterior-v9.3-single-hit-test';
+  const VERSION='responsive-exterior-v9.4-root-cause-clean';
   const PORTRAIT_QUERY='(orientation: portrait) and (max-width: 1180px)';
   const PORTRAIT_W=1086;
   const PORTRAIT_H=1235;
@@ -15,13 +15,21 @@
   const DESKTOP_BOOTH_H=367;
   const ASSET_BASE='test-responsive/assets/exterior-portrait-v7/';
   const PORTRAIT_MASTER=ASSET_BASE+'master.webp';
+  const DESKTOP_BOOTH_SRC='assets/exterior-v6-9/production/booth.webp';
   const portraitMql=matchMedia(PORTRAIT_QUERY);
   const initialDpr=Math.max(.1,Number(devicePixelRatio)||1);
 
-  const DESKTOP_BOOTH_POLYGON=[
-    [.4229,0],[.3715,.0519],[.1791,.1084],[.0498,.2528],[.0846,.3183],[.0580,.3634],
-    [.0829,.6084],[.0431,.6174],[.0846,.6479],[.0614,.8871],[.0017,.9029],[0,.9470],
-    [.5837,.9977],[.9983,.9086],[.9602,.8002],[.9834,.2686],[.8226,.1163],[.4793,.0485]
+  const PORTRAIT_BOOTH_POLYGON=[
+    [104,19],[144,19],[173,29],[195,47],[207,67],[213,92],[207,108],
+    [222,114],[228,124],[219,132],[219,379],[227,387],[227,396],[211,402],
+    [37,402],[26,395],[26,385],[34,377],[34,134],[26,129],[24,118],[36,111],
+    [41,92],[46,70],[58,49],[78,31]
+  ];
+
+  const DESKTOP_FALLBACK_POLYGON=[
+    [.42,.02],[.34,.04],[.24,.08],[.14,.16],[.08,.27],[.09,.35],
+    [.09,.87],[.13,.95],[.83,.95],[.90,.87],[.90,.34],[.88,.24],
+    [.80,.14],[.62,.05]
   ];
 
   const BULBS=[
@@ -35,16 +43,17 @@
   let raf=0;
   let detachedOriginalBooth=null;
   let cleanBooth=null;
-  let boothMask=null;
-  let boothMaskW=245;
-  let boothMaskH=405;
   let syntheticClick=false;
   let stageObserver=null;
   let bodyObserver=null;
+  let desktopBoothAlpha=null;
+  let desktopBoothAlphaW=0;
+  let desktopBoothAlphaH=0;
 
   const root=()=>document.documentElement;
   const stage=()=>document.getElementById('mqExteriorStage');
   const scene=()=>document.getElementById('mqExteriorScene');
+  const viewport=()=>scene()?.querySelector('.mq-v6-viewport');
   const master=()=>stage()?.querySelector('.mq-v6-master');
   const shoes=()=>document.getElementById('mqWalkCursor');
 
@@ -56,6 +65,13 @@
       !body.classList.contains('mq-ticket-open') &&
       !body.classList.contains('mq-entering-auditorium')
     );
+  }
+
+  function isProtectedExteriorUi(event){
+    const target=event?.target;
+    return Boolean(target instanceof Element && target.closest?.(
+      '#mqExteriorAudio,#mqExteriorAudioPanel,#mqExteriorAudioOpen'
+    ));
   }
 
   function addImg(cls,file){
@@ -155,8 +171,8 @@
     root().style.setProperty('--mq-pv9-scale',Math.max(w/PORTRAIT_W,h/PORTRAIT_H).toFixed(7));
   }
 
-  function loadBoothMask(){
-    if(boothMask)return Promise.resolve(true);
+  function loadDesktopBoothAlpha(){
+    if(desktopBoothAlpha)return Promise.resolve(true);
     return new Promise(resolve=>{
       const img=new Image();
       img.onload=()=>{
@@ -167,17 +183,17 @@
           const ctx=canvas.getContext('2d',{willReadFrequently:true});
           ctx.drawImage(img,0,0);
           const rgba=ctx.getImageData(0,0,canvas.width,canvas.height).data;
-          boothMaskW=canvas.width;
-          boothMaskH=canvas.height;
-          boothMask=new Uint8Array(boothMaskW*boothMaskH);
-          for(let i=0,j=0;i<boothMask.length;i++,j+=4){
-            boothMask[i]=Math.max(rgba[j],rgba[j+1],rgba[j+2]);
+          desktopBoothAlphaW=canvas.width;
+          desktopBoothAlphaH=canvas.height;
+          desktopBoothAlpha=new Uint8Array(desktopBoothAlphaW*desktopBoothAlphaH);
+          for(let i=0,j=3;i<desktopBoothAlpha.length;i++,j+=4){
+            desktopBoothAlpha[i]=rgba[j];
           }
           resolve(true);
         }catch(_){resolve(false)}
       };
       img.onerror=()=>resolve(false);
-      img.src=ASSET_BASE+'booth-mask.png';
+      img.src=DESKTOP_BOOTH_SRC;
     });
   }
 
@@ -204,13 +220,12 @@
   }
 
   function portraitBoothHit(clientX,clientY){
-    if(!boothMask)return false;
     const point=stageLocalPoint(clientX,clientY,PORTRAIT_W,PORTRAIT_H);
     if(!point)return false;
-    const x=Math.floor(point.x-PORTRAIT_BOOTH_X);
-    const y=Math.floor(point.y-PORTRAIT_BOOTH_Y);
-    if(x<0||y<0||x>=boothMaskW||y>=boothMaskH)return false;
-    return boothMask[y*boothMaskW+x]>96;
+    const x=point.x-PORTRAIT_BOOTH_X;
+    const y=point.y-PORTRAIT_BOOTH_Y;
+    if(x<0||y<0||x>245||y>405)return false;
+    return pointInPolygon(x,y,PORTRAIT_BOOTH_POLYGON);
   }
 
   function desktopBoothHit(clientX,clientY){
@@ -219,7 +234,13 @@
     const nx=(point.x-DESKTOP_BOOTH_X)/DESKTOP_BOOTH_W;
     const ny=(point.y-DESKTOP_BOOTH_Y)/DESKTOP_BOOTH_H;
     if(nx<0||ny<0||nx>1||ny>1)return false;
-    return pointInPolygon(nx,ny,DESKTOP_BOOTH_POLYGON);
+
+    if(desktopBoothAlpha&&desktopBoothAlphaW&&desktopBoothAlphaH){
+      const x=Math.max(0,Math.min(desktopBoothAlphaW-1,Math.floor(nx*(desktopBoothAlphaW-1))));
+      const y=Math.max(0,Math.min(desktopBoothAlphaH-1,Math.floor(ny*(desktopBoothAlphaH-1))));
+      return desktopBoothAlpha[y*desktopBoothAlphaW+x]>32;
+    }
+    return pointInPolygon(nx,ny,DESKTOP_FALLBACK_POLYGON);
   }
 
   function boothHit(clientX,clientY){
@@ -235,20 +256,21 @@
     return clientX>=rect.left&&clientX<=rect.right&&clientY>=rect.top&&clientY<=rect.bottom;
   }
 
-  function eventBelongsToExterior(event){
-    const sc=scene();
-    if(!sc)return false;
-    try{
-      const path=event.composedPath?.()||[];
-      if(path.includes(sc))return true;
-    }catch(_){}
-    const target=event.target;
-    return Boolean(target instanceof Element && target.closest?.('#mqExteriorScene'));
+  function setCursorHidden(active){
+    const nodes=[root(),document.body,scene(),viewport(),stage()];
+    stage()?.querySelectorAll(':scope > *').forEach(node=>nodes.push(node));
+    for(const node of nodes){
+      if(!(node instanceof HTMLElement))continue;
+      if(active)node.style.setProperty('cursor','none','important');
+      else if(node===stage()||node?.parentElement===stage())node.style.setProperty('cursor','default','important');
+      else node.style.removeProperty('cursor');
+    }
   }
 
   function setHover(active,event){
     root().classList.toggle('mq-v9-booth-hover',Boolean(active));
     root().classList.toggle('mq-pv9-booth-hover',Boolean(active&&portraitMql.matches));
+    setCursorHidden(Boolean(active));
     const cursor=shoes();
     if(!cursor)return;
     if(active&&event){
@@ -263,6 +285,7 @@
   function clearHover(){
     root().classList.remove('mq-v9-booth-hover','mq-pv9-booth-hover');
     shoes()?.classList.remove('is-visible');
+    setCursorHidden(false);
   }
 
   function removeLegacyRuntimeState(){
@@ -279,17 +302,17 @@
   function installCleanBooth(){
     const current=document.getElementById('mqTicketBoothHotspot');
     if(!current)return false;
-    if(current.dataset.mqV93Clean==='1'){
+    if(current.dataset.mqV94Clean==='1'){
       cleanBooth=current;
       return true;
     }
     detachedOriginalBooth=current;
     cleanBooth=current.cloneNode(true);
-    cleanBooth.dataset.mqV93Clean='1';
+    cleanBooth.dataset.mqV94Clean='1';
     cleanBooth.removeAttribute('data-mq-v9-clean');
-    cleanBooth.classList.remove('mq-booth-button');
-    cleanBooth.classList.add('mq-v9-booth-target');
-    cleanBooth.setAttribute('aria-label','Přejít k pokladně');
+    cleanBooth.removeAttribute('data-mq-v93-clean');
+    cleanBooth.className='mq-v9-booth-target';
+    cleanBooth.setAttribute('aria-hidden','true');
     cleanBooth.tabIndex=-1;
     current.replaceWith(cleanBooth);
     return true;
@@ -304,12 +327,9 @@
       if(node instanceof HTMLElement)node.style.setProperty('cursor','default','important');
     }
     if(cleanBooth){
+      cleanBooth.style.setProperty('display','none','important');
       cleanBooth.style.setProperty('pointer-events','none','important');
       cleanBooth.style.setProperty('cursor','default','important');
-      cleanBooth.style.setProperty('background','transparent','important');
-      cleanBooth.style.setProperty('border','0','important');
-      cleanBooth.style.setProperty('outline','0','important');
-      cleanBooth.style.setProperty('box-shadow','none','important');
     }
   }
 
@@ -327,32 +347,34 @@
   }
 
   function captureExterior(event){
-    if(syntheticClick)return;
-    if(!isExteriorInteractive()){
+    if(syntheticClick||!isExteriorInteractive()){
       if(event.type==='pointermove'||event.type==='mousemove')clearHover();
       return;
     }
+    if(isProtectedExteriorUi(event))return;
     if(typeof event.clientX!=='number'||typeof event.clientY!=='number')return;
-    if(!eventBelongsToExterior(event)){
+
+    const insideStage=stageContainsPoint(event.clientX,event.clientY);
+    if(!insideStage){
       if(event.type==='pointermove'||event.type==='mousemove')clearHover();
       return;
     }
-    if(!stageContainsPoint(event.clientX,event.clientY)){
-      if(event.type==='pointermove'||event.type==='mousemove')clearHover();
-      return;
-    }
+
     const hit=boothHit(event.clientX,event.clientY);
+
     if(event.type==='pointermove'||event.type==='mousemove'){
       const mouse=!event.pointerType||event.pointerType==='mouse';
       setHover(Boolean(hit&&mouse),event);
       stopEvent(event);
       return;
     }
+
     if(event.type==='click'){
       stopEvent(event);
       if(hit)triggerBooth();
       return;
     }
+
     stopEvent(event);
   }
 
@@ -370,9 +392,9 @@
       ensurePortraitLayers();
       setPortraitLayersVisible(true);
       scalePortrait();
-      loadBoothMask();
     }else{
       setPortraitLayersVisible(false);
+      loadDesktopBoothAlpha();
     }
     clearHover();
     sanitizeStage();
@@ -404,7 +426,8 @@
     }
     observe();
     sanitizeStage();
-    loadBoothMask();
+    loadDesktopBoothAlpha();
+
     for(const type of ['pointermove','mousemove','pointerover','mouseover','pointerdown','mousedown','pointerup','mouseup','click']){
       window.addEventListener(type,captureExterior,true);
     }
@@ -414,6 +437,7 @@
     window.addEventListener('orientationchange',()=>{clearHover();schedule()},{passive:true});
     window.visualViewport?.addEventListener('resize',()=>{clearHover();schedule()},{passive:true});
     portraitMql.addEventListener?.('change',()=>{clearHover();schedule()});
+
     schedule();
     setTimeout(schedule,120);
     setTimeout(schedule,650);
