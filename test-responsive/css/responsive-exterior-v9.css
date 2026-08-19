@@ -1,0 +1,161 @@
+/* Movie Quiz – responsive exterior v9.0
+   One controller, one booth, zero legacy exterior hotspots in test-responsive.
+*/
+
+/* --------------------------------------------------------------------------
+   DESKTOP TEST CLEANUP
+   The production booth button is cloned by v9 JS to remove every old listener.
+   Production hover styling is neutralized; v9 owns shoes, glow and click.
+   -------------------------------------------------------------------------- */
+body.mq-responsive-preview #mqExteriorStage,
+body.mq-responsive-preview #mqExteriorStage *{
+  cursor:default!important;
+}
+body.mq-responsive-preview #mqExteriorStage > *{
+  pointer-events:none!important;
+}
+body.mq-responsive-preview #mqExteriorStage > #mqTicketBoothHotspot[data-mq-v9-clean="1"]{
+  pointer-events:auto!important;
+  cursor:none!important;
+}
+
+/* Kill the production :hover response so it cannot overlap the v9 hover. */
+body.mq-responsive-preview #mqExteriorStage > .mq-booth-button:hover + .mq-v6-booth-direct,
+body.mq-responsive-preview #mqExteriorStage > .mq-booth-button:focus-visible + .mq-v6-booth-direct{
+  transform:none!important;
+  filter:brightness(1.01) drop-shadow(7px 11px 7px rgba(0,0,0,.56))!important;
+}
+
+/* The one desktop hover response. */
+html.mq-v9-booth-hover body.mq-responsive-preview:not(.mq-ticket-open):not(.mq-preloading) #mqExteriorStage > .mq-v6-booth-direct{
+  filter:
+    brightness(1.025)
+    drop-shadow(7px 11px 7px rgba(0,0,0,.56))
+    drop-shadow(0 0 5px rgba(255,205,112,.22))
+    drop-shadow(0 0 11px rgba(255,178,58,.10))!important;
+}
+
+/* v9 alone decides whether shoes are visible. */
+body.mq-responsive-preview .mq-walk-cursor-v6{
+  pointer-events:none!important;
+  opacity:0!important;
+  visibility:hidden!important;
+}
+html.mq-v9-booth-hover body.mq-responsive-preview.mq-exterior-active:not(.mq-ticket-open):not(.mq-preloading) .mq-walk-cursor-v6{
+  opacity:1!important;
+  visibility:visible!important;
+}
+
+@media (orientation:portrait) and (max-width:1180px){
+  body.mq-responsive-preview #mqExteriorStage > #mqTicketBoothHotspot[data-mq-v9-clean="1"]{
+    pointer-events:none!important;
+  }
+
+  html.mq-exterior-portrait-v9 body.mq-noir-master .mq-v6-viewport{
+    overflow:hidden!important;
+    background:#020306!important;
+    touch-action:manipulation!important;
+  }
+  html.mq-exterior-portrait-v9 body.mq-noir-master #mqExteriorStage.mq-v6-stage{
+    position:absolute!important;
+    left:50%!important;
+    top:0!important;
+    width:1086px!important;
+    height:1235px!important;
+    transform-origin:50% 0!important;
+    transform:translate3d(-50%,0,0) scale(var(--mq-pv9-scale,1))!important;
+    isolation:isolate!important;
+  }
+  html.mq-exterior-portrait-v9 body.mq-noir-master #mqExteriorStage>.mq-v6-master{
+    position:absolute!important;
+    inset:0!important;
+    width:1086px!important;
+    height:1235px!important;
+    max-width:none!important;
+    object-fit:fill!important;
+    z-index:1!important;
+  }
+
+  /* Hide every production depth/effect layer; portrait gets one coherent set. */
+  html.mq-exterior-portrait-v9 body.mq-noir-master #mqExteriorStage>.mq-v6-sign,
+  html.mq-exterior-portrait-v9 body.mq-noir-master #mqExteriorStage>.mq-v63-sign-letters,
+  html.mq-exterior-portrait-v9 body.mq-noir-master #mqExteriorStage>.mq-v64-hotel-letters,
+  html.mq-exterior-portrait-v9 body.mq-noir-master #mqExteriorStage>.mq-v6-marquee,
+  html.mq-exterior-portrait-v9 body.mq-noir-master #mqExteriorStage>.mq-v63-marquee-lights,
+  html.mq-exterior-portrait-v9 body.mq-noir-master #mqExteriorStage>.mq-v6-lamp,
+  html.mq-exterior-portrait-v9 body.mq-noir-master #mqExteriorStage>.mq-v6-car,
+  html.mq-exterior-portrait-v9 body.mq-noir-master #mqExteriorStage>.mq-v6-car-shine-aligned,
+  html.mq-exterior-portrait-v9 body.mq-noir-master #mqExteriorStage>.mq-v6-booth-direct,
+  html.mq-exterior-portrait-v9 body.mq-noir-master #mqExteriorStage>.mq-v65-steam-live,
+  html.mq-exterior-portrait-v9 body.mq-noir-master #mqExteriorStage>.mq-v6-searchlights{
+    display:none!important;
+  }
+
+  html.mq-exterior-portrait-v9 body.mq-noir-master .mq-pv9-layer{
+    position:absolute!important;
+    display:block!important;
+    max-width:none!important;
+    pointer-events:none!important;
+    user-select:none!important;
+    object-fit:fill!important;
+    backface-visibility:hidden!important;
+  }
+
+  .mq-pv9-sign{left:135px!important;top:55px!important;width:140px!important;height:470px!important;z-index:8!important;transform:translateY(-3px)!important;filter:brightness(1.035) drop-shadow(6px 11px 5px rgba(0,0,0,.62))!important}
+  .mq-pv9-sign-glow{left:135px!important;top:55px!important;width:140px!important;height:470px!important;z-index:9!important;opacity:.48!important;mix-blend-mode:screen!important;animation:mqPV9Sign 3.8s ease-in-out infinite!important}
+  @keyframes mqPV9Sign{0%,100%{opacity:.42;filter:brightness(1.34) drop-shadow(0 0 5px rgba(255,144,32,.18))}48%{opacity:.78;filter:brightness(1.72) drop-shadow(0 0 10px rgba(255,145,31,.34))}}
+
+  .mq-pv9-hotel{left:0!important;top:460px!important;width:86px!important;height:230px!important;z-index:8!important;filter:brightness(1.03) drop-shadow(6px 8px 6px rgba(0,0,0,.50))!important}
+  .mq-pv9-hotel-glow{left:0!important;top:460px!important;width:86px!important;height:230px!important;z-index:9!important;opacity:.42!important;mix-blend-mode:screen!important;animation:mqPV9Hotel 4.35s ease-in-out -1.2s infinite!important}
+  @keyframes mqPV9Hotel{0%,100%{opacity:.38;filter:brightness(1.34)}50%{opacity:.76;filter:brightness(1.74) drop-shadow(0 0 9px rgba(255,143,31,.30))}}
+
+  .mq-pv9-lamp{left:0!important;top:630px!important;width:40px!important;height:375px!important;z-index:8!important;transform:translate(-2px,-2px)!important;animation:mqPV9Lamp 5.8s steps(1,end) infinite!important}
+  @keyframes mqPV9Lamp{0%,31%,36%,58%,64%,88%,100%{filter:brightness(1.08) drop-shadow(7px 10px 6px rgba(0,0,0,.60))}32%{filter:brightness(.72)}33%{filter:brightness(1.42) drop-shadow(0 0 11px rgba(255,191,78,.54))}34%{filter:brightness(.88)}35%{filter:brightness(1.25)}59%{filter:brightness(.82)}60%{filter:brightness(1.36) drop-shadow(0 0 10px rgba(255,193,84,.48))}62%{filter:brightness(1.30)}}
+
+  /* Confirmed-good car implementation is unchanged. */
+  .mq-pv9-car{left:0!important;top:910px!important;width:545px!important;height:325px!important;z-index:9!important;transform:translateY(-2px)!important;filter:brightness(1.018) drop-shadow(8px 13px 7px rgba(0,0,0,.64))!important}
+  .mq-pv9-car-shine{position:absolute!important;left:0!important;top:910px!important;width:545px!important;height:325px!important;z-index:10!important;pointer-events:none!important;-webkit-mask-image:url('../assets/exterior-portrait-v7/car-shine-mask.png')!important;-webkit-mask-repeat:no-repeat!important;-webkit-mask-position:center!important;-webkit-mask-size:100% 100%!important;mask-image:url('../assets/exterior-portrait-v7/car-shine-mask.png')!important;mask-repeat:no-repeat!important;mask-position:center!important;mask-size:100% 100%!important;mask-mode:alpha!important;background:linear-gradient(108deg,transparent 34%,rgba(255,230,167,0) 40%,rgba(255,226,158,.18) 46%,rgba(255,230,167,0) 52%,transparent 60%);background-size:230% 100%;background-position:135% 0;mix-blend-mode:screen;animation:mqPV9Car 8s ease-in-out infinite!important}
+  @keyframes mqPV9Car{0%,68%{background-position:135% 0;opacity:0}72%{opacity:.55}86%{background-position:-28% 0;opacity:.48}91%,100%{background-position:-28% 0;opacity:0}}
+
+  /* Booth asset stays fixed. Only the halo is +10 px right and 50% softer. */
+  .mq-pv9-booth{left:445px!important;top:650px!important;width:245px!important;height:405px!important;z-index:12!important;filter:brightness(1.01) drop-shadow(7px 11px 7px rgba(0,0,0,.56))!important}
+  .mq-pv9-booth-glow{left:455px!important;top:650px!important;width:245px!important;height:405px!important;z-index:13!important;opacity:0!important;mix-blend-mode:screen!important;filter:brightness(1.02) drop-shadow(0 0 3px rgba(255,220,140,.28)) drop-shadow(0 0 7px rgba(255,190,76,.18))!important;transition:opacity .12s linear!important}
+  html.mq-pv9-booth-hover body.mq-noir-master .mq-pv9-booth-glow{opacity:.25!important}
+
+  /* Real visible bulbs are drawn as individual points directly over the bulbs in
+     the portrait master. No opaque crop can cover or cancel this animation. */
+  .mq-pv9-marquee{position:absolute!important;left:120px!important;top:585px!important;width:966px!important;height:170px!important;z-index:2147483000!important;pointer-events:none!important;overflow:visible!important;display:block!important;isolation:isolate!important}
+  .mq-pv9-bulb-group{position:absolute!important;inset:0!important;pointer-events:none!important;opacity:.08;mix-blend-mode:screen;filter:brightness(1.10)}
+  .mq-pv9-bulb-group.g1{animation:mqPV9BulbChase 1.35s ease-in-out 0s infinite!important}
+  .mq-pv9-bulb-group.g2{animation:mqPV9BulbChase 1.35s ease-in-out -.45s infinite!important}
+  .mq-pv9-bulb-group.g3{animation:mqPV9BulbChase 1.35s ease-in-out -.90s infinite!important}
+  .mq-pv9-bulb-dot{position:absolute!important;width:12px!important;height:12px!important;transform:translate(-50%,-50%)!important;border-radius:50%!important;background:radial-gradient(circle,#fff8dc 0 22%,#ffe39a 30%,#ffc957 48%,rgba(255,156,40,.65) 62%,rgba(255,137,25,0) 78%)!important;box-shadow:0 0 3px rgba(255,226,150,.75),0 0 8px rgba(255,163,44,.32)!important}
+  @keyframes mqPV9BulbChase{0%,28%,100%{opacity:.06;filter:brightness(.92)}42%,68%{opacity:1;filter:brightness(1.52) drop-shadow(0 0 4px rgba(255,216,128,.66)) drop-shadow(0 0 9px rgba(255,149,34,.30))}}
+
+  .mq-pv9-steam{left:758px!important;top:998px!important;width:182px!important;height:228px!important;z-index:15!important;mix-blend-mode:screen!important;transform-origin:38% 92%!important;filter:brightness(1.18) saturate(.86) contrast(1.03) blur(.12px)!important}
+  .mq-pv9-steam.steam-a{animation:mqPV9Steam 3.8s ease-out infinite!important}
+  .mq-pv9-steam.steam-b{animation:mqPV9Steam 3.8s ease-out -1.9s infinite!important}
+  @keyframes mqPV9Steam{0%{transform:translate(0,3px) scale(.99,.98);opacity:0}13%{opacity:.42}34%{transform:translate(-1px,-2px) scale(1.015,1.035);opacity:.72}62%{transform:translate(2px,-8px) scale(1.035,1.075);opacity:.60}82%{transform:translate(-2px,-15px) scale(1.06,1.12);opacity:.31}100%{transform:translate(3px,-24px) scale(1.09,1.18);opacity:0}}
+
+  .mq-pv9-searchlights{position:absolute!important;inset:0!important;z-index:2!important;pointer-events:none!important;mix-blend-mode:screen!important;overflow:hidden!important}
+  .mq-pv9-searchlights i{position:absolute!important;left:65px!important;top:-175px!important;width:104px!important;height:510px!important;transform-origin:86% 98%!important;clip-path:polygon(44% 0,56% 0,100% 100%,0 100%)!important;background:linear-gradient(180deg,rgba(214,225,255,.19),rgba(192,212,255,.08) 62%,rgba(176,203,255,.02) 87%,transparent)!important;filter:blur(3px)!important;opacity:.16;animation:mqPV9BeamA 8.4s ease-in-out infinite alternate!important}
+  .mq-pv9-searchlights i:nth-child(2){left:160px!important;top:-160px!important;height:520px!important;opacity:.13;animation:mqPV9BeamB 9.6s ease-in-out infinite alternate!important}
+  @keyframes mqPV9BeamA{0%{transform:rotate(-7deg);opacity:.10}100%{transform:rotate(8deg);opacity:.14}}
+  @keyframes mqPV9BeamB{0%{transform:rotate(7deg);opacity:.16}100%{transform:rotate(-9deg);opacity:.19}}
+
+  /* Approved hand/bubble positions are unchanged. */
+  html.mq-exterior-portrait-v9 body.mq-noir-master #mqExteriorStage>.mq-ticket-hand-portal{position:absolute!important;left:653px!important;top:792px!important;width:260px!important;height:200px!important;overflow:hidden!important;z-index:30!important;pointer-events:none!important}
+  html.mq-exterior-portrait-v9 body.mq-noir-master .mq-ticket-hand-img{position:absolute!important;left:0!important;top:61px!important;width:104px!important;height:auto!important;max-width:none!important;pointer-events:none!important;user-select:none!important;transform:translateX(-112px) rotate(0deg);transform-origin:26px 31px!important;will-change:transform!important;filter:drop-shadow(0 1px 1px rgba(0,0,0,.16))!important}
+  html.mq-exterior-portrait-v9 body.mq-noir-master #mqExteriorStage>.mq-ticket-bubble-ui{position:absolute!important;left:625px!important;top:665px!important;width:272px!important;height:204px!important;z-index:31!important;pointer-events:none!important;visibility:hidden;opacity:1;transform:none}
+  html.mq-exterior-portrait-v9 body.mq-noir-master .mq-ticket-bubble-frames{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;pointer-events:none!important}
+  html.mq-exterior-portrait-v9 body.mq-noir-master .mq-ticket-bubble-frame{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:fill!important;display:block!important;opacity:0;visibility:hidden;pointer-events:none!important;user-select:none!important}
+  html.mq-exterior-portrait-v9 body.mq-noir-master .mq-ticket-bubble-frame.is-active{opacity:1!important;visibility:visible!important}
+  html.mq-exterior-portrait-v9 body.mq-noir-master .mq-ticket-bubble-text{position:absolute!important;left:62px!important;top:43px!important;width:165px!important;height:85px!important;z-index:2!important;display:flex!important;align-items:center!important;justify-content:center!important;margin:0!important;padding:0!important;text-align:center!important;color:#17120d!important;font-family:var(--mq-display,"Limelight","Copperplate","Baskerville",serif)!important;font-size:17.25px!important;font-weight:400!important;line-height:1.10!important;opacity:0;pointer-events:none!important}
+  html.mq-exterior-portrait-v9 body.mq-noir-master .mq-ticket-bubble-ui.is-text-visible .mq-ticket-bubble-text{opacity:1!important}
+  html.mq-exterior-portrait-v9 body:not(.mq-exterior-active) .mq-ticket-hand-portal,
+  html.mq-exterior-portrait-v9 body:not(.mq-exterior-active) .mq-ticket-bubble-ui,
+  html.mq-exterior-portrait-v9 body.mq-ticket-open .mq-ticket-hand-portal,
+  html.mq-exterior-portrait-v9 body.mq-ticket-open .mq-ticket-bubble-ui{display:none!important}
+
+  html.mq-exterior-portrait-v9 body.mq-noir-master #mqExteriorStage>.mq-v6-vignette{inset:0!important;width:1086px!important;height:1235px!important;z-index:18!important;pointer-events:none!important;box-shadow:inset 0 0 68px rgba(0,0,0,.13)!important}
+}
