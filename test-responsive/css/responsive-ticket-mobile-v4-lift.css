@@ -1,0 +1,14 @@
+/* Movie Quiz – mobile ticket v4.1 content lift
+   Keep the "Vstup hráče" heading fixed. Move every control below it 150px upward.
+*/
+@media (orientation:portrait) and (max-width:820px){
+  body.mq-responsive-preview .mq-ticket-layer.mq-mobile-ticket-v4 .mqf-panel[data-state="name"] .mqf-body,
+  body.mq-responsive-preview .mq-ticket-layer.mq-mobile-ticket-v4 .mqf-panel[data-state="name"] .mqf-footer{
+    transform:translateY(-150px)!important;
+  }
+
+  /* Keep validation feedback aligned with the lifted name-screen controls. */
+  body.mq-responsive-preview .mq-ticket-layer.mq-mobile-ticket-v4[data-ticket-state="name"] .mq-ticket-error{
+    transform:translateY(-150px)!important;
+  }
+}
